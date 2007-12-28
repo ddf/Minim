@@ -2,6 +2,8 @@ package ddf.minim;
 
 import javax.sound.sampled.AudioFormat;
 
+import ddf.minim.spi.AudioStream;
+
 /**
  * An <code>AudioSource</code> is a kind of wrapper around an
  * <code>AudioStream</code>. An <code>AudioSource</code> will add its

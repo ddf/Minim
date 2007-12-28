@@ -21,7 +21,13 @@ package ddf.minim;
 import javax.sound.sampled.AudioFileFormat;
 
 import processing.core.PApplet;
-import ddf.mimin.javasound.JSMinimImpl;
+import ddf.mimin.javasound.JSMinim;
+import ddf.minim.spi.AudioRecording;
+import ddf.minim.spi.AudioRecordingStream;
+import ddf.minim.spi.AudioStream;
+import ddf.minim.spi.AudioSynthesizer;
+import ddf.minim.spi.MinimServiceProvider;
+import ddf.minim.spi.SampleRecorder;
 
 /**
  * The <code>Minim</code> class is how you get what you want from JavaSound.
@@ -65,7 +71,7 @@ public class Minim
   public static AudioFileFormat.Type SND = AudioFileFormat.Type.SND;
 
   private static PApplet p;
-  private static MinimImpl mimp;
+  private static MinimServiceProvider mimp;
   private static boolean DEBUG;
 
   private Minim() {}
@@ -139,14 +145,14 @@ public class Minim
    */
   public static void start(PApplet pro)
   {
-    start(pro, new JSMinimImpl(pro));
+    start(pro, new JSMinim());
   }
   
-  public static void start(PApplet pro, MinimImpl impl)
+  public static void start(PApplet pro, MinimServiceProvider impl)
   {
     p = pro;
     mimp = impl;
-    mimp.start();
+    mimp.start(pro);
     DEBUG = false;
   }
 
@@ -189,13 +195,7 @@ public class Minim
    */
   static public AudioSample loadSample(String filename, int bufferSize)
   {
-    AudioSampleImpl samp = mimp.newAudioSample(filename, bufferSize);
-    if ( samp == null )
-    {
-      error("Couldn't load " + filename + " into memory.");
-      return null;
-    }
-    return new AudioSample(samp);
+    return mimp.getAudioSample(filename, bufferSize);
   }
 
   /**
@@ -208,7 +208,7 @@ public class Minim
   static public AudioSnippet loadSnippet(String filename)
   {
     Minim.debug("Aquiring a Clip from Minim implementation " + mimp.getClass().getName());
-    AudioRecording c = mimp.newAudioRecording(filename);
+    AudioRecording c = mimp.getAudioRecording(filename);
     if ( c != null )
     {
       return new AudioSnippet(c);
@@ -248,7 +248,7 @@ public class Minim
    */
   public static AudioPlayer loadFile(String filename, int bufferSize)
   {
-    AudioRecordingStream rec = mimp.newAudioRecordingStream(filename, bufferSize);
+    AudioRecordingStream rec = mimp.getAudioRecordingStream(filename, bufferSize);
     if ( rec != null )
     {
       return new AudioPlayer(rec);
@@ -282,7 +282,7 @@ public class Minim
                                              String fileName, 
                                              boolean buffered)
   {
-    SampleRecorder rec = mimp.newSampleRecorder(source, fileName, buffered);
+    SampleRecorder rec = mimp.getSampleRecorder(source, fileName, buffered);
     if ( rec != null )
     {
       return new AudioRecorder(source, rec);
@@ -370,7 +370,7 @@ public class Minim
   static public AudioInput getLineIn(int type, int bufferSize,
                                      float sampleRate, int bitDepth)
   {
-    AudioStream stream = mimp.newAudioStream(type, bufferSize, sampleRate, bitDepth);
+    AudioStream stream = mimp.getAudioStream(type, bufferSize, sampleRate, bitDepth);
     if ( stream != null )
     {
       return new AudioInput(stream);
@@ -463,7 +463,7 @@ public class Minim
   static public AudioOutput getLineOut(int type, int bufferSize,
                                        float sampleRate, int bitDepth)
   {
-    AudioSynthesizer synth = mimp.newAudioSythesizer(type, bufferSize, sampleRate, bitDepth);
+    AudioSynthesizer synth = mimp.getAudioSythesizer(type, bufferSize, sampleRate, bitDepth);
     if ( synth != null )
     {
       return new AudioOutput(synth);

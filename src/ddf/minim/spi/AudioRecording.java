@@ -1,6 +1,7 @@
-package ddf.minim;
+package ddf.minim.spi;
 
 import java.util.Map;
+
 
 /**
  * An <code>AudioRecording</code> is a <code>Playable</code> 

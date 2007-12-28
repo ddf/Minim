@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/ddf/My Documents/Eclipse/audio/lib/core-135.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/ddf/My Documents/Eclipse/audio/lib/jl1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/ddf/My Documents/Eclipse/audio/lib/mp3spi1.9.4.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/ddf/My Documents/Eclipse/audio/lib/tritonus_aos.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/ddf/My Documents/Eclipse/audio/lib/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="lib/core-135.jar"/>
+	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
+	<classpathentry kind="lib" path="lib/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="lib/tritonus_aos.jar"/>
+	<classpathentry kind="lib" path="lib/tritonus_share.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

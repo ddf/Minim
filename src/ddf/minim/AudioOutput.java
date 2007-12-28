@@ -18,6 +18,8 @@
 
 package ddf.minim;
 
+import ddf.minim.spi.AudioSynthesizer;
+
 /**
  * An <code>AudioOutput</code> is used to generate audio with
  * <code>AudioSignal</code>s. Well, strictly speaking, the

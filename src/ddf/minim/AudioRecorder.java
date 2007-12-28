@@ -18,6 +18,9 @@
 
 package ddf.minim;
 
+import ddf.minim.spi.AudioRecording;
+import ddf.minim.spi.SampleRecorder;
+
 
 /**
  * An <code>AudioRecorder</code> can be used to record audio that is being

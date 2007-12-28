@@ -17,8 +17,8 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
-import ddf.minim.AudioRecordingStream;
 import ddf.minim.Minim;
+import ddf.minim.spi.AudioRecordingStream;
 
 class JSMP3AudioRecordingStream extends Thread
                implements AudioRecordingStream
@@ -204,9 +204,9 @@ class JSMP3AudioRecordingStream extends Thread
     {
       Minim.error("Couldn't close the stream.");
     }
-    AudioInputStream encIn = JSMinimImpl.getAudioInputStream(fileName);
+    AudioInputStream encIn = JSMinim.getAudioInputStream(fileName);
     // converts the stream to PCM audio from mp3 audio
-    ais = (DecodedMpegAudioInputStream)JSMinimImpl.getAudioInputStream(format, encIn);
+    ais = (DecodedMpegAudioInputStream)JSMinim.getAudioInputStream(format, encIn);
   }
 
   public void loop(int n)

@@ -33,8 +33,8 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
-import ddf.minim.AudioRecordingStream;
 import ddf.minim.Minim;
+import ddf.minim.spi.AudioRecordingStream;
 
 final class JSAudioRecordingStream extends Thread
                        implements AudioRecordingStream

@@ -1,4 +1,4 @@
-package ddf.minim;
+package ddf.minim.spi;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Control;

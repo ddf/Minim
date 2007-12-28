@@ -28,8 +28,8 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
 import ddf.minim.AudioSignal;
-import ddf.minim.AudioSynthesizer;
 import ddf.minim.Minim;
+import ddf.minim.spi.AudioSynthesizer;
 
 final class JSAudioSythesizer extends Thread
                          implements AudioSynthesizer

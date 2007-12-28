@@ -16,7 +16,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package ddf.minim;
+package ddf.minim.spi;
+
+import ddf.minim.AudioListener;
 
 /**
  * <code>SampleRecorder</code> is an interface that describes the limited 

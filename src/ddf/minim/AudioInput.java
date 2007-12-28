@@ -18,6 +18,8 @@
 
 package ddf.minim;
 
+import ddf.minim.spi.AudioStream;
+
 /**
  * An <code>AudioInput</code> provides no extra functionality over what 
  * {@link AudioSource} does, it exists simply for the sake of having a class named 

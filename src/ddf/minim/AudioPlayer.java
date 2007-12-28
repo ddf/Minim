@@ -18,6 +18,9 @@
 
 package ddf.minim;
 
+import ddf.minim.spi.AudioRecording;
+import ddf.minim.spi.AudioRecordingStream;
+
 /**
  * An <code>AudioPlayer</code> is used for playing an
  * <code>AudioRecording</code>. Strictly speaking, you don't need an

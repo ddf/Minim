@@ -1,5 +1,7 @@
 package ddf.minim;
 
+import ddf.minim.spi.AudioStream;
+
 /**
  * An <code>AudioSample</code> is a special kind of file playback that allows
  * you to repeatedly <i>trigger</i> an audio file. It does this by keeping the
@@ -15,30 +17,11 @@ package ddf.minim;
  * @author Damien Di Fede
  * 
  */
-public class AudioSample extends AudioSource implements BufferedAudio,
-    Triggerable
+public abstract class AudioSample extends AudioSource 
+                                  implements BufferedAudio, Triggerable
 {
-  private AudioSampleImpl simp;
-
-  public AudioSample(AudioSampleImpl stream)
+  public AudioSample(AudioStream stream)
   {
     super(stream);
-    simp = stream;
-  }
-
-  public float[] getChannel(int channelNumber)
-  {
-    return simp.getChannel(channelNumber);
-  }
-
-  public void trigger()
-  {
-    simp.trigger();
-  }
-
-  public int length()
-  {
-    // TODO Auto-generated method stub
-    return simp.length();
   }
 }

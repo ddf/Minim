@@ -20,6 +20,8 @@ package ddf.minim;
 
 import java.util.Map;
 
+import ddf.minim.spi.AudioRecording;
+
 /**
  * <code>AudioSnippet</code> is a simple wrapper around a JavaSound
  * <code>Clip</code> (It isn't called AudioClip because that's an interface

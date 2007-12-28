@@ -8,7 +8,7 @@ import javax.sound.sampled.Control;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
-import ddf.minim.AudioRecording;
+import ddf.minim.spi.AudioRecording;
 
 class JSAudioRecording implements AudioRecording
 {

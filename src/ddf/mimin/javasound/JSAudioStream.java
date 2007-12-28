@@ -26,8 +26,8 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
-import ddf.minim.AudioStream;
 import ddf.minim.Minim;
+import ddf.minim.spi.AudioStream;
 
 final class JSAudioStream extends Thread
                         implements AudioStream

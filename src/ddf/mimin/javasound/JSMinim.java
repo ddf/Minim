@@ -26,26 +26,35 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
 import processing.core.PApplet;
-import ddf.minim.AudioRecording;
-import ddf.minim.AudioRecordingStream;
-import ddf.minim.AudioSampleImpl;
-import ddf.minim.AudioStream;
-import ddf.minim.AudioSynthesizer;
+import ddf.minim.AudioSample;
 import ddf.minim.Minim;
-import ddf.minim.MinimImpl;
 import ddf.minim.Recordable;
-import ddf.minim.SampleRecorder;
+import ddf.minim.spi.AudioRecording;
+import ddf.minim.spi.AudioRecordingStream;
+import ddf.minim.spi.AudioStream;
+import ddf.minim.spi.AudioSynthesizer;
+import ddf.minim.spi.MinimServiceProvider;
+import ddf.minim.spi.SampleRecorder;
 
-public class JSMinimImpl implements MinimImpl
+public class JSMinim implements MinimServiceProvider
 {
   static PApplet app;
   
-  public JSMinimImpl(PApplet p)
+  public JSMinim()
   {
-    app = p;
   }
   
-  public SampleRecorder newSampleRecorder(Recordable source, String fileName,
+  public void start(PApplet parent)
+  {
+    app = parent;    
+  }
+  
+  public void stop()
+  {
+
+  }
+  
+  public SampleRecorder getSampleRecorder(Recordable source, String fileName,
       boolean buffered)
   {
     String ext = fileName.substring(fileName.indexOf('.') + 1).toLowerCase();
@@ -90,7 +99,7 @@ public class JSMinimImpl implements MinimImpl
     return recorder;
   }
 
-  public AudioRecordingStream newAudioRecordingStream(String filename, int bufferSize)
+  public AudioRecordingStream getAudioRecordingStream(String filename, int bufferSize)
   {
     AudioRecordingStream mstream = null;
     AudioInputStream ais = getAudioInputStream(filename);
@@ -166,7 +175,7 @@ public class JSMinimImpl implements MinimImpl
     return props;
   }
 
-  public AudioStream newAudioStream(int type, int bufferSize, float sampleRate,
+  public AudioStream getAudioStream(int type, int bufferSize, float sampleRate,
       int bitDepth)
   {
     if (bitDepth != 8 && bitDepth != 16)
@@ -179,11 +188,10 @@ public class JSMinimImpl implements MinimImpl
     {
       return new JSAudioStream(line, bufferSize);
     }
-    // TODO Auto-generated method stub
     return null;
   }
 
-  public AudioSampleImpl newAudioSample(String filename, int bufferSize)
+  public AudioSample getAudioSample(String filename, int bufferSize)
   {
     AudioInputStream ais = getAudioInputStream(filename);
     if (ais != null)
@@ -249,7 +257,8 @@ public class JSMinimImpl implements MinimImpl
       SourceDataLine sdl = getSourceDataLine(format);
       if ( sdl != null )
       {
-        return new JSAudioSample(samples, sdl, bufferSize);
+        ASThread ast = new ASThread(samples, sdl, bufferSize);
+        return new JSAudioSample(ast);
       }
       else
       {
@@ -259,7 +268,7 @@ public class JSMinimImpl implements MinimImpl
     return null;
   }
   
-  public AudioSynthesizer newAudioSythesizer(int type, int bufferSize,
+  public AudioSynthesizer getAudioSythesizer(int type, int bufferSize,
       float sampleRate, int bitDepth)
   {
     if (bitDepth != 8 && bitDepth != 16)
@@ -275,7 +284,7 @@ public class JSMinimImpl implements MinimImpl
     return null;
   }
 
-  public AudioRecording newAudioRecording(String filename)
+  public AudioRecording getAudioRecording(String filename)
   {
     Clip clip = null;
     AudioInputStream ais = getAudioInputStream(filename);
@@ -325,17 +334,7 @@ public class JSMinimImpl implements MinimImpl
     return new JSAudioRecording(clip, props);
   }
 
-  public void start()
-  {
-    // TODO Auto-generated method stub
-
-  }
-
-  public void stop()
-  {
-    // TODO Auto-generated method stub
-
-  }
+  
 
   static AudioInputStream getAudioInputStream(String filename)
   {
@@ -549,4 +548,6 @@ public class JSMinimImpl implements MinimImpl
     }
     return line;
   }
+
+  
 }
