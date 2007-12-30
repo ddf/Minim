@@ -33,7 +33,7 @@ import javax.sound.sampled.SourceDataLine;
 import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.Minim;
-import ddf.minim.spi.AudioRecording;
+import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.SampleRecorder;
 
 /**
@@ -95,7 +95,7 @@ final class JSBufferedSampleRecorder implements SampleRecorder
    * Saves the audio in the internal buffer to a file using the current settings for 
    * file type and file name.
    */
-  public AudioRecording save()
+  public AudioRecordingStream save()
   {
     if ( isRecording() )
     {

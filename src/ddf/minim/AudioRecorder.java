@@ -18,7 +18,6 @@
 
 package ddf.minim;
 
-import ddf.minim.spi.AudioRecording;
 import ddf.minim.spi.SampleRecorder;
 
 
@@ -101,12 +100,11 @@ public class AudioRecorder
    * (this will always be the case if you use <code>createRecorder</code> or
    * the first constructor for <code>AudioRecorder</code>).
    * 
-   * @return the audio that was recorded as an <code>AudioRecording</code>,
-   *         or null if the audio was not recorded to a file
+   * @return the audio that was recorded as an <code>AudioPlayer</code>
    */
-  public AudioRecording save()
+  public AudioPlayer save()
   {
-    return recorder.save();
+    return new AudioPlayer(recorder.save());
   }
 
   /**

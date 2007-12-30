@@ -32,7 +32,7 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 import org.tritonus.share.sampled.file.AudioOutputStream;
 
 import ddf.minim.Minim;
-import ddf.minim.spi.AudioRecording;
+import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.SampleRecorder;
 
 /**
@@ -114,7 +114,7 @@ final class JSStreamingSampleRecorder implements SampleRecorder
   /**
    * Finishes the recording process by closing the file.
    */
-  public AudioRecording save()
+  public AudioRecordingStream save()
   {
     try
     {

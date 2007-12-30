@@ -62,8 +62,8 @@ public interface SampleRecorder extends AudioListener
   
   /**
    * Saves the recorded samples, probably to disk. 
-   * Returns the recorded audio as an AudioRecording.
+   * Returns the recorded audio as an AudioRecordingStream.
    *
    */
-  AudioRecording save();
+  AudioRecordingStream save();
 }

@@ -18,7 +18,6 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFormat;
 
 import org.tritonus.share.sampled.AudioUtils;
@@ -396,15 +395,7 @@ public class JSMinim implements MinimServiceProvider
   {
     
     //alexey fix: we use MpegAudioFileReaderWorkaround with URL and user agent
-    try 
-    {
-      Class.forName("javazoom.spi.mpeg.sampled.file.MpegAudioFileReader");
-      return new MpegAudioFileReaderWorkaround().getAudioInputStream(url, null);
-    } 
-    catch (ClassNotFoundException cnfe) 
-    {
-      throw new IllegalArgumentException("Mpeg codec not properly installed");
-    }
+    return new MpegAudioFileReaderWorkaround().getAudioInputStream(url, null);
   }
   
   /**
@@ -428,15 +419,7 @@ public class JSMinim implements MinimServiceProvider
     catch (Exception iae)
     {
       Minim.debug("Using AppletMpegSPIWorkaround to get codec");
-      try
-      {
-        Class.forName("javazoom.spi.mpeg.sampled.file.MpegAudioFileReader");
-        return new javazoom.spi.mpeg.sampled.file.MpegAudioFileReader().getAudioInputStream(is);
-      }
-      catch (ClassNotFoundException cnfe)
-      {
-        throw new IllegalArgumentException("Mpeg codec not properly installed");
-      }
+      return new MpegAudioFileReader().getAudioInputStream(is);
     }
   }
 
