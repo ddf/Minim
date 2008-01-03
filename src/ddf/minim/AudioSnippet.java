@@ -18,8 +18,6 @@
 
 package ddf.minim;
 
-import java.util.Map;
-
 import ddf.minim.spi.AudioRecording;
 
 /**
@@ -118,11 +116,6 @@ public class AudioSnippet extends Controller implements Playable
     recording.setMillisecondPosition(pos);
   }
 
-  /**
-   * Returns true even if the clip has been set to play once or if it is on the
-   * last of a series of loops. This is because there is no way to query the
-   * underlying Clip about its loop state.
-   */
   public boolean isLooping()
   {
     return recording.getLoopCount() != 0;
@@ -144,14 +137,12 @@ public class AudioSnippet extends Controller implements Playable
   }
 
   /**
-   * Returns a Map of properties of this snippet. For example: "Length",
-   * "Filename", and possibly some ID3 tag values, if the snippet loaded was an
-   * mp3 file.
+   * Returns an object containing meta data about this snippet.
    * 
-   * @return
+   * @return the meta data for this snippet
    */
-  public Map getProperties()
+  public AudioMetaData getMetaData()
   {
-    return recording.getProperties();
+    return recording.getMetaData();
   }
 }

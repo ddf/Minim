@@ -30,6 +30,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 
+import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.Minim;
@@ -168,7 +169,9 @@ final class JSBufferedSampleRecorder implements SampleRecorder
     SourceDataLine sdl = JSMinim.getSourceDataLine(ais.getFormat());
     // this is fine because the recording will always be 
     // in a raw format (WAV, AU, etc).
-    JSAudioRecordingStream recording = new JSAudioRecordingStream(ais, sdl, 1024);
+    long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
+	 BasicMetaData meta = new BasicMetaData(filePath, length);
+    JSAudioRecordingStream recording = new JSAudioRecordingStream(meta, ais, sdl, 1024);
     return recording;
   }
 

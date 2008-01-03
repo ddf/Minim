@@ -1,23 +1,22 @@
 package ddf.mimin.javasound;
 
-import java.util.Map;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.Control;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
+import ddf.minim.AudioMetaData;
 import ddf.minim.spi.AudioRecording;
 
 class JSAudioRecording implements AudioRecording
 {
   private Clip c;
   private int loopCount;
-  private Map props;
+  private AudioMetaData meta;
   private boolean playing;
   
-  JSAudioRecording(Clip clip, Map properties)
+  JSAudioRecording(Clip clip, AudioMetaData mdata)
   {
     c = clip;
     // because Clip doesn't give access to the loop count
@@ -48,7 +47,7 @@ class JSAudioRecording implements AudioRecording
     );
     playing = false;
     loopCount = 0;
-    props = properties;
+    meta = mdata;
   }
   public int getLoopCount()
   {
@@ -65,9 +64,9 @@ class JSAudioRecording implements AudioRecording
     return (int) c.getMicrosecondPosition() / 1000;
   }
 
-  public Map getProperties()
+  public AudioMetaData getMetaData()
   {
-    return props;
+    return meta;
   }
 
   public boolean isPlaying()

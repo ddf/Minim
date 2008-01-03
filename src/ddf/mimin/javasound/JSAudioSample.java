@@ -18,16 +18,19 @@
 
 package ddf.mimin.javasound;
 
+import ddf.minim.AudioMetaData;
 import ddf.minim.AudioSample;
 
 final class JSAudioSample extends AudioSample
 {
   private ASThread thread;
+  private AudioMetaData meta;
   
-  JSAudioSample(ASThread ast)
+  JSAudioSample(AudioMetaData mdata, ASThread ast)
   {
     super(ast);
     thread = ast;
+    meta = mdata;
   }
   
   public void trigger()
@@ -42,7 +45,11 @@ final class JSAudioSample extends AudioSample
 
   public int length()
   {
-    // TODO Auto-generated method stub
     return thread.length();
-  }  
+  }
+  
+  public AudioMetaData getMetaData()
+  {
+	  return meta;
+  }
 }

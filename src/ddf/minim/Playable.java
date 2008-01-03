@@ -132,5 +132,10 @@ public interface Playable
    * 
    * @return the length of the sound in milliseconds
    */
-  int length();    
+  int length();
+  
+  /**
+   * Returns the meta data for this.
+   */
+  AudioMetaData getMetaData();
 }

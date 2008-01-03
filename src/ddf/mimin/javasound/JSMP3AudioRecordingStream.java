@@ -1,7 +1,6 @@
 package ddf.mimin.javasound;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -17,6 +16,7 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
+import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
 import ddf.minim.spi.AudioRecordingStream;
 
@@ -27,7 +27,7 @@ class JSMP3AudioRecordingStream extends Thread implements AudioRecordingStream
 
 	// file reading stuff
 	private String								fileName;
-	private Map									properties;
+	private AudioMetaData					meta;
 	private long								lengthInMillis;
 	private boolean							play;
 	private boolean							loop;
@@ -42,7 +42,7 @@ class JSMP3AudioRecordingStream extends Thread implements AudioRecordingStream
 	private int									bufferSize;
 	private boolean							finished;
 
-	JSMP3AudioRecordingStream(String fn, Map props, AudioInputStream stream,
+	JSMP3AudioRecordingStream(AudioMetaData mdata, AudioInputStream stream,
 			SourceDataLine sdl, int bufferSize)
 	{
 		format = sdl.getFormat();
@@ -54,17 +54,9 @@ class JSMP3AudioRecordingStream extends Thread implements AudioRecordingStream
 				+ " samples.");
 		finished = false;
 
-		fileName = fn;
-		properties = props;
-		if (properties != null && properties.containsKey("duration"))
-		{
-			Long dur = (Long)properties.get("duration");
-			lengthInMillis = dur.longValue() / 1000;
-		}
-		else
-		{
-			lengthInMillis = -1;
-		}
+		meta = mdata;
+		fileName = meta.fileName();
+		lengthInMillis = meta.length();
 		play = loop = false;
 		numLoops = 0;
 		ais = (DecodedMpegAudioInputStream)stream;
@@ -305,9 +297,9 @@ class JSMP3AudioRecordingStream extends Thread implements AudioRecordingStream
 		return (int)(pos.longValue() / 1000);
 	}
 
-	public Map getProperties()
+	public AudioMetaData getMetaData()
 	{
-		return properties;
+		return meta;
 	}
 
 	public void setLoopPoints(int start, int stop)

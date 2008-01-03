@@ -128,4 +128,14 @@ public class AudioPlayer extends AudioSource implements Playable
   {
     return recording.isPlaying();
   }
+  
+  /**
+   * Returns the meta data for the recording being played by this player.
+   * 
+   * @return the meta data for this player's recording
+   */
+  public AudioMetaData getMetaData()
+  {
+	  return recording.getMetaData();
+  }
 }

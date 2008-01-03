@@ -24,4 +24,6 @@ public abstract class AudioSample extends AudioSource
   {
     super(stream);
   }
+  
+  public abstract AudioMetaData getMetaData();
 }
