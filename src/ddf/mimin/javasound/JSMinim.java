@@ -530,7 +530,7 @@ public class JSMinim implements MinimServiceProvider
 		}
 		else
 		{
-			Minim.error("Unable to return a SourceDataLine: unsupported format.");
+			Minim.error("Unable to return a SourceDataLine: unsupported format - " + format.toString());
 		}
 		return line;
 	}
@@ -568,7 +568,7 @@ public class JSMinim implements MinimServiceProvider
 		}
 		else
 		{
-			Minim.error("Unable to return a TargetDataLine: unsupported format.");
+			Minim.error("Unable to return a TargetDataLine: unsupported format - " + format.toString());
 		}
 		return line;
 	}
