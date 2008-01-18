@@ -231,8 +231,8 @@ class MpegAudioFileReader extends TAudioFileReader
 	/**
 	 * Returns AudioFileFormat from inputstream and medialength.
 	 */
-	public AudioFileFormat getAudioFileFormat(InputStream inputStream,
-			long mediaLength) throws UnsupportedAudioFileException, IOException
+	public AudioFileFormat getAudioFileFormat(InputStream inputStream, long mediaLength) 
+     throws UnsupportedAudioFileException, IOException
 	{
 		Minim.debug("MpegAudioFileReader.getAudioFileFormat(InputStream inputStream, long mediaLength): begin");
 		HashMap aff_properties = new HashMap();
@@ -358,15 +358,17 @@ class MpegAudioFileReader extends TAudioFileReader
 			FrameSize = m_header.calculate_framesize();
 			aff_properties.put("mp3.framesize.bytes", new Integer(FrameSize));
 			if (FrameSize < 0)
-				throw new UnsupportedAudioFileException("Invalid FrameSize : "
-						+ FrameSize);
+      {
+				throw new UnsupportedAudioFileException("Invalid FrameSize : " + FrameSize);
+      }
 			nFrequency = m_header.frequency();
 			aff_properties.put("mp3.frequency.hz", new Integer(nFrequency));
 			FrameRate = (float)((1.0 / (m_header.ms_per_frame())) * 1000.0);
 			aff_properties.put("mp3.framerate.fps", new Float(FrameRate));
 			if (FrameRate < 0)
-				throw new UnsupportedAudioFileException("Invalid FrameRate : "
-						+ FrameRate);
+      {
+				throw new UnsupportedAudioFileException("Invalid FrameRate : " + FrameRate);
+      }
 			if (mLength != AudioSystem.NOT_SPECIFIED)
 			{
 				aff_properties.put("mp3.length.bytes", new Integer(mLength));
@@ -585,43 +587,59 @@ class MpegAudioFileReader extends TAudioFileReader
 				TDebug.out("Cannot use ISO-8859-1");
 		}
 		if (TDebug.TraceAudioFileReader)
+    {
 			TDebug.out("ID3v1 frame dump='" + tag + "'");
+    }
 		int start = 3;
 		String titlev1 = chopSubstring(tag, start, start += 30);
 		String titlev2 = (String)props.get("title");
 		if (((titlev2 == null) || (titlev2.length() == 0)) && (titlev1 != null))
+    {
 			props.put("title", titlev1);
+    }
 		String artistv1 = chopSubstring(tag, start, start += 30);
 		String artistv2 = (String)props.get("author");
-		if (((artistv2 == null) || (artistv2.length() == 0))
-				&& (artistv1 != null))
+		if (((artistv2 == null) || (artistv2.length() == 0)) && (artistv1 != null))
+    {  
 			props.put("author", artistv1);
+    }
 		String albumv1 = chopSubstring(tag, start, start += 30);
 		String albumv2 = (String)props.get("album");
 		if (((albumv2 == null) || (albumv2.length() == 0)) && (albumv1 != null))
+    {
 			props.put("album", albumv1);
+    }
 		String yearv1 = chopSubstring(tag, start, start += 4);
 		String yearv2 = (String)props.get("year");
 		if (((yearv2 == null) || (yearv2.length() == 0)) && (yearv1 != null))
+    {
 			props.put("date", yearv1);
+    }
 		String commentv1 = chopSubstring(tag, start, start += 28);
 		String commentv2 = (String)props.get("comment");
-		if (((commentv2 == null) || (commentv2.length() == 0))
-				&& (commentv1 != null))
+		if (((commentv2 == null) || (commentv2.length() == 0)) && (commentv1 != null))
+    {
 			props.put("comment", commentv1);
+    }
 		String trackv1 = "" + ((int)(frames[126] & 0xff));
 		String trackv2 = (String)props.get("mp3.id3tag.track");
 		if (((trackv2 == null) || (trackv2.length() == 0)) && (trackv1 != null))
-			props.put("mp3.id3tag.track", trackv1);
+		{
+      props.put("mp3.id3tag.track", trackv1);
+    }
 		int genrev1 = (int)(frames[127] & 0xff);
 		if ((genrev1 >= 0) && (genrev1 < id3v1genres.length))
 		{
 			String genrev2 = (String)props.get("mp3.id3tag.genre");
 			if (((genrev2 == null) || (genrev2.length() == 0)))
-				props.put("mp3.id3tag.genre", id3v1genres[genrev1]);
+			{
+        props.put("mp3.id3tag.genre", id3v1genres[genrev1]);
+      }
 		}
 		if (TDebug.TraceAudioFileReader)
-			TDebug.out("ID3v1 parsed");
+		{
+      TDebug.out("ID3v1 parsed");
+    }
 	}
 
 	/**

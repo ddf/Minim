@@ -140,6 +140,7 @@ public abstract class FourierTransform
   protected static final float TWO_PI = (float) (2 * Math.PI);
   protected int timeSize;
   protected int sampleRate;
+  protected float bandWidth;
   protected int whichWindow;
   protected float[] real;
   protected float[] imag;
@@ -163,6 +164,7 @@ public abstract class FourierTransform
   {
     timeSize = ts;
     sampleRate = (int)sr;
+    bandWidth = (2f / timeSize) * ((float)sampleRate / 2f);
     noAverages();
     allocateArrays();
     whichWindow = NONE;
@@ -385,7 +387,7 @@ public abstract class FourierTransform
    */
   public float getBandWidth()
   {
-    return (2f / (float) timeSize) * sampleRate;
+    return bandWidth;
   }
 
   /**

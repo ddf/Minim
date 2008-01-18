@@ -124,21 +124,28 @@ public class JSMinim implements MinimServiceProvider
 													baseFormat.getChannels() * 2,
 													baseFormat.getSampleRate(), false);
 				// converts the stream to PCM audio from mp3 audio
-				ais = getAudioInputStream(format, ais);
+				AudioInputStream decAis = getAudioInputStream(format, ais);
 				// source data line is for sending the file audio out to the
 				// speakers
 				SourceDataLine line = getSourceDataLine(format);
-				if (ais != null && line != null)
+				if (decAis != null && line != null)
 				{
 					Map props = getID3Tags(filename);
 					long lengthInMillis = -1;
 					if (props.containsKey("duration"))
 					{
 						Long dur = (Long)props.get("duration");
-						lengthInMillis = dur.longValue() / 1000;
+            if ( dur.longValue() > 0 )
+            {
+              lengthInMillis = dur.longValue() / 1000;
+            }
+            else
+            {
+              lengthInMillis = -1;
+            }
 					}
 					MP3MetaData meta = new MP3MetaData(filename, lengthInMillis, props);
-					mstream = new JSMP3AudioRecordingStream(meta, ais,	line, bufferSize);
+					mstream = new JSMP3AudioRecordingStream(meta, ais,	decAis, line, bufferSize);
 				}
 			} // format instanceof MpegAudioFormat
 			else
@@ -168,6 +175,7 @@ public class JSMinim implements MinimServiceProvider
 			AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
 																							stream,
 																							stream.available());
+      stream.close();
 			if (baseFileFormat instanceof TAudioFileFormat)
 			{
 				TAudioFileFormat fileFormat = (TAudioFileFormat)baseFileFormat;
@@ -382,8 +390,7 @@ public class JSMinim implements MinimServiceProvider
 			}
 			catch (UnsupportedAudioFileException e)
 			{
-				Minim.error("URL is in an unsupported audio file format: "
-						+ e.getLocalizedMessage());
+				Minim.error("URL is in an unsupported audio file format: " + e.getMessage());
 			}
 			catch (IOException e)
 			{
@@ -492,8 +499,7 @@ public class JSMinim implements MinimServiceProvider
 			}
 			catch (ClassNotFoundException cnfe)
 			{
-				throw new IllegalArgumentException(
-																"Mpeg codec not properly installed");
+				throw new IllegalArgumentException("Mpeg codec not properly installed");
 			}
 		}
 	}
