@@ -31,8 +31,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import ddf.minim.Minim;
-
 import javazoom.spi.mpeg.sampled.file.IcyListener;
 import javazoom.spi.mpeg.sampled.file.tag.IcyInputStream;
 
@@ -50,7 +48,7 @@ final class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 	public AudioInputStream getAudioInputStream(URL url, String userAgent) 
          throws UnsupportedAudioFileException, IOException
 	{
-		Minim.debug("MpegAudioFileReaderWorkaround.getAudioInputStream(" + 
+		JSMinim.debug("MpegAudioFileReaderWorkaround.getAudioInputStream(" + 
                 url.toString() + ", " + userAgent + "): begin");
 		long lFileLengthInBytes = AudioSystem.NOT_SPECIFIED;
 		URLConnection conn = url.openConnection();
@@ -62,6 +60,7 @@ final class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 		conn.setRequestProperty("Accept", "*/*");
 		conn.setRequestProperty("Icy-Metadata", "1");
 		conn.setRequestProperty("Connection", "close");
+		JSMinim.debug("Base input stream is: " + conn.getInputStream().toString());
 		BufferedInputStream bInputStream = new BufferedInputStream(conn.getInputStream());
 		bInputStream.mark(toRead);
 		int read = bInputStream.read(head, 0, toRead);
@@ -75,7 +74,7 @@ final class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 		if (isShout == true)
 		{
 			// Yes
-      Minim.debug("URL is a shoutcast server.");
+			JSMinim.debug("URL is a shoutcast server.");
 			IcyInputStream icyStream = new IcyInputStream(bInputStream);
 			icyStream.addTagParseListener(IcyListener.getInstance());
 			inputStream = icyStream;
@@ -87,21 +86,21 @@ final class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 			if (metaint != null)
 			{
 				// Yes, it might be icecast 2 mp3 stream.
-        Minim.debug("URL is probably an icecast 2 mp3 stream");
+				JSMinim.debug("URL is probably an icecast 2 mp3 stream");
 				IcyInputStream icyStream = new IcyInputStream(bInputStream, metaint);
 				icyStream.addTagParseListener(IcyListener.getInstance());
 				inputStream = icyStream;
 			}
 			else
 			{
-				Minim.debug("URL is not shoutcast or icecast 2.");
+				JSMinim.debug("URL is not shoutcast or icecast 2.");
 				inputStream = bInputStream;
 			}
 		}
 		AudioInputStream audioInputStream = null;
 		try
 		{
-      Minim.debug("Attempting to get audioInputStream.");
+			JSMinim.debug("Attempting to get audioInputStream.");
 			audioInputStream = getAudioInputStream(inputStream, lFileLengthInBytes);
 		}
 		catch (UnsupportedAudioFileException e)
@@ -114,7 +113,7 @@ final class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 			inputStream.close();
 			throw e;
 		}
-		Minim.debug("MpegAudioFileReaderWorkaround.getAudioInputStream(URL,String): end");
+		JSMinim.debug("MpegAudioFileReaderWorkaround.getAudioInputStream(URL,String): end");
 		return audioInputStream;
 	}
 }

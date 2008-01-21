@@ -72,26 +72,23 @@ final class JSAudioStream extends Thread
       if ( mono )
       {
         float[] samp = buffer.getChannel(0);
-        float[] tmp = new float[samp.length];
-        System.arraycopy(samp, 0, tmp, 0, tmp.length);
-        effect.process(tmp);
-        samp = tmp;
+        effect.process(samp);
         listener.samples(samp);
       }
       else
       {
         float[] sampL = buffer.getChannel(0);
         float[] sampR = buffer.getChannel(1);
-
-        float[] tl = new float[sampL.length];
-        float[] tr = new float[sampR.length];
-        System.arraycopy(sampL, 0, tl, 0, tl.length);
-        System.arraycopy(sampR, 0, tr, 0, tr.length);
-        effect.process(tl, tr);
-        sampL = tl;
-        sampR = tr;
+        effect.process(sampL, sampR);
         listener.samples(sampL, sampR);
       }
+      try
+		{
+			Thread.sleep(10);
+		}
+		catch (InterruptedException e)
+		{
+		}
     }
     // we are done, clean up the line
     line.flush();

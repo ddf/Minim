@@ -20,7 +20,6 @@ package ddf.mimin.javasound;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Control;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 import org.tritonus.share.sampled.FloatSampleBuffer;
@@ -31,7 +30,7 @@ import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
 import ddf.minim.spi.AudioSynthesizer;
 
-final class JSAudioSythesizer extends Thread
+final class JSAudioSynthesizer extends Thread
                          implements AudioSynthesizer
 {
   private AudioListener listener;
@@ -43,9 +42,10 @@ final class JSAudioSythesizer extends Thread
   private FloatSampleBuffer buffer;
   private int bufferSize;
   private boolean finished;
+  private byte[] outBytes;
   
   
-  JSAudioSythesizer(SourceDataLine sdl, int bufferSize)
+  JSAudioSynthesizer(SourceDataLine sdl, int bufferSize)
   {
     super();
     this.bufferSize = bufferSize;
@@ -54,20 +54,13 @@ final class JSAudioSythesizer extends Thread
     buffer = new FloatSampleBuffer(format.getChannels(), 
                                    bufferSize,
                                    format.getSampleRate());
+    outBytes = new byte[buffer.getByteArrayBufferSize(format)];
     finished = false;
     line = sdl;
   }
 
   public void run()
   {
-    try
-    {
-      line.open(format, bufferSize() * format.getFrameSize() * 4);
-    }
-    catch (LineUnavailableException e)
-    {
-      Minim.error("Error acquiring SourceDataLine: " + e.getMessage());
-    }
     line.start();
     while ( !finished )
     { 
@@ -84,8 +77,27 @@ final class JSAudioSythesizer extends Thread
         effect.process(buffer.getChannel(0), buffer.getChannel(1));
         listener.samples(buffer.getChannel(0), buffer.getChannel(1));
       }
-      byte[] bytes = buffer.convertToByteArray(format);
-      line.write(bytes, 0, bytes.length);
+      buffer.convertToByteArray(outBytes, 0, format);
+      boolean haveSound = false;
+      for(int i = 0; i < outBytes.length; i++)
+      {
+      	if ( outBytes[i] > 0 )
+      	{
+      		haveSound = true;
+      		break;
+      	}
+      }
+      if ( haveSound )
+      {
+      	line.write(outBytes, 0, outBytes.length);
+      }
+      try
+		{
+			Thread.sleep(10);
+		}
+		catch (InterruptedException e)
+		{
+		}
     }
     line.drain();
     line.stop();

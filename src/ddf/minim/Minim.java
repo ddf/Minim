@@ -72,7 +72,7 @@ public class Minim
 
   private static PApplet p;
   private static MinimServiceProvider mimp;
-  private static boolean DEBUG;
+  private static boolean DEBUG = false;
 
   private Minim() {}
   
@@ -124,6 +124,10 @@ public class Minim
   public static void debugOn()
   {
     DEBUG = true;
+    if ( mimp != null )
+    {
+   	 mimp.debugOn();
+    }
   }
 
   /**
@@ -133,6 +137,10 @@ public class Minim
   public static void debugOff()
   {
     DEBUG = false;
+    if ( mimp != null )
+    {
+   	 mimp.debugOff();
+    }
   }
 
   /**
@@ -152,8 +160,11 @@ public class Minim
   {
     p = pro;
     mimp = impl;
+    if ( DEBUG )
+    {
+   	 mimp.debugOn();
+    }
     mimp.start(pro);
-    DEBUG = false;
   }
 
   /**
@@ -463,7 +474,7 @@ public class Minim
   static public AudioOutput getLineOut(int type, int bufferSize,
                                        float sampleRate, int bitDepth)
   {
-    AudioSynthesizer synth = mimp.getAudioSythesizer(type, bufferSize, sampleRate, bitDepth);
+    AudioSynthesizer synth = mimp.getAudioSynthesizer(type, bufferSize, sampleRate, bitDepth);
     if ( synth != null )
     {
       return new AudioOutput(synth);

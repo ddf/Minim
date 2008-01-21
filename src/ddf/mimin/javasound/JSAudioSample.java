@@ -20,32 +20,33 @@ package ddf.mimin.javasound;
 
 import ddf.minim.AudioMetaData;
 import ddf.minim.AudioSample;
+import ddf.minim.spi.AudioSynthesizer;
 
 final class JSAudioSample extends AudioSample
 {
-  private ASThread thread;
+  private SampleSignal sample;
   private AudioMetaData meta;
   
-  JSAudioSample(AudioMetaData mdata, ASThread ast)
+  JSAudioSample(AudioMetaData mdata, SampleSignal ssig, AudioSynthesizer out)
   {
-    super(ast);
-    thread = ast;
+    super(out);
+    sample = ssig;
     meta = mdata;
   }
   
   public void trigger()
   {
-    thread.trigger();
+    sample.trigger();
   }
   
   public float[] getChannel(int channelNumber)
   {
-    return thread.getChannel(channelNumber);
+    return sample.getChannel(channelNumber);
   }
 
   public int length()
   {
-    return thread.length();
+    return meta.length();
   }
   
   public AudioMetaData getMetaData()

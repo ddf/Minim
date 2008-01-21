@@ -128,12 +128,12 @@ final class JSStreamingSampleRecorder implements SampleRecorder
     }
     String filePath = filePath();
     AudioInputStream ais = JSMinim.getAudioInputStream(filePath);
-    SourceDataLine sdl = JSMinim.getSourceDataLine(ais.getFormat());
+    SourceDataLine sdl = JSMinim.getSourceDataLine(ais.getFormat(), 1024);
     // this is fine because the recording will always be 
     // in a raw format (WAV, AU, etc).
     long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
     BasicMetaData meta = new BasicMetaData(filePath, length);
-    JSAudioRecordingStream recording = new JSAudioRecordingStream(meta, ais, sdl, 1024);
+    JSPCMAudioRecordingStream recording = new JSPCMAudioRecordingStream(meta, ais, sdl, 1024);
     return recording;
   }
 

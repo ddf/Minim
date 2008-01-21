@@ -14,6 +14,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -39,9 +40,11 @@ import ddf.minim.spi.SampleRecorder;
 public class JSMinim implements MinimServiceProvider
 {
 	static PApplet	app;
+	private static boolean debug;
 
 	public JSMinim()
 	{
+		debug = false;
 	}
 
 	public void start(PApplet parent)
@@ -51,14 +54,48 @@ public class JSMinim implements MinimServiceProvider
 
 	public void stop()
 	{
-
+	}
+	
+	public void debugOn()
+	{
+		debug = true;
+	}
+	
+	public void debugOff()
+	{
+		debug = false;
+	}
+	
+	static void debug(String s)
+	{
+		if ( debug )
+		{
+			PApplet.println("==== JavaSound Minim Debug ====");
+			String[] lines = s.split("\n");
+			for(int i = 0; i < lines.length; i++)
+			{
+				PApplet.println("==== " + lines[i]);
+			}
+			PApplet.println();
+		}
+	}
+	
+	static void error(String s)
+	{
+		PApplet.println("==== JavaSound Minim Error ====");
+		String[] lines = s.split("\n");
+		for(int i = 0; i < lines.length; i++)
+		{
+			PApplet.println("==== " + lines[i]);
+		}
+		PApplet.println();
 	}
 
 	public SampleRecorder getSampleRecorder(Recordable source, String fileName,
 			boolean buffered)
 	{
 		String ext = fileName.substring(fileName.indexOf('.') + 1).toLowerCase();
-		Minim.debug("createRecorder: file extension is " + ext + ".");
+		debug("createRecorder: file extension is " + ext + ".");
 		AudioFileFormat.Type fileType = null;
 		if (ext.equals(Minim.WAV.getExtension()))
 		{
@@ -82,8 +119,7 @@ public class JSMinim implements MinimServiceProvider
 		}
 		else
 		{
-			Minim.error("The extension " + ext
-					+ " is not a recognized audio file type.");
+			error("The extension " + ext + " is not a recognized audio file type.");
 			return null;
 		}
 		SampleRecorder recorder = null;
@@ -109,9 +145,10 @@ public class JSMinim implements MinimServiceProvider
 	{
 		AudioRecordingStream mstream = null;
 		AudioInputStream ais = getAudioInputStream(filename);
+		debug("Reading from " + ais.getClass().toString());
 		if (ais != null)
 		{
-			Minim.debug("File format is: " + ais.getFormat().toString());
+			debug("File format is: " + ais.getFormat().toString());
 			AudioFormat format = ais.getFormat();
 			// special handling for mp3 files because
 			// they need to be converted to PCM
@@ -127,7 +164,7 @@ public class JSMinim implements MinimServiceProvider
 				AudioInputStream decAis = getAudioInputStream(format, ais);
 				// source data line is for sending the file audio out to the
 				// speakers
-				SourceDataLine line = getSourceDataLine(format);
+				SourceDataLine line = getSourceDataLine(format, bufferSize);
 				if (decAis != null && line != null)
 				{
 					Map props = getID3Tags(filename);
@@ -135,29 +172,25 @@ public class JSMinim implements MinimServiceProvider
 					if (props.containsKey("duration"))
 					{
 						Long dur = (Long)props.get("duration");
-            if ( dur.longValue() > 0 )
-            {
-              lengthInMillis = dur.longValue() / 1000;
-            }
-            else
-            {
-              lengthInMillis = -1;
-            }
+		            if ( dur.longValue() > 0 )
+		            {
+		              lengthInMillis = dur.longValue() / 1000;
+		            }
 					}
 					MP3MetaData meta = new MP3MetaData(filename, lengthInMillis, props);
-					mstream = new JSMP3AudioRecordingStream(meta, ais,	decAis, line, bufferSize);
+					mstream = new JSMPEGAudioRecordingStream(meta, ais,	decAis, line, bufferSize);
 				}
 			} // format instanceof MpegAudioFormat
 			else
 			{
 				// source data line is for sending the file audio out to the
 				// speakers
-				SourceDataLine line = getSourceDataLine(format);
+				SourceDataLine line = getSourceDataLine(format, bufferSize);
 				if (line != null)
 				{
 					long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
 					BasicMetaData meta = new BasicMetaData(filename, length);
-					mstream = new JSAudioRecordingStream(meta, ais, line, bufferSize);
+					mstream = new JSPCMAudioRecordingStream(meta, ais, line, bufferSize);
 				}
 			} // else
 		} // ais != null
@@ -166,7 +199,7 @@ public class JSMinim implements MinimServiceProvider
 
 	private static Map getID3Tags(String filename)
 	{
-		Minim.debug("Getting the properties.");
+		debug("Getting the properties.");
 		Map props = new HashMap();
 		try
 		{
@@ -182,22 +215,22 @@ public class JSMinim implements MinimServiceProvider
 				props = fileFormat.properties();
 				if (props.size() == 0)
 				{
-					Minim.error("No file properties available for " + filename + ".");
+					error("No file properties available for " + filename + ".");
 				}
 				else
 				{
-					Minim.debug("File properties: " + props.toString());
+					debug("File properties: " + props.toString());
 				}
 			}
 		}
 		catch (UnsupportedAudioFileException e)
 		{
-			Minim.error("Couldn't get the file format for " + filename + ": "
+			error("Couldn't get the file format for " + filename + ": "
 					+ e.getMessage());
 		}
 		catch (IOException e)
 		{
-			Minim.error("Couldn't access " + filename + ": " + e.getMessage());
+			error("Couldn't access " + filename + ": " + e.getMessage());
 		}
 		return props;
 	}
@@ -263,10 +296,10 @@ public class JSMinim implements MinimServiceProvider
 				}
 				catch (Exception ioe)
 				{
-					Minim.error("Minim.loadSample: Error loading file into memory: "
+					error("Minim.loadSample: Error loading file into memory: "
 							+ ioe.getMessage());
 				}
-				Minim.debug("Needed to read " + toRead + " actually read "
+				debug("Needed to read " + toRead + " actually read "
 						+ totalRead);
 				samples.initFromByteArray(rawBytes, 0, totalRead, format);
 				meta = new MP3MetaData(filename, dur / 1000, props);
@@ -284,36 +317,43 @@ public class JSMinim implements MinimServiceProvider
 				}
 				catch (IOException ioe)
 				{
-					Minim.error("Minim.loadSample: Error loading file into memory: "
+					error("Error loading file into memory: "
 							+ ioe.getMessage());
 				}
 			}
-			SourceDataLine sdl = getSourceDataLine(format);
-			if (sdl != null)
+			//SourceDataLine sdl = getSourceDataLine(format, bufferSize);
+			AudioSynthesizer out = getAudioSynthesizer(format.getChannels(), 
+			                                             bufferSize, 
+			                                             format.getSampleRate(), 
+			                                             format.getSampleSizeInBits());
+			if (out != null)
 			{
-				ASThread ast = new ASThread(samples, sdl, bufferSize);
-				return new JSAudioSample(meta, ast);
+				SampleSignal ssig = new SampleSignal(samples);
+				out.setAudioSignal(ssig);
+				return new JSAudioSample(meta, ssig, out);
+				//ASThread ast = new ASThread(samples, sdl, bufferSize);
+				//return new JSAudioSample(meta, ast);
 			}
 			else
 			{
-				Minim.error("Couldn't acquire a SourceDataLine.");
+				error("Couldn't acquire a SourceDataLine.");
 			}
 		}
 		return null;
 	}
 
-	public AudioSynthesizer getAudioSythesizer(int type, int bufferSize,
+	public AudioSynthesizer getAudioSynthesizer(int type, int bufferSize,
 			float sampleRate, int bitDepth)
 	{
 		if (bitDepth != 8 && bitDepth != 16)
-			throw new IllegalArgumentException(
-															"Unsupported bit depth, use either 8 or 16.");
-		AudioFormat format = new AudioFormat(sampleRate, bitDepth, type, true,
-															false);
-		SourceDataLine sdl = getSourceDataLine(format);
+		{
+			throw new IllegalArgumentException("Unsupported bit depth, use either 8 or 16.");
+		}
+		AudioFormat format = new AudioFormat(sampleRate, bitDepth, type, true, false);
+		SourceDataLine sdl = getSourceDataLine(format, bufferSize);
 		if (sdl != null)
 		{
-			return new JSAudioSythesizer(sdl, bufferSize);
+			return new JSAudioSynthesizer(sdl, bufferSize);
 		}
 		return null;
 	}
@@ -348,7 +388,7 @@ public class JSMinim implements MinimServiceProvider
 				}
 				catch (Exception e)
 				{
-					Minim.error("Error obtaining Javasound Clip: " + e.getMessage());
+					error("Error obtaining Javasound Clip: " + e.getMessage());
 					return null;
 				}
 				Map props = getID3Tags(filename);
@@ -362,7 +402,7 @@ public class JSMinim implements MinimServiceProvider
 			}
 			else
 			{
-				Minim.error("File format not supported.");
+				error("File format not supported.");
 				return null;
 			}
 		}
@@ -386,11 +426,11 @@ public class JSMinim implements MinimServiceProvider
 			}
 			catch (MalformedURLException e)
 			{
-				Minim.error("Bad URL: " + e.getMessage());
+				error("Bad URL: " + e.getMessage());
 			}
 			catch (UnsupportedAudioFileException e)
 			{
-				Minim.error("URL is in an unsupported audio file format: " + e.getMessage());
+				error("URL is in an unsupported audio file format: " + e.getMessage());
 			}
 			catch (IOException e)
 			{
@@ -401,20 +441,22 @@ public class JSMinim implements MinimServiceProvider
 		{
 			try
 			{
-				bis = new BufferedInputStream(app.openStream(filename));
+				InputStream is = app.openStream(filename);
+				debug("Base input stream is: " + is.toString());
+				bis = new BufferedInputStream(is);
 				ais = getAudioInputStream(bis);
 				ais.mark((int)ais.available());
-				Minim.debug("Acquired AudioInputStream.\n" + "It is "
+				debug("Acquired AudioInputStream.\n" + "It is "
 						+ ais.getFrameLength() + " frames long.\n"
 						+ "Marking support: " + ais.markSupported());
 			}
 			catch (IOException ioe)
 			{
-				Minim.error("IOException: " + ioe.getMessage());
+				error("IOException: " + ioe.getMessage());
 			}
 			catch (UnsupportedAudioFileException uafe)
 			{
-				Minim.error("Unsupported Audio File: " + uafe.getMessage());
+				error("Unsupported Audio File: " + uafe.getMessage());
 			}
 		}
 		return ais;
@@ -461,7 +503,7 @@ public class JSMinim implements MinimServiceProvider
 		}
 		catch (Exception iae)
 		{
-			Minim.debug("Using AppletMpegSPIWorkaround to get codec");
+			debug("Using AppletMpegSPIWorkaround to get codec");
 			return new MpegAudioFileReader().getAudioInputStream(is);
 		}
 	}
@@ -489,7 +531,7 @@ public class JSMinim implements MinimServiceProvider
 		}
 		catch (IllegalArgumentException iae)
 		{
-			Minim.debug("Using AppletMpegSPIWorkaround to get codec");
+			debug("Using AppletMpegSPIWorkaround to get codec");
 			try
 			{
 				Class.forName("javazoom.spi.mpeg.sampled.convert.MpegFormatConversionProvider");
@@ -504,54 +546,36 @@ public class JSMinim implements MinimServiceProvider
 		}
 	}
 
-	/**
-	 * Gets a SourceDataLine with the requested AudioFormat and bufferSize.
-	 * 
-	 * This method is used by the getLineIn methods, but can be used externally
-	 * if you know what to do with a SourceDataLine.
-	 * 
-	 * @param format
-	 *           the AudioFormat you want the SourceDataLine to have
-	 */
-	static SourceDataLine getSourceDataLine(AudioFormat format)
+	static SourceDataLine getSourceDataLine(AudioFormat format, int bufferSize)
 	{
 		SourceDataLine line = null;
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-		if (AudioSystem.isLineSupported(info))
+		if ( AudioSystem.isLineSupported(info) ) 
 		{
 			try
 			{
 				line = (SourceDataLine)AudioSystem.getLine(info);
-				// we're gonna do lazy line opening
-				// line.open(format, bufferSize * format.getFrameSize() * 4);
-				Minim.debug("SourceDataLine buffer size is " + line.getBufferSize()
-						+ " bytes.\n" + "SourceDataLine format is "
-						+ line.getFormat().toString() + ".\n"
-						+ line.getLineInfo().toString() + ".");
+				// remember that time you spent, like, an entire afternoon fussing
+				// with this buffer size to try to get the latency decent on Linux?
+				// Yah, don't fuss with this anymore, ok?
+				line.open(format, bufferSize * format.getFrameSize() * 4);
+				if ( line.isOpen() )
+				{
+					debug("SourceDataLine is " + line.getClass().toString() + "\n"
+					      + "Buffer size is " + line.getBufferSize() + " bytes.\n" 
+					      + "Format is "	+ line.getFormat().toString() + ".");
+					return line;
+				}
 			}
-			catch (Exception e)
+			catch (LineUnavailableException e)
 			{
-				Minim.error("Error acquiring SourceDataLine: " + e.getMessage());
+				error("Couldn't open the line: " + e.getMessage());
 			}
 		}
-		else
-		{
-			Minim.error("Unable to return a SourceDataLine: unsupported format - " + format.toString());
-		}
+		error("Unable to return a SourceDataLine: unsupported format - " + format.toString());
 		return line;
 	}
 
-	/**
-	 * Gets a TargetDataLine with the requested AudioFormat and bufferSize.
-	 * 
-	 * This method is used by the getLineOut methods, but can be used externally
-	 * if you know what to do with a TargetDataLine.
-	 * 
-	 * @param format
-	 *           the AudioFormat you want the TargetDataLine to have
-	 * @param bufferSize
-	 *           the buffer size you want the TargetDataLine to have
-	 */
 	static TargetDataLine getTargetDataLine(AudioFormat format, int bufferSize)
 	{
 		TargetDataLine line = null;
@@ -562,19 +586,19 @@ public class JSMinim implements MinimServiceProvider
 			{
 				line = (TargetDataLine)AudioSystem.getLine(info);
 				line.open(format, bufferSize * format.getFrameSize());
-				Minim.debug("TargetDataLine buffer size is " + line.getBufferSize()
+				debug("TargetDataLine buffer size is " + line.getBufferSize()
 						+ "\n" + "TargetDataLine format is "
 						+ line.getFormat().toString() + "\n"
 						+ "TargetDataLine info is " + line.getLineInfo().toString());
 			}
 			catch (Exception e)
 			{
-				Minim.error("Error acquiring TargetDataLine: " + e.getMessage());
+				error("Error acquiring TargetDataLine: " + e.getMessage());
 			}
 		}
 		else
 		{
-			Minim.error("Unable to return a TargetDataLine: unsupported format - " + format.toString());
+			error("Unable to return a TargetDataLine: unsupported format - " + format.toString());
 		}
 		return line;
 	}

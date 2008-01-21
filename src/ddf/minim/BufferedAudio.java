@@ -13,7 +13,7 @@ public interface BufferedAudio
   float[] getChannel(int channelNumber);
   
   /**
-   * Gets the length in milliseconds of the buffere audio.
+   * Gets the length in milliseconds of the buffered audio.
    * 
    * @return the length in millisecons
    */

@@ -60,27 +60,31 @@ public class AudioSource extends Controller implements Effectable, Recordable
    * @param stream
    *          the <code>AudioStream</code> to subscribe to and wrap
    */
-  public AudioSource(AudioStream stream)
+  public AudioSource(AudioStream istream)
   {
-    super(stream.getControls());
-    this.stream = stream;
-    this.stream.open();
+    super(istream.getControls());
+    stream = istream;
+    
     // we gots a buffer for users to poll
     buffer = new StereoBuffer(stream.getFormat().getChannels(), stream.bufferSize(), this);
+    left = buffer.left;
+    right = buffer.right;
+    mix = buffer.mix;
+    
     // we gots a signal splitter that we'll add any listeners the user wants
     splitter = new SignalSplitter(stream.getFormat(), stream.bufferSize());
     // we stick our buffer in the signal splitter because we can only set one
     // listener on the stream
     splitter.addListener(buffer);
     // and there it goes.
-    this.stream.setAudioListener(splitter);
-    left = buffer.left;
-    right = buffer.right;
-    mix = buffer.mix;
+    stream.setAudioListener(splitter);
+    
     // we got an effects chain that we'll add user effects to
     effects = new EffectsChain();
     // we set it as the effect on the stream
-    this.stream.setAudioEffect(effects);
+    stream.setAudioEffect(effects);
+    
+    stream.open();
   }
 
   /**
