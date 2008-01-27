@@ -41,12 +41,6 @@ public class AudioSnippet extends Controller implements Playable
 {
 	private AudioRecording	recording;
 
-	/**
-	 * Constructs an AudioSnippet using the passed Clip.
-	 * 
-	 * @param clip
-	 *           the Clip to wrap
-	 */
 	public AudioSnippet(AudioRecording rec)
 	{
 		super(rec.getControls());

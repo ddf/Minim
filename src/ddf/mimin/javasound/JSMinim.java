@@ -208,7 +208,7 @@ public class JSMinim implements MinimServiceProvider
 			AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
 																							stream,
 																							stream.available());
-      stream.close();
+			stream.close();
 			if (baseFileFormat instanceof TAudioFileFormat)
 			{
 				TAudioFileFormat fileFormat = (TAudioFileFormat)baseFileFormat;
@@ -258,7 +258,7 @@ public class JSMinim implements MinimServiceProvider
 		{
 			AudioMetaData meta = null;
 			AudioFormat format = ais.getFormat();
-			FloatSampleBuffer samples = new FloatSampleBuffer();
+			FloatSampleBuffer samples = null;
 			if (format instanceof MpegAudioFormat)
 			{
 				AudioFormat baseFormat = format;
@@ -278,48 +278,23 @@ public class JSMinim implements MinimServiceProvider
 				// decoded file will be.
 				long dur = ((Long)props.get("duration")).longValue();
 				int toRead = (int)AudioUtils.millis2Bytes(dur / 1000, format);
-				int totalRead = 0;
-				byte[] rawBytes = new byte[toRead];
-				try
-				{
-					// we have to read in chunks because the decoded stream won't
-					// read more than about 2000 bytes at a time
-					while (totalRead < toRead)
-					{
-						int actualRead = ais.read(rawBytes, totalRead, toRead
-								- totalRead);
-						if (actualRead < 1)
-							break;
-						totalRead += actualRead;
-					}
-					ais.close();
-				}
-				catch (Exception ioe)
-				{
-					error("Minim.loadSample: Error loading file into memory: "
-							+ ioe.getMessage());
-				}
-				debug("Needed to read " + toRead + " actually read "
-						+ totalRead);
-				samples.initFromByteArray(rawBytes, 0, totalRead, format);
+				samples = loadFloatAudio(ais, toRead);
 				meta = new MP3MetaData(filename, dur / 1000, props);
 			}
 			else
 			{
+				int toRead = 0;
 				try
 				{
-					byte[] bytes = new byte[ais.available()];
-					ais.read(bytes, 0, bytes.length);
-					ais.close();
-					samples.initFromByteArray(bytes, 0, bytes.length, format);
-					long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
-					meta = new BasicMetaData(filename, length);
+					toRead = ais.available();
 				}
-				catch (IOException ioe)
+				catch (IOException e)
 				{
-					error("Error loading file into memory: "
-							+ ioe.getMessage());
+					error("Couldn't get available bytes.");
 				}
+				samples = loadFloatAudio(ais, toRead);
+				long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
+				meta = new BasicMetaData(filename, length);
 			}
 			//SourceDataLine sdl = getSourceDataLine(format, bufferSize);
 			AudioSynthesizer out = getAudioSynthesizer(format.getChannels(), 
@@ -358,7 +333,7 @@ public class JSMinim implements MinimServiceProvider
 		return null;
 	}
 
-	public AudioRecording getAudioRecording(String filename)
+	public AudioRecording getAudioRecordingClip(String filename)
 	{
 		Clip clip = null;
 		AudioMetaData meta = null;
@@ -412,6 +387,114 @@ public class JSMinim implements MinimServiceProvider
 			meta = new BasicMetaData(filename, clip.getMicrosecondLength() / 1000);
 		}
 		return new JSAudioRecordingClip(clip, meta);
+	}
+	
+	public AudioRecording getAudioRecording(String filename)
+	{
+		AudioMetaData meta = null;
+		AudioInputStream ais = getAudioInputStream(filename);
+		byte[] samples;
+		if (ais != null)
+		{
+			AudioFormat format = ais.getFormat();
+			if (format instanceof MpegAudioFormat)
+			{
+				AudioFormat baseFormat = format;
+				format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+													baseFormat.getSampleRate(), 16,
+													baseFormat.getChannels(),
+													baseFormat.getChannels() * 2,
+													baseFormat.getSampleRate(), false);
+				// converts the stream to PCM audio from mp3 audio
+				ais = getAudioInputStream(format, ais);
+				//	 get a map of properties so we can find out how long it is
+				Map props = getID3Tags(filename);
+				// there is a property called mp3.length.bytes, but that is
+				// the length in bytes of the mp3 file, which will of course
+				// be much shorter than the decoded version. so we use the
+				// duration of the file to figure out how many bytes the
+				// decoded file will be.
+				long dur = ((Long)props.get("duration")).longValue();
+				int toRead = (int)AudioUtils.millis2Bytes(dur / 1000, format);
+				samples = loadByteAudio(ais, toRead);
+				meta = new MP3MetaData(filename, dur / 1000, props);
+			}
+			else
+			{
+				int toRead = 0;
+				try
+				{
+					toRead = ais.available();
+				}
+				catch (IOException e)
+				{
+					error("Couldn't get available bytes.");
+				}
+				samples = loadByteAudio(ais, toRead);
+				long length = AudioUtils.bytes2Millis(samples.length, format);
+				meta = new BasicMetaData(filename, length);
+			}
+			SourceDataLine line = getSourceDataLine(format, 2048);
+			if ( line != null )
+			{
+				return new JSAudioRecording(samples, line, meta);
+			}
+		}
+		return null;
+	}
+	
+	static FloatSampleBuffer loadFloatAudio(AudioInputStream ais, int toRead)
+	{
+		FloatSampleBuffer samples = new FloatSampleBuffer();
+		int totalRead = 0;
+		byte[] rawBytes = new byte[toRead];
+		try
+		{
+			// we have to read in chunks because the decoded stream won't
+			// read more than about 2000 bytes at a time
+			while (totalRead < toRead)
+			{
+				int actualRead = ais.read(rawBytes, totalRead, toRead
+						- totalRead);
+				if (actualRead < 1)
+					break;
+				totalRead += actualRead;
+			}
+			ais.close();
+		}
+		catch (Exception ioe)
+		{
+			error("Error loading file into memory: " + ioe.getMessage());
+		}
+		debug("Needed to read " + toRead + " actually read " + totalRead);
+		samples.initFromByteArray(rawBytes, 0, totalRead, ais.getFormat());
+		return samples;
+	}
+	
+	static byte[] loadByteAudio(AudioInputStream ais, int toRead)
+	{
+		int totalRead = 0;
+		byte[] rawBytes = new byte[toRead];
+		try
+		{
+			// we have to read in chunks because the decoded stream won't
+			// read more than about 2000 bytes at a time
+			while (totalRead < toRead)
+			{
+				int actualRead = ais.read(rawBytes, totalRead, toRead
+						- totalRead);
+				if (actualRead < 1)
+					break;
+				totalRead += actualRead;
+			}
+			ais.close();
+		}
+		catch (Exception ioe)
+		{
+			error("Error loading file into memory: " + ioe.getMessage());
+		}
+		debug("Needed to read " + toRead + " actually read " + totalRead);
+		return rawBytes;
 	}
 
 	static AudioInputStream getAudioInputStream(String filename)

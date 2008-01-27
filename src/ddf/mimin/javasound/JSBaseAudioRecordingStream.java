@@ -301,6 +301,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 	{
 		line.start();
 		loop = false;
+		numLoops = 0;
 		play = true;
 	}
 
@@ -344,6 +345,14 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 			e.printStackTrace();
 		}
 		iothread = null;
+		try
+		{
+			ais.close();
+		}
+		catch (IOException e)
+		{
+		}
+		ais = null;		
 	}
 
 	public int bufferSize()
@@ -377,7 +386,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		}
 		else
 		{
-			loopEnd = getMillisecondLength();
+			loopEnd = (int)AudioUtils.millis2BytesFrameAligned(getMillisecondLength(), format);
 		}
 	}
 
