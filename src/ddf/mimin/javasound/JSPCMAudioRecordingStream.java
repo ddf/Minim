@@ -8,7 +8,6 @@ import javax.sound.sampled.SourceDataLine;
 import org.tritonus.share.sampled.AudioUtils;
 
 import ddf.minim.AudioMetaData;
-import ddf.minim.Minim;
 
 public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 {
@@ -17,7 +16,7 @@ public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 	JSPCMAudioRecordingStream(AudioMetaData mdata, AudioInputStream stream,
 			SourceDataLine sdl, int bufferSize)
 	{
-		super(stream, sdl, bufferSize);
+		super(stream, sdl, bufferSize, mdata.length());
 		meta = mdata;
 	}
 
@@ -30,63 +29,15 @@ public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 	{
 		return meta.length();
 	}
-
-	public int getMillisecondPosition()
-	{
-		// TODO Auto-generated method stub
-		try
-		{
-			int availBytes = ais.available();
-			int availMillis = (int)AudioUtils.bytes2Millis(availBytes, format);
-			int pos = getMillisecondLength() - availMillis;
-			return pos;
-		}
-		catch (IOException e)
-		{
-			JSMinim.error("Couldn't calculate position: " + e.getMessage());
-		}
-		return -1;
-	}
-
-	public void setMillisecondPosition(int millis)
-	{
-		if (millis <= 0)
-		{
-			rewind();
-			return;
-		}
-		if (millis > getMillisecondLength())
-			millis = getMillisecondLength();
-		if (millis > getMillisecondPosition())
-		{
-			skip(millis - getMillisecondPosition());
-		}
-		else
-		{
-			rewind();
-			int bytes = (int)AudioUtils.millis2BytesFrameAligned(millis, format);
-			long bytesRead = 0;
-			try
-			{
-				bytesRead = ais.skip(bytes);
-			}
-			catch (IOException e)
-			{
-				Minim.error("AudioPlayer: Error setting cue point: "
-						+ e.getMessage());
-			}
-			Minim.debug("Total actually skipped was " + bytesRead + ", which is "
-					+ AudioUtils.bytes2Millis(bytesRead, ais.getFormat())
-					+ " milliseconds.");
-		}
-
-	}
 	
-	private void rewind()
+	protected void rewind()
 	{
 		try
 		{
-			ais.reset();
+			synchronized ( ais )
+			{
+				ais.reset();
+			}
 		}
 		catch (IOException e)
 		{
@@ -94,47 +45,37 @@ public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 		}
 	}
 	
-	private void skip(int millis)
+	protected int skip(int millis)
 	{
-		if (millis > 0)
+		long toSkip = AudioUtils.millis2BytesFrameAligned(millis, format);
+		//JSMinim.debug("Skipping forward by " + millis + " milliseconds, which is " + toSkip + " bytes.");
+		byte[] skipBytes = new byte[(int)toSkip];
+		long totalSkipped = 0;
+		try
 		{
-			// if it puts us past the end of the file, only skip what's left
-			if (getMillisecondPosition() + millis > getMillisecondLength())
+			while (totalSkipped < toSkip)
 			{
-				millis = getMillisecondLength() - getMillisecondPosition();
-			}
-			long bytes = AudioUtils.millis2BytesFrameAligned(millis,
-																				ais.getFormat());
-			long read = 0;
-			int currPos = getMillisecondPosition();
-			try
-			{
-				read = ais.skip(bytes);
-			}
-			catch (IOException e)
-			{
-				JSMinim.error("AudioPlayer: Error skipping: " + e.getMessage());
-				setMillisecondPosition(currPos);
-			}
-			JSMinim.debug("Total actually skipped was " + read + ", which is "
-					+ AudioUtils.bytes2Millis(read, ais.getFormat())
-					+ " milliseconds.");
-		}
-		else if (millis < 0)
-		{
-			// to skip backwards we need to rewind
-			// and then cue to the new position
-			// remember that millis is negative, so we add
-			if (getMillisecondPosition() > 0)
-			{
-				int pos = getMillisecondPosition() + millis;
-				rewind();
-				if (pos > 0)
+				int read;
+				synchronized ( ais )
 				{
-					setMillisecondPosition(pos);
+					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
 				}
+				if (read == -1)
+				{
+					// EOF!
+					break;
+				}
+				totalSkipped += read;
 			}
 		}
+		catch (IOException e)
+		{
+			JSMinim.error("Unable to skip due to read error: " + e.getMessage());
+		}
+		JSMinim.debug("Total actually skipped was " + totalSkipped + ", which is "
+					+ AudioUtils.bytes2Millis(totalSkipped, ais.getFormat())
+					+ " milliseconds.");
+		return (int)totalSkipped;
 	}
 
 }

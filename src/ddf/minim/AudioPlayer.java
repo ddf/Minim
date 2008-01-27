@@ -39,103 +39,113 @@ import ddf.minim.spi.AudioRecordingStream;
 
 public class AudioPlayer extends AudioSource implements Playable
 {
-  // the rec that this plays
-  private AudioRecording recording;
+	// the rec that this plays
+	private AudioRecording	recording;
 
-  /**
-   * Constructs an <code>AudioPlayer</code> that plays <code>recording</code>.
-   * It is expected that <code>recording</code> will have a
-   * <code>DataLine</code> to control. If it doesn't, any calls to
-   * <code>Controller</code>'s methods will result in a
-   * <code>NullPointerException</code>.
-   * 
-   * @param recording
-   *          the <code>AudioRecording</code> to play
-   */
-  public AudioPlayer(AudioRecordingStream recording)
-  {
-    super(recording);
-    this.recording = recording;
-  }
+	/**
+	 * Constructs an <code>AudioPlayer</code> that plays <code>recording</code>.
+	 * It is expected that <code>recording</code> will have a
+	 * <code>DataLine</code> to control. If it doesn't, any calls to
+	 * <code>Controller</code>'s methods will result in a
+	 * <code>NullPointerException</code>.
+	 * 
+	 * @param recording
+	 *           the <code>AudioRecording</code> to play
+	 */
+	public AudioPlayer(AudioRecordingStream recording)
+	{
+		super(recording);
+		this.recording = recording;
+	}
 
-  public void play()
-  {
-    recording.play();
-  }
+	public void play()
+	{
+		recording.play();
+	}
 
-  public void play(int millis)
-  {
-    cue(millis);
-    play();
-  }
+	public void play(int millis)
+	{
+		cue(millis);
+		play();
+	}
 
-  public void pause()
-  {
-    recording.pause();
-  }
+	public void pause()
+	{
+		recording.pause();
+	}
 
-  public void rewind()
-  {
-    cue(0);
-  }
+	public void rewind()
+	{
+		cue(0);
+	}
 
-  public void loop()
-  {
-    recording.loop(Minim.LOOP_CONTINUOUSLY);
-  }
+	public void loop()
+	{
+		recording.loop(Minim.LOOP_CONTINUOUSLY);
+	}
 
-  public void loop(int n)
-  {
-    recording.loop(n);
-  }
-  
-  public int loopCount()
-  {
-    return recording.getLoopCount();
-  }
+	public void loop(int n)
+	{
+		recording.loop(n);
+	}
 
-  public int length()
-  {
-    return recording.getMillisecondLength();
-  }
+	public int loopCount()
+	{
+		return recording.getLoopCount();
+	}
 
-  public int position()
-  {
-    return recording.getMillisecondPosition();
-  }
+	public int length()
+	{
+		return recording.getMillisecondLength();
+	}
 
-  public void cue(int millis)
-  {
-    if ( millis < 0 ) millis = 0;
-    if ( millis > length() ) millis = length();
-    recording.setMillisecondPosition(millis);
-  }
-  
-  public void skip(int millis)
-  {
-    int pos = position() + millis;
-    if ( pos < 0 ) pos = 0;
-    else if ( pos > length() ) pos = length();
-    recording.setMillisecondPosition(pos);
-  }
+	public int position()
+	{
+		return recording.getMillisecondPosition();
+	}
 
-  public boolean isLooping()
-  {
-    return recording.getLoopCount() != 0;
-  }
+	public void cue(int millis)
+	{
+		if (millis < 0)
+			millis = 0;
+		if (millis > length())
+			millis = length();
+		recording.setMillisecondPosition(millis);
+	}
 
-  public boolean isPlaying()
-  {
-    return recording.isPlaying();
-  }
-  
-  /**
-   * Returns the meta data for the recording being played by this player.
-   * 
-   * @return the meta data for this player's recording
-   */
-  public AudioMetaData getMetaData()
-  {
-	  return recording.getMetaData();
-  }
+	public void skip(int millis)
+	{
+		int pos = position() + millis;
+		if (pos < 0)
+			pos = 0;
+		else if (pos > length())
+			pos = length();
+		recording.setMillisecondPosition(pos);
+	}
+
+	public boolean isLooping()
+	{
+		return recording.getLoopCount() != 0;
+	}
+
+	public boolean isPlaying()
+	{
+		return recording.isPlaying();
+	}
+
+	/**
+	 * Returns the meta data for the recording being played by this player.
+	 * 
+	 * @return the meta data for this player's recording
+	 */
+	public AudioMetaData getMetaData()
+	{
+		return recording.getMetaData();
+	}
+
+	public void setLoopPoints(int start, int stop)
+	{
+		recording.setLoopPoints(start, stop);
+
+	}
 }

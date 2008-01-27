@@ -81,6 +81,14 @@ public interface Playable
    * @return the number of loops left
    */
   int loopCount();
+  
+  /**
+   * Sets the loop points used when looping.
+   * 
+   * @param start the start of the loop in milliseconds
+   * @param stop the end of the loop in milliseconds
+   */
+  void setLoopPoints(int start, int stop);
     
   /**
    * Pauses playback.

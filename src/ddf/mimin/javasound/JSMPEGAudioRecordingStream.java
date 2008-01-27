@@ -18,7 +18,7 @@ public class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 	JSMPEGAudioRecordingStream(AudioMetaData mdata, AudioInputStream encStream,
 	                  			AudioInputStream decStream, SourceDataLine sdl, int bufferSize)
 	{
-		super(decStream, sdl, bufferSize);
+		super(decStream, sdl, bufferSize, mdata.length());
 		meta = mdata;
 		encAis = encStream;
 	}
@@ -33,94 +33,43 @@ public class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 	{
 		return meta.length();
 	}
-
-	public int getMillisecondPosition()
+	
+	protected int skip(int millis)
 	{
-		Long pos = (Long)((DecodedMpegAudioInputStream)ais).properties().get("mp3.position.microseconds");
-		return (int)(pos.longValue() / 1000);
-	}
-
-	public void setMillisecondPosition(int millis)
-	{
-		if (millis <= 0)
+		JSMinim.debug("Skipping forward by " + millis + " milliseconds.");
+		long toSkip = AudioUtils.millis2Bytes(millis, format);
+		byte[] skipBytes = new byte[(int)toSkip];
+		long totalSkipped = 0;
+		try
 		{
-			rewind();
+			// it's only able to read about 2 seconds at a time
+			// so we've got to loop until we've skipped the requested amount
+			while (totalSkipped < toSkip)
+			{
+				int read;
+				synchronized ( ais )
+				{
+					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
+				}
+				if (read == -1)
+				{
+					// EOF!
+					break;
+				}
+				totalSkipped += read;
+			}
 		}
-		if (millis > getMillisecondLength())
-			millis = getMillisecondLength();
-		if (millis > getMillisecondPosition())
+		catch (IOException e)
 		{
-			//JSMinim.debug("Skipping for cue.");
-			skip(millis - getMillisecondPosition());
+			JSMinim.error("Unable to skip due to read error: " + e.getMessage());
 		}
-		else
-		{
-			//JSMinim.debug("Rewind and skip for cue.");
-			rewind();
-			skip(millis);
-		}
+		JSMinim.debug("Total actually skipped was " + totalSkipped
+				+ ", which is " + AudioUtils.bytes2Millis(totalSkipped, format)
+				+ " milliseconds.");
+		return (int)totalSkipped;
 	}
 	
-	private void skip(int millis)
-	{
-		if (millis > 0)
-		{
-			JSMinim.debug("Skipping forward by " + millis + " milliseconds.");
-			// if it puts us past the end of the file, only skip what's left
-			if (getMillisecondPosition() + millis > getMillisecondLength())
-			{
-				millis = getMillisecondLength() - getMillisecondPosition();
-			}
-			JSMinim.debug("Skipping " + millis + " millis.");
-			long toSkip = AudioUtils.millis2Bytes(millis, format);
-			byte[] skipBytes = new byte[(int)toSkip];
-			long totalSkipped = 0;
-			try
-			{
-				// it's only able to read about 2 seconds at a time
-				// so we've got to loop until we've skipped the requested amount
-				while (totalSkipped < toSkip)
-				{
-					int read;
-					synchronized ( ais )
-					{
-						read = ais.read(skipBytes, 0, skipBytes.length);
-					}
-					if (read == -1)
-					{
-						// EOF!
-						break;
-					}
-					totalSkipped += read;
-				}
-			}
-			catch (IOException e)
-			{
-				JSMinim.error("Unable to skip due to read error: " + e.getMessage());
-			}
-			JSMinim.debug("Total actually skipped was " + totalSkipped
-					+ ", which is " + AudioUtils.bytes2Millis(totalSkipped, format)
-					+ " milliseconds.");
-		}
-		else if (millis < 0)
-		{
-			JSMinim.debug("Skipping backwards by " + (-millis) + " milliseconds.");
-			// to skip backwards we need to rewind
-			// and then cue to the new position
-			// remember that millis is negative, that's why we add
-			if (getMillisecondPosition() > 0)
-			{
-				int pos = getMillisecondPosition() + millis;
-				rewind();
-				if (pos > 0)
-				{
-					skip(pos);
-				}
-			}
-		}
-	}
-	
-	private void rewind()
+	protected void rewind()
 	{
 		if (encAis.markSupported())
 		{

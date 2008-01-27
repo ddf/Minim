@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Control;
 import javax.sound.sampled.SourceDataLine;
 
+import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.AudioEffect;
@@ -17,7 +18,7 @@ import ddf.minim.spi.AudioRecordingStream;
 public abstract class JSBaseAudioRecordingStream implements Runnable,
 		AudioRecordingStream
 {
-	private Thread 				iothread;
+	private Thread					iothread;
 	private AudioListener		listener;
 	private AudioEffect			effect;
 
@@ -25,8 +26,13 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 	private boolean				play;
 	private boolean				loop;
 	private int						numLoops;
+	// loop begin is in milliseconds
+	private int						loopBegin;
+	// loop end is in bytes
+	private int						loopEnd;
 	protected AudioInputStream	ais;
 	private byte[]					rawBytes;
+	private int						totalBytesRead;
 
 	// writing stuff
 	protected AudioFormat		format;
@@ -37,7 +43,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 	private float[]				silence;
 
 	JSBaseAudioRecordingStream(AudioInputStream stream, SourceDataLine sdl,
-			int bufferSize)
+			int bufferSize, int msLen)
 	{
 		format = sdl.getFormat();
 		this.bufferSize = bufferSize;
@@ -52,6 +58,8 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		loop = false;
 		play = false;
 		numLoops = 0;
+		loopBegin = 0;
+		loopEnd = (int)AudioUtils.millis2Bytes(msLen, format);
 		rawBytes = new byte[buffer.getByteArrayBufferSize(format)];
 		silence = new float[bufferSize];
 		iothread = null;
@@ -59,17 +67,23 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void run()
 	{
-		while ( !finished )
+		while (!finished)
 		{
-			while ( line.available() < rawBytes.length )
+			while (line.available() < rawBytes.length)
 			{
 				sleep(10);
 			}
-			if ( play )
+			if (play)
 			{
 				// read in a full buffer of bytes from the file
-				// but only if there's room in the line for them
-				readBytes();
+				if (loop)
+				{
+					readBytesLoop();
+				}
+				else
+				{
+					readBytes();
+				}
 				// convert them to floating point
 				// hand those arrays to our effect
 				// and convert back to bytes
@@ -77,9 +91,9 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 				// write to the line until all bytes are written
 				writeBytes();
 			}
-			//	send samples to the listener
+			// send samples to the listener
 			// these will be what we just put into the line
-			// which means they should be pretty well sync'd 
+			// which means they should be pretty well sync'd
 			// with the audible result
 			broadcast();
 			// take a nap
@@ -89,7 +103,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		line.close();
 		line = null;
 	}
-	
+
 	private void sleep(int millis)
 	{
 		try
@@ -98,81 +112,148 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		}
 		catch (InterruptedException e)
 		{
-		}		
+		}
 	}
-	
+
 	private void readBytes()
 	{
 		int bytesRead = 0;
 		int toRead = rawBytes.length;
-		while( bytesRead < toRead )
+		try
 		{
-			try
+			while (bytesRead < toRead)
 			{
+
 				int actualRead = 0;
-				synchronized ( ais )
+				synchronized (ais)
 				{
 					actualRead = ais.read(rawBytes, bytesRead, toRead - bytesRead);
-					//JSMinim.debug("Wanted to read " + (toRead-bytesRead) + ", actually read " + actualRead);
+					// JSMinim.debug("Wanted to read " + (toRead-bytesRead) + ",
+					// actually read " + actualRead);
 				}
-				if (actualRead == -1 && loop)
+				if (actualRead == -1)
 				{
-					// reset the stream
-					if (numLoops == Minim.LOOP_CONTINUOUSLY)
-					{
-						setMillisecondPosition(0);
-					}
-					// reset the stream, decrement loop count
-					else if (numLoops > 0)
-					{
-						setMillisecondPosition(0);
-						numLoops--;
-					}
-					// otherwise just stop playing
-					else
-					{
-						loop = false;
-						pause();
-					}
-				} // if actualRead == -1 && loop
+					pause();
+					break;
+				}
 				else
 				{
 					bytesRead += actualRead;
-				}					
+				}
 			}
-			catch (IOException e)
+
+		}
+		catch (IOException e)
+		{
+			JSMinim.error("Error reading from the file - " + e.getMessage());
+		}
+		totalBytesRead += bytesRead;
+	}
+
+	private void readBytesLoop()
+	{
+		int toLoopEnd = loopEnd - totalBytesRead;
+		if (toLoopEnd < 0)
+		{
+			// whoops, our loop end point got switched up
+			setMillisecondPosition(loopBegin);
+			readBytesLoop();
+			return;
+		}
+		if (toLoopEnd < rawBytes.length)
+		{
+			readBytesWrap(toLoopEnd, 0);
+			if (loop && numLoops == 0)
 			{
-				JSMinim.error("Error reading from the file - " + e.getMessage());
+				loop = false;
+				pause();
+			}
+			else if (loop)
+			{
+				setMillisecondPosition(loopBegin);
+				readBytesWrap(rawBytes.length - toLoopEnd, toLoopEnd);
+				if (numLoops != Minim.LOOP_CONTINUOUSLY)
+				{
+					numLoops--;
+				}
 			}
 		}
+		else
+		{
+			readBytesWrap(rawBytes.length, 0);
+		}
 	}
-	
+
+	// read toRead bytes from ais into rawBytes.
+	// we assume here that if we get to the end of the file
+	// that we should wrap around to the beginning
+	private void readBytesWrap(int toRead, int offset)
+	{
+		int bytesRead = 0;
+		try
+		{
+			while (bytesRead < toRead)
+			{
+
+				int actualRead = 0;
+				synchronized (ais)
+				{
+					actualRead = ais.read(rawBytes, bytesRead + offset, toRead
+							- bytesRead);
+				}
+				if (-1 == actualRead)
+				{
+					setMillisecondPosition(0);
+				}
+				else if (actualRead == 0)
+				{
+					// we want to prevent an infinite loop
+					// but this will hopefully never happen because
+					// we set the loop end point with a frame aligned byte number
+					break;
+				}
+				else
+				{
+					bytesRead += actualRead;
+					totalBytesRead += actualRead;
+				}
+			}
+
+		}
+		catch (IOException ioe)
+		{
+			JSMinim.error("Error reading from the file - " + ioe.getMessage());
+		}
+	}
+
 	private void writeBytes()
 	{
 		// the write call will block until the requested amount of bytes
-		// is written, however the user might stop the line in the 
+		// is written, however the user might stop the line in the
 		// middle of writing and then we get told how much was actually written
 		int actualWrit = line.write(rawBytes, 0, rawBytes.length);
-		while ( actualWrit != rawBytes.length )
+		while (actualWrit != rawBytes.length)
 		{
-			//JSMinim.debug("Wanted to write " + rawBytes.length + ", actually wrote " + actualWrit);
+			// JSMinim.debug("Wanted to write " + rawBytes.length + ", actually
+			// wrote " + actualWrit);
 			// wait until there's room for the rest
-			while ( line.available() < rawBytes.length - actualWrit )
+			while (line.available() < rawBytes.length - actualWrit)
 			{
 				sleep(10);
 			}
 			// try again from where we left off
-			actualWrit += line.write(rawBytes, actualWrit, rawBytes.length - actualWrit);			
+			actualWrit += line.write(rawBytes, actualWrit, rawBytes.length
+					- actualWrit);
 		}
 	}
-	
+
 	private void broadcast()
 	{
-		synchronized ( buffer )
+		synchronized (buffer)
 		{
-			if ( buffer.getChannelCount() == Minim.MONO )
+			if (buffer.getChannelCount() == Minim.MONO)
 			{
-				if ( play )
+				if (play)
 				{
 					listener.samples(buffer.getChannel(0));
 				}
@@ -181,9 +262,9 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 					listener.samples(silence);
 				}
 			}
-			else if ( buffer.getChannelCount() == Minim.STEREO )
+			else if (buffer.getChannelCount() == Minim.STEREO)
 			{
-				if ( play )
+				if (play)
 				{
 					listener.samples(buffer.getChannel(0), buffer.getChannel(1));
 				}
@@ -194,20 +275,20 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 			}
 		}
 	}
-	
+
 	private synchronized void process()
 	{
-		synchronized ( buffer )
+		synchronized (buffer)
 		{
 			int frameCount = rawBytes.length / format.getFrameSize();
 			buffer.setSamplesFromBytes(rawBytes, 0, format, 0, frameCount);
-	
+
 			// process the samples
-			if ( buffer.getChannelCount() == Minim.MONO)
+			if (buffer.getChannelCount() == Minim.MONO)
 			{
 				effect.process(buffer.getChannel(0));
 			}
-			else if ( buffer.getChannelCount() == Minim.STEREO )
+			else if (buffer.getChannelCount() == Minim.STEREO)
 			{
 				effect.process(buffer.getChannel(0), buffer.getChannel(1));
 			}
@@ -239,6 +320,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		loop = true;
 		numLoops = n;
 		play = true;
+		setMillisecondPosition(loopBegin);
 		line.start();
 	}
 
@@ -259,7 +341,6 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		iothread = null;
@@ -282,7 +363,49 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void setLoopPoints(int start, int stop)
 	{
-		// TODO Auto-generated method stub
+		if (start <= 0 || start > stop)
+		{
+			loopBegin = 0;
+		}
+		else
+		{
+			loopBegin = start;
+		}
+		if (stop <= getMillisecondLength() && stop > start)
+		{
+			loopEnd = (int)AudioUtils.millis2BytesFrameAligned(stop, format);
+		}
+		else
+		{
+			loopEnd = getMillisecondLength();
+		}
+	}
+
+	public int getMillisecondPosition()
+	{
+		return (int)AudioUtils.bytes2Millis(totalBytesRead, format);
+	}
+
+	public void setMillisecondPosition(int millis)
+	{
+		if (millis <= 0)
+		{
+			rewind();
+			totalBytesRead = 0;
+			return;
+		}
+
+		if (millis > getMillisecondLength())
+		{
+			millis = getMillisecondLength();
+		}
+
+		if (millis < getMillisecondPosition())
+		{
+			rewind();
+		}
+
+		totalBytesRead = skip(millis);
 	}
 
 	public Control[] getControls()
@@ -299,4 +422,9 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 	{
 		this.listener = listener;
 	}
+
+	protected abstract void rewind();
+
+	// skip forward millis
+	protected abstract int skip(int millis);
 }

@@ -218,7 +218,6 @@ public class Minim
    */
   static public AudioSnippet loadSnippet(String filename)
   {
-    Minim.debug("Aquiring a Clip from Minim implementation " + mimp.getClass().getName());
     AudioRecording c = mimp.getAudioRecording(filename);
     if ( c != null )
     {
