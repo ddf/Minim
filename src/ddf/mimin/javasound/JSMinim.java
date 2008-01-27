@@ -411,7 +411,7 @@ public class JSMinim implements MinimServiceProvider
 			// this means we're dealing with not-an-mp3
 			meta = new BasicMetaData(filename, clip.getMicrosecondLength() / 1000);
 		}
-		return new JSAudioRecording(clip, meta);
+		return new JSAudioRecordingClip(clip, meta);
 	}
 
 	static AudioInputStream getAudioInputStream(String filename)

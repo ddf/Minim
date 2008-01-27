@@ -9,14 +9,14 @@ import javax.sound.sampled.LineListener;
 import ddf.minim.AudioMetaData;
 import ddf.minim.spi.AudioRecording;
 
-class JSAudioRecording implements AudioRecording
+class JSAudioRecordingClip implements AudioRecording
 {
   private Clip c;
   private int loopCount;
   private AudioMetaData meta;
   private boolean playing;
   
-  JSAudioRecording(Clip clip, AudioMetaData mdata)
+  JSAudioRecordingClip(Clip clip, AudioMetaData mdata)
   {
     c = clip;
     // because Clip doesn't give access to the loop count
