@@ -19,6 +19,7 @@
 package ddf.minim.signals;
 
 import processing.core.PApplet;
+import ddf.minim.AudioListener;
 import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
 
@@ -79,6 +80,8 @@ public abstract class Oscillator implements AudioSignal
    * pan setting.
    */
   private float rightScale;
+  
+  private AudioListener listener;
 
   /**
    * Constructs an Oscillator with the requested frequency, amplitude and sample
@@ -99,12 +102,13 @@ public abstract class Oscillator implements AudioSignal
     newAmp = amp;
     srate = sampleRate;
     step = 0;
-    stepSize = 1 / (float) sampleRate;
+    stepSize = 1f / (sampleRate);
     port = false;
     portStep = 0.01f;
     pan = 0;
     newPan = 0;
     leftScale = rightScale = 1;
+    listener = null;
   }
   
   public final float sampleRate()
@@ -196,8 +200,7 @@ public abstract class Oscillator implements AudioSignal
   {
     if (millis <= 0)
     {
-      Minim
-          .error("Oscillator.portamento: The portamento speed must be greater than zero.");
+      Minim.error("Oscillator.portamento: The portamento speed must be greater than zero.");
     }
     port = true;
     portSpeed = millis;
@@ -250,6 +253,10 @@ public abstract class Oscillator implements AudioSignal
         monoStep();
       }
     }
+    if ( listener != null )
+    {
+   	 listener.samples(signal);
+    }
   }
 
   public final void generate(float[] left, float[] right)
@@ -294,6 +301,15 @@ public abstract class Oscillator implements AudioSignal
         stereoStep();
       }
     }
+    if ( listener != null )
+    {
+   	 listener.samples(left, right);
+    }
+  }
+  
+  public final void setAudioListener(AudioListener al)
+  {
+	  listener = al;
   }
 
   private void monoStep()

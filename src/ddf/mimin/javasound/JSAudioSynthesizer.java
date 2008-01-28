@@ -30,118 +30,123 @@ import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
 import ddf.minim.spi.AudioSynthesizer;
 
-final class JSAudioSynthesizer extends Thread
-                         implements AudioSynthesizer
+final class JSAudioSynthesizer extends Thread implements AudioSynthesizer
 {
-  private AudioListener listener;
-  private AudioSignal signal;
-  private AudioEffect effect;
-  
-  private SourceDataLine line;
-  private AudioFormat format;
-  private FloatSampleBuffer buffer;
-  private int bufferSize;
-  private boolean finished;
-  private byte[] outBytes;
-  
-  
-  JSAudioSynthesizer(SourceDataLine sdl, int bufferSize)
-  {
-    super();
-    this.bufferSize = bufferSize;
-    format = sdl.getFormat();
-     
-    buffer = new FloatSampleBuffer(format.getChannels(), 
-                                   bufferSize,
-                                   format.getSampleRate());
-    outBytes = new byte[buffer.getByteArrayBufferSize(format)];
-    finished = false;
-    line = sdl;
-  }
+	private AudioListener		listener;
+	private AudioSignal			signal;
+	private AudioEffect			effect;
 
-  public void run()
-  {
-    line.start();
-    while ( !finished )
-    { 
-      buffer.makeSilence();
-      if ( line.getFormat().getChannels() == Minim.MONO )
-      {
-        signal.generate(buffer.getChannel(0));
-        effect.process(buffer.getChannel(0));
-        listener.samples(buffer.getChannel(0));
-      }
-      else
-      {
-        signal.generate(buffer.getChannel(0), buffer.getChannel(1));
-        effect.process(buffer.getChannel(0), buffer.getChannel(1));
-        listener.samples(buffer.getChannel(0), buffer.getChannel(1));
-      }
-      buffer.convertToByteArray(outBytes, 0, format);
-      boolean haveSound = false;
-      for(int i = 0; i < outBytes.length; i++)
-      {
-      	if ( outBytes[i] > 0 )
-      	{
-      		haveSound = true;
-      		break;
-      	}
-      }
-      if ( haveSound )
-      {
-      	line.write(outBytes, 0, outBytes.length);
-      }
-      try
+	private SourceDataLine		line;
+	private AudioFormat			format;
+	private FloatSampleBuffer	buffer;
+	private int						bufferSize;
+	private boolean				finished;
+	private byte[]					outBytes;
+
+	JSAudioSynthesizer(SourceDataLine sdl, int bufferSize)
+	{
+		super();
+		this.bufferSize = bufferSize;
+		format = sdl.getFormat();
+
+		buffer = new FloatSampleBuffer(format.getChannels(), bufferSize,
+													format.getSampleRate());
+		outBytes = new byte[buffer.getByteArrayBufferSize(format)];
+		finished = false;
+		line = sdl;
+	}
+
+	public void run()
+	{
+		line.start();
+		while (!finished)
 		{
-			Thread.sleep(10);
+			buffer.makeSilence();
+			if (line.getFormat().getChannels() == Minim.MONO)
+			{
+				// mrr, don't like this, but it's necessary because of how
+				// the constructor for AudioSource works.
+				if (signal != null)
+				{
+					signal.generate(buffer.getChannel(0));
+				}
+				effect.process(buffer.getChannel(0));
+				listener.samples(buffer.getChannel(0));
+			}
+			else
+			{
+				if (signal != null)
+				{
+					signal.generate(buffer.getChannel(0), buffer.getChannel(1));
+				}
+				effect.process(buffer.getChannel(0), buffer.getChannel(1));
+				listener.samples(buffer.getChannel(0), buffer.getChannel(1));
+			}
+			buffer.convertToByteArray(outBytes, 0, format);
+			boolean haveSound = false;
+			for (int i = 0; i < outBytes.length; i++)
+			{
+				if (outBytes[i] > 0)
+				{
+					haveSound = true;
+					break;
+				}
+			}
+			if (haveSound)
+			{
+				line.write(outBytes, 0, outBytes.length);
+			}
+			try
+			{
+				Thread.sleep(10);
+			}
+			catch (InterruptedException e)
+			{
+			}
 		}
-		catch (InterruptedException e)
-		{
-		}
-    }
-    line.drain();
-    line.stop();
-    line.close();
-    line = null;
-  }
-  
-  public void open()
-  {
-    start();
-  }
+		line.drain();
+		line.stop();
+		line.close();
+		line = null;
+	}
 
-  public void close()
-  {
-    finished = true;    
-  }
+	public void open()
+	{
+		start();
+	}
 
-  public int bufferSize()
-  {
-    return bufferSize;
-  }
+	public void close()
+	{
+		finished = true;
+	}
 
-  public AudioFormat getFormat()
-  {
-    return format;
-  }
+	public int bufferSize()
+	{
+		return bufferSize;
+	}
 
-  public void setAudioEffect(AudioEffect effect)
-  {
-    this.effect = effect;    
-  }
+	public AudioFormat getFormat()
+	{
+		return format;
+	}
 
-  public void setAudioSignal(AudioSignal signal)
-  {
-    this.signal = signal;    
-  }
+	public void setAudioEffect(AudioEffect effect)
+	{
+		this.effect = effect;
+	}
 
-  public void setAudioListener(AudioListener listener)
-  {
-    this.listener = listener;    
-  }
+	public void setAudioSignal(AudioSignal signal)
+	{
+		this.signal = signal;
+	}
 
-  public Control[] getControls()
-  {
-    return line.getControls();
-  }
+	public void setAudioListener(AudioListener listener)
+	{
+		this.listener = listener;
+	}
+
+	public Control[] getControls()
+	{
+		return line.getControls();
+	}
 }
