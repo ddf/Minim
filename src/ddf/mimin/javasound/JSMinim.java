@@ -283,16 +283,7 @@ public class JSMinim implements MinimServiceProvider
 			}
 			else
 			{
-				int toRead = 0;
-				try
-				{
-					toRead = ais.available();
-				}
-				catch (IOException e)
-				{
-					error("Couldn't get available bytes.");
-				}
-				samples = loadFloatAudio(ais, toRead);
+				samples = loadFloatAudio(ais, (int)ais.getFrameLength() * format.getFrameSize());
 				long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
 				meta = new BasicMetaData(filename, length);
 			}
@@ -421,16 +412,7 @@ public class JSMinim implements MinimServiceProvider
 			}
 			else
 			{
-				int toRead = 0;
-				try
-				{
-					toRead = ais.available();
-				}
-				catch (IOException e)
-				{
-					error("Couldn't get available bytes.");
-				}
-				samples = loadByteAudio(ais, toRead);
+				samples = loadByteAudio(ais, (int)ais.getFrameLength() * format.getFrameSize());
 				long length = AudioUtils.bytes2Millis(samples.length, format);
 				meta = new BasicMetaData(filename, length);
 			}
