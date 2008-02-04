@@ -66,7 +66,7 @@ public class DFT extends FourierTransform
    */
   public void scaleBand(int i, float s)
   {
-    // TODO Auto-generated method stub
+    // TODO implement this?
   }
 
   /**
@@ -74,7 +74,7 @@ public class DFT extends FourierTransform
    */
   public void setBand(int i, float a)
   {
-    // TODO Auto-generated method stub
+    // TODO implement this?
   }
 
   public void forward(float[] samples)

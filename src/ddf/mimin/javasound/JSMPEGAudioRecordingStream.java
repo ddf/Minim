@@ -25,7 +25,6 @@ public class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 
 	public AudioMetaData getMetaData()
 	{
-		// TODO Auto-generated method stub
 		return meta;
 	}
 

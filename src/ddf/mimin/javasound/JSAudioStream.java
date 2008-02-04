@@ -129,7 +129,6 @@ final class JSAudioStream extends Thread
 
   public Control[] getControls()
   {
-    // TODO Auto-generated method stub
     return line.getControls();
   }
 }

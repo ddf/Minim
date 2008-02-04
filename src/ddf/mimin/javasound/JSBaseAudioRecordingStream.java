@@ -59,7 +59,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		play = false;
 		numLoops = 0;
 		loopBegin = 0;
-		loopEnd = (int)AudioUtils.millis2Bytes(msLen, format);
+		loopEnd = (int)AudioUtils.millis2BytesFrameAligned(msLen, format);
 		rawBytes = new byte[buffer.getByteArrayBufferSize(format)];
 		silence = new float[bufferSize];
 		iothread = null;
@@ -153,7 +153,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 	private void readBytesLoop()
 	{
 		int toLoopEnd = loopEnd - totalBytesRead;
-		if (toLoopEnd < 0)
+		if (toLoopEnd <= 0)
 		{
 			// whoops, our loop end point got switched up
 			setMillisecondPosition(loopBegin);
@@ -198,8 +198,8 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 				int actualRead = 0;
 				synchronized (ais)
 				{
-					actualRead = ais.read(rawBytes, bytesRead + offset, toRead
-							- bytesRead);
+					actualRead = ais.read(rawBytes, bytesRead + offset, 
+                                          toRead - bytesRead);
 				}
 				if (-1 == actualRead)
 				{
@@ -234,16 +234,17 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		int actualWrit = line.write(rawBytes, 0, rawBytes.length);
 		while (actualWrit != rawBytes.length)
 		{
-			// JSMinim.debug("Wanted to write " + rawBytes.length + ", actually
-			// wrote " + actualWrit);
-			// wait until there's room for the rest
+      /* TODO funny issue here where we will sleep because the line has been 
+       * stopped and there's no more room in the buffer. what should be happening
+       * is that the listener gets broadcast silence but because we loop here,
+       * that doesn't happen. need to think of a decent solution.
+       */
 			while (line.available() < rawBytes.length - actualWrit)
 			{
 				sleep(10);
 			}
 			// try again from where we left off
-			actualWrit += line.write(rawBytes, actualWrit, rawBytes.length
-					- actualWrit);
+			actualWrit += line.write(rawBytes, actualWrit, rawBytes.length	- actualWrit);
 		}
 	}
 

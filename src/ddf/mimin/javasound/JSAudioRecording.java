@@ -43,7 +43,7 @@ class JSAudioRecording implements AudioRecording, Runnable
 		play = false;
 		numLoops = 0;
 		loopBegin = 0;
-		loopEnd = (int)AudioUtils.millis2Bytes(meta.length(), format);
+		loopEnd = (int)AudioUtils.millis2BytesFrameAligned(meta.length(), format);
 		rawBytes = new byte[sdl.getBufferSize() / 8];
 		iothread = null;
 	}
@@ -110,7 +110,7 @@ class JSAudioRecording implements AudioRecording, Runnable
 	private synchronized void readBytesLoop()
 	{
 		int toLoopEnd = loopEnd - totalBytesRead;
-		if (toLoopEnd < 0)
+		if (toLoopEnd <= 0)
 		{
 			// whoops, our loop end point got switched up
 			setMillisecondPosition(loopBegin);
