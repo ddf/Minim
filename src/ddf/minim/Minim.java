@@ -181,6 +181,8 @@ public class Minim
     mimp.stop();
   }
 
+  // TODO: make it possible to load a sample by passing Minim a float array.
+  //       so that people can procedurally generate samples to later trigger.
   /**
    * Loads the requested file into an {@link AudioSample}.
    * 
