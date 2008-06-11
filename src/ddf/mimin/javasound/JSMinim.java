@@ -204,7 +204,7 @@ public class JSMinim implements MinimServiceProvider
 		try
 		{
 			MpegAudioFileReader reader = new MpegAudioFileReader();
-			InputStream stream = app.openStream(filename);
+			InputStream stream = app.createInput(filename);
 			AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
 																							stream,
 																							stream.available());
@@ -506,7 +506,7 @@ public class JSMinim implements MinimServiceProvider
 		{
 			try
 			{
-				InputStream is = app.openStream(filename);
+				InputStream is = app.createInput(filename);
 				debug("Base input stream is: " + is.toString());
 				bis = new BufferedInputStream(is);
 				ais = getAudioInputStream(bis);

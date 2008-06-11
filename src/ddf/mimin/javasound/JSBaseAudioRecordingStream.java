@@ -414,8 +414,10 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		{
 			rewind();
 		}
-
+		boolean wasPlaying = play;
+		play = false;
 		totalBytesRead = skip(millis);
+		play = wasPlaying;
 	}
 
 	public Control[] getControls()

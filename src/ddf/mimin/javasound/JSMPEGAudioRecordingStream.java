@@ -33,14 +33,10 @@ public class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 		return meta.length();
 	}
 	
-	// TODO sometimes skipping to the middle of a sample on the Eee.
-	// Also, skipping sounded like fast-forwarding, rather than 
-	// skipping straight there.
-	// Could be just the little guy, could be a bug.
 	protected int skip(int millis)
 	{
 		JSMinim.debug("Skipping forward by " + millis + " milliseconds.");
-		long toSkip = AudioUtils.millis2Bytes(millis, format);
+		long toSkip = AudioUtils.millis2BytesFrameAligned(millis, format);
 		byte[] skipBytes = new byte[(int)toSkip];
 		long totalSkipped = 0;
 		try
