@@ -12,6 +12,8 @@ import ddf.minim.AudioMetaData;
 public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 {
 	private AudioMetaData	meta;
+  
+  // TODO: test this with a really long WAV file ( larger than 40MB )
 
 	JSPCMAudioRecordingStream(AudioMetaData mdata, AudioInputStream stream,
 			SourceDataLine sdl, int bufferSize)
