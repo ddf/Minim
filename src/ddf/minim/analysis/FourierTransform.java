@@ -433,6 +433,10 @@ public abstract class FourierTransform
     int i = Math.round(timeSize * fraction);
     return i;
   }
+  
+  // TODO: what about indexToFreq?
+  
+  // TODO: what about middle frequency of an average band?
 
   /**
    * Gets the amplitude of the requested frequency in the spectrum.

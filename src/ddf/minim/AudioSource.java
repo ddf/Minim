@@ -19,6 +19,9 @@ import ddf.minim.spi.AudioStream;
  * @author Damien Di Fede
  * 
  */
+
+// TODO: add a way for the user to pull the audio without having to 
+// have it playback, for people that want to just analyze files.
 public class AudioSource extends Controller implements Effectable, Recordable
 {
   private AudioStream stream;
