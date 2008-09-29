@@ -151,11 +151,14 @@ public class Minim
    * @param pro
    *          the sketch that is going to be using Minim
    */
+  
+  // TODO: get rid of this function, added PApplet as an argument to all load functions
   public static void start(PApplet pro)
   {
     start(pro, new JSMinim());
   }
   
+  // TODO: change this to setServiceProvider
   public static void start(PApplet pro, MinimServiceProvider impl)
   {
     p = pro;
