@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 by Damien Di Fede <ddf@compartmental.net>
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -60,6 +60,8 @@ final class JSStreamingSampleRecorder implements SampleRecorder
   private AudioFileFormat.Type type;
   private AudioFormat format;
   private boolean recording;
+  
+  private JSMinim system;
 
   /**
    * 
@@ -67,7 +69,8 @@ final class JSStreamingSampleRecorder implements SampleRecorder
    * @param fileType
    * @param fileFormat
    */
-  JSStreamingSampleRecorder(String fileName, 
+  JSStreamingSampleRecorder(JSMinim sys, 
+                         String fileName, 
                          AudioFileFormat.Type fileType, 
                          AudioFormat fileFormat,
                          int bufferSize)
@@ -75,6 +78,7 @@ final class JSStreamingSampleRecorder implements SampleRecorder
     name = fileName;
     type = fileType;
     format = fileFormat;
+    system = sys;
     try
     {
       aos = AudioSystemShadow.getAudioOutputStream( type, format,
@@ -83,8 +87,7 @@ final class JSStreamingSampleRecorder implements SampleRecorder
     }
     catch (IOException e)
     {
-      Minim.error("AudioFileOut.setType: Error obtaining new output stream."
-          + e.getMessage());
+      system.error("Error obtaining new output stream: " + e.getMessage());
     }
     fsb = new FloatSampleBuffer(format.getChannels(),
                                 bufferSize,
@@ -127,13 +130,13 @@ final class JSStreamingSampleRecorder implements SampleRecorder
                   + e.getMessage());
     }
     String filePath = filePath();
-    AudioInputStream ais = JSMinim.getAudioInputStream(filePath);
-    SourceDataLine sdl = JSMinim.getSourceDataLine(ais.getFormat(), 1024);
+    AudioInputStream ais = system.getAudioInputStream(filePath);
+    SourceDataLine sdl = system.getSourceDataLine(ais.getFormat(), 1024);
     // this is fine because the recording will always be 
     // in a raw format (WAV, AU, etc).
     long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
     BasicMetaData meta = new BasicMetaData(filePath, length);
-    JSPCMAudioRecordingStream recording = new JSPCMAudioRecordingStream(meta, ais, sdl, 1024);
+    JSPCMAudioRecordingStream recording = new JSPCMAudioRecordingStream(system, meta, ais, sdl, 1024);
     return recording;
   }
 

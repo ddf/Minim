@@ -1,3 +1,21 @@
+/*
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package ddf.mimin.javasound;
 
 import java.io.IOException;
@@ -9,16 +27,16 @@ import org.tritonus.share.sampled.AudioUtils;
 
 import ddf.minim.AudioMetaData;
 
-public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
+class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 {
 	private AudioMetaData	meta;
   
   // TODO: test this with a really long WAV file ( larger than 40MB )
 
-	JSPCMAudioRecordingStream(AudioMetaData mdata, AudioInputStream stream,
+	JSPCMAudioRecordingStream(JSMinim sys, AudioMetaData mdata, AudioInputStream stream,
 			SourceDataLine sdl, int bufferSize)
 	{
-		super(stream, sdl, bufferSize, mdata.length());
+		super(sys, stream, sdl, bufferSize, mdata.length());
 		meta = mdata;
 	}
 
@@ -43,14 +61,14 @@ public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 		}
 		catch (IOException e)
 		{
-			JSMinim.error("Couldn't rewind!");
+		  system.error("Couldn't rewind!");
 		}
 	}
 	
 	protected int skip(int millis)
 	{
 		long toSkip = AudioUtils.millis2BytesFrameAligned(millis, format);
-		//JSMinim.debug("Skipping forward by " + millis + " milliseconds, which is " + toSkip + " bytes.");
+		system.debug("Skipping forward by " + millis + " milliseconds, which is " + toSkip + " bytes.");
 		byte[] skipBytes = new byte[(int)toSkip];
 		long totalSkipped = 0;
 		try
@@ -72,9 +90,9 @@ public class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 		}
 		catch (IOException e)
 		{
-			JSMinim.error("Unable to skip due to read error: " + e.getMessage());
+			system.error("Unable to skip due to read error: " + e.getMessage());
 		}
-		JSMinim.debug("Total actually skipped was " + totalSkipped + ", which is "
+		system.debug("Total actually skipped was " + totalSkipped + ", which is "
 					+ AudioUtils.bytes2Millis(totalSkipped, ais.getFormat())
 					+ " milliseconds.");
 		return (int)totalSkipped;

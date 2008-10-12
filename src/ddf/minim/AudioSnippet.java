@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 by Damien Di Fede <ddf@compartmental.net>
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -32,7 +32,7 @@ import ddf.minim.spi.AudioRecording;
  * of the overhead associated with making samples available. An
  * <code>AudioSnippet</code> is a good choice if all you need to do is play a
  * short sound at some point. If your aim is to repeatedly trigger a sound, you
- * should use an {@link AudioSampleImpl} instead.
+ * should use an {@link AudioSample} instead.
  * 
  * @author Damien Di Fede
  */

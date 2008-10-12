@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 by Damien Di Fede <ddf@compartmental.net>
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -107,9 +107,13 @@ public class AudioPlayer extends AudioSource implements Playable
 	public void cue(int millis)
 	{
 		if (millis < 0)
+    {
 			millis = 0;
-		if (millis > length())
+    }
+    else if (millis > length())
+    {
 			millis = length();
+    }
 		recording.setMillisecondPosition(millis);
 	}
 
@@ -117,9 +121,14 @@ public class AudioPlayer extends AudioSource implements Playable
 	{
 		int pos = position() + millis;
 		if (pos < 0)
+    {
 			pos = 0;
+    }
 		else if (pos > length())
+    {
 			pos = length();
+    }
+    Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
 		recording.setMillisecondPosition(pos);
 	}
 

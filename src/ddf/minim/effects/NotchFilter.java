@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 by Damien Di Fede <ddf@compartmental.net>
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -15,7 +15,6 @@
  *   License along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 package ddf.minim.effects;
 
 /**

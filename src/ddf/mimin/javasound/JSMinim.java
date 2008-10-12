@@ -1,6 +1,25 @@
+/*
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package ddf.mimin.javasound;
 
 import java.io.BufferedInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -37,19 +56,27 @@ import ddf.minim.spi.AudioSynthesizer;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
 
+/**
+ * JSMinim is an implementation of the {@link MinimServiceProvider} interface that use
+ * Javasound to provide all audio functionality. That's about all you really need to know about it.
+ * 
+ * @author Damien Di Fede
+ *
+ */
+
 public class JSMinim implements MinimServiceProvider
 {
-	static PApplet	app;
-	private static boolean debug;
+	private boolean debug;
+  private PApplet app;
 
-	public JSMinim()
+	public JSMinim(PApplet parent)
 	{
 		debug = false;
+    app = parent;
 	}
 
-	public void start(PApplet parent)
+	public void start()
 	{
-		app = parent;
 	}
 
 	public void stop()
@@ -66,7 +93,7 @@ public class JSMinim implements MinimServiceProvider
 		debug = false;
 	}
 	
-	static void debug(String s)
+	void debug(String s)
 	{
 		if ( debug )
 		{
@@ -80,7 +107,7 @@ public class JSMinim implements MinimServiceProvider
 		}
 	}
 	
-	static void error(String s)
+	void error(String s)
 	{
 		PApplet.println("==== JavaSound Minim Error ====");
 		String[] lines = s.split("\n");
@@ -125,14 +152,16 @@ public class JSMinim implements MinimServiceProvider
 		SampleRecorder recorder = null;
 		if (buffered)
 		{
-			recorder = new JSBufferedSampleRecorder(app.sketchPath(fileName),
+			recorder = new JSBufferedSampleRecorder(this,
+                                  app.sketchPath(fileName),
 																	fileType,
 																	source.getFormat(),
 																	source.bufferSize());
 		}
 		else
 		{
-			recorder = new JSStreamingSampleRecorder(app.sketchPath(fileName),
+			recorder = new JSStreamingSampleRecorder(this,
+                                  app.sketchPath(fileName),
 																	fileType,
 																	source.getFormat(),
 																	source.bufferSize());
@@ -178,7 +207,7 @@ public class JSMinim implements MinimServiceProvider
 		            }
 					}
 					MP3MetaData meta = new MP3MetaData(filename, lengthInMillis, props);
-					mstream = new JSMPEGAudioRecordingStream(meta, ais,	decAis, line, bufferSize);
+					mstream = new JSMPEGAudioRecordingStream(this, meta, ais,	decAis, line, bufferSize);
 				}
 			} // format instanceof MpegAudioFormat
 			else
@@ -190,20 +219,20 @@ public class JSMinim implements MinimServiceProvider
 				{
 					long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
 					BasicMetaData meta = new BasicMetaData(filename, length);
-					mstream = new JSPCMAudioRecordingStream(meta, ais, line, bufferSize);
+					mstream = new JSPCMAudioRecordingStream(this, meta, ais, line, bufferSize);
 				}
 			} // else
 		} // ais != null
 		return mstream;
 	}
 
-	private static Map getID3Tags(String filename)
+	private Map getID3Tags(String filename)
 	{
 		debug("Getting the properties.");
 		Map props = new HashMap();
 		try
 		{
-			MpegAudioFileReader reader = new MpegAudioFileReader();
+			MpegAudioFileReader reader = new MpegAudioFileReader(this);
 			InputStream stream = app.createInput(filename);
 			AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
 																							stream,
@@ -425,7 +454,7 @@ public class JSMinim implements MinimServiceProvider
 		return null;
 	}
 	
-	static FloatSampleBuffer loadFloatAudio(AudioInputStream ais, int toRead)
+	FloatSampleBuffer loadFloatAudio(AudioInputStream ais, int toRead)
 	{
 		FloatSampleBuffer samples = new FloatSampleBuffer();
 		int totalRead = 0;
@@ -453,7 +482,7 @@ public class JSMinim implements MinimServiceProvider
 		return samples;
 	}
 	
-	static byte[] loadByteAudio(AudioInputStream ais, int toRead)
+	byte[] loadByteAudio(AudioInputStream ais, int toRead)
 	{
 		int totalRead = 0;
 		byte[] rawBytes = new byte[toRead];
@@ -479,7 +508,13 @@ public class JSMinim implements MinimServiceProvider
 		return rawBytes;
 	}
 
-	static AudioInputStream getAudioInputStream(String filename)
+  /**
+   * 
+   * @param filename the 
+   * @param is
+   * @return
+   */
+	AudioInputStream getAudioInputStream(String filename)
 	{
 		AudioInputStream ais = null;
 		BufferedInputStream bis = null;
@@ -506,7 +541,7 @@ public class JSMinim implements MinimServiceProvider
 		{
 			try
 			{
-				InputStream is = app.createInput(filename);
+        InputStream is = app.createInput(filename);
 				debug("Base input stream is: " + is.toString());
 				bis = new BufferedInputStream(is);
 				ais = getAudioInputStream(bis);
@@ -537,13 +572,13 @@ public class JSMinim implements MinimServiceProvider
 	 * @throws UnsupportedAudioFileException
 	 * @throws IOException
 	 */
-	static AudioInputStream getAudioInputStream(URL url)
+	AudioInputStream getAudioInputStream(URL url)
 			throws UnsupportedAudioFileException, IOException
 	{
 
 		// alexey fix: we use MpegAudioFileReaderWorkaround with URL and user
 		// agent
-		return new MpegAudioFileReaderWorkaround().getAudioInputStream(url, null);
+		return new MpegAudioFileReaderWorkaround(this).getAudioInputStream(url, null);
 	}
 
 	/**
@@ -559,7 +594,7 @@ public class JSMinim implements MinimServiceProvider
 	 * @throws UnsupportedAudioFileException
 	 * @throws IOException
 	 */
-	static AudioInputStream getAudioInputStream(InputStream is)
+	AudioInputStream getAudioInputStream(InputStream is)
 			throws UnsupportedAudioFileException, IOException
 	{
 		try
@@ -569,7 +604,7 @@ public class JSMinim implements MinimServiceProvider
 		catch (Exception iae)
 		{
 			debug("Using AppletMpegSPIWorkaround to get codec");
-			return new MpegAudioFileReader().getAudioInputStream(is);
+			return new MpegAudioFileReader(this).getAudioInputStream(is);
 		}
 	}
 
@@ -587,7 +622,7 @@ public class JSMinim implements MinimServiceProvider
 	 *           the stream containing the unconverted audio
 	 * @return an AudioInputStream in the target format
 	 */
-	static AudioInputStream getAudioInputStream(AudioFormat targetFormat,
+	AudioInputStream getAudioInputStream(AudioFormat targetFormat,
 			AudioInputStream sourceStream)
 	{
 		try
@@ -611,7 +646,7 @@ public class JSMinim implements MinimServiceProvider
 		}
 	}
 
-	static SourceDataLine getSourceDataLine(AudioFormat format, int bufferSize)
+	SourceDataLine getSourceDataLine(AudioFormat format, int bufferSize)
 	{
 		SourceDataLine line = null;
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
@@ -641,7 +676,7 @@ public class JSMinim implements MinimServiceProvider
 		return line;
 	}
 
-	static TargetDataLine getTargetDataLine(AudioFormat format, int bufferSize)
+	TargetDataLine getTargetDataLine(AudioFormat format, int bufferSize)
 	{
 		TargetDataLine line = null;
 		DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);

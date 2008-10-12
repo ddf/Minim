@@ -134,10 +134,13 @@ class MpegAudioFileReader extends TAudioFileReader
 	};
 	
 	private Map codeToPropName;
+  
+  protected JSMinim system;
 
-	MpegAudioFileReader()
+	MpegAudioFileReader(JSMinim sys)
 	{
 		super(MARK_LIMIT, true);
+    system = sys;
 		if (TDebug.TraceAudioFileReader)
 			TDebug.out(VERSION);
 		try
@@ -232,7 +235,7 @@ class MpegAudioFileReader extends TAudioFileReader
 	public AudioFileFormat getAudioFileFormat(InputStream inputStream, long mediaLength) 
      throws UnsupportedAudioFileException, IOException
 	{
-		JSMinim.debug("MpegAudioFileReader.getAudioFileFormat(InputStream inputStream, long mediaLength): begin");
+		system.debug("MpegAudioFileReader.getAudioFileFormat(InputStream inputStream, long mediaLength): begin");
 		HashMap aff_properties = new HashMap();
 		HashMap af_properties = new HashMap();
 		int mLength = (int)mediaLength;
@@ -240,7 +243,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		PushbackInputStream pis = new PushbackInputStream(inputStream, MARK_LIMIT);
 		byte head[] = new byte[22];
 		pis.read(head);
-		JSMinim.debug("InputStream : " + inputStream + " =>" + new String(head));
+		system.debug("InputStream : " + inputStream + " =>" + new String(head));
 
 		// Check for WAV, AU, and AIFF, Ogg Vorbis, Flac, MAC file formats.
 		// Next check for Shoutcast (supported) and OGG (unsupported) streams.
@@ -248,7 +251,7 @@ class MpegAudioFileReader extends TAudioFileReader
 				&& (head[3] == 'F') && (head[8] == 'W') && (head[9] == 'A')
 				&& (head[10] == 'V') && (head[11] == 'E'))
 		{
-			JSMinim.debug("RIFF/WAV stream found");
+			system.debug("RIFF/WAV stream found");
 			int isPCM = ((head[21] << 8) & 0x0000FF00) | ((head[20]) & 0x00000FF);
 			if (weak == null)
 			{
@@ -260,7 +263,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		else if ((head[0] == '.') && (head[1] == 's') && (head[2] == 'n')
 				&& (head[3] == 'd'))
 		{
-			JSMinim.debug("AU stream found");
+		  system.debug("AU stream found");
 			if (weak == null)
 				throw new UnsupportedAudioFileException("AU stream found");
 		}
@@ -268,7 +271,7 @@ class MpegAudioFileReader extends TAudioFileReader
 				&& (head[3] == 'M') && (head[8] == 'A') && (head[9] == 'I')
 				&& (head[10] == 'F') && (head[11] == 'F'))
 		{
-			JSMinim.debug("AIFF stream found");
+			system.debug("AIFF stream found");
 			if (weak == null)
 				throw new UnsupportedAudioFileException("AIFF stream found");
 		}
@@ -276,7 +279,7 @@ class MpegAudioFileReader extends TAudioFileReader
 				&& ((head[1] == 'A') | (head[1] == 'a'))
 				&& ((head[2] == 'C') | (head[2] == 'c')))
 		{
-			JSMinim.debug("APE stream found");
+			system.debug("APE stream found");
 			if (weak == null)
 				throw new UnsupportedAudioFileException("APE stream found");
 		}
@@ -285,7 +288,7 @@ class MpegAudioFileReader extends TAudioFileReader
 				&& ((head[2] == 'A') | (head[2] == 'a'))
 				&& ((head[3] == 'C') | (head[3] == 'c')))
 		{
-			JSMinim.debug("FLAC stream found");
+			system.debug("FLAC stream found");
 			if (weak == null)
 				throw new UnsupportedAudioFileException("FLAC stream found");
 		}
@@ -303,7 +306,7 @@ class MpegAudioFileReader extends TAudioFileReader
 				&& ((head[1] == 'G') | (head[1] == 'g'))
 				&& ((head[2] == 'G') | (head[2] == 'g')))
 		{
-			JSMinim.debug("Ogg stream found");
+			system.debug("Ogg stream found");
 			if (weak == null)
 				throw new UnsupportedAudioFileException("Ogg stream found");
 		}
@@ -399,7 +402,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		}
 		catch (Exception e)
 		{
-			JSMinim.debug("not a MPEG stream:" + e.getMessage());
+			system.debug("not a MPEG stream:" + e.getMessage());
 			throw new UnsupportedAudioFileException("not a MPEG stream:"
 					+ e.getMessage());
 		}
@@ -407,14 +410,14 @@ class MpegAudioFileReader extends TAudioFileReader
 		int cVersion = (nHeader >> 19) & 0x3;
 		if (cVersion == 1)
 		{
-			JSMinim.debug("not a MPEG stream: wrong version");
+			system.debug("not a MPEG stream: wrong version");
 			throw new UnsupportedAudioFileException(
 																	"not a MPEG stream: wrong version");
 		}
 		int cSFIndex = (nHeader >> 10) & 0x3;
 		if (cSFIndex == 3)
 		{
-			JSMinim.debug("not a MPEG stream: wrong sampling rate");
+			system.debug("not a MPEG stream: wrong sampling rate");
 			throw new UnsupportedAudioFileException(
 																	"not a MPEG stream: wrong sampling rate");
 		}
@@ -489,7 +492,7 @@ class MpegAudioFileReader extends TAudioFileReader
 	public AudioInputStream getAudioInputStream(URL url)
 			throws UnsupportedAudioFileException, IOException
 	{
-		JSMinim.debug("MpegAudioFileReader.getAudioInputStream(URL): begin");
+		system.debug("MpegAudioFileReader.getAudioInputStream(URL): begin");
 		long lFileLengthInBytes = AudioSystem.NOT_SPECIFIED;
 		URLConnection conn = url.openConnection();
 		// Tell shoucast server (if any) that SPI support shoutcast stream.
@@ -547,7 +550,7 @@ class MpegAudioFileReader extends TAudioFileReader
 			inputStream.close();
 			throw e;
 		}
-		JSMinim.debug("MpegAudioFileReader.getAudioInputStream(URL): end");
+		system.debug("MpegAudioFileReader.getAudioInputStream(URL): end");
 		return audioInputStream;
 	}
 
@@ -557,7 +560,7 @@ class MpegAudioFileReader extends TAudioFileReader
 	public AudioInputStream getAudioInputStream(InputStream inputStream)
 			throws UnsupportedAudioFileException, IOException
 	{
-		JSMinim.debug("MpegAudioFileReader.getAudioInputStream(InputStream inputStream)");
+		system.debug("MpegAudioFileReader.getAudioInputStream(InputStream inputStream)");
 		if (!inputStream.markSupported())
 			inputStream = new BufferedInputStream(inputStream);
 		return super.getAudioInputStream(inputStream);
@@ -664,7 +667,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		catch (StringIndexOutOfBoundsException e)
 		{
 			// Skip encoding issues.
-			JSMinim.error("Cannot chopSubString " + e.getMessage());
+		  system.error("Cannot chopSubString " + e.getMessage());
 		}
 		return str;
 	}
@@ -690,23 +693,23 @@ class MpegAudioFileReader extends TAudioFileReader
 		}
 		catch (IOException e)
 		{
-			JSMinim.error("Cannot parse ID3v2 :" + e.getMessage());
+			system.error("Cannot parse ID3v2 :" + e.getMessage());
 		}
 		if (!"ID3".equals(new String(bframes, 0, 3)))
 		{
-			JSMinim.error("No ID3v2 header found!");
+			system.error("No ID3v2 header found!");
 			return;
 		}
 		int v2version = (int)(bframes[3] & 0xFF);
 		props.put("mp3.id3tag.v2.version", String.valueOf(v2version));
 		if (v2version < 2 || v2version > 4)
 		{
-			JSMinim.error("Unsupported ID3v2 version " + v2version + "!");
+			system.error("Unsupported ID3v2 version " + v2version + "!");
 			return;
 		}
 		try
 		{
-			JSMinim.debug("ID3v2 frame dump='" + new String(bframes, 0, bframes.length) + "'");
+			system.debug("ID3v2 frame dump='" + new String(bframes, 0, bframes.length) + "'");
 			/*
 			 * ID3 tags :
 			 * http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
@@ -726,7 +729,7 @@ class MpegAudioFileReader extends TAudioFileReader
 					i += 10;
 					if ( !codeToPropName.containsKey(code) )
 					{
-						JSMinim.error("Don't know the ID3 code " + code);
+						system.error("Don't know the ID3 code " + code);
 						continue;
 					}
 					if ( code.equals("COMM") )
@@ -759,7 +762,7 @@ class MpegAudioFileReader extends TAudioFileReader
 					i += 6;
 					if ( !codeToPropName.containsKey(scode) )
 					{
-						JSMinim.error("Don't know the ID3 code " + scode);
+						system.error("Don't know the ID3 code " + scode);
 						continue;
 					}
 					if (scode.equals("COM"))
@@ -782,9 +785,9 @@ class MpegAudioFileReader extends TAudioFileReader
 		catch (RuntimeException e)
 		{
 			// Ignore all parsing errors.
-			JSMinim.error("Error parsing ID3v2: " + e.getMessage());
+			system.error("Error parsing ID3v2: " + e.getMessage());
 		}
-		JSMinim.debug("ID3v2 parsed");
+		system.debug("ID3v2 parsed");
 	}
 	
 	private static String[] ENC_TYPES = { "ISO-8859-1", "UTF16", "UTF-16BE", "UTF-8" };
@@ -813,7 +816,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			JSMinim.error("ID3v2 Encoding error: " + e.getMessage());
+			system.error("ID3v2 Encoding error: " + e.getMessage());
 		}
 		return value;
 	}

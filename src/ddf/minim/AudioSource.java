@@ -60,7 +60,7 @@ public class AudioSource extends Controller implements Effectable, Recordable
    * <code>Controller</code>'s methods will result in a
    * <code>NullPointerException</code>.
    * 
-   * @param stream
+   * @param istream
    *          the <code>AudioStream</code> to subscribe to and wrap
    */
   public AudioSource(AudioStream istream)

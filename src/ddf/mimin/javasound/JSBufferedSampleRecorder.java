@@ -59,6 +59,8 @@ final class JSBufferedSampleRecorder implements SampleRecorder
   private String name;
   private AudioFileFormat.Type type;
   private AudioFormat format;
+  
+  private JSMinim system;
 
   /**
    * Constructs a JSBufferedSampleRecorder that expects audio in the given AudioFormat and 
@@ -67,7 +69,8 @@ final class JSBufferedSampleRecorder implements SampleRecorder
    * @param format the AudioFormat you want to record in
    * @param name the name of the file to save to (not including the extension)
    */
-  JSBufferedSampleRecorder(String fileName, 
+  JSBufferedSampleRecorder(JSMinim sys,
+                           String fileName, 
                            AudioFileFormat.Type fileType, 
                            AudioFormat fileFormat,
                            int bufferSize)
@@ -85,6 +88,7 @@ final class JSBufferedSampleRecorder implements SampleRecorder
     {
       right = null;
     }
+    system = sys;
   }
   
   public String filePath()
@@ -100,7 +104,7 @@ final class JSBufferedSampleRecorder implements SampleRecorder
   {
     if ( isRecording() )
     {
-      JSMinim.error("You must stop recording before you can write to a file.");
+      system.error("You must stop recording before you can write to a file.");
     }
     else
     {
@@ -148,30 +152,30 @@ final class JSBufferedSampleRecorder implements SampleRecorder
         }
         catch (IOException e)
         {
-          JSMinim.error("AudioRecorder.save: Error attempting to save buffer to "
+          system.error("AudioRecorder.save: Error attempting to save buffer to "
               + name + "\n" + e.getMessage());
         }
         if (out.length() == 0)
         {
-          JSMinim.error("AudioRecorder.save: Error attempting to save buffer to "
+          system.error("AudioRecorder.save: Error attempting to save buffer to "
               + name + ", the output file is empty.");
         }
       }
       else
       {
-        JSMinim.error("AudioRecorder.save: Can't write " + type.toString()
+        system.error("AudioRecorder.save: Can't write " + type.toString()
             + " using format " + format.toString() + ".");
       }
     }
     
     String filePath = filePath();
-    AudioInputStream ais = JSMinim.getAudioInputStream(filePath);
-    SourceDataLine sdl = JSMinim.getSourceDataLine(ais.getFormat(), 1024);
+    AudioInputStream ais = system.getAudioInputStream(filePath);
+    SourceDataLine sdl = system.getSourceDataLine(ais.getFormat(), 1024);
     // this is fine because the recording will always be 
     // in a raw format (WAV, AU, etc).
     long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
-	 BasicMetaData meta = new BasicMetaData(filePath, length);
-    JSPCMAudioRecordingStream recording = new JSPCMAudioRecordingStream(meta, ais, sdl, 1024);
+    BasicMetaData meta = new BasicMetaData(filePath, length);
+    JSPCMAudioRecordingStream recording = new JSPCMAudioRecordingStream(system, meta, ais, sdl, 1024);
     return recording;
   }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 by Damien Di Fede <ddf@compartmental.net>
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -32,7 +32,7 @@ import ddf.minim.spi.SampleRecorder;
 /**
  * The <code>Minim</code> class is how you get what you want from JavaSound.
  * There are methods for obtaining objects for playing audio files:
- * {@link AudioSampleImpl}, {@link AudioSnippet}, and {@link AudioPlayer}. There
+ * {@link AudioSample}, {@link AudioSnippet}, and {@link AudioPlayer}. There
  * are methods for obtaining an {@link AudioRecorder}, which is how you record
  * audio to disk. There are methods for obtaining an {@link AudioInput}, which
  * is how you can monitor the computer's line-in or microphone, depending on
@@ -44,8 +44,8 @@ import ddf.minim.spi.SampleRecorder;
  * method of an AudioXXX when you are finished with it.
  * <p>
  * <code>Minim</code> needs to know about your sketch so that it can load files 
- * from the sketches data directory. For this reason, before you do anything with
- * <code>Minim</code>, you must call {@link #start(PApplet) start}. 
+ * from the sketch's data directory. For this reason, you must pass a PApplet to the 
+ * constructor. 
  * 
  * @author Damien Di Fede
  */
@@ -70,15 +70,36 @@ public class Minim
   /** The .snd file format. */
   public static AudioFileFormat.Type SND = AudioFileFormat.Type.SND;
 
-  private static PApplet p;
-  private static MinimServiceProvider mimp;
   private static boolean DEBUG = false;
-
-  private Minim() {}
   
-  static int millis()
+  private MinimServiceProvider mimp = null;
+  //private PApplet app;
+ 
+  /**
+   * Creates an instance of Minim that will use the Javasound implementation.
+   * 
+   * @param parent
+   *              the PApplet that will be used for loading files
+   */
+  public Minim(PApplet parent) 
   {
-    return p.millis();
+    //app = parent;
+    mimp = new JSMinim(parent);
+  }
+  
+  /**
+   * Creates an instance of Minim that will use the provided implementation for audio.
+   * 
+   * @param parent
+   *              the PApplet that will be used for loading files
+   * @param msp
+   *              the MinimServiceProvider that will be used for returning audio resources
+   */
+  public Minim(PApplet parent, MinimServiceProvider msp)
+  {
+    //app = parent;
+    mimp = msp;
+    mimp.start();
   }
 
   /**
@@ -113,7 +134,9 @@ public class Minim
       String[] lines = s.split("\n");
       PApplet.println("=== Minim Debug ===");
       for (int i = 0; i < lines.length; i++)
+      {
         PApplet.println("=== " + lines[i]);
+      }
       PApplet.println();
     }
   }
@@ -121,7 +144,7 @@ public class Minim
   /**
    * Turns on debug messages.
    */
-  public static void debugOn()
+  public void debugOn()
   {
     DEBUG = true;
     if ( mimp != null )
@@ -134,40 +157,13 @@ public class Minim
    * Turns off debug messages.
    * 
    */
-  public static void debugOff()
+  public void debugOff()
   {
     DEBUG = false;
     if ( mimp != null )
     {
    	 mimp.debugOff();
     }
-  }
-
-  /**
-   * Starts Minim.
-   * 
-   * It is necessary to call this so that Minim can properly open files.
-   * 
-   * @param pro
-   *          the sketch that is going to be using Minim
-   */
-  
-  // TODO: get rid of this function, added PApplet as an argument to all load functions
-  public static void start(PApplet pro)
-  {
-    start(pro, new JSMinim());
-  }
-  
-  // TODO: change this to setServiceProvider
-  public static void start(PApplet pro, MinimServiceProvider impl)
-  {
-    p = pro;
-    mimp = impl;
-    if ( DEBUG )
-    {
-   	 mimp.debugOn();
-    }
-    mimp.start(pro);
   }
 
   /**
@@ -179,7 +175,7 @@ public class Minim
    * tell them it's time. 
    * 
    */
-  public static void stop()
+  public void stop()
   {
     mimp.stop();
   }
@@ -193,9 +189,9 @@ public class Minim
    *          the file or URL that you want to load
    * @return an <code>AudioSample</code> with a 1024 sample buffer
    * @see #loadSample(String, int)
-   * @see AudioSampleImpl
+   * @see AudioSample
    */
-  static public AudioSample loadSample(String filename)
+  public AudioSample loadSample(String filename)
   {
     return loadSample(filename, 1024);
   }
@@ -209,7 +205,7 @@ public class Minim
    *          the sample buffer size you want
    * @return an <code>AudioSample</code> with a sample buffer of the requested size
    */
-  static public AudioSample loadSample(String filename, int bufferSize)
+  public AudioSample loadSample(String filename, int bufferSize)
   {
     return mimp.getAudioSample(filename, bufferSize);
   }
@@ -221,7 +217,7 @@ public class Minim
    *          the file or URL you want to load
    * @return an <code>AudioSnippet</code> of the requested file or URL
    */
-  static public AudioSnippet loadSnippet(String filename)
+  public AudioSnippet loadSnippet(String filename)
   {
     AudioRecording c = mimp.getAudioRecording(filename);
     if ( c != null )
@@ -245,7 +241,7 @@ public class Minim
    * 
    * @see #loadFile(String, int)
    */
-  public static AudioPlayer loadFile(String filename)
+  public AudioPlayer loadFile(String filename)
   {
     return loadFile(filename, 1024);
   }
@@ -261,7 +257,7 @@ public class Minim
    *          
    * @return an <code>AudioPlayer</code> with a sample buffer of the requested size
    */
-  public static AudioPlayer loadFile(String filename, int bufferSize)
+  public AudioPlayer loadFile(String filename, int bufferSize)
   {
     AudioRecordingStream rec = mimp.getAudioRecordingStream(filename, bufferSize);
     if ( rec != null )
@@ -293,7 +289,7 @@ public class Minim
    *          
    * @return an <code>AudioRecorder</code> for the record source
    */
-  public static AudioRecorder createRecorder(Recordable source,
+  public AudioRecorder createRecorder(Recordable source,
                                              String fileName, 
                                              boolean buffered)
   {
@@ -316,7 +312,7 @@ public class Minim
    *         44100 and a bit depth of 16
    * @see #getLineIn(int, int, float, int)
    */
-  static public AudioInput getLineIn()
+  public AudioInput getLineIn()
   {
     return getLineIn(STEREO);
   }
@@ -330,7 +326,7 @@ public class Minim
    *         sample rate of 44100 and a bit depth of 16
    * @see #getLineIn(int, int, float, int)
    */
-  static public AudioInput getLineIn(int type)
+  public AudioInput getLineIn(int type)
   {
     return getLineIn(type, 1024, 44100, 16);
   }
@@ -346,7 +342,7 @@ public class Minim
    *         and a bit depth of 16
    * @see #getLineIn(int, int, float, int)
    */
-  static public AudioInput getLineIn(int type, int bufferSize)
+  public AudioInput getLineIn(int type, int bufferSize)
   {
     return getLineIn(type, bufferSize, 44100, 16);
   }
@@ -363,7 +359,7 @@ public class Minim
    * @return an <code>AudioInput</code> with the requested attributes and a bit depth of 16
    * @see #getLineIn(int, int, float, int)
    */
-  static public AudioInput getLineIn(int type, int bufferSize, 
+  public AudioInput getLineIn(int type, int bufferSize, 
                                      float sampleRate)
   {
     return getLineIn(type, bufferSize, sampleRate, 16);
@@ -382,7 +378,7 @@ public class Minim
    *          the desired bit depth (typically 8)
    * @return an <code>AudioInput</code> with the requested attributes
    */
-  static public AudioInput getLineIn(int type, int bufferSize,
+  public AudioInput getLineIn(int type, int bufferSize,
                                      float sampleRate, int bitDepth)
   {
     AudioStream stream = mimp.getAudioStream(type, bufferSize, sampleRate, bitDepth);
@@ -405,7 +401,7 @@ public class Minim
    *         44100 and a bit depth of 16
    * @see #getLineOut(int, int, float, int)
    */
-  static public AudioOutput getLineOut()
+  public AudioOutput getLineOut()
   {
     return getLineOut(STEREO);
   }
@@ -420,7 +416,7 @@ public class Minim
    *         sample rate of 44100 and a bit depth of 16
    * @see #getLineOut(int, int, float, int)
    */
-  static public AudioOutput getLineOut(int type)
+  public AudioOutput getLineOut(int type)
   {
     return getLineOut(type, 1024, 44100, 16);
   }
@@ -437,7 +433,7 @@ public class Minim
    *         44100 and a bit depth of 16
    * @see #getLineOut(int, int, float, int)
    */
-  static public AudioOutput getLineOut(int type, int bufferSize)
+  public AudioOutput getLineOut(int type, int bufferSize)
   {
     return getLineOut(type, bufferSize, 44100, 16);
   }
@@ -455,7 +451,7 @@ public class Minim
    * @return an <code>AudioOutput</code> with the requested attributes and a bit depth of 16
    * @see #getLineOut(int, int, float, int)
    */
-  static public AudioOutput getLineOut(int type, int bufferSize,
+  public AudioOutput getLineOut(int type, int bufferSize,
                                        float sampleRate)
   {
     return getLineOut(type, bufferSize, sampleRate, 16);
@@ -475,7 +471,7 @@ public class Minim
    *          the desired bit depth (typically 8)
    * @return an <code>AudioOutput</code> with the requested attributes
    */
-  static public AudioOutput getLineOut(int type, int bufferSize,
+  public AudioOutput getLineOut(int type, int bufferSize,
                                        float sampleRate, int bitDepth)
   {
     AudioSynthesizer synth = mimp.getAudioSynthesizer(type, bufferSize, sampleRate, bitDepth);

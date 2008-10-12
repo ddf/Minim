@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2007 by Damien Di Fede <ddf@compartmental.net>
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -94,8 +94,8 @@ public class Controller
   /**
    * Constructs a <code>Controller</code> for the given <code>Line</code>.
    * 
-   * @param line
-   *          the <code>Line</code> that will be controlled
+   * @param cntrls
+   *          an array of Controls that this Controller will manipulate
    */
   public Controller(Control[] cntrls)
   {
@@ -139,7 +139,7 @@ public class Controller
     
     public ValueShifter(float vs, float ve, int t)
     {
-      tstart = Minim.millis();
+      tstart = (int)System.currentTimeMillis();
       tend = tstart + t;
       vstart = vs;
       vend = ve;
@@ -147,13 +147,13 @@ public class Controller
     
     public float value()
     {
-      int millis = Minim.millis();
+      int millis = (int)System.currentTimeMillis();
       return PApplet.map(millis, tstart, tend, vstart, vend);
     }
     
     public boolean done()
     {
-      return Minim.millis() > tend;
+      return (int)System.currentTimeMillis() > tend;
     }
   }
 

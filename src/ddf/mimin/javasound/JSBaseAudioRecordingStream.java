@@ -1,3 +1,21 @@
+/*
+ *  Copyright (c) 2007 - 2008 by Damien Di Fede <ddf@compartmental.net>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package ddf.mimin.javasound;
 
 import java.io.IOException;
@@ -15,7 +33,7 @@ import ddf.minim.AudioListener;
 import ddf.minim.Minim;
 import ddf.minim.spi.AudioRecordingStream;
 
-public abstract class JSBaseAudioRecordingStream implements Runnable,
+abstract class JSBaseAudioRecordingStream implements Runnable,
 		AudioRecordingStream
 {
 	private Thread					iothread;
@@ -41,16 +59,18 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 	private int						bufferSize;
 	private boolean				finished;
 	private float[]				silence;
+  
+  protected JSMinim system;
 
-	JSBaseAudioRecordingStream(AudioInputStream stream, SourceDataLine sdl,
+	JSBaseAudioRecordingStream(JSMinim sys, AudioInputStream stream, SourceDataLine sdl,
 			int bufferSize, int msLen)
 	{
 		format = sdl.getFormat();
 		this.bufferSize = bufferSize;
 		buffer = new FloatSampleBuffer(format.getChannels(), bufferSize,
 													format.getSampleRate());
-		JSMinim.debug("FloatSampleBuffer has " + buffer.getSampleCount()
-				+ " samples.");
+    system = sys;
+		system.debug("FloatSampleBuffer has " + buffer.getSampleCount()	+ " samples.");
 		finished = false;
 		line = sdl;
 
@@ -145,7 +165,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		}
 		catch (IOException e)
 		{
-			JSMinim.error("Error reading from the file - " + e.getMessage());
+			system.error("Error reading from the file - " + e.getMessage());
 		}
 		totalBytesRead += bytesRead;
 	}
@@ -222,7 +242,7 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 		}
 		catch (IOException ioe)
 		{
-			JSMinim.error("Error reading from the file - " + ioe.getMessage());
+			system.error("Error reading from the file - " + ioe.getMessage());
 		}
 	}
 
@@ -398,25 +418,19 @@ public abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void setMillisecondPosition(int millis)
 	{
-		if (millis <= 0)
-		{
-			rewind();
-			totalBytesRead = 0;
-			return;
-		}
-
-		if (millis > getMillisecondLength())
-		{
-			millis = getMillisecondLength();
-		}
-
+    // millis is guaranteed by methods that call this one to be 
+    // in the interval [0, getMillisecondLength()], so we don't do bounds checking
+    boolean wasPlaying = play;
+    play = false;
 		if (millis < getMillisecondPosition())
 		{
 			rewind();
+      totalBytesRead = skip(millis);
 		}
-		boolean wasPlaying = play;
-		play = false;
-		totalBytesRead = skip(millis);
+    else
+    {
+      totalBytesRead += skip(millis - getMillisecondPosition());
+    }		
 		play = wasPlaying;
 	}
 
