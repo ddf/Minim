@@ -316,7 +316,6 @@ public class JSMinim implements MinimServiceProvider
 				long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
 				meta = new BasicMetaData(filename, length);
 			}
-			//SourceDataLine sdl = getSourceDataLine(format, bufferSize);
 			AudioSynthesizer out = getAudioSynthesizer(format.getChannels(), 
 			                                             bufferSize, 
 			                                             format.getSampleRate(), 
@@ -326,12 +325,10 @@ public class JSMinim implements MinimServiceProvider
 				SampleSignal ssig = new SampleSignal(samples);
 				out.setAudioSignal(ssig);
 				return new JSAudioSample(meta, ssig, out);
-				//ASThread ast = new ASThread(samples, sdl, bufferSize);
-				//return new JSAudioSample(meta, ast);
 			}
 			else
 			{
-				error("Couldn't acquire a SourceDataLine.");
+				error("Couldn't acquire an output.");
 			}
 		}
 		return null;

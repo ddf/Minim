@@ -21,6 +21,8 @@ package ddf.mimin.javasound;
 import org.tritonus.share.sampled.FloatSampleBuffer;
 
 import ddf.minim.AudioSignal;
+import ddf.minim.BufferedAudio;
+import ddf.minim.Minim;
 import ddf.minim.Triggerable;
 
 class SampleSignal implements AudioSignal, Triggerable
@@ -84,11 +86,10 @@ class SampleSignal implements AudioSignal, Triggerable
         
         //Minim.debug("Sample trigger in process at marks[" + i + "] = " + marks[i]);
         int j, k;
-        for (j = begin, k = 0; j < buffer.getSampleCount()
-                            && k < left.length; j++, k++)
+        for (j = begin, k = 0; j < buffer.getSampleCount() && k < left.length; j++, k++)
         {
           left[k] += buffer.getChannel(0)[j];
-          right[k] += buffer.getChannel(1)[k];
+          right[k] += buffer.getChannel(1)[j];
         }
         if ( j < buffer.getSampleCount() )
         {
@@ -116,6 +117,15 @@ class SampleSignal implements AudioSignal, Triggerable
 
 	public float[] getChannel(int channelNumber)
 	{
-		return buffer.getChannel(channelNumber);
+		if ( channelNumber == BufferedAudio.LEFT )
+		{
+			return buffer.getChannel(0);
+		}
+		else if ( channelNumber == BufferedAudio.RIGHT )
+		{
+			return buffer.getChannel(1);
+		}
+		Minim.error("getChannel: Illegal channel number " + channelNumber);
+		return null;
 	}
 }
