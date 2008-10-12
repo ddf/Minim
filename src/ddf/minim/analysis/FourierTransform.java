@@ -533,6 +533,7 @@ public abstract class FourierTransform
    * @param buffer
    *          the buffer to analyze
    */
+  // TODO: add an offset argument
   public abstract void forward(float[] buffer);
 
   /**
@@ -541,6 +542,7 @@ public abstract class FourierTransform
    * @param buffer
    *          the buffer to analyze
    */
+  // TODO: add an offset argument
   public void forward(AudioBuffer buffer)
   {
     forward(buffer.toArray());
