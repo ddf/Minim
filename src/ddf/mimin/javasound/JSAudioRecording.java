@@ -166,6 +166,9 @@ class JSAudioRecording implements AudioRecording, Runnable
 		System.arraycopy(samples, totalBytesRead, rawBytes, offset, toRead);
 		totalBytesRead += toRead;
 	}
+	
+	// TODO: apparently not handling end-of-file correctly because a user has reported clicks
+	// http://processing.org/discourse/yabb_beta/YaBB.cgi?board=Sound;action=display;num=1226609644;start=0#3
 
 	private void writeBytes()
 	{

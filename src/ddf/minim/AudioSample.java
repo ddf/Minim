@@ -35,6 +35,9 @@ import ddf.minim.spi.AudioStream;
  * @author Damien Di Fede
  * 
  */
+
+// TODO: some kind of event for when a sample finishes playing?
+
 public abstract class AudioSample extends AudioSource 
                                   implements BufferedAudio, Triggerable
 {
