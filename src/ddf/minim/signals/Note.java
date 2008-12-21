@@ -27,9 +27,12 @@ public class Note implements AudioSignal
 	
 	public void generate(float[] signal)
 	{
-		sig.generate(signal);
-		env.process(signal);
-		if ( env.done() )
+    if ( !env.done() )
+    {
+      sig.generate(signal);
+      env.process(signal);
+    }
+    else
 		{
 			out.removeSignal(this);
 		}

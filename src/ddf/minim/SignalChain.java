@@ -233,15 +233,23 @@ public class SignalChain implements AudioSignal
   public synchronized void generate(float[] signal)
   {
     float[] tmp = new float[signal.length];
-    for (int i = 0; i < signals.size(); i++)
+    // We create an array from signals here because it
+    // is possible that an AudioSignal might modify
+    // signals during its generate call (see: Note.java)
+    // sychronization doesn't help us in that case
+    // because this object is being accessed
+    // from the same thread!
+    Object[] sigArray = signals.toArray();
+    for (int i = 0; i < sigArray.length; i++)
     {
-      AudioSignal s = (AudioSignal) signals.get(i);
+      AudioSignal s = (AudioSignal) sigArray[i];
       if ( enabled.contains(s) )
       {
+        for(int it = 0; it < tmp.length; it++) { tmp[it] = 0; }
         s.generate(tmp);
-        for (int j = 0; j < signal.length; j++)
+        for (int is = 0; is < signal.length; is++)
         {
-          signal[j] += tmp[j];
+          signal[is] += tmp[is];
         }
       }
     }

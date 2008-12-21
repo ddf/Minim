@@ -83,22 +83,14 @@ final class JSAudioSynthesizer extends Thread implements AudioSynthesizer
 				listener.samples(buffer.getChannel(0), buffer.getChannel(1));
 			}
 			buffer.convertToByteArray(outBytes, 0, format);
-			boolean haveSound = false;
-			for (int i = 0; i < outBytes.length; i++)
-			{
-				if (outBytes[i] > 0)
-				{
-					haveSound = true;
-					break;
-				}
-			}
-			if (haveSound)
-			{
-				line.write(outBytes, 0, outBytes.length);
-			}
+      if ( line.available() == line.getBufferSize() )
+      {
+        Minim.error("Likely buffer underrun in AudioOutput.");
+      }
+      line.write(outBytes, 0, outBytes.length);
 			try
 			{
-				Thread.sleep(10);
+				Thread.sleep(1);
 			}
 			catch (InterruptedException e)
 			{

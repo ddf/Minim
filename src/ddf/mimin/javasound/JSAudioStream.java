@@ -83,12 +83,12 @@ final class JSAudioStream extends Thread
         listener.samples(sampL, sampR);
       }
       try
-		{
-			Thread.sleep(10);
-		}
-		catch (InterruptedException e)
-		{
-		}
+      {
+        Thread.sleep(10);
+      }
+      catch (InterruptedException e)
+      {
+      }
     }
     // we are done, clean up the line
     line.flush();
