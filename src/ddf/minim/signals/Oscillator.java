@@ -52,10 +52,6 @@ public abstract class Oscillator implements AudioSignal
   private float newAmp;
   /** The current position in the waveform's period. */
   private float step;
-  /**
-   * The amount to increment step between calls to the <code>value</code>
-   * method.
-   */
   private float stepSize;
   /** The portamento state. */
   private boolean port;
@@ -82,6 +78,9 @@ public abstract class Oscillator implements AudioSignal
   private float rightScale;
   
   private AudioListener listener;
+  
+  private AudioSignal ampMod;
+  private AudioSignal freqMod;
 
   /**
    * Constructs an Oscillator with the requested frequency, amplitude and sample
@@ -109,6 +108,8 @@ public abstract class Oscillator implements AudioSignal
     newPan = 0;
     leftScale = rightScale = 1;
     listener = null;
+    ampMod = null;
+    freqMod = null;
   }
   
   public final float sampleRate()
@@ -214,45 +215,63 @@ public abstract class Oscillator implements AudioSignal
   {
     port = false;
   }
+  
+  private final void updateFreq()
+  {
+    if ( freq != newFreq )
+    {
+      if ( port )
+      {
+        if (Math.abs(freq - newFreq) < 0.1f)
+        {
+          freq = newFreq;
+        }
+        else
+        {
+          freq += portStep;
+        }
+      }
+      else
+      {
+        freq = newFreq;
+      }
+    }
+  }
+  
+  // holy balls, amplitude and frequency modulation
+  // all rolled up into one.
+  private final float generate(float fmod, float amod)
+  {
+    return amp * amod * value(step + fmod);
+  }
 
   public final void generate(float[] signal)
   {
-    if (port && freq != newFreq)
+    float[] fmod = new float[signal.length];
+    float[] amod = new float[signal.length];
+    if ( freqMod != null )
     {
-      for (int i = 0; i < signal.length; i++)
-      {
-        signal[i] = amp * value(step);
-        if (Math.abs(freq - newFreq) < 0.1f)
-          freq = newFreq;
-        else
-          freq += portStep;
-        monoStep();
-      }
+      freqMod.generate(fmod);
     }
-    else if (freq != newFreq)
+    if ( ampMod != null )
     {
-      for (int i = 0; i < signal.length / 2; i++)
-      {
-        float fadeOut = PApplet.map(i, 0, signal.length / 2, amp, 0);
-        signal[i] = fadeOut * value(step);
-        monoStep();
-      }
-      freq = newFreq;
-      for (int i = signal.length / 2; i < signal.length; i++)
-      {
-        float fadeIn = PApplet.map(i, signal.length / 2, signal.length, 0, amp);
-        signal[i] = fadeIn * value(step);
-        monoStep();
-      }
+      ampMod.generate(amod);
     }
-    else
+    for(int i = 0; i < signal.length; i++)
     {
-      for (int i = 0; i < signal.length; i++)
+      // do the portamento stuff / freq updating
+      updateFreq();
+      if ( ampMod != null )
       {
-        signal[i] = amp * value(step);
-        monoStep();
+        signal[i] = generate(fmod[i], amod[i]);
       }
+      else
+      {
+        signal[i] = generate(fmod[i], 1);
+      }
+      monoStep();
     }
+    // broadcast to listener
     if ( listener != null )
     {
    	 listener.samples(signal);
@@ -261,45 +280,33 @@ public abstract class Oscillator implements AudioSignal
 
   public final void generate(float[] left, float[] right)
   {
-    if (port && freq != newFreq)
+    float[] fmod = new float[left.length];
+    float[] amod = new float[right.length];
+    if ( freqMod != null )
     {
-      for (int i = 0; i < left.length; i++)
-      {
-        left[i] = leftScale * amp * value(step);
-        right[i] = rightScale * amp * value(step);
-        if (Math.abs(freq - newFreq) < 0.1f)
-          freq = newFreq;
-        else
-          freq += portStep;
-        stereoStep();
-      }
+      freqMod.generate(fmod);
     }
-    else if (freq != newFreq)
+    if ( ampMod != null )
     {
-      for (int i = 0; i < left.length / 2; i++)
-      {
-        float fadeOut = PApplet.map(i, 0, left.length / 2, amp, 0);
-        left[i] = leftScale * fadeOut * value(step);
-        right[i] = rightScale * fadeOut * value(step);
-        stereoStep();
-      }
-      freq = newFreq;
-      for (int i = left.length / 2; i < left.length; i++)
-      {
-        float fadeIn = PApplet.map(i, left.length / 2, left.length, 0, amp);
-        left[i] = leftScale * fadeIn * value(step);
-        right[i] = rightScale * fadeIn * value(step);
-        stereoStep();
-      }
+      ampMod.generate(amod);
     }
-    else
+    for(int i = 0; i < left.length; i++)
     {
-      for (int i = 0; i < left.length; i++)
+      // do the portamento stuff / freq updating
+      updateFreq();
+      if ( ampMod != null )
       {
-        left[i] = leftScale * amp * value(step);
-        right[i] = rightScale * amp * value(step);
-        stereoStep();
+        left[i] = generate(fmod[i], amod[i]);
       }
+      else
+      {
+        left[i] = generate(fmod[i], 1);
+      }
+      right[i] = left[i];
+      // scale amplitude to add pan
+      left[i] *= leftScale;
+      right[i] *= rightScale;
+      stereoStep();
     }
     if ( listener != null )
     {
@@ -310,6 +317,16 @@ public abstract class Oscillator implements AudioSignal
   public final void setAudioListener(AudioListener al)
   {
 	  listener = al;
+  }
+  
+  public final void setAmplitudeModulator(AudioSignal s)
+  {
+    ampMod = s;
+  }
+  
+  public final void setFrequencyModulator(AudioSignal s)
+  {
+    freqMod = s;
   }
 
   private void monoStep()
