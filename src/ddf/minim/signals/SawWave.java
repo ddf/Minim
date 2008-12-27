@@ -45,7 +45,6 @@ public class SawWave extends Oscillator
 	
 	protected float value(float step) 
 	{
-	  float ta = step * frequency();
-	  return 2 * ( ta - (float)Math.round(ta));
+	  return 2 * ( step - (float)Math.round(step));
 	}
 }

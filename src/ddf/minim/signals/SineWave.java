@@ -46,6 +46,6 @@ public class SineWave extends Oscillator
 
 	protected float value(float step) 
 	{
-	  return (float)Math.sin(frequency()*TWO_PI*step);
+	  return (float)Math.sin(TWO_PI*step);
 	}
 }

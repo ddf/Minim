@@ -73,7 +73,7 @@ public class PulseWave extends Oscillator
   protected float value(float step)
   {
     float v = 0;
-    if (step < period() / (width + 1))
+    if (step < 1 / (width + 1))
       v = 1;
     else
       v = -1;

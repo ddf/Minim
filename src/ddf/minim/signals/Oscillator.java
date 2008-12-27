@@ -101,7 +101,7 @@ public abstract class Oscillator implements AudioSignal
     newAmp = amp;
     srate = sampleRate;
     step = 0;
-    stepSize = 1f / (sampleRate);
+    stepSize = freq / (sampleRate);
     port = false;
     portStep = 0.01f;
     pan = 0;
@@ -236,13 +236,15 @@ public abstract class Oscillator implements AudioSignal
         freq = newFreq;
       }
     }
+    stepSize = freq / srate;
   }
   
   // holy balls, amplitude and frequency modulation
   // all rolled up into one.
   private final float generate(float fmod, float amod)
   {
-    return amp * amod * value(step + fmod);
+	step += fmod;
+    return amp * amod * value(step);
   }
 
   public final void generate(float[] signal)
@@ -346,7 +348,7 @@ public abstract class Oscillator implements AudioSignal
   private void stepStep()
   {
     step += stepSize;
-    if (step > period()) step %= period();
+    if (step > 1) step -= 1;
   }
 
   private void calcLRScale()

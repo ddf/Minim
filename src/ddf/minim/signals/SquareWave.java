@@ -45,12 +45,7 @@ public class SquareWave extends Oscillator
 
   protected float value(float step)
   {
-    float v = 0;
-    if (step < period() / 2)
-      v = 1;
-    else
-      v = -1;
-    return v;
+	  return step < 0.5 ? 1 : -1;
   }
 
 }

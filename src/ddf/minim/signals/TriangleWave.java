@@ -45,8 +45,7 @@ public class TriangleWave extends Oscillator
 
 	protected float value(float step) 
 	{
-	  float ta = step * frequency();
-	  return 1 - 4 * Math.abs(Math.round(ta) - ta);
+	  return 1 - 4 * Math.abs(Math.round(step) - step);
 	}
 
 }
