@@ -244,6 +244,7 @@ public abstract class Oscillator implements AudioSignal
   private final float generate(float fmod, float amod)
   {
 	step += fmod;
+	step = step - PApplet.floor(step);
     return amp * amod * value(step);
   }
 
@@ -348,7 +349,7 @@ public abstract class Oscillator implements AudioSignal
   private void stepStep()
   {
     step += stepSize;
-    if (step > 1) step -= 1;
+    step = step - PApplet.floor(step);
   }
 
   private void calcLRScale()

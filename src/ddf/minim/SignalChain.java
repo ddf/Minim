@@ -45,6 +45,9 @@ public class SignalChain implements AudioSignal
   private Vector signals;
   // all currently enabled signals
   private HashSet enabled;
+  // buffers used to generate audio for each signal
+  private float[] tmpL;
+  private float[] tmpR;
 
   /**
    * Constructs an empty <code>SignalChain</code>.
@@ -232,7 +235,10 @@ public class SignalChain implements AudioSignal
    */
   public synchronized void generate(float[] signal)
   {
-    float[] tmp = new float[signal.length];
+    if ( tmpL == null )
+    {
+    	tmpL = new float[signal.length];
+    }
     // We create an array from signals here because it
     // is possible that an AudioSignal might modify
     // signals during its generate call (see: Note.java)
@@ -245,11 +251,14 @@ public class SignalChain implements AudioSignal
       AudioSignal s = (AudioSignal) sigArray[i];
       if ( enabled.contains(s) )
       {
-        for(int it = 0; it < tmp.length; it++) { tmp[it] = 0; }
-        s.generate(tmp);
+        for(int it = 0; it < tmpL.length; it++) 
+        { 
+        	tmpL[it] = 0; 
+        }
+        s.generate(tmpL);
         for (int is = 0; is < signal.length; is++)
         {
-          signal[is] += tmp[is];
+          signal[is] += tmpL[is];
         }
       }
     }
@@ -262,11 +271,18 @@ public class SignalChain implements AudioSignal
    */
   public synchronized void generate(float[] left, float[] right)
   {
-    float[] tmpR = new float[left.length];
-    float[] tmpL = new float[right.length];
-    for (int i = 0; i < signals.size(); i++)
+	  if ( tmpL == null )
+	  {
+		  tmpL = new float[left.length];
+	  }
+	  if ( tmpR == null )
+	  {
+		  tmpR = new float[right.length];
+	  }
+    Object[] sigArray = signals.toArray();
+    for (int i = 0; i < sigArray.length; i++)
     {
-      AudioSignal s = (AudioSignal) signals.get(i);
+      AudioSignal s = (AudioSignal)sigArray[i];
       if ( enabled.contains(s) )
       {
         s.generate(tmpL, tmpR);
