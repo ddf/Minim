@@ -19,7 +19,6 @@
 package ddf.mimin.javasound;
 
 import java.io.BufferedInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -34,6 +33,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -677,11 +677,28 @@ public class JSMinim implements MinimServiceProvider
 	{
 		TargetDataLine line = null;
 		DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+    Mixer.Info[] infos = AudioSystem.getMixerInfo();
+    for(int i = 0; i < infos.length; i++)
+    {
+      //Minim.debug(infos[i].toString());
+    }
+    // TODO: Ok, so this is nasty. In Windows, with the MOTU turned on
+    // this particular mixer represents the Mix1, which means I can use it
+    // to monitor the computer's audio output. However, I have no way 
+    // of asking for this specifically, which means if I use currently
+    // shipped code I get nothing when I try to grab the input.
+    // Or, rather, I get an input and who knows what it's connected to.
+    // I hate to open up the idea of Mixers to the user, but if people 
+    // know there is a specific mixer they want an input from, they should
+    // be able to specify it somehow...
+    Mixer mix = AudioSystem.getMixer(infos[11]);
+    Minim.debug(mix.getMixerInfo().toString());
 		if (AudioSystem.isLineSupported(info))
 		{
 			try
 			{
-				line = (TargetDataLine)AudioSystem.getLine(info);
+				//line = (TargetDataLine)AudioSystem.getLine(info);
+        line = (TargetDataLine)mix.getLine(info);
 				line.open(format, bufferSize * format.getFrameSize());
 				debug("TargetDataLine buffer size is " + line.getBufferSize()
 						+ "\n" + "TargetDataLine format is "

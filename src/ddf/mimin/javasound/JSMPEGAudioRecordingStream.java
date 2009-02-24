@@ -28,6 +28,9 @@ import org.tritonus.share.sampled.AudioUtils;
 import javazoom.spi.mpeg.sampled.convert.DecodedMpegAudioInputStream;
 import ddf.minim.AudioMetaData;
 
+// TODO: apparently CPU usage goes to 100% if an mp3 file is allowed to play all the
+// way to the end and then left alone. was this fixed?
+
 class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 {
 	private AudioMetaData		meta;
