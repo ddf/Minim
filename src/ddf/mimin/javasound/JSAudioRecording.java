@@ -28,6 +28,10 @@ import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
 import ddf.minim.spi.AudioRecording;
 
+// TODO: especially when rewound/played repeatedly, tends to start echoing bits and pieces and getting trapped...
+// pretty sure this is fixed, but double check
+
+
 class JSAudioRecording implements AudioRecording, Runnable
 {
 	private AudioMetaData		meta;
