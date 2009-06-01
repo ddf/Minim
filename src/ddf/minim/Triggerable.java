@@ -26,4 +26,9 @@ public interface Triggerable
    *
    */
   void trigger();
+  
+  /**
+   * Stops all sound being produced.
+   */
+  void stop();
 }

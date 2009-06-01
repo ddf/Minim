@@ -39,6 +39,11 @@ final class JSAudioSample extends AudioSample
     sample.trigger();
   }
   
+  public void stop()
+  {
+    sample.stop();
+  }
+  
   public float[] getChannel(int channelNumber)
   {
     return sample.getChannel(channelNumber);

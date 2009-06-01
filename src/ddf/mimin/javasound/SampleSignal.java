@@ -114,6 +114,14 @@ class SampleSignal implements AudioSignal, Triggerable
 		}
 
 	}
+  
+  public void stop()
+  {
+    for(int i = 0; i < marks.length; ++i)
+    {
+      marks[i] = -1;
+    }
+  }
 
 	public float[] getChannel(int channelNumber)
 	{
