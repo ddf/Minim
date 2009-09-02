@@ -4,12 +4,13 @@ import processing.core.PApplet;
 import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
 
-public class ADSR implements AudioSignal 
+public class ADSR implements AudioSignal
 {
 	private int a, d, s, r;
 	private float susAmp;
 	private float sampleRate;
 	private int samplesProcessed;
+	float[] allAmps;
 	
 	public ADSR(float attackLength, 
 				float decayLength, 
@@ -30,7 +31,7 @@ public class ADSR implements AudioSignal
 		r = s + rsamp;
 		susAmp = sustainLevel;
 		this.sampleRate = sampleRate;
-		samplesProcessed = 0;		
+		samplesProcessed = 0;
 	}
 	
 	public void trigger()

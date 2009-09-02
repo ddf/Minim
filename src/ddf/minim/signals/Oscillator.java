@@ -111,8 +111,8 @@ public abstract class Oscillator implements AudioSignal
     ampMod = null;
     freqMod = null;
   }
-  
-  public final float sampleRate()
+
+public final float sampleRate()
   {
     return srate;
   }
@@ -178,6 +178,19 @@ public abstract class Oscillator implements AudioSignal
   public final void setPan(float p)
   {
     newPan = PApplet.constrain(p, -1, 1);
+  }
+  
+  /**
+   * Set the pan of the Oscillator, but don't smoothly transition from
+   * whatever the current pan value is to this new one.
+   * 
+   * @param p - 
+   * 			the new pan value, it will be constrained to [-1,1]
+   */
+  public final void setPanNoGlide(float p)
+  {
+	setPan(p);
+	pan = PApplet.constrain(p, -1, 1);
   }
   
   /**

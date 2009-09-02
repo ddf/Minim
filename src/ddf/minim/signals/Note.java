@@ -2,6 +2,7 @@ package ddf.minim.signals;
 
 import ddf.minim.AudioOutput;
 import ddf.minim.AudioSignal;
+import ddf.minim.Minim;
 import ddf.minim.signals.ADSR;
 
 public class Note implements AudioSignal
@@ -17,21 +18,20 @@ public class Note implements AudioSignal
 		sig = wave;
 		env = envelope;
 		output.addSignal(this);
+		env.trigger();
 		amps = new float[output.bufferSize()];
 	}
 	
 	public void generate(float[] signal)
 	{
-		if ( !env.done() )
+		sig.generate(signal);
+		env.generate(amps);
+		for(int i = 0; i < amps.length; i++)
 		{
-			sig.generate(signal);
-			env.generate(amps);
-			for(int i = 0; i < amps.length; i++)
-			{
-				signal[i] *= amps[i];
-			}
+			signal[i] *= amps[i];
 		}
-		else
+		
+		if ( env.done() )
 		{
 			out.removeSignal(this);
 		}
@@ -39,17 +39,15 @@ public class Note implements AudioSignal
 
 	public void generate(float[] left, float[] right)
 	{
-		if ( !env.done() )
+		sig.generate(left, right);
+		env.generate(amps);
+		for(int i = 0; i < amps.length; i++)
 		{
-			sig.generate(left, right);
-			env.generate(amps);
-			for(int i = 0; i < amps.length; i++)
-			{
-				left[i] *= amps[i];
-				right[i] *= amps[i];
-			}
+			left[i] *= amps[i];
+			right[i] *= amps[i];
 		}
-		else
+		
+		if ( env.done() )
 		{
 			out.removeSignal(this);
 		}

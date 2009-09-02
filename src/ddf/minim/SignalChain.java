@@ -43,6 +43,10 @@ public class SignalChain implements AudioSignal
 {
   // the signals in the order they were added
   private Vector signals;
+  // signals we should remove after our next generate
+  // this is done so that a signal won't ever be actually 
+  // removed in the middle of a generate, which can cause clicks
+  private Vector signalsToRemove;
   // all currently enabled signals
   private HashSet enabled;
   // buffers used to generate audio for each signal
@@ -56,6 +60,7 @@ public class SignalChain implements AudioSignal
   public SignalChain()
   {
     signals = new Vector();
+    signalsToRemove = new Vector();
     enabled = new HashSet();
   }
 
@@ -79,8 +84,8 @@ public class SignalChain implements AudioSignal
    */
   public synchronized void remove(AudioSignal signal)
   {
-    signals.remove(signal);
-    enabled.remove(signal);
+	//Minim.debug("Marking " + signal.toString() + " for removal.");
+	signalsToRemove.add(signal);
   }
 
   /**
@@ -239,16 +244,9 @@ public class SignalChain implements AudioSignal
     {
     	tmpL = new float[signal.length];
     }
-    // We create an array from signals here because it
-    // is possible that an AudioSignal might modify
-    // signals during its generate call (see: Note.java)
-    // sychronization doesn't help us in that case
-    // because this object is being accessed
-    // from the same thread!
-    Object[] sigArray = signals.toArray();
-    for (int i = 0; i < sigArray.length; i++)
+    for (int i = 0; i < signals.size(); i++)
     {
-      AudioSignal s = (AudioSignal) sigArray[i];
+      AudioSignal s = (AudioSignal) signals.get(i);
       if ( enabled.contains(s) )
       {
         for(int it = 0; it < tmpL.length; it++) 
@@ -262,6 +260,9 @@ public class SignalChain implements AudioSignal
         }
       }
     }
+    // now remove signals we have marked for removal
+    signals.removeAll(signalsToRemove);
+    signalsToRemove.removeAllElements();    
   }
 
   /**
@@ -279,10 +280,9 @@ public class SignalChain implements AudioSignal
 	  {
 		  tmpR = new float[right.length];
 	  }
-    Object[] sigArray = signals.toArray();
-    for (int i = 0; i < sigArray.length; i++)
+    for (int i = 0; i < signals.size(); i++)
     {
-      AudioSignal s = (AudioSignal)sigArray[i];
+      AudioSignal s = (AudioSignal) signals.get(i);
       if ( enabled.contains(s) )
       {
         s.generate(tmpL, tmpR);
@@ -293,5 +293,8 @@ public class SignalChain implements AudioSignal
         }
       }
     }
+    // now remove signals we have marked for removal
+    signals.removeAll(signalsToRemove);
+    signalsToRemove.removeAllElements(); 
   }
 }
