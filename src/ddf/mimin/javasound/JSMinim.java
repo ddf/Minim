@@ -121,7 +121,7 @@ public class JSMinim implements MinimServiceProvider
 	public SampleRecorder getSampleRecorder(Recordable source, String fileName,
 			boolean buffered)
 	{
-		String ext = fileName.substring(fileName.indexOf('.') + 1).toLowerCase();
+		String ext = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		debug("createRecorder: file extension is " + ext + ".");
 		AudioFileFormat.Type fileType = null;
 		if (ext.equals(Minim.WAV.getExtension()))

@@ -89,6 +89,11 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 	{
 		while (!finished)
 		{
+			// TODO:
+//			Instead of at line 92, where you sleep for 10 milliseconds, put an else statement
+//			there and sleep for, say 1000 milliseconds.  Then, anywhere you set play to true, do
+//			an iothread.interupt().  That way your thread won\'t be updating 100 times a second,
+//			and you won\'t be waiting 10 milliseconds which could cause skips in a small buffer.
 			while (line.available() < rawBytes.length)
 			{
 				sleep(10);
@@ -119,6 +124,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 			// take a nap
 			sleep(10);
 		} // while ( !finished )
+		// TODO: this will block when the line is stopped! Which is always true when I drop out of the above while!
 		line.drain();
 		line.close();
 		line = null;
@@ -355,6 +361,11 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void close()
 	{
+		// TODO: do I even need to stop here? pretty sure this causes the reported zombie thread bug
+		//       because I sit and spin in my run if the line has anything in it. 
+		//       the idea was to let what's left in the line play before actually closing
+		//       to avoid clicks and so forth, but that'll happen anyway if this is closed 
+		//       while something is in the middle of playing. this is why threading is hard. :(
 		line.stop();
 		finished = true;
 		try
