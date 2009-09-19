@@ -89,6 +89,13 @@ final class JSStreamingSampleRecorder implements SampleRecorder
     {
       system.error("Error obtaining new output stream: " + e.getMessage());
     }
+    catch (IllegalArgumentException badarg)
+    {
+      system.error("Error obtaining new output stream for " + fileName + " with type " 
+          + type.toString() + " format " + format.toString() 
+          + " and bufferSize " + bufferSize + ".\n" 
+          + "The reason is " + badarg.getMessage());
+    }
     fsb = new FloatSampleBuffer(format.getChannels(),
                                 bufferSize,
                                 format.getSampleRate());

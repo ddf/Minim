@@ -361,6 +361,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void close()
 	{
+    line.flush();
 		// TODO: do I even need to stop here? pretty sure this causes the reported zombie thread bug
 		//       because I sit and spin in my run if the line has anything in it. 
 		//       the idea was to let what's left in the line play before actually closing
