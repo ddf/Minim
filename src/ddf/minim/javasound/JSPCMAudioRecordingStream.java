@@ -30,8 +30,6 @@ import ddf.minim.AudioMetaData;
 class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 {
 	private AudioMetaData	meta;
-  
-  // TODO: test this with a really long WAV file ( larger than 40MB )
 
 	JSPCMAudioRecordingStream(JSMinim sys, AudioMetaData mdata, AudioInputStream stream,
 			SourceDataLine sdl, int bufferSize)
@@ -52,11 +50,17 @@ class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 	
 	protected void rewind()
 	{
+    // close and reload
+    // because marking the thing such that you can play the
+    // entire file without the mark being invalidated,
+    // essentially means you are loading the file into memory
+    // as it is played. which can mean out-of-memory for large files.
 		try
 		{
 			synchronized ( ais )
 			{
-				ais.reset();
+        ais.close();
+        ais = system.getAudioInputStream(meta.fileName());
 			}
 		}
 		catch (IOException e)
@@ -78,6 +82,7 @@ class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 				int read;
 				synchronized ( ais )
 				{
+          // TODO: why aren't we using skip here?
 					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
 				}
 				if (read == -1)

@@ -28,34 +28,40 @@ import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
 import ddf.minim.spi.AudioRecording;
 
-// TODO: especially when rewound/played repeatedly, tends to start echoing bits and pieces and getting trapped...
-// pretty sure this is fixed, but double check
 
+// TODO: there is so much here that is the same as JSBaseAudioRecordingStream
+//       should find a way to share that code.
 
 class JSAudioRecording implements AudioRecording, Runnable
 {
-	private AudioMetaData		meta;
-	private byte[] 				samples;
-	private Thread					iothread;
+	private AudioMetaData		  meta;
+	private byte[] 				    samples;
+	private Thread					  iothread;
 
 	// reading stuff
-	private boolean				play;
-	private boolean				loop;
-	private int						numLoops;
+	private boolean				    play;
+	private boolean				    loop;
+	private int						    numLoops;
 	// loop begin is in milliseconds
-	private int						loopBegin;
+	private int						    loopBegin;
 	// loop end is in bytes
-	private int						loopEnd;
-	private byte[]					rawBytes;
-	private int						totalBytesRead;
+	private int						    loopEnd;
+	private byte[]					  rawBytes;
+	private int						    totalBytesRead;
+  // see JSBaseAudioRecordingStream for a discussion of these.
+  private boolean           shouldRead;
+  private int               bytesWritten;
 
 	// writing stuff
 	protected AudioFormat		format;
 	private SourceDataLine		line;
 	private boolean				finished;
+  
+  private JSMinim system;
 
-	JSAudioRecording(byte[] samps, SourceDataLine sdl, AudioMetaData mdata)
+	JSAudioRecording(JSMinim sys, byte[] samps, SourceDataLine sdl, AudioMetaData mdata)
 	{
+    system = sys;
 		samples = samps;
 		meta = mdata;
 		format = sdl.getFormat();
@@ -68,34 +74,43 @@ class JSAudioRecording implements AudioRecording, Runnable
 		loopEnd = (int)AudioUtils.millis2BytesFrameAligned(meta.length(), format);
 		rawBytes = new byte[sdl.getBufferSize() / 8];
 		iothread = null;
+    totalBytesRead = 0;
+    bytesWritten = 0;
+    shouldRead = true;
 	}
 
 	public void run()
 	{
 		while (!finished)
 		{
-			while (line.available() < rawBytes.length)
-			{
-				sleep(10);
-			}
 			if (play)
 			{
-				// read in a full buffer of bytes from the file
-				if (loop)
-				{
-					readBytesLoop();
-				}
-				else
-				{
-					readBytes();
-				}
+        if ( shouldRead )
+        {
+  				// read in a full buffer of bytes from the file
+  				if (loop)
+  				{
+  					readBytesLoop();
+  				}
+  				else
+  				{
+  					readBytes();
+  				}
+        }
 				// write to the line until all bytes are written
 				writeBytes();
+				// take a nap
+        Thread.yield();
 			}
-			// take a nap
-			sleep(10);
+      else
+      {
+        // we'll be interrupted if we should start playing again.
+        sleep(30000);
+      }
 		} // while ( !finished )
-		line.drain();
+    
+    // flush the line before we close it. because that is polite.
+		line.flush();
 		line.close();
 		line = null;
 	}
@@ -113,13 +128,21 @@ class JSAudioRecording implements AudioRecording, Runnable
 
 	private synchronized void readBytes()
 	{
-		int samplesLeft = samples.length - totalBytesRead; 
-		if ( samplesLeft  < rawBytes.length )
+		int samplesLeft = samples.length - totalBytesRead;
+		if ( samplesLeft < rawBytes.length )
 		{
 			readBytes(samplesLeft, 0);
+      system.debug("readBytes: filling rawBytes from " + samplesLeft + " to " + rawBytes.length + " with silence.");
+      byte silent = 0;
+      // unsigned source means we need to make the silence the neutral value,
+      // which is exactly half as large as a byte can be.
+      if ( format.getEncoding() == AudioFormat.Encoding.PCM_UNSIGNED )
+      {
+        silent = (byte)0x80;
+      }
 			for(int i = samplesLeft; i < rawBytes.length; i++)
 			{
-				rawBytes[i] = 0;
+				rawBytes[i] = silent;
 			}
 			play = false;
 		}
@@ -170,28 +193,30 @@ class JSAudioRecording implements AudioRecording, Runnable
 		System.arraycopy(samples, totalBytesRead, rawBytes, offset, toRead);
 		totalBytesRead += toRead;
 	}
-	
-	// TODO: apparently not handling end-of-file correctly because a user has reported clicks
-	// http://processing.org/discourse/yabb_beta/YaBB.cgi?board=Sound;action=display;num=1226609644;start=0#3
 
 	private void writeBytes()
 	{
-		// the write call will block until the requested amount of bytes
-		// is written, however the user might stop the line in the
-		// middle of writing and then we get told how much was actually written
-		int actualWrit = line.write(rawBytes, 0, rawBytes.length);
-		while (actualWrit != rawBytes.length)
-		{
-			// JSMinim.debug("Wanted to write " + rawBytes.length + ", actually
-			// wrote " + actualWrit);
-			// wait until there's room for the rest
-			while (line.available() < rawBytes.length - actualWrit)
-			{
-				sleep(10);
-			}
-			// try again from where we left off
-			actualWrit += line.write(rawBytes, actualWrit, rawBytes.length	- actualWrit);
-		}
+	  // the write call will block until the requested amount of bytes
+    // is written, however the user might stop the line in the
+    // middle of writing and then we get told how much was actually written.
+    // because of that, we might not need to write the entire array when we get here.
+    int needToWrite = rawBytes.length - bytesWritten;
+    int actualWrit = line.write(rawBytes, bytesWritten, needToWrite);
+    // if the total written is not equal to how much we needed to write
+    // then we need to remember where we were so that we don't read more 
+    // until we finished writing our entire rawBytes array.
+    if ( actualWrit != needToWrite )
+    {
+      shouldRead = false;
+      bytesWritten += actualWrit;
+    }
+    else
+    {
+      // if it all got written, we should continue reading
+      // and we reset our bytesWritten value.
+      shouldRead = true; 
+      bytesWritten = 0;
+    }
 	}
 
 	public void play()
@@ -200,6 +225,7 @@ class JSAudioRecording implements AudioRecording, Runnable
 		loop = false;
 		numLoops = 0;
 		play = true;
+    iothread.interrupt();
 	}
 
 	public boolean isPlaying()
@@ -220,6 +246,7 @@ class JSAudioRecording implements AudioRecording, Runnable
 		play = true;
 		setMillisecondPosition(loopBegin);
 		line.start();
+    iothread.interrupt();
 	}
 
 	public void open()

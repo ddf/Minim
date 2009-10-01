@@ -36,31 +36,52 @@ import ddf.minim.spi.AudioRecordingStream;
 abstract class JSBaseAudioRecordingStream implements Runnable,
 		AudioRecordingStream
 {
-	private Thread					iothread;
-	private AudioListener		listener;
-	private AudioEffect			effect;
+	private Thread					    iothread;
+	private AudioListener		    listener;
+	private AudioEffect			    effect;
 
 	// reading stuff
-	private boolean				play;
-	private boolean				loop;
-	private int						numLoops;
+	private boolean				      play;
+	private boolean				      loop;
+	private int						      numLoops;
 	// loop begin is in milliseconds
-	private int						loopBegin;
+	private int						      loopBegin;
 	// loop end is in bytes
-	private int						loopEnd;
+	private int						      loopEnd;
 	protected AudioInputStream	ais;
-	private byte[]					rawBytes;
-	private int						totalBytesRead;
+	private byte[]					    rawBytes;
+  // whether or not we should read from the file
+  // this is different from whether we should play or not.
+  // this will always be true, unless we've got 
+  // bytes left in rawBytes that need to be written
+  // to the output line. when that happens this will be 
+  // set to false. i use a boolean instead of inferring the
+  // the state from the value of bytesWritten so that 
+  // if the implementation changes, it can.
+  private boolean             shouldRead;
+  // accumulates the total number of bytes that have been 
+  // written out to the output line so that we can 
+  // report how far into the stream we are.
+	private int						      totalBytesRead;
+  // how many bytes have we written to the output line
+  // we keep track of this so that if a line is stopped
+  // in the middle of a write, which can happen if 
+  // the stream is paused, we can pick up where we left
+  // off. this means we don't have to sit and spin 
+  // in writeBytes waiting to be able to write the rest
+  // of the bytes, we can just exit and allow silence 
+  // to be broadcasted out to the listener. 
+  private int                 bytesWritten;
 
 	// writing stuff
-	protected AudioFormat		format;
-	private SourceDataLine		line;
-	private FloatSampleBuffer	buffer;
-	private int						bufferSize;
-	private boolean				finished;
-	private float[]				silence;
+	protected AudioFormat		    format;
+	private SourceDataLine		  line;
+	private FloatSampleBuffer	  buffer;
+	private int						      bufferSize;
+	private boolean				      finished;
+	private float[]				      silence;
   
-  protected JSMinim system;
+  protected JSMinim           system;
 
 	JSBaseAudioRecordingStream(JSMinim sys, AudioInputStream stream, SourceDataLine sdl,
 			int bufferSize, int msLen)
@@ -83,49 +104,58 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		rawBytes = new byte[buffer.getByteArrayBufferSize(format)];
 		silence = new float[bufferSize];
 		iothread = null;
+    totalBytesRead = 0;
+    bytesWritten = 0;
+    shouldRead = true;
 	}
 
 	public void run()
 	{
 		while (!finished)
 		{
-			// TODO:
-//			Instead of at line 92, where you sleep for 10 milliseconds, put an else statement
-//			there and sleep for, say 1000 milliseconds.  Then, anywhere you set play to true, do
-//			an iothread.interupt().  That way your thread won\'t be updating 100 times a second,
-//			and you won\'t be waiting 10 milliseconds which could cause skips in a small buffer.
-			while (line.available() < rawBytes.length)
-			{
-				sleep(10);
-			}
 			if (play)
 			{
-				// read in a full buffer of bytes from the file
-				if (loop)
-				{
-					readBytesLoop();
-				}
-				else
-				{
-					readBytes();
-				}
-				// convert them to floating point
-				// hand those arrays to our effect
-				// and convert back to bytes
-				process();
-				// write to the line until all bytes are written
+        if ( shouldRead )
+        {
+  				// read in a full buffer of bytes from the file
+  				if (loop)
+  				{
+  					readBytesLoop();
+  				}
+  				else
+  				{
+  					readBytes();
+  				}
+  				// convert them to floating point
+  				// hand those arrays to our effect
+  				// and convert back to bytes
+  				process();
+        }
+				// write to the line.
 				writeBytes();
+				// send samples to the listener
+        // these will be what we just put into the line
+        // which means they should be pretty well sync'd
+        // with the audible result
+        broadcast();
+        // take a nap
+        Thread.yield();
 			}
-			// send samples to the listener
-			// these will be what we just put into the line
-			// which means they should be pretty well sync'd
-			// with the audible result
-			broadcast();
-			// take a nap
-			sleep(10);
+      else
+      {
+        // if we're not playing, we can just chill out until we're told to play again.
+        // no reason to sit and spin doing nothing.
+        system.debug("Gonna wait..."); 
+        // but first set out an empty buffer, to represent our silenced state.
+        broadcast();
+        // go to sleep for a really long time. we'll be interrupted if we need to start up again.
+        sleep(30000);
+        system.debug("Done waiting!");
+      }
 		} // while ( !finished )
-		// TODO: this will block when the line is stopped! Which is always true when I drop out of the above while!
-		line.drain();
+    
+		// flush the line before we close it. because it's polite.
+		line.flush();
 		line.close();
 		line = null;
 	}
@@ -256,22 +286,26 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 	{
 		// the write call will block until the requested amount of bytes
 		// is written, however the user might stop the line in the
-		// middle of writing and then we get told how much was actually written
-		int actualWrit = line.write(rawBytes, 0, rawBytes.length);
-		while (actualWrit != rawBytes.length)
-		{
-      /* TODO funny issue here where we will sleep because the line has been 
-       * stopped and there's no more room in the buffer. what should be happening
-       * is that the listener gets broadcast silence but because we loop here,
-       * that doesn't happen. need to think of a decent solution.
-       */
-			while (line.available() < rawBytes.length - actualWrit)
-			{
-				sleep(10);
-			}
-			// try again from where we left off
-			actualWrit += line.write(rawBytes, actualWrit, rawBytes.length	- actualWrit);
-		}
+		// middle of writing and then we get told how much was actually written.
+    // because of that, we might not need to write the entire array when we get here.
+    int needToWrite = rawBytes.length - bytesWritten;
+		int actualWrit = line.write(rawBytes, bytesWritten, needToWrite);
+		// if the total written is not equal to how much we needed to write
+    // then we need to remember where we were so that we don't read more 
+    // until we finished writing our entire rawBytes array.
+    if ( actualWrit != needToWrite )
+    {
+      system.debug("writeBytes: wrote " + actualWrit + " of " + needToWrite);
+      shouldRead = false;
+      bytesWritten += actualWrit;
+    }
+    else
+    {
+      // if it all got written, we should continue reading
+      // and we reset our bytesWritten value.
+      shouldRead = true; 
+      bytesWritten = 0;
+    }
 	}
 
 	private void broadcast()
@@ -330,6 +364,8 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		loop = false;
 		numLoops = 0;
 		play = true;
+    // will wake up our data processing thread.
+    iothread.interrupt();
 	}
 
 	public boolean isPlaying()
@@ -350,6 +386,8 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		play = true;
 		setMillisecondPosition(loopBegin);
 		line.start();
+    // will wake up our data processing thread.
+    iothread.interrupt();
 	}
 
 	public void open()
@@ -361,13 +399,6 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void close()
 	{
-    line.flush();
-		// TODO: do I even need to stop here? pretty sure this causes the reported zombie thread bug
-		//       because I sit and spin in my run if the line has anything in it. 
-		//       the idea was to let what's left in the line play before actually closing
-		//       to avoid clicks and so forth, but that'll happen anyway if this is closed 
-		//       while something is in the middle of playing. this is why threading is hard. :(
-		line.stop();
 		finished = true;
 		try
 		{
@@ -403,6 +434,10 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		return numLoops;
 	}
 
+  // TODO: consider using mark for marking the starting loop point
+  //       in cases where the section being looped is not really huge.
+  //       doing so will make it possible loop sections of large files
+  //       without having to make a new AudioInputStream
 	public void setLoopPoints(int start, int stop)
 	{
 		if (start <= 0 || start > stop)

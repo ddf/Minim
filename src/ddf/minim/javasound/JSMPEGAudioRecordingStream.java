@@ -28,8 +28,6 @@ import org.tritonus.share.sampled.AudioUtils;
 import javazoom.spi.mpeg.sampled.convert.DecodedMpegAudioInputStream;
 import ddf.minim.AudioMetaData;
 
-// TODO: apparently CPU usage goes to 100% if an mp3 file is allowed to play all the
-// way to the end and then left alone. was this fixed?
 
 class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 {
@@ -69,6 +67,7 @@ class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 				int read;
 				synchronized ( ais )
 				{
+          // TODO: why aren't we using skip here?
 					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
 				}
 				if (read == -1)
@@ -91,27 +90,11 @@ class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 	
 	protected void rewind()
 	{
-		if (encAis.markSupported())
-		{
-			try
-			{
-				synchronized ( ais )
-				{
-					encAis.reset();
-					// don't close the existing stream because it
-					// is wrapping our encoded stream
-					ais = (DecodedMpegAudioInputStream)system.getAudioInputStream(format, encAis);
-				}
-				return;
-			}
-			catch (Exception e)
-			{
-				system.error("Couldn't rewind using reset (" + e.getMessage()
-						+ "), will try reloading the file.");
-			}
-		}
-
-		// blah, close and reload
+		// close and reload
+	  // because marking the thing such that you can play the
+    // entire file without the mark being invalidated,
+    // essentially means you are loading the file into memory
+    // as it is played. which can mean out-of-memory for large files.
 		synchronized ( ais )
 		{
 			try
