@@ -21,7 +21,7 @@ package ddf.minim;
 import javax.sound.sampled.AudioFileFormat;
 
 import processing.core.PApplet;
-import ddf.mimin.javasound.JSMinim;
+import ddf.minim.javasound.JSMinim;
 import ddf.minim.spi.AudioRecording;
 import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.AudioStream;

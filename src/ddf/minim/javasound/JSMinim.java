@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package ddf.mimin.javasound;
+package ddf.minim.javasound;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

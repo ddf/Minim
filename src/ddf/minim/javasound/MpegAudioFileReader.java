@@ -48,7 +48,7 @@
 // just use a modified copy in the main package than change it in 
 // the mp3spi project and export a new JAR.
 // This also enables me to easily add more tag parsing later.
-package ddf.mimin.javasound;
+package ddf.minim.javasound;
 
 import java.io.BufferedInputStream;
 import java.io.File;
