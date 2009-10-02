@@ -68,12 +68,36 @@ public class JSMinim implements MinimServiceProvider
 {
 	private boolean debug;
   private PApplet app;
+  private Mixer   inputMixer;
+  private Mixer   outputMixer;
 
 	public JSMinim(PApplet parent)
 	{
 		debug = false;
     app = parent;
+    inputMixer = null;
+    outputMixer = null;
 	}
+  
+  public void setInputMixer(Mixer mix)
+  {
+    inputMixer = mix;
+  }
+  
+  public Mixer getInputMixer()  
+  {
+    return inputMixer;
+  }
+  
+  public void setOutputMixer(Mixer mix)
+  {
+    outputMixer = mix;
+  }
+  
+  public Mixer getOutputMixer()
+  {
+    return outputMixer;
+  }
 
 	public void start()
 	{
@@ -333,6 +357,44 @@ public class JSMinim implements MinimServiceProvider
 		}
 		return null;
 	}
+  
+  public AudioSample getAudioSample(float[] samples, AudioFormat format, int bufferSize)
+  {
+    FloatSampleBuffer sample = new FloatSampleBuffer(1, samples.length, format.getSampleRate());
+    System.arraycopy(samples, 0, sample.getChannel(0), 0, samples.length);
+    return getAudioSampleImp(sample, format, bufferSize);
+  }
+  
+  public AudioSample getAudioSample(float[] left, float[] right, AudioFormat format, int bufferSize)
+  {
+    FloatSampleBuffer sample = new FloatSampleBuffer(2, left.length, format.getSampleRate());
+    System.arraycopy(left, 0, sample.getChannel(0), 0, left.length);
+    System.arraycopy(right, 0, sample.getChannel(1), 0, right.length);
+    return getAudioSampleImp(sample, format, bufferSize);
+  }
+  
+  private JSAudioSample getAudioSampleImp(FloatSampleBuffer samples, AudioFormat format, int bufferSize)
+  {
+    AudioSynthesizer out = getAudioSynthesizer( samples.getChannelCount(), 
+                                                bufferSize, 
+                                                format.getSampleRate(), 
+                                                format.getSampleSizeInBits()
+                                              );
+    if (out != null)
+    {
+      SampleSignal ssig = new SampleSignal(samples);
+      out.setAudioSignal(ssig);
+      long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
+      BasicMetaData meta = new BasicMetaData(samples.toString(), length);
+      return new JSAudioSample(meta, ssig, out);
+    }
+    else
+    {
+      error("Couldn't acquire an output.");
+    }
+    
+    return null;
+  }
 
 	public AudioSynthesizer getAudioSynthesizer(int type, int bufferSize,
 			float sampleRate, int bitDepth)
@@ -451,7 +513,7 @@ public class JSMinim implements MinimServiceProvider
 		return null;
 	}
 	
-	FloatSampleBuffer loadFloatAudio(AudioInputStream ais, int toRead)
+	private FloatSampleBuffer loadFloatAudio(AudioInputStream ais, int toRead)
 	{
 		FloatSampleBuffer samples = new FloatSampleBuffer();
 		int totalRead = 0;
@@ -462,10 +524,11 @@ public class JSMinim implements MinimServiceProvider
 			// read more than about 2000 bytes at a time
 			while (totalRead < toRead)
 			{
-				int actualRead = ais.read(rawBytes, totalRead, toRead
-						- totalRead);
+				int actualRead = ais.read(rawBytes, totalRead, toRead	- totalRead);
 				if (actualRead < 1)
+        {
 					break;
+        }
 				totalRead += actualRead;
 			}
 			ais.close();
@@ -479,7 +542,7 @@ public class JSMinim implements MinimServiceProvider
 		return samples;
 	}
 	
-	byte[] loadByteAudio(AudioInputStream ais, int toRead)
+	private byte[] loadByteAudio(AudioInputStream ais, int toRead)
 	{
 		int totalRead = 0;
 		byte[] rawBytes = new byte[toRead];
@@ -653,7 +716,14 @@ public class JSMinim implements MinimServiceProvider
 		{
 			try
 			{
-				line = (SourceDataLine)AudioSystem.getLine(info);
+        if ( outputMixer == null )
+        {
+          line = (SourceDataLine)AudioSystem.getLine(info);
+        }
+        else
+        {
+          line = (SourceDataLine)outputMixer.getLine(info);
+        }
 				// remember that time you spent, like, an entire afternoon fussing
 				// with this buffer size to try to get the latency decent on Linux?
 				// Yah, don't fuss with this anymore, ok?
@@ -679,28 +749,18 @@ public class JSMinim implements MinimServiceProvider
 	{
 		TargetDataLine line = null;
 		DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-    //Mixer.Info[] infos = AudioSystem.getMixerInfo();
-    //for(int i = 0; i < infos.length; i++)
-    //{
-      //Minim.debug(infos[i].toString());
-    //}
-    // TODO: Ok, so this is nasty. In Windows, with the MOTU turned on
-    // this particular mixer represents the Mix1, which means I can use it
-    // to monitor the computer's audio output. However, I have no way 
-    // of asking for this specifically, which means if I use currently
-    // shipped code I get nothing when I try to grab the input.
-    // Or, rather, I get an input and who knows what it's connected to.
-    // I hate to open up the idea of Mixers to the user, but if people 
-    // know there is a specific mixer they want an input from, they should
-    // be able to specify it somehow...
-    //Mixer mix = AudioSystem.getMixer(infos[11]);
-    //Minim.debug(mix.getMixerInfo().toString());
 		if (AudioSystem.isLineSupported(info))
 		{
 			try
 			{
-				line = (TargetDataLine)AudioSystem.getLine(info);
-        //line = (TargetDataLine)mix.getLine(info);
+        if ( inputMixer == null )
+        {
+          line = (TargetDataLine)AudioSystem.getLine(info);
+        }
+        else
+        {
+          line = (TargetDataLine)inputMixer.getLine(info);
+        }
 				line.open(format, bufferSize * format.getFrameSize());
 				debug("TargetDataLine buffer size is " + line.getBufferSize()
 						+ "\n" + "TargetDataLine format is "

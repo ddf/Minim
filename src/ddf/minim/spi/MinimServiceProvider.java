@@ -18,6 +18,8 @@
 
 package ddf.minim.spi;
 
+import javax.sound.sampled.AudioFormat;
+
 import ddf.minim.AudioSample;
 import ddf.minim.Recordable;
 
@@ -109,7 +111,7 @@ public interface MinimServiceProvider
   AudioSynthesizer getAudioSynthesizer(int type, int bufferSize, float sampleRate, int bitDepth);
   
   /**
-   * Should return and {@link AudioSample} that will load the requested file into memory.
+   * Should return an {@link AudioSample} that will load the requested file into memory.
    * 
    * @param filename the name of the file to load, this might be a URL, an absolute path, or a 
    * file that the user expects the implementation to find in their sketch somewhere.
@@ -117,6 +119,32 @@ public interface MinimServiceProvider
    * @return an AudioSample that contains the file
    */
   AudioSample getAudioSample(String filename, int bufferSize);
+  
+  /**
+   * Should return an {@link AudioSample} that will store the provided samples.
+   * 
+   * @param samples 
+   *          the array of audio samples
+   * @param bufferSize
+   *          how large the output buffer should be
+   * @return
+   *          an AudioSample that contains the samples
+   */
+  AudioSample getAudioSample(float[] samples, AudioFormat format, int bufferSize);
+  
+  /**
+   * Should return an {@link AudioSample} that will store the provided samples.
+   * 
+   * @param left
+   *          the left channel of the stereo sample
+   * @param right
+   *          the right channel of a stereo sample
+   * @param bufferSize
+   *          how large the output buffer should be
+   * @return
+   *          an AudioSample that contains the samples
+   */
+  AudioSample getAudioSample(float[] left, float[] right, AudioFormat format, int bufferSize);
   
   /**
    * Should return a {@link SampleRecorder} that can record the <code>source</code> in a 

@@ -67,7 +67,7 @@ class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 				int read;
 				synchronized ( ais )
 				{
-          // TODO: why aren't we using skip here?
+          // we don't use skip here because it doesn't work with our decoder
 					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
 				}
 				if (read == -1)

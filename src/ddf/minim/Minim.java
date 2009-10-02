@@ -19,6 +19,7 @@
 package ddf.minim;
 
 import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
 
 import processing.core.PApplet;
 import ddf.minim.javasound.JSMinim;
@@ -101,6 +102,11 @@ public class Minim
     mimp = msp;
     mimp.start();
   }
+  
+  public MinimServiceProvider getServiceProvider()
+  {
+    return mimp;
+  }
 
   /**
    * Used internally to report error messages. These error messages will appear
@@ -180,8 +186,69 @@ public class Minim
     mimp.stop();
   }
 
-  // TODO: make it possible to load a sample by passing Minim a float array.
-  //       so that people can procedurally generate samples to later trigger.
+  /**
+   * Creates an {@link AudioSample} using the provided samples and AudioFormat,
+   * with an output buffer size of 1024 samples.
+   * 
+   * @param samples
+   *          the samples to use
+   * @param format
+   *          the format to play the samples back at
+   */
+  public AudioSample createSample(float[] samples, AudioFormat format)
+  {
+    return createSample(samples, format, 1024);
+  }
+  
+  /**
+   * Creates an {@link AudioSample} using the provided samples and AudioFormat,
+   * with the desired output buffer size.
+   * 
+   * @param samples
+   *          the samples to use
+   * @param format
+   *          the format to play them back at
+   * @param bufferSize
+   *          the output buffer size to use 
+   */
+  public AudioSample createSample(float[] samples, AudioFormat format, int bufferSize)
+  {
+    return mimp.getAudioSample(samples, format, bufferSize);
+  }
+  
+  /**
+   * Creates an {@link AudioSample} using the provided left and right channel samples
+   * with an output buffer size of 1024.
+   * 
+   * @param left
+   *          the left channel of the sample
+   * @param right
+   *          the right channel of the sample
+   * @param format
+   *          the format the sample should be played back with
+   */
+  public AudioSample createSample(float[] left, float[] right, AudioFormat format)
+  {
+    return createSample(left, right, format, 1024);
+  }
+  
+  /**
+   * Creates an {@link AudioSample} using the provided left and right channel samples.
+   * 
+   * @param left
+   *          the left channel of the sample
+   * @param right
+   *          the right channel of the sample
+   * @param format
+   *          the format the sample should be played back with
+   * @param bufferSize
+   *          the output buffer size desired
+   */
+  public AudioSample createSample(float[] left, float[] right, AudioFormat format, int bufferSize)
+  {
+    return mimp.getAudioSample(left, right, format, bufferSize);
+  }
+  
   /**
    * Loads the requested file into an {@link AudioSample}.
    * 
@@ -375,7 +442,7 @@ public class Minim
    * @param sampleRate
    *          the desired sample rate in Hertz (typically 44100)
    * @param bitDepth
-   *          the desired bit depth (typically 8)
+   *          the desired bit depth (typically 16)
    * @return an <code>AudioInput</code> with the requested attributes
    */
   public AudioInput getLineIn(int type, int bufferSize,
@@ -468,7 +535,7 @@ public class Minim
    * @param sampleRate
    *          the desired sample rate in Hertz (typically 44100)
    * @param bitDepth
-   *          the desired bit depth (typically 8)
+   *          the desired bit depth (typically 16)
    * @return an <code>AudioOutput</code> with the requested attributes
    */
   public AudioOutput getLineOut(int type, int bufferSize,

@@ -79,10 +79,15 @@ class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 		{
 			while (totalSkipped < toSkip)
 			{
-				int read;
+				long read;
 				synchronized ( ais )
 				{
-          // TODO: why aren't we using skip here?
+          // we don't use skip here because it sometimes has problems where
+          // it's "unable to skip an integer number of frames",
+          // which sometimes means it doesn't skip at all and other times
+          // means that you wind up with noise because it lands at half
+          // a sample off from where it should be. 
+          // read seems to be rock solid.
 					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
 				}
 				if (read == -1)

@@ -215,9 +215,11 @@ public abstract class FourierTransform
             avg += spectrum[offset];
           }
           else
+          {
             break;
+          }
         }
-        avg /= j;
+        avg /= j + 1;
         averages[i] = avg;
       }
     }
@@ -227,9 +229,13 @@ public abstract class FourierTransform
       {
         float lowFreq, hiFreq, freqStep;
         if (i == 0)
+        {
           lowFreq = 0;
+        }
         else
+        {
           lowFreq = (sampleRate / 2) / (float) Math.pow(2, octaves - i);
+        }
         hiFreq = (sampleRate / 2) / (float) Math.pow(2, octaves - i - 1);
         freqStep = (hiFreq - lowFreq) / avgPerOctave;
         float f = lowFreq;
@@ -267,6 +273,7 @@ public abstract class FourierTransform
     {
       Minim.error("The number of averages for this transform can be at most "
           + spectrum.length / 2 + ".");
+      return;
     }
     else
     {
@@ -296,7 +303,9 @@ public abstract class FourierTransform
     float nyq = (float) sampleRate / 2f;
     octaves = 1;
     while ((nyq /= 2) > minBandwidth)
+    {
       octaves++;
+    }
     Minim.debug("Number of octaves = " + octaves);
     avgPerOctave = bandsPerOctave;
     averages = new float[octaves * bandsPerOctave];
@@ -434,9 +443,77 @@ public abstract class FourierTransform
     return i;
   }
   
-  // TODO: what about indexToFreq?
+  /**
+   * Returns the middle frequency of the i<sup>th</sup> band.
+   * @param i
+   *        the index of the band you want to middle frequency of
+   */
+  public float indexToFreq(int i)
+  {
+    float bw = getBandWidth();
+    // special case: the width of the first bin is half that of the others.
+    //               so the center frequency is a quarter of the way.
+    if ( i == 0 ) return bw * 0.25f;
+    // special case: the width of the last bin is half that of the others.
+    if ( i == spectrum.length - 1 ) 
+    {
+      float lastBinBeginFreq = (sampleRate / 2) - (bw / 2);
+      float binHalfWidth = bw * 0.25f;
+      return lastBinBeginFreq + binHalfWidth;
+    }
+    // the center frequency of the ith band is simply i*bw
+    // because the first band is half the width of all others.
+    // treating it as if it wasn't offsets us to the middle 
+    // of the band.
+    return i*bw;
+  }
   
-  // TODO: what about middle frequency of an average band?
+  /**
+   * Returns the center frequency of the i<sup>th</sup> average band.
+   * 
+   * @param i
+   *     which average band you want the center frequency of.
+   */
+  public float getAverageCenterFrequency(int i)
+  {
+    if ( whichAverage == LINAVG )
+    {
+      // an average represents a certain number of bands in the spectrum
+      int avgWidth = (int) spectrum.length / averages.length;
+      // the "center" bin of the average, this is fudgy.
+      int centerBinIndex = i*avgWidth + avgWidth/2;
+      return indexToFreq(centerBinIndex);
+            
+    }
+    else if ( whichAverage == LOGAVG )
+    {
+      // which "octave" is this index in?
+      int octave = i / avgPerOctave;
+      // which band within that octave is this?
+      int offset = i % avgPerOctave;
+      float lowFreq, hiFreq, freqStep;
+      // figure out the low frequency for this octave
+      if (octave == 0)
+      {
+        lowFreq = 0;
+      }
+      else
+      {
+        lowFreq = (sampleRate / 2) / (float) Math.pow(2, octaves - octave);
+      }
+      // and the high frequency for this octave
+      hiFreq = (sampleRate / 2) / (float) Math.pow(2, octaves - octave - 1);
+      // each average band within the octave will be this big
+      freqStep = (hiFreq - lowFreq) / avgPerOctave;
+      // figure out the low frequency of the band we care about
+      float f = lowFreq + offset*freqStep;
+      // the center of the band will be the low plus half the width
+      return f + freqStep/2;
+    }
+    
+    return 0;
+  }
+   
 
   /**
    * Gets the amplitude of the requested frequency in the spectrum.
@@ -492,7 +569,7 @@ public abstract class FourierTransform
    * 
    * @param i
    *          the average you want the value of
-   * @return the value of the requested average
+   * @return the value of the requested average band
    */
   public float getAvg(int i)
   {
@@ -533,8 +610,34 @@ public abstract class FourierTransform
    * @param buffer
    *          the buffer to analyze
    */
-  // TODO: add an offset argument
   public abstract void forward(float[] buffer);
+  
+  /**
+   * Performs a forward transform on values in <code>buffer</code>.
+   * 
+   * @param buffer
+   *          the buffer of samples
+   * @param startAt
+   *          the index to start at in the buffer. there must be at least timeSize() samples
+   *          between the starting index and the end of the buffer. If there aren't, an
+   *          error will be issued and the operation will not be performed.
+   *          
+   */
+  public void forward(float[] buffer, int startAt)
+  {
+    if ( buffer.length - startAt < timeSize )
+    {
+      Minim.error( "FourierTransform.forward: not enough samples in the buffer between " + 
+                   startAt + " and " + buffer.length + " to perform a transform."
+                 );
+      return;
+    }
+    
+    // copy the section of samples we want to analyze
+    float[] section = new float[timeSize];
+    System.arraycopy(buffer, startAt, section, 0, section.length);
+    forward(section);
+  }
 
   /**
    * Performs a forward transform on <code>buffer</code>.
@@ -542,12 +645,25 @@ public abstract class FourierTransform
    * @param buffer
    *          the buffer to analyze
    */
-  // TODO: add an offset argument
   public void forward(AudioBuffer buffer)
   {
     forward(buffer.toArray());
   }
 
+  /**
+   * Performs a forward transform on <code>buffer</code>.
+   * 
+   * @param buffer
+   *          the buffer of samples
+   * @param startAt
+   *          the index to start at in the buffer. there must be at least timeSize() samples
+   *          between the starting index and the end of the buffer.
+   */
+  public void forward(AudioBuffer buffer, int startAt)
+  {
+    forward(buffer.toArray(), startAt);
+  }
+  
   /**
    * Performs an inverse transform of the frequency spectrum and places the
    * result in <code>buffer</code>.
