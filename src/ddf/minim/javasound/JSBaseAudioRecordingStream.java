@@ -189,6 +189,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 				}
 				if (actualRead == -1)
 				{
+          system.debug("Actual read was -1, pausing...");
 					pause();
 					break;
 				}
@@ -381,10 +382,11 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void loop(int n)
 	{
+    // let's get it cued before we muck with any of our state vars.
+    setMillisecondPosition(loopBegin);
 		loop = true;
 		numLoops = n;
 		play = true;
-		setMillisecondPosition(loopBegin);
 		line.start();
     // will wake up our data processing thread.
     iothread.interrupt();
@@ -479,6 +481,15 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
       totalBytesRead += skip(millis - getMillisecondPosition());
     }		
 		play = wasPlaying;
+    // if we're supposed to be playing we need to 
+    // poke the iothread, because it's possible it 
+    // will have dropped into it's long sleep while we 
+    // were doing our thing. this is especially 
+    // likely if we are setting to a previous position.
+    if ( play )
+    {
+      iothread.interrupt();
+    }
 	}
 
 	public Control[] getControls()

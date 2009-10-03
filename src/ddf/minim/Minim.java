@@ -20,6 +20,7 @@ package ddf.minim;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.Mixer;
 
 import processing.core.PApplet;
 import ddf.minim.javasound.JSMinim;
@@ -102,11 +103,6 @@ public class Minim
     mimp = msp;
     mimp.start();
   }
-  
-  public MinimServiceProvider getServiceProvider()
-  {
-    return mimp;
-  }
 
   /**
    * Used internally to report error messages. These error messages will appear
@@ -184,6 +180,38 @@ public class Minim
   public void stop()
   {
     mimp.stop();
+  }
+  
+  /**
+   * Sets the Javasound Mixer that will be used for obtaining input sources
+   * such as AudioInputs. This will do nothing if you have provided your 
+   * own MinimServiceProvider.
+   * 
+   * @param mixer
+   *          The Mixer we should try to acquire inputs from.
+   */
+  public void setInputMixer(Mixer mixer)
+  {
+    if ( mimp instanceof JSMinim )
+    {
+      ((JSMinim)mimp).setInputMixer(mixer);
+    }
+  }
+  
+  /**
+   * Sets the Javasound Mixer that will be used for obtain output destinations
+   * such as those required by AudioOuput, AudioPlayer, AudioSample, and so forth.
+   * This will do nothing if you have provided your own MinimServiceProvider.
+   * 
+   * @param mixer
+   *          The Mixer we should try to acquire outputs from.
+   */
+  public void setOutputMixer(Mixer mixer)
+  {
+    if ( mimp instanceof JSMinim)
+    {
+      ((JSMinim)mimp).setOutputMixer(mixer);
+    }
   }
 
   /**
