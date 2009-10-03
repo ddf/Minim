@@ -6,7 +6,8 @@ import java.util.Random;
  * @author Mark Godfrey <mark.godfrey@gatech.edu>
  */
 
-public class Wavetable
+// Hidden for 2.0.2. We may use this later, but there is no direct application at the moment.
+class Wavetable
 {
 
 	protected float[]	waveform;

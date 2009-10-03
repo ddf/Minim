@@ -4,7 +4,8 @@ package ddf.minim;
  * @author Mark Godfrey <mark.godfrey@gatech.edu>
  */
 
-public abstract class WavetableGenerator
+// Hidden for 2.0.2
+abstract class WavetableGenerator
 {
 
 	// generates piecewise linear waveforms
