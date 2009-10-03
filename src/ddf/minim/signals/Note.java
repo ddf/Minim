@@ -2,10 +2,10 @@ package ddf.minim.signals;
 
 import ddf.minim.AudioOutput;
 import ddf.minim.AudioSignal;
-import ddf.minim.Minim;
-import ddf.minim.signals.ADSR;
 
-public class Note implements AudioSignal
+// For 2.0.2 I don't want this class to be visible. We will probably pull it out 
+// entirely as part of the project with Numediart.
+class Note implements AudioSignal
 {
 	private AudioOutput out;
 	private AudioSignal sig;

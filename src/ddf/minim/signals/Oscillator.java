@@ -335,12 +335,14 @@ public final float sampleRate()
 	  listener = al;
   }
   
-  public final void setAmplitudeModulator(AudioSignal s)
+  // Not visible for 2.0.2
+  final void setAmplitudeModulator(AudioSignal s)
   {
     ampMod = s;
   }
   
-  public final void setFrequencyModulator(AudioSignal s)
+  // Not visible for 2.0.2
+  final void setFrequencyModulator(AudioSignal s)
   {
     freqMod = s;
   }

@@ -4,11 +4,12 @@ import processing.core.PApplet;
 import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
 
-public class ADSR implements AudioSignal
+// For 2.0.2 I don't want this class to be visible. We will likely pull it out entirely
+// as part of the project with Numediart.
+class ADSR implements AudioSignal
 {
 	private int a, d, s, r;
 	private float susAmp;
-	private float sampleRate;
 	private int samplesProcessed;
 	float[] allAmps;
 	
@@ -30,7 +31,6 @@ public class ADSR implements AudioSignal
 		s = d + ssamp; 
 		r = s + rsamp;
 		susAmp = sustainLevel;
-		this.sampleRate = sampleRate;
 		samplesProcessed = 0;
 	}
 	
