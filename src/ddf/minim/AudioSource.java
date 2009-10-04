@@ -156,7 +156,7 @@ public class AudioSource extends Controller implements Effectable, Recordable
 
   public boolean isEnabled(AudioEffect effect)
   {
-    return effects.isEnabled(effects);
+    return effects.isEnabled(effect);
   }
 
   public void noEffects()

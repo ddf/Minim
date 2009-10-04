@@ -295,7 +295,7 @@ public class Controller
    */
   public FloatControl pan()
   {
-    return (FloatControl) getControl(BALANCE);
+    return (FloatControl) getControl(PAN);
   }
 
   /**
