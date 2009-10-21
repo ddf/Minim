@@ -19,6 +19,8 @@
 package ddf.minim;
 
 import ddf.minim.spi.AudioSynthesizer;
+import ddf.minim.ugens.Bus;
+import ddf.minim.ugens.Instrument;
 
 /**
  * An <code>AudioOutput</code> is used to generate audio with
@@ -37,6 +39,10 @@ public class AudioOutput extends AudioSource implements Polyphonic
   private AudioSynthesizer synth;
   // the signals added by the user
   private SignalChain signals;
+  // the note manager for this output
+  public final NoteManager noteManager;
+  // the Bus for UGens used by this output
+  public final Bus bus;
 
   /**
    * Constructs an <code>AudioOutput</code> that will subscribe its buffers to
@@ -53,6 +59,9 @@ public class AudioOutput extends AudioSource implements Polyphonic
     super(synthesizer);
     synth = synthesizer;
     signals = new SignalChain();
+    noteManager = new NoteManager(this);
+    bus = new Bus(this);
+    signals.add(bus);
     synth.setAudioSignal(signals);
   }
 
@@ -129,5 +138,19 @@ public class AudioOutput extends AudioSource implements Polyphonic
   public boolean hasSignal(AudioSignal signal)
   {
     return signals.contains(signal);
+  }
+  
+  /**
+   * Play a note startTime seconds from now, for the given duration, using the given instrument.
+   * 
+   * @param startTime
+   * @param duration
+   * @param instrument
+   */
+  public void playNote(float startTime, float duration, Instrument instrument)
+  {
+	  // TODO schedule this instrument to receive a noteOn startTime seconds from now
+	  //	  and then tell this instrument to noteOff after duration
+	  noteManager.addEvent(startTime, duration, instrument);
   }
 }

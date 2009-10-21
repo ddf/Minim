@@ -30,6 +30,7 @@ import ddf.minim.spi.AudioStream;
 import ddf.minim.spi.AudioSynthesizer;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
+import ddf.minim.ugens.Instrument;
 
 /**
  * The <code>Minim</code> class is how you get what you want from JavaSound.
@@ -581,5 +582,60 @@ public class Minim
     return null;
   }
 
+  /**
+   * Play the note A4 (or random?) right now for 1 second.
+   *
+   */
+  public void playNote()
+  {
+	  playNote(440.0f);
+  }
+  
+  /**
+   * Play a note at the given frequency right now for 1 second.
+   * 
+   * @param frequency
+   */
+  public void playNote(float frequency)
+  {
+	  playNote(1.0f, frequency);
+  }
+  
+  /**
+   * Play a note for the given duration, starting right now, at the given frequency.
+   * 
+   * @param duration
+   * @param frequency
+   */
+  public void playNote(float duration, float frequency)
+  {
+	  playNote(0.0f, duration, frequency);
+  }
+  
+  /**
+   * Play a note startTime seconds from now, for the given duration, at the given frequency.
+   * 
+   * @param startTime
+   * @param duration
+   * @param frequency
+   */
+  public void playNote(float startTime, float duration, float frequency)
+  {
+	  // TODO use the default instrument to play this note.
+  }
+  
+  /**
+   * Play a note startTime seconds from now, for the given duration, using the given instrument.
+   * 
+   * @param startTime
+   * @param duration
+   * @param instrument
+   */
+  public void playNote(float startTime, float duration, Instrument instrument)
+  {
+	  // TODO schedule this instrument to receive a noteOn startTime seconds from now
+	  //	  and then tell this instrument to noteOff after duration
+	  //noteManager.addEvent(startTime, duration, instrument);
+  }
   
 }

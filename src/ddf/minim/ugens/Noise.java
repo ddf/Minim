@@ -4,7 +4,7 @@ public class Noise extends UGen
 {
 
 	@Override
-	public void tick(float[] channels) 
+	protected void ugentick(float[] channels) 
 	{
 		float n = (float)Math.random()*2 - 1;
 		for(int i = 0; i < channels.length; i++)

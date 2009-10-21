@@ -9,9 +9,14 @@ public class Gain extends UGen
 	{
 		value = gainVal;
 	}
+	
+	public void setValue(float gainVal)
+	{
+		value = gainVal;
+	}
 
 	@Override
-	public void tick(float[] channels) 
+	protected void ugentick(float[] channels) 
 	{
 		for(int i = 0; i < channels.length; i++)
 		{
