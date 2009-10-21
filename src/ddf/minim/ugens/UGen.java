@@ -23,7 +23,7 @@ public abstract class UGen implements AudioSignal
 	{
 		out.addSignal(this);
 	}
-	
+
 	public abstract void tick(float[] channels);
 	
 	// this is how we get back to the beginning of the ugen chain.
@@ -36,6 +36,7 @@ public abstract class UGen implements AudioSignal
 		}
 		tick(channels);
 	}
+	
 	
 	public void generate(float[] mono)
 	{
