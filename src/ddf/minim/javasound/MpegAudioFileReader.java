@@ -133,7 +133,7 @@ class MpegAudioFileReader extends TAudioFileReader
 			"JPop", "SynthPop"												
 	};
 	
-	private Map codeToPropName;
+	private Map<String, String> codeToPropName;
   
   protected JSMinim system;
 
@@ -151,7 +151,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		{
 		}
 		
-		codeToPropName = new HashMap();
+		codeToPropName = new HashMap<String, String>();
 		// if we wanna parse a new tag, we just add it here.
 		// ID3v2.2
 		codeToPropName.put("TAL", "album");
@@ -236,8 +236,8 @@ class MpegAudioFileReader extends TAudioFileReader
      throws UnsupportedAudioFileException, IOException
 	{
 		system.debug("MpegAudioFileReader.getAudioFileFormat(InputStream inputStream, long mediaLength): begin");
-		HashMap aff_properties = new HashMap();
-		HashMap af_properties = new HashMap();
+		HashMap<String, Object> aff_properties = new HashMap<String, Object>();
+		HashMap<String, Object> af_properties = new HashMap<String, Object>();
 		int mLength = (int)mediaLength;
 		int size = inputStream.available();
 		PushbackInputStream pis = new PushbackInputStream(inputStream, MARK_LIMIT);
@@ -572,7 +572,7 @@ class MpegAudioFileReader extends TAudioFileReader
 	 * @param frames
 	 * @param props
 	 */
-	protected void parseID3v1Frames(byte[] frames, HashMap props)
+	protected void parseID3v1Frames(byte[] frames, HashMap<String, Object> props)
 	{
 		if (TDebug.TraceAudioFileReader)
 			TDebug.out("Parsing ID3v1");
@@ -679,7 +679,7 @@ class MpegAudioFileReader extends TAudioFileReader
 	 * @param frames
 	 * @param props
 	 */
-	protected void parseID3v2Frames(InputStream frames, HashMap props)
+	protected void parseID3v2Frames(InputStream frames, HashMap<String, Object> props)
 	{
 		byte[] bframes = null;
 		int size = -1;
@@ -828,7 +828,7 @@ class MpegAudioFileReader extends TAudioFileReader
 	 * @param props
 	 * @throws IOException
 	 */
-	protected void loadShoutcastInfo(InputStream input, HashMap props)
+	protected void loadShoutcastInfo(InputStream input, HashMap<String, Object> props)
 			throws IOException
 	{
 		IcyInputStream icy = new IcyInputStream(new BufferedInputStream(input));

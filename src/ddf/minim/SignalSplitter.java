@@ -38,7 +38,7 @@ import javax.sound.sampled.AudioFormat;
 
 public class SignalSplitter implements Recordable, AudioListener
 {
-  private Vector listeners;
+  private Vector<AudioListener> listeners;
   private AudioFormat f;
   private int bs;
   
@@ -57,7 +57,7 @@ public class SignalSplitter implements Recordable, AudioListener
   {
     f = format;
     bs = bufferSize;
-    listeners = new Vector(5);
+    listeners = new Vector<AudioListener>(5);
   }
   
   public int bufferSize()
@@ -92,7 +92,7 @@ public class SignalSplitter implements Recordable, AudioListener
   {
     for (int i = 0; i < listeners.size(); i++)
     {
-      AudioListener al = (AudioListener)listeners.get(i);
+      AudioListener al = listeners.get(i);
       float[] copy = new float[samp.length];
       System.arraycopy(samp, 0, copy, 0, copy.length);
       al.samples(copy);
@@ -103,7 +103,7 @@ public class SignalSplitter implements Recordable, AudioListener
   {
     for (int i = 0; i < listeners.size(); i++)
     {
-      AudioListener al = (AudioListener)listeners.get(i);
+      AudioListener al = listeners.get(i);
       float[] copyL = new float[sampL.length];
       float[] copyR = new float[sampR.length];
       System.arraycopy(sampL, 0, copyL, 0, copyL.length);

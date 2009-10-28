@@ -52,7 +52,7 @@ import ddf.minim.spi.SampleRecorder;
  */
 final class JSBufferedSampleRecorder implements SampleRecorder
 {
-  private ArrayList buffers;
+  private ArrayList<FloatBuffer> buffers;
   private FloatBuffer left;
   private FloatBuffer right;
   private boolean recording;
@@ -78,7 +78,7 @@ final class JSBufferedSampleRecorder implements SampleRecorder
     name = fileName;
     type = fileType;
     format = fileFormat;
-    buffers = new ArrayList(20);
+    buffers = new ArrayList<FloatBuffer>(20);
     left = FloatBuffer.allocate(bufferSize*10);
     if ( format.getChannels() == Minim.STEREO )
     {
