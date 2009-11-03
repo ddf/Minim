@@ -132,11 +132,17 @@ public abstract class FourierTransform
 {
   /** A constant indicating no window should be used on sample buffers. */
   public static final int NONE = 0;
+
   /** A constant indicating a Hamming window should be used on sample buffers. */
   public static final int HAMMING = 1;
-  protected static final int LINAVG = 2;
-  protected static final int LOGAVG = 3;
-  protected static final int NOAVG = 4;
+  public static final int HANN = 2;
+  public static final int COSINE = 3;
+  public static final int TRIANGULAR = 4;
+  public static final int BLACKMAN = 5;
+
+  protected static final int LINAVG = 6;
+  protected static final int LOGAVG = 7;
+  protected static final int NOAVG = 8;
   protected static final float TWO_PI = (float) (2 * Math.PI);
   protected int timeSize;
   protected int sampleRate;
@@ -322,13 +328,18 @@ public abstract class FourierTransform
    */
   public void window(int which)
   {
-    if (which < 0 || which > 1)
-    {
-      Minim.error("Invalid window type.");
-    }
-    else
-    {
-      whichWindow = which;
+    switch(which) {
+      case NONE:
+      case HAMMING:
+      case HANN:
+      case COSINE:
+      case TRIANGULAR:
+      case BLACKMAN:
+        whichWindow = which;
+        break;
+      default:
+        Minim.error("Invalid window type.");
+        break;
     }
   }
 
@@ -337,17 +348,65 @@ public abstract class FourierTransform
     switch (whichWindow)
     {
       case HAMMING:
-        hamming(samples);
+        hammingWindow(samples);
+        break;
+      case HANN:
+        hannWindow(samples);
+        break;
+      case COSINE:
+        cosineWindow(samples);
+        break;
+      case TRIANGULAR:
+        triangularWindow(samples);
+        break;
+      case BLACKMAN:
+        blackmanWindow(samples);
         break;
     }
   }
 
   // windows the data in samples with a Hamming window
-  protected void hamming(float[] samples)
+  protected void hammingWindow(float[] samples)
   {
     for (int i = 0; i < samples.length; i++)
     {
       samples[i] *= (0.54f - 0.46f * Math.cos(TWO_PI * i / (samples.length - 1)));
+    }
+  }
+
+  // windows the data in samples with a Hann window
+  void hannWindow(float[] samples) 
+  {
+    for(int i = 0; i < samples.length; i++) 
+    {
+      samples[i] *= (0.5f * (1 - Math.cos(TWO_PI * i / (samples.length - 1))));
+    }
+  }
+
+  // windows the data in samples with a Cosine window
+  void cosineWindow(float[] samples) 
+  {
+    for(int i = 0; i < samples.length; i++) 
+    {
+      samples[i] *= Math.cos((Math.PI * i) / (samples.length - 1) - (Math.PI / 2)); 
+    }
+  }
+
+  // windows the data in samples with a Triangular window
+  void triangularWindow(float[] samples) 
+  {
+    for(int i = 0; i < samples.length; i++) 
+    {
+      samples[i] *= ((2.0f / samples.length) * ((samples.length / 2.0f) - Math.abs(i - (samples.length - 1) / 2.0f)));
+    }
+  }
+
+  // windows the data in samples with a Blackman window
+  void blackmanWindow(float[] samples) 
+  {
+    for(int i = 0; i < samples.length; i++) 
+    {
+      samples[i] *= (0.42f - 0.5f * Math.cos(TWO_PI * i / (samples.length - 1))) + (0.08f * Math.cos(4 * PI * i / (samples.length -1)));
     }
   }
 
