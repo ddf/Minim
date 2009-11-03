@@ -406,7 +406,7 @@ public abstract class FourierTransform
   {
     for(int i = 0; i < samples.length; i++) 
     {
-      samples[i] *= (0.42f - 0.5f * Math.cos(TWO_PI * i / (samples.length - 1))) + (0.08f * Math.cos(4 * PI * i / (samples.length -1)));
+      samples[i] *= (0.42f - 0.5f * Math.cos(TWO_PI * i / (samples.length - 1))) + (0.08f * Math.cos(4 * Math.PI * i / (samples.length -1)));
     }
   }
 
