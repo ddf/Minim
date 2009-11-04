@@ -41,7 +41,7 @@ import ddf.minim.Minim;
  * Hz, then the spectrum will contain values for frequencies below 22010 Hz,
  * which is the Nyquist frequency (half the sample rate). If you ask for the
  * value of band number 5, this will correspond to a frequency band centered on
- * <code>5/1024 * 44100 = 0.0048828125 * 44100 = 215 Hz</code>. The width of
+ * <code>5 / 1024 = 0.0048828125 * 44100 = 215 Hz</code>. The width of
  * that frequency band is equal to <code>2/1024</code>, expressed as a
  * fraction of the total bandwidth of the spectrum. The total bandwith of the
  * spectrum is equal to the Nyquist frequency, which in this case is 22100, so
@@ -71,7 +71,11 @@ import ddf.minim.Minim;
  * <b>Windowing</b>
  * <p>
  * Windowing is the process of shaping the audio samples before transforming them
- * to the frequency domain. If you call the <code>window()</code> function
+ * to the frequency domain. Fourier analysis on a sample buffer which is 
+ * not truely periodic will introduce artifacts as the end points of the buffer i
+ * will not match. A <a href="http://en.wikipedia.org/wiki/Window_function">windowing function</a>
+ * attenuates samples along a curve so that the amplitude of the end points is
+ * near zero. If you call the <code>window()</code> function
  * with an appropriate constant, such as FourierTransform.HAMMING, the sample
  * buffers passed to the object for analysis will be shaped by the current
  * window before being transformed. The result of using a window is to reduce
@@ -130,14 +134,18 @@ import ddf.minim.Minim;
  */
 public abstract class FourierTransform
 {
-  /** A constant indicating no window should be used on sample buffers. */
+  /** A constant indicating no window should be used on sample buffers. Also referred as a <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>. */
   public static final int NONE = 0;
 
-  /** A constant indicating a Hamming window should be used on sample buffers. */
+  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> should be used on sample buffers. */
   public static final int HAMMING = 1;
+  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a> should be used on sample buffers. */
   public static final int HANN = 2;
+  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> should be used on sample buffers. */
   public static final int COSINE = 3;
+  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> should be used on sample buffers. */
   public static final int TRIANGULAR = 4;
+  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a> should be used on sample buffers. */
   public static final int BLACKMAN = 5;
 
   protected static final int LINAVG = 6;
@@ -370,9 +378,9 @@ public abstract class FourierTransform
    * Windows the data in samples with a Hamming window.
    *
    * @param samples sample buffer to be windowed
-   * @see   http://en.wikipedia.org/wiki/Window_function#Hamming_window 
+   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">The Hamming Window</a>
    */
-  protected void hammingWindow(float[] samples)
+  private void hammingWindow(float[] samples)
   {
     for (int i = 0; i < samples.length; i++)
     {
@@ -384,9 +392,9 @@ public abstract class FourierTransform
    * Windows the data in samples with a Hann window.
    *
    * @param samples sample buffer to be windowed
-   * @see   http://en.wikipedia.org/wiki/Window_function#Hann_window 
+   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">The Hann Window</a> 
    */
-  protected void hannWindow(float[] samples) 
+  private void hannWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
@@ -398,9 +406,9 @@ public abstract class FourierTransform
    * Windows the data in samples with a Cosine window.
    *
    * @param samples sample buffer to be windowed
-   * @see   http://en.wikipedia.org/wiki/Window_function#Cosine_window 
+   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">The Cosine Window</a> 
    */
-  protected void cosineWindow(float[] samples) 
+  private void cosineWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
@@ -412,9 +420,9 @@ public abstract class FourierTransform
    * Windows the data in samples with a Triangular window.
    *
    * @param samples sample buffer to be windowed
-   * @see   http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29 
+   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">The Triangular Window</a> 
    */
-  protected void triangularWindow(float[] samples) 
+  private void triangularWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
@@ -426,9 +434,9 @@ public abstract class FourierTransform
    * Windows the data in samples with a Blackman window.
    *
    * @param samples sample buffer to be windowed
-   * @see   http://en.wikipedia.org/wiki/Window_function#Blackman_windows 
+   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">The Blackman Window</a> 
    */
-  protected void blackmanWindow(float[] samples) 
+  private void blackmanWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
