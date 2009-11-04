@@ -324,7 +324,8 @@ public abstract class FourierTransform
    * current window will not be changed.
    * 
    * @param which
-   *          FourierTransform.HAMMING or FourierTransform.NONE
+   *          FourierTransform.NONE, FourierTransform.HAMMING, FourierTransform.HANN, 
+   *          FourierTransform.COSINE, FourierTransform.TRIANGULAR, or FourierTransform.BLACKMAN 
    */
   public void window(int which)
   {
@@ -365,7 +366,12 @@ public abstract class FourierTransform
     }
   }
 
-  // windows the data in samples with a Hamming window
+  /**
+   * Windows the data in samples with a Hamming window.
+   *
+   * @param samples sample buffer to be windowed
+   * @see   http://en.wikipedia.org/wiki/Window_function#Hamming_window 
+   */
   protected void hammingWindow(float[] samples)
   {
     for (int i = 0; i < samples.length; i++)
@@ -374,8 +380,13 @@ public abstract class FourierTransform
     }
   }
 
-  // windows the data in samples with a Hann window
-  void hannWindow(float[] samples) 
+  /**
+   * Windows the data in samples with a Hann window.
+   *
+   * @param samples sample buffer to be windowed
+   * @see   http://en.wikipedia.org/wiki/Window_function#Hann_window 
+   */
+  protected void hannWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
@@ -383,8 +394,13 @@ public abstract class FourierTransform
     }
   }
 
-  // windows the data in samples with a Cosine window
-  void cosineWindow(float[] samples) 
+  /**
+   * Windows the data in samples with a Cosine window.
+   *
+   * @param samples sample buffer to be windowed
+   * @see   http://en.wikipedia.org/wiki/Window_function#Cosine_window 
+   */
+  protected void cosineWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
@@ -392,8 +408,13 @@ public abstract class FourierTransform
     }
   }
 
-  // windows the data in samples with a Triangular window
-  void triangularWindow(float[] samples) 
+  /**
+   * Windows the data in samples with a Triangular window.
+   *
+   * @param samples sample buffer to be windowed
+   * @see   http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29 
+   */
+  protected void triangularWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
@@ -401,8 +422,13 @@ public abstract class FourierTransform
     }
   }
 
-  // windows the data in samples with a Blackman window
-  void blackmanWindow(float[] samples) 
+  /**
+   * Windows the data in samples with a Blackman window.
+   *
+   * @param samples sample buffer to be windowed
+   * @see   http://en.wikipedia.org/wiki/Window_function#Blackman_windows 
+   */
+  protected void blackmanWindow(float[] samples) 
   {
     for(int i = 0; i < samples.length; i++) 
     {
