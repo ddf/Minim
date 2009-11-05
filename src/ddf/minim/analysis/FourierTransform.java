@@ -143,14 +143,16 @@ public abstract class FourierTransform
   public static final int HANN = 2;
   /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> should be used on sample buffers. */
   public static final int COSINE = 3;
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">Lanczos window</a> should be used on sample buffers. */
+  public static final int LANCZOS = 4;
   /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> should be used on sample buffers. */
-  public static final int TRIANGULAR = 4;
+  public static final int TRIANGULAR = 5;
   /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a> should be used on sample buffers. */
-  public static final int BLACKMAN = 5;
+  public static final int BLACKMAN = 6;
 
-  protected static final int LINAVG = 6;
-  protected static final int LOGAVG = 7;
-  protected static final int NOAVG = 8;
+  protected static final int LINAVG = 7;
+  protected static final int LOGAVG = 8;
+  protected static final int NOAVG = 9;
   protected static final float TWO_PI = (float) (2 * Math.PI);
   protected int timeSize;
   protected int sampleRate;
@@ -333,7 +335,8 @@ public abstract class FourierTransform
    * 
    * @param which
    *          FourierTransform.NONE, FourierTransform.HAMMING, FourierTransform.HANN, 
-   *          FourierTransform.COSINE, FourierTransform.TRIANGULAR or FourierTransform.BLACKMAN 
+   *          FourierTransform.COSINE, FourierTransform.LANCZOS, FourierTransform.TRIANGULAR 
+   *          or FourierTransform.BLACKMAN 
    */
   public void window(int which)
   {
@@ -342,6 +345,7 @@ public abstract class FourierTransform
       case HAMMING:
       case HANN:
       case COSINE:
+      case LANCZOS:
       case TRIANGULAR:
       case BLACKMAN:
         whichWindow = which;
@@ -364,6 +368,9 @@ public abstract class FourierTransform
         break;
       case COSINE:
         cosineWindow(samples);
+        break;
+      case LANCZOS:
+        lanczosWindow(samples);
         break;
       case TRIANGULAR:
         triangularWindow(samples);
@@ -413,6 +420,21 @@ public abstract class FourierTransform
     for(int i = 0; i < samples.length; i++) 
     {
       samples[i] *= Math.cos((Math.PI * i) / (samples.length - 1) - (Math.PI / 2)); 
+    }
+  }
+
+  /**
+   * Windows the data in samples with a Lanczos window.
+   *
+   * @param samples sample buffer to be windowed
+   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">The Cosine Window</a> 
+   */
+  private void lanczosWindow(float[] samples) 
+  {
+    for(int i = 0; i < samples.length; i++) 
+    {
+      float x = 2 * i / (float)(samples.length - 1) - 1;
+      samples[i] *= (Math.sin(Math.PI * x) / (Math.PI * x));
     }
   }
 
