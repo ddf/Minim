@@ -1,2 +1,5 @@
 bin/
 doc/
+dist/
+*.swp
+.DS_Store

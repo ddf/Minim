@@ -72,7 +72,7 @@ import ddf.minim.Minim;
  * <p>
  * Windowing is the process of shaping the audio samples before transforming them
  * to the frequency domain. Fourier analysis on a sample buffer which is 
- * not truely periodic will introduce sinosoidal artifacts as the end points of the buffer
+ * not truly periodic will introduce sinusoidal artifacts as the end points of the buffer
  * will not match. A <a href="http://en.wikipedia.org/wiki/Window_function">windowing function</a>
  * attenuates samples along a curve so that the amplitude of the end points is
  * near zero. If you call the <code>window()</code> function
