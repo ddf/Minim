@@ -41,10 +41,10 @@ import ddf.minim.Minim;
  * Hz, then the spectrum will contain values for frequencies below 22010 Hz,
  * which is the Nyquist frequency (half the sample rate). If you ask for the
  * value of band number 5, this will correspond to a frequency band centered on
- * <code>5 / 1024 = 0.0048828125 * 44100 = 215 Hz</code>. The width of
+ * <code>5/1024 * 44100 = 0.0048828125 * 44100 = 215 Hz</code>. The width of
  * that frequency band is equal to <code>2/1024</code>, expressed as a
  * fraction of the total bandwidth of the spectrum. The total bandwith of the
- * spectrum is equal to the Nyquist frequency, which in this case is 22100, so
+ * spectrum is equal to the Nyquist frequency, which in this case is 22050, so
  * the bandwidth is equal to about 50 Hz. It is not necessary for you to
  * remember all of these relationships, though it is good to be aware of them.
  * The function <code>getFreq()</code> allows you to query the spectrum with a
@@ -72,7 +72,7 @@ import ddf.minim.Minim;
  * <p>
  * Windowing is the process of shaping the audio samples before transforming them
  * to the frequency domain. Fourier analysis on a sample buffer which is 
- * not truely periodic will introduce artifacts as the end points of the buffer i
+ * not truely periodic will introduce sinosoidal artifacts as the end points of the buffer
  * will not match. A <a href="http://en.wikipedia.org/wiki/Window_function">windowing function</a>
  * attenuates samples along a curve so that the amplitude of the end points is
  * near zero. If you call the <code>window()</code> function
@@ -137,15 +137,15 @@ public abstract class FourierTransform
   /** A constant indicating no window should be used on sample buffers. Also referred as a <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>. */
   public static final int NONE = 0;
 
-  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> should be used on sample buffers. */
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> should be used on sample buffers. */
   public static final int HAMMING = 1;
-  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a> should be used on sample buffers. */
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a> should be used on sample buffers. */
   public static final int HANN = 2;
-  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> should be used on sample buffers. */
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> should be used on sample buffers. */
   public static final int COSINE = 3;
-  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> should be used on sample buffers. */
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> should be used on sample buffers. */
   public static final int TRIANGULAR = 4;
-  /** * A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a> should be used on sample buffers. */
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a> should be used on sample buffers. */
   public static final int BLACKMAN = 5;
 
   protected static final int LINAVG = 6;
@@ -333,7 +333,7 @@ public abstract class FourierTransform
    * 
    * @param which
    *          FourierTransform.NONE, FourierTransform.HAMMING, FourierTransform.HANN, 
-   *          FourierTransform.COSINE, FourierTransform.TRIANGULAR, or FourierTransform.BLACKMAN 
+   *          FourierTransform.COSINE, FourierTransform.TRIANGULAR or FourierTransform.BLACKMAN 
    */
   public void window(int which)
   {
