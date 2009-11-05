@@ -71,15 +71,20 @@ import ddf.minim.Minim;
  * <b>Windowing</b>
  * <p>
  * Windowing is the process of shaping the audio samples before transforming them
- * to the frequency domain. Fourier analysis on a sample buffer which is 
- * not truly periodic will introduce sinusoidal artifacts as the end points of the buffer
- * will not match. A <a href="http://en.wikipedia.org/wiki/Window_function">windowing function</a>
- * attenuates samples along a curve so that the amplitude of the end points is
- * near zero. If you call the <code>window()</code> function
- * with an appropriate constant, such as FourierTransform.HAMMING, the sample
- * buffers passed to the object for analysis will be shaped by the current
+ * to the frequency domain. The Fourier Transform assumes the sample buffer is is a 
+ * repetitive signal, if a sample buffer is not truly periodic within the measured
+ * interval sharp discontinuities may arise that can introduce spectral leakage.
+ * Spectral leakage is the speading of signal energy across multiple FFT bins. This
+ * "spreading" can drown out narrow band signals and hinder detection.
+ * </p>
+ * <p>
+ * A <a href="http://en.wikipedia.org/wiki/Window_function">windowing function</a>
+ * attempts to reduce spectral leakage by attenuating the measured sample buffer
+ * at its end points to eliminate discontinuities. If you call the <code>window()</code> 
+ * function with an appropriate constant, such as <code>FourierTransform.HAMMING</code>,
+ * the sample buffers passed to the object for analysis will be shaped by the current
  * window before being transformed. The result of using a window is to reduce
- * the noise in the spectrum somewhat.
+ * the leakage in the spectrum somewhat.
  * <p>
  * <b>Averages</b>
  * <p>
