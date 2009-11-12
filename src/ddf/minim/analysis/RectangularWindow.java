@@ -31,14 +31,8 @@ public class RectangularWindow extends WindowFunction
   {
   }
 
-  /**
-  * Apply window to sample buffer
-  *
-  * @param samples sample buffer to be windowed
-  */
-  public void apply(float[] samples)
-  {
-    return;
+  protected float value(int length, int index) {
+    return 1f;
   }
 }
 

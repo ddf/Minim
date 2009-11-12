@@ -25,22 +25,26 @@ package ddf.minim.analysis;
 */
 public class BlackmanWindow extends WindowFunction
 {
+  protected float alpha;
+
   /** Constructs a Blackman window. */
-  public BlackmanWindow()
+  public BlackmanWindow(float alpha)
   {
+    this.alpha = alpha;
   }
 
-  /**
-  * Windows the data in samples.
-  *
-  * @param samples sample buffer to be windowed
-  */
-  public void apply(float[] samples)
+  /** Constructs a Blackman window with a default alpha value of 0.16 */
+  public BlackmanWindow() 
   {
-    for (int n = 0; n < samples.length; n++)
-    {
-      samples[n] *= 0.42f - 0.5f * Math.cos(TWO_PI * n / (samples.length - 1)) + 0.08f * Math.cos(4 * Math.PI * n / (samples.length - 1));
-    }
+    this(0.16f);
+  }
+
+  protected float value(int length, int index) {
+      float a0 = (1 - this.alpha) / 2f;
+      float a1 = 0.5f;
+      float a2 = this.alpha / 2f;
+
+      return a0 - a1 * (float) Math.cos(TWO_PI * index / (length - 1)) + a2 * (float) Math.cos(4 * Math.PI * index / (length - 1));
   }
 }
 

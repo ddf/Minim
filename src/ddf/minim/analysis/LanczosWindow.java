@@ -30,18 +30,9 @@ public class LanczosWindow extends WindowFunction
   {
   }
 
-  /**
-  * Windows the data in samples.
-  *
-  * @param samples sample buffer to be windowed
-  */
-  public void apply(float[] samples)
-  {
-    for (int n = 0; n < samples.length; n++)
-    {
-      float x = 2 * n / (float) (samples.length - 1) - 1;
-      samples[n] *= Math.sin(Math.PI * x) / (Math.PI * x);
-    }
+  protected float value(int length, int index) {
+      float x = 2 * index / (float) (length - 1) - 1;
+      return (float) (Math.sin(Math.PI * x) / (Math.PI * x));
   }
 }
 

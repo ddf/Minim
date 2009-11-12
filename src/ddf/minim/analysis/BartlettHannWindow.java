@@ -30,17 +30,8 @@ public class BartlettHannWindow extends WindowFunction
   {
   }
 
-  /**
-  * Windows the data in samples.
-  *
-  * @param samples sample buffer to be windowed
-  */
-  public void apply(float[] samples)
-  {
-    for (int n = 0; n < samples.length; n++)
-    {
-      samples[n] *= 0.62 - 0.48 * Math.abs(n / (samples.length - 1) - 0.5) - 0.38 * Math.cos(TWO_PI * n / (samples.length - 1));
-    }
+  protected float value(int length, int index) {
+    return (float) (0.62 - 0.48 * Math.abs(index / (length - 1) - 0.5) - 0.38 * Math.cos(TWO_PI * index / (length - 1)));
   }
 }
 

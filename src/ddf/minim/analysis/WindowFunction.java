@@ -18,16 +18,34 @@
 
 package ddf.minim.analysis;
 
-//import ddf.minim.Minim;
-
 public abstract class WindowFunction
 {
   /** The float value of 2*PI. Provided as a convenience for subclasses. */
   protected static final float TWO_PI = (float) (2 * Math.PI);
+  protected int length;
   
   public WindowFunction()
   {
   }
 
-  public abstract void apply(float[] samples);
+  public void apply(float[] samples) {
+    this.length = samples.length;
+
+    for ( int n = 0; n < samples.length; n ++ ) {
+      samples[n] *= value(samples.length, n);
+    }
+  }
+
+  public float[] curve(int length)
+  {
+    float[] samples = new float[length];
+    for (int n = 0; n < length; n++) {
+      samples[n] = 1f;  
+    }
+    apply(samples);
+    return samples;
+  }
+
+  protected abstract float value(int length, int index);
 }
+

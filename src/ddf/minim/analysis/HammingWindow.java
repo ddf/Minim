@@ -30,17 +30,8 @@ public class HammingWindow extends WindowFunction
   {
   }
 
-  /**
-  * Apply window to sample buffer
-  *
-  * @param samples sample buffer to be windowed
-  */
-  public void apply(float[] samples)
-  {
-    for (int n = 0; n < samples.length; n++)
-    {
-      samples[n] *= 0.54f - 0.46f * Math.cos(TWO_PI * n / (samples.length - 1));
-    }
+  protected float value(int length, int index) {
+    return 0.54f - 0.46f * (float) Math.cos(TWO_PI * index / (length - 1));
   }
 }
 

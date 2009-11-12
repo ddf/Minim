@@ -23,7 +23,7 @@ import ddf.minim.Minim;
 /**
  * A Gauss window function.
  *
- * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Gauss_window">The Gauss Window</a>
+ * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Gauss_windows">The Gauss Window</a>
  */
 public class GaussWindow extends WindowFunction
 {
@@ -33,21 +33,19 @@ public class GaussWindow extends WindowFunction
   public GaussWindow(double alpha)
   {
     if ( alpha < 0.0 || alpha > 0.5 ) {
-      Minim.error("Range for GauseWindow out of bounds. Value must be <= 0.5");
+      Minim.error("Range for GaussWindow out of bounds. Value must be <= 0.5");
       return;
     }
     this.alpha = alpha;  
   }
 
-  /**
-   * Windows the data in samples.
-   *
-   * @param samples sample buffer to be windowed
-   */
-  public void apply(float[] samples) 
+  /** Constructs a Gauss window with a default alpha value of 0.25 */
+  public GaussWindow()
   {
-    for (int n = 0; n < samples.length; n++ ) {
-      samples[n] *= Math.pow(Math.E, -0.5 * Math.pow((n - (samples.length - 1) / (double) 2) / (this.alpha * (samples.length - 1) / (double) 2), (double) 2));
-    }
+    this(0.25);
+  }
+
+  protected float value(int length, int index) {
+    return (float) Math.pow(Math.E, -0.5 * Math.pow((index - (length - 1) / (double) 2) / (this.alpha * (length - 1) / (double) 2), (double) 2));
   }
 }

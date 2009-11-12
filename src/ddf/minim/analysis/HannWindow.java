@@ -30,17 +30,8 @@ public class HannWindow extends WindowFunction
   {
   }
 
-  /**
-  * Windows the data in samples.
-  *
-  * @param samples sample buffer to be windowed
-  */
-  public void apply(float[] samples)
-  {
-    for (int n = 0; n < samples.length; n++)
-    {
-      samples[n] *= 0.5f * (1 - Math.cos(TWO_PI * n / (samples.length - 1)));
-    }
+  protected float value(int length, int index) {
+      return 0.5f * (1f - (float) Math.cos(TWO_PI * index / (length - 1f)));
   }
 }
 

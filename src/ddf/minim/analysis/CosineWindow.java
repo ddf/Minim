@@ -30,17 +30,7 @@ public class CosineWindow extends WindowFunction
   {
   }
 
-  /**
-  * Apply window to sample buffer
-  *
-  * @param samples sample buffer to be windowed
-  */
-  public void apply(float[] samples)
-  {
-    for (int n = 0; n < samples.length; n++)
-    {
-      samples[n] *= Math.cos(Math.PI * n / (samples.length - 1) - Math.PI / 2);
-    }
+  protected float value(int length, int index) {
+    return (float) (Math.cos(Math.PI * index / (length - 1) - Math.PI / 2));
   }
 }
-
