@@ -139,35 +139,15 @@ import ddf.minim.Minim;
  */
 public abstract class FourierTransform
 {
-  /** A constant indicating no window should be used on sample buffers. Also referred as a <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>. */
-  public static final int NONE = 0;
-
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> should be used on sample buffers. */
-  public static final int HAMMING = 1;
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a> should be used on sample buffers. */
-  public static final int HANN = 2;
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> should be used on sample buffers. */
-  public static final int COSINE = 3;
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">Lanczos window</a> should be used on sample buffers. */
-  public static final int LANCZOS = 4;
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">Bartlett window</a> should be used on sample buffers. */
-  public static final int BARTLETT = 5;
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> should be used on sample buffers. */
-  public static final int TRIANGULAR = 6;
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">Bartlett-Hann window</a> should be used on sample buffers. */
-  public static final int BARTLETTHANN = 7;
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a> should be used on sample buffers. */
-  public static final int BLACKMAN = 8;
-
-  protected static final int LINAVG = 9;
-  protected static final int LOGAVG = 10;
-  protected static final int NOAVG = 11;
+  protected static final int LINAVG = 1;
+  protected static final int LOGAVG = 2;
+  protected static final int NOAVG = 3;
 
   protected static final float TWO_PI = (float) (2 * Math.PI);
   protected int timeSize;
   protected int sampleRate;
   protected float bandWidth;
-  protected int whichWindow;
+  protected WindowFunction windowFunction;
   protected float[] real;
   protected float[] imag;
   protected float[] spectrum;
@@ -193,7 +173,7 @@ public abstract class FourierTransform
     bandWidth = (2f / timeSize) * ((float)sampleRate / 2f);
     noAverages();
     allocateArrays();
-    whichWindow = NONE;
+    windowFunction = new RectangularWindow();
   }
 
   // allocating real, imag, and spectrum are the responsibility of derived
@@ -343,172 +323,22 @@ public abstract class FourierTransform
    * If an invalid window is asked for, an error will be reported and the
    * current window will not be changed.
    * 
-   * @param which
-   *          FourierTransform.NONE, FourierTransform.HAMMING, FourierTransform.HANN, 
-   *          FourierTransform.COSINE, FourierTransform.LANCZOS, FourierTransform.BARTLETT,
-   *          FourierTransform.TRIANGULAR, FourierTransform.BARTLETTHANN or FourierTransform.BLACKMAN 
+   * @param windowFunction
    */
-  public void window(int which)
+
+  public void window(WindowFunction windowFunction)
   {
-    switch(which) {
-      case NONE:
-      case HAMMING:
-      case HANN:
-      case COSINE:
-      case LANCZOS:
-      case BARTLETT:
-      case TRIANGULAR:
-      case BARTLETTHANN:
-      case BLACKMAN:
-        whichWindow = which;
-        break;
-      default:
-        Minim.error("Invalid window type.");
-        break;
+    if ( windowFunction instanceof WindowFunction ) {
+      this.windowFunction = windowFunction;
+    } else {
+      Minim.error("Invalid window type.");
     }
   }
-
+  
   protected void doWindow(float[] samples)
   {
-    switch (whichWindow)
-    {
-      case HAMMING:
-        hammingWindow(samples);
-        break;
-      case HANN:
-        hannWindow(samples);
-        break;
-      case COSINE:
-        cosineWindow(samples);
-        break;
-      case LANCZOS:
-        lanczosWindow(samples);
-        break;
-      case BARTLETT:
-        bartlettWindow(samples);
-        break;
-      case TRIANGULAR:
-        triangularWindow(samples);
-        break;
-      case BARTLETTHANN:
-        bartletthannWindow(samples);
-        break;
-      case BLACKMAN:
-        blackmanWindow(samples);
-        break;
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Hamming window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">The Hamming Window</a>
-   */
-  private void hammingWindow(float[] samples)
-  {
-    for (int i = 0; i < samples.length; i++)
-    {
-      samples[i] *= 0.54f - 0.46f * Math.cos(TWO_PI * i / (samples.length - 1));
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Hann window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">The Hann Window</a> 
-   */
-  private void hannWindow(float[] samples) 
-  {
-    for(int i = 0; i < samples.length; i++) 
-    {
-      samples[i] *= 0.5f * (1 - Math.cos(TWO_PI * i / (samples.length - 1)));
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Cosine window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">The Cosine Window</a> 
-   */
-  private void cosineWindow(float[] samples) 
-  {
-    for(int i = 0; i < samples.length; i++) 
-    {
-      samples[i] *= Math.cos(Math.PI * i / (samples.length - 1) - Math.PI / 2); 
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Lanczos window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">The Lanczos Window</a> 
-   */
-  private void lanczosWindow(float[] samples) 
-  {
-    for(int i = 0; i < samples.length; i++) 
-    {
-      float x = 2 * i / (float)(samples.length - 1) - 1;
-      samples[i] *= Math.sin(Math.PI * x) / (Math.PI * x);
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Bartlett window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">The Bartlett Window</a> 
-   */
-  private void bartlettWindow(float[] samples) 
-  {
-    for(int i = 0; i < samples.length; i++) 
-    {
-      samples[i] *= 2f / (samples.length - 1) * ((samples.length - 1) / 2f - Math.abs(i - (samples.length - 1) / 2f));
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Triangular window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">The Triangular Window</a> 
-   */
-  private void triangularWindow(float[] samples) 
-  {
-    for(int i = 0; i < samples.length; i++) 
-    {
-      samples[i] *= 2f / samples.length * (samples.length / 2f - Math.abs(i - (samples.length - 1) / 2f));
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Bartlett-Hann window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">The Bartlett-Hann Window</a> 
-   */
-  private void bartletthannWindow(float[] samples) 
-  {
-    for(int i = 0; i < samples.length; i++) 
-    {
-      samples[i] *= 0.62 - 0.48 * Math.abs(i / (samples.length - 1) - 0.5) - 0.38 * Math.cos(TWO_PI * i / (samples.length - 1));
-    }
-  }
-
-  /**
-   * Windows the data in samples with a Blackman window.
-   *
-   * @param samples sample buffer to be windowed
-   * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">The Blackman Window</a> 
-   */
-  private void blackmanWindow(float[] samples) 
-  {
-    for(int i = 0; i < samples.length; i++) 
-    {
-      samples[i] *= 0.42f - 0.5f * Math.cos(TWO_PI * i / (samples.length - 1)) + 0.08f * Math.cos(4 * Math.PI * i / (samples.length -1));
+    if ( windowFunction instanceof WindowFunction ) {
+      windowFunction.apply(samples);
     }
   }
 
