@@ -19,10 +19,12 @@
 package ddf.minim.analysis; 
 
 /**
-* A Blackman window function.
-*
-* @see   <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">The Blackman Window</a>
-*/
+ * A Blackman window function.
+ *
+ * @author Damien Di Fede
+ * @author Corban Brook
+ * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">The Blackman Window</a>
+ */
 public class BlackmanWindow extends WindowFunction
 {
   protected float alpha;

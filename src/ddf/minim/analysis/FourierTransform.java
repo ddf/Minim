@@ -81,7 +81,7 @@ import ddf.minim.Minim;
  * A <a href="http://en.wikipedia.org/wiki/Window_function">windowing function</a>
  * attempts to reduce spectral leakage by attenuating the measured sample buffer
  * at its end points to eliminate discontinuities. If you call the <code>window()</code> 
- * function with an appropriate constant, such as <code>FourierTransform.HAMMING</code>,
+ * function with an appropriate WindowFunction, such as <code>HammingWindow()</code>,
  * the sample buffers passed to the object for analysis will be shaped by the current
  * window before being transformed. The result of using a window is to reduce
  * the leakage in the spectrum somewhat.
@@ -143,6 +143,23 @@ public abstract class FourierTransform
   protected static final int LOGAVG = 2;
   protected static final int NOAVG = 3;
 
+  /** A constant indicating no window should be used on sample buffers. Also referred as a <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>. */
+  public static final WindowFunction NONE = new RectangularWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> should be used on sample buffers. */
+  public static final WindowFunction HAMMING = new HammingWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a> should be used on sample buffers. */
+  public static final WindowFunction HANN = new HannWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> should be used on sample buffers. */
+  public static final WindowFunction COSINE = new CosineWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> should be used on sample buffers. */
+  public static final WindowFunction TRIANGULAR = new TriangularWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">Bartlett window</a> should be used on sample buffers. */
+  public static final WindowFunction BARTLETT = new BartlettWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">Bartlett-Hann window</a> should be used on sample buffers. */
+  public static final WindowFunction BARTLETTHANN = new BartlettHannWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">Lanczos window</a> should be used on sample buffers. */
+  public static final WindowFunction LANCZOS = new LanczosWindow();
+
   protected static final float TWO_PI = (float) (2 * Math.PI);
   protected int timeSize;
   protected int sampleRate;
@@ -173,7 +190,7 @@ public abstract class FourierTransform
     bandWidth = (2f / timeSize) * ((float)sampleRate / 2f);
     noAverages();
     allocateArrays();
-    windowFunction = new RectangularWindow();
+    windowFunction = new RectangularWindow(); // a Rectangular window is analogous to using no window. 
   }
 
   // allocating real, imag, and spectrum are the responsibility of derived
@@ -334,12 +351,10 @@ public abstract class FourierTransform
       Minim.error("Invalid window type.");
     }
   }
-  
+
   protected void doWindow(float[] samples)
   {
-    if ( windowFunction instanceof WindowFunction ) {
-      windowFunction.apply(samples);
-    }
+    windowFunction.apply(samples);
   }
 
   /**
