@@ -34,7 +34,8 @@ public class GaussWindow extends WindowFunction
   /** Constructs a Gauss window function. */
   public GaussWindow(double alpha)
   {
-    if ( alpha < 0.0 || alpha > 0.5 ) {
+    if ( alpha < 0.0 || alpha > 0.5 ) 
+    {
       Minim.error("Range for GaussWindow out of bounds. Value must be <= 0.5");
       return;
     }
@@ -47,7 +48,8 @@ public class GaussWindow extends WindowFunction
     this(0.25);
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
     return (float) Math.pow(Math.E, -0.5 * Math.pow((index - (length - 1) / (double) 2) / (this.alpha * (length - 1) / (double) 2), (double) 2));
   }
 }

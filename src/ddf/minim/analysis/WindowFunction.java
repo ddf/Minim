@@ -67,10 +67,12 @@ public abstract class WindowFunction
    * 
    * @param samples a sample buffer
    */
-  public void apply(float[] samples) {
+  public void apply(float[] samples) 
+  {
     this.length = samples.length;
 
-    for ( int n = 0; n < samples.length; n ++ ) {
+    for ( int n = 0; n < samples.length; n ++ ) 
+    {
       samples[n] *= value(samples.length, n);
     }
   }

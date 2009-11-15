@@ -41,7 +41,8 @@ public class BlackmanWindow extends WindowFunction
     this(0.16f);
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
       float a0 = (1 - this.alpha) / 2f;
       float a1 = 0.5f;
       float a2 = this.alpha / 2f;

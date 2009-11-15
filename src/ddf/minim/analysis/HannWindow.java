@@ -32,7 +32,8 @@ public class HannWindow extends WindowFunction
   {
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
       return 0.5f * (1f - (float) Math.cos(TWO_PI * index / (length - 1f)));
   }
 }

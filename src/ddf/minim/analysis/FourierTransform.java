@@ -345,9 +345,12 @@ public abstract class FourierTransform
 
   public void window(WindowFunction windowFunction)
   {
-    if ( windowFunction instanceof WindowFunction ) {
+    if ( windowFunction instanceof WindowFunction ) 
+    {
       this.windowFunction = windowFunction;
-    } else {
+    } 
+    else 
+    {
       Minim.error("Invalid window type.");
     }
   }

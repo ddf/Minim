@@ -32,7 +32,8 @@ public class CosineWindow extends WindowFunction
   {
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
     return (float) (Math.cos(Math.PI * index / (length - 1) - Math.PI / 2));
   }
 }

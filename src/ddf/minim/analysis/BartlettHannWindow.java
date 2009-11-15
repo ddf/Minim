@@ -32,7 +32,8 @@ public class BartlettHannWindow extends WindowFunction
   {
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
     return (float) (0.62 - 0.48 * Math.abs(index / (length - 1) - 0.5) - 0.38 * Math.cos(TWO_PI * index / (length - 1)));
   }
 }

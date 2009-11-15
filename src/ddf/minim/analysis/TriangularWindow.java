@@ -32,7 +32,8 @@ public class TriangularWindow extends WindowFunction
   {
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
      return 2f / length * (length / 2f - Math.abs(index - (length - 1) / 2f));
   }
 }

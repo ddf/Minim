@@ -32,7 +32,8 @@ public class LanczosWindow extends WindowFunction
   {
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
       float x = 2 * index / (float) (length - 1) - 1;
       return (float) (Math.sin(Math.PI * x) / (Math.PI * x));
   }

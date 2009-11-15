@@ -33,7 +33,8 @@ public class RectangularWindow extends WindowFunction
   {
   }
 
-  protected float value(int length, int index) {
+  protected float value(int length, int index) 
+  {
     return 1f;
   }
 }
