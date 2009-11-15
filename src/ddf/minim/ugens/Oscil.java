@@ -51,7 +51,7 @@ public class Oscil extends UGen
 	
 	public Oscil(Frequency frequency, float amplitude, String wavetype, float dutyCycle )
 	{
-		this(frequency, amplitude, WavetableGenerator.gen7(8192, new float[] {1,1,-1,-1}, new int[] {(int)dutyCycle*8192,0,8192-(int)dutyCycle*8192}));
+		this(frequency, amplitude, WavetableGenerator.gen7(8192, new float[] {1,1,-1,-1}, new int[] {(int)(dutyCycle*8192),0,8192-(int)(dutyCycle*8192)}));
 		//note : wavetype is not even used...
 	}
 	
