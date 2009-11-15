@@ -32,14 +32,14 @@ import ddf.minim.AudioMetaData;
 class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 {
 	private AudioMetaData		meta;
-	private AudioInputStream	encAis;
+	// private AudioInputStream	encAis;
 
 	JSMPEGAudioRecordingStream(JSMinim sys, AudioMetaData mdata, AudioInputStream encStream,
 	                  			AudioInputStream decStream, SourceDataLine sdl, int bufferSize)
 	{
 		super(sys, decStream, sdl, bufferSize, mdata.length());
 		meta = mdata;
-		encAis = encStream;
+		// encAis = encStream;
 	}
 
 	public AudioMetaData getMetaData()

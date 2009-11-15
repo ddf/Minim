@@ -1,2 +1,8 @@
 bin/
 doc/
+<<<<<<< HEAD
+=======
+dist/
+*.swp
+.DS_Store
+>>>>>>> upstream/master

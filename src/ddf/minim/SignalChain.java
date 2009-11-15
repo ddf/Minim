@@ -42,13 +42,13 @@ import java.util.Vector;
 public class SignalChain implements AudioSignal
 {
   // the signals in the order they were added
-  private Vector signals;
+  private Vector<AudioSignal> signals;
   // signals we should remove after our next generate
   // this is done so that a signal won't ever be actually 
   // removed in the middle of a generate, which can cause clicks
-  private Vector signalsToRemove;
+  private Vector<AudioSignal> signalsToRemove;
   // all currently enabled signals
-  private HashSet enabled;
+  private HashSet<AudioSignal> enabled;
   // buffers used to generate audio for each signal
   private float[] tmpL;
   private float[] tmpR;
@@ -59,9 +59,9 @@ public class SignalChain implements AudioSignal
    */
   public SignalChain()
   {
-    signals = new Vector();
-    signalsToRemove = new Vector();
-    enabled = new HashSet();
+    signals = new Vector<AudioSignal>();
+    signalsToRemove = new Vector<AudioSignal>();
+    enabled = new HashSet<AudioSignal>();
   }
 
   /**
@@ -98,7 +98,7 @@ public class SignalChain implements AudioSignal
    */
   public synchronized AudioSignal remove(int i)
   {
-    AudioSignal s = (AudioSignal) signals.remove(i);
+    AudioSignal s = signals.remove(i);
     enabled.remove(s);
     return s;
   }
@@ -111,7 +111,7 @@ public class SignalChain implements AudioSignal
    */
   public synchronized AudioSignal get(int i)
   {
-    return (AudioSignal) signals.get(i);
+    return signals.get(i);
   }
   
   /**
@@ -246,7 +246,7 @@ public class SignalChain implements AudioSignal
     }
     for (int i = 0; i < signals.size(); i++)
     {
-      AudioSignal s = (AudioSignal) signals.get(i);
+      AudioSignal s = signals.get(i);
       if ( enabled.contains(s) )
       {
         for(int it = 0; it < tmpL.length; it++) 
@@ -282,7 +282,7 @@ public class SignalChain implements AudioSignal
 	  }
     for (int i = 0; i < signals.size(); i++)
     {
-      AudioSignal s = (AudioSignal) signals.get(i);
+      AudioSignal s = signals.get(i);
       if ( enabled.contains(s) )
       {
         s.generate(tmpL, tmpR);

@@ -40,9 +40,9 @@ import java.util.Vector;
 public class EffectsChain implements AudioEffect
 {
   // the effects in the order they were added
-  private Vector effects;
+  private Vector<AudioEffect> effects;
   // all currently enabled effects
-  private HashSet enabled;
+  private HashSet<AudioEffect> enabled;
   
   /**
    * Constructs an empty <code>EffectsChain</code>.
@@ -50,8 +50,8 @@ public class EffectsChain implements AudioEffect
    */
   public EffectsChain()
   {
-    effects = new Vector();
-    enabled = new HashSet();
+    effects = new Vector<AudioEffect>();
+    enabled = new HashSet<AudioEffect>();
   }
   
   /**
@@ -84,7 +84,7 @@ public class EffectsChain implements AudioEffect
    */
   public synchronized AudioEffect remove(int i)
   {
-    AudioEffect e = (AudioEffect)effects.remove(i);
+    AudioEffect e = effects.remove(i);
     enabled.remove(e);
     return e;
   }
@@ -96,7 +96,7 @@ public class EffectsChain implements AudioEffect
    */
   public synchronized AudioEffect get(int i)
   {
-    return (AudioEffect)effects.get(i);
+    return effects.get(i);
   }
   
   /**
@@ -221,7 +221,7 @@ public class EffectsChain implements AudioEffect
   {
     for (int i = 0; i < effects.size(); i++)
     {
-      AudioEffect e = (AudioEffect) effects.get(i);
+      AudioEffect e = effects.get(i);
       if ( enabled.contains(e) )
       {
         e.process(samp);
@@ -241,7 +241,7 @@ public class EffectsChain implements AudioEffect
   {
     for (int i = 0; i < effects.size(); i++)
     {
-      AudioEffect e = (AudioEffect) effects.get(i);
+      AudioEffect e = effects.get(i);
       if ( enabled.contains(e) )
       {
         e.process(sampL, sampR);

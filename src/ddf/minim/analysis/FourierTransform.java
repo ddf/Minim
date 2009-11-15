@@ -44,7 +44,7 @@ import ddf.minim.Minim;
  * <code>5/1024 * 44100 = 0.0048828125 * 44100 = 215 Hz</code>. The width of
  * that frequency band is equal to <code>2/1024</code>, expressed as a
  * fraction of the total bandwidth of the spectrum. The total bandwith of the
- * spectrum is equal to the Nyquist frequency, which in this case is 22100, so
+ * spectrum is equal to the Nyquist frequency, which in this case is 22050, so
  * the bandwidth is equal to about 50 Hz. It is not necessary for you to
  * remember all of these relationships, though it is good to be aware of them.
  * The function <code>getFreq()</code> allows you to query the spectrum with a
@@ -71,11 +71,20 @@ import ddf.minim.Minim;
  * <b>Windowing</b>
  * <p>
  * Windowing is the process of shaping the audio samples before transforming them
- * to the frequency domain. If you call the <code>window()</code> function
- * with an appropriate constant, such as FourierTransform.HAMMING, the sample
- * buffers passed to the object for analysis will be shaped by the current
+ * to the frequency domain. The Fourier Transform assumes the sample buffer is is a 
+ * repetitive signal, if a sample buffer is not truly periodic within the measured
+ * interval sharp discontinuities may arise that can introduce spectral leakage.
+ * Spectral leakage is the speading of signal energy across multiple FFT bins. This
+ * "spreading" can drown out narrow band signals and hinder detection.
+ * </p>
+ * <p>
+ * A <a href="http://en.wikipedia.org/wiki/Window_function">windowing function</a>
+ * attempts to reduce spectral leakage by attenuating the measured sample buffer
+ * at its end points to eliminate discontinuities. If you call the <code>window()</code> 
+ * function with an appropriate WindowFunction, such as <code>HammingWindow()</code>,
+ * the sample buffers passed to the object for analysis will be shaped by the current
  * window before being transformed. The result of using a window is to reduce
- * the noise in the spectrum somewhat.
+ * the leakage in the spectrum somewhat.
  * <p>
  * <b>Averages</b>
  * <p>
@@ -130,18 +139,32 @@ import ddf.minim.Minim;
  */
 public abstract class FourierTransform
 {
-  /** A constant indicating no window should be used on sample buffers. */
-  public static final int NONE = 0;
-  /** A constant indicating a Hamming window should be used on sample buffers. */
-  public static final int HAMMING = 1;
-  protected static final int LINAVG = 2;
-  protected static final int LOGAVG = 3;
-  protected static final int NOAVG = 4;
+  protected static final int LINAVG = 1;
+  protected static final int LOGAVG = 2;
+  protected static final int NOAVG = 3;
+
+  /** A constant indicating no window should be used on sample buffers. Also referred as a <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>. */
+  public static final WindowFunction NONE = new RectangularWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> should be used on sample buffers. */
+  public static final WindowFunction HAMMING = new HammingWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a> should be used on sample buffers. */
+  public static final WindowFunction HANN = new HannWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> should be used on sample buffers. */
+  public static final WindowFunction COSINE = new CosineWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> should be used on sample buffers. */
+  public static final WindowFunction TRIANGULAR = new TriangularWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">Bartlett window</a> should be used on sample buffers. */
+  public static final WindowFunction BARTLETT = new BartlettWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">Bartlett-Hann window</a> should be used on sample buffers. */
+  public static final WindowFunction BARTLETTHANN = new BartlettHannWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">Lanczos window</a> should be used on sample buffers. */
+  public static final WindowFunction LANCZOS = new LanczosWindow();
+
   protected static final float TWO_PI = (float) (2 * Math.PI);
   protected int timeSize;
   protected int sampleRate;
   protected float bandWidth;
-  protected int whichWindow;
+  protected WindowFunction windowFunction;
   protected float[] real;
   protected float[] imag;
   protected float[] spectrum;
@@ -167,7 +190,7 @@ public abstract class FourierTransform
     bandWidth = (2f / timeSize) * ((float)sampleRate / 2f);
     noAverages();
     allocateArrays();
-    whichWindow = NONE;
+    windowFunction = new RectangularWindow(); // a Rectangular window is analogous to using no window. 
   }
 
   // allocating real, imag, and spectrum are the responsibility of derived
@@ -317,38 +340,24 @@ public abstract class FourierTransform
    * If an invalid window is asked for, an error will be reported and the
    * current window will not be changed.
    * 
-   * @param which
-   *          FourierTransform.HAMMING or FourierTransform.NONE
+   * @param windowFunction
    */
-  public void window(int which)
+
+  public void window(WindowFunction windowFunction)
   {
-    if (which < 0 || which > 1)
+    if ( windowFunction instanceof WindowFunction ) 
+    {
+      this.windowFunction = windowFunction;
+    } 
+    else 
     {
       Minim.error("Invalid window type.");
-    }
-    else
-    {
-      whichWindow = which;
     }
   }
 
   protected void doWindow(float[] samples)
   {
-    switch (whichWindow)
-    {
-      case HAMMING:
-        hamming(samples);
-        break;
-    }
-  }
-
-  // windows the data in samples with a Hamming window
-  protected void hamming(float[] samples)
-  {
-    for (int i = 0; i < samples.length; i++)
-    {
-      samples[i] *= (0.54f - 0.46f * Math.cos(TWO_PI * i / (samples.length - 1)));
-    }
+    windowFunction.apply(samples);
   }
 
   /**

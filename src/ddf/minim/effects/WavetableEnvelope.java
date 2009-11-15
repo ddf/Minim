@@ -1,6 +1,6 @@
 package ddf.minim.effects;
 
-import ddf.minim.AudioEffect;
+// import ddf.minim.AudioEffect;
 // import ddf.minim.Wavetable;
 
 // Not available for 2.0.2
