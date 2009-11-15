@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+started,bundle,org.eclipse.ui.navigator.resources,3.4.1.M20090826-0800,"org.eclipse.ui.navigator.resources",1257027715767
+started,bundle,org.eclipse.ui.net,1.2.1.r35x_20090812-1200,"org.eclipse.ui.net",1257027715767
+started,bundle,org.eclipse.ui.views,3.4.1.M20090826-0800,"org.eclipse.ui.views",1257027715768
+started,bundle,org.eclipse.ui.workbench,3.5.1.M20090826-0800a,"org.eclipse.ui.workbench",1257027715768
+started,bundle,org.eclipse.ui.workbench.texteditor,3.5.0.v20090603,"org.eclipse.ui.workbench.texteditor",1257027715770
+started,bundle,org.eclipse.update.configurator,3.3.0.v20090312,"org.eclipse.update.configurator",1257027715770
+started,bundle,org.eclipse.update.core,3.2.300.v20090525,"org.eclipse.update.core",1257027715771
+started,bundle,org.eclipse.update.scheduler,3.2.200.v20081127,"org.eclipse.update.scheduler",1257027715771
+started,bundle,org.eclipse.wst.common.emf,1.1.301.v200908181930,"org.eclipse.wst.common.emf",1257027715772
+started,bundle,org.eclipse.wst.common.emfworkbench.integration,1.1.301.v200908101600,"org.eclipse.wst.common.emfworkbench.integration",1257027715773
+started,bundle,org.eclipse.wst.common.frameworks,1.1.300.v200904160730,"org.eclipse.wst.common.frameworks",1257027715773
+started,bundle,org.eclipse.wst.common.project.facet.core,1.4.1.v200908111817,"org.eclipse.wst.common.project.facet.core",1257027715773
+started,bundle,org.eclipse.wst.jsdt.core,1.0.201.v200908101420,"org.eclipse.wst.jsdt.core",1257027715774
+started,bundle,org.eclipse.wst.jsdt.manipulation,1.0.100.v200809240707,"org.eclipse.wst.jsdt.manipulation",1257027715778
+started,bundle,org.eclipse.wst.jsdt.ui,1.0.200.v200905242047,"org.eclipse.wst.jsdt.ui",1257027715778
+started,bundle,org.eclipse.wst.web,1.1.301.v200909021400,"org.eclipse.wst.web",1257027715778
+started,bundle,org.eclipse.wst.ws.service.policy.ui,1.0.102.v200903070248,"org.eclipse.wst.ws.service.policy.ui",1257027715779
+os,sysinfo,,,"win32",1257027715782
+arch,sysinfo,,,"x86",1257027715782
+ws,sysinfo,,,"win32",1257027715782
+locale,sysinfo,,,"fr_FR",1257027715782
+processors,sysinfo,,,"2",1257027715782
+java.runtime.name,sysinfo,,,"Java(TM) SE Runtime Environment",1257027715782
+java.runtime.version,sysinfo,,,"1.6.0_16-b01",1257027715782
+java.specification.name,sysinfo,,,"Java Platform API Specification",1257027715782
