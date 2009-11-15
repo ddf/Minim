@@ -71,7 +71,7 @@ public abstract class WindowFunction
   {
     this.length = samples.length;
 
-    for ( int n = 0; n < samples.length; n ++ ) 
+    for (int n = 0; n < samples.length; n ++) 
     {
       samples[n] *= value(samples.length, n);
     }
@@ -85,10 +85,9 @@ public abstract class WindowFunction
    */
   public float[] generateCurve(int length)
   {
-    this.length = length;
-
     float[] samples = new float[length];
-    for (int n = 0; n < length; n++) {
+    for (int n = 0; n < length; n++) 
+    {
       samples[n] = 1f * value(length, n);  
     }
     return samples;

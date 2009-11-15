@@ -34,7 +34,7 @@ public class GaussWindow extends WindowFunction
   /** Constructs a Gauss window function. */
   public GaussWindow(double alpha)
   {
-    if ( alpha < 0.0 || alpha > 0.5 ) 
+    if (alpha < 0.0 || alpha > 0.5) 
     {
       Minim.error("Range for GaussWindow out of bounds. Value must be <= 0.5");
       return;

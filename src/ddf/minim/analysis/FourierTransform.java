@@ -139,10 +139,6 @@ import ddf.minim.Minim;
  */
 public abstract class FourierTransform
 {
-  protected static final int LINAVG = 1;
-  protected static final int LOGAVG = 2;
-  protected static final int NOAVG = 3;
-
   /** A constant indicating no window should be used on sample buffers. Also referred as a <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>. */
   public static final WindowFunction NONE = new RectangularWindow();
   /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> should be used on sample buffers. */
@@ -159,6 +155,14 @@ public abstract class FourierTransform
   public static final WindowFunction BARTLETTHANN = new BartlettHannWindow();
   /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">Lanczos window</a> should be used on sample buffers. */
   public static final WindowFunction LANCZOS = new LanczosWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a> with a default value should be used on sample buffers. */
+  public static final WindowFunction BLACKMAN = new BlackmanWindow();
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Gauss_windows">Gauss window</a> with a default value should be used on sample buffers. */
+  public static final WindowFunction GAUSS = new GaussWindow();
+
+  protected static final int LINAVG = 1;
+  protected static final int LOGAVG = 2;
+  protected static final int NOAVG = 3;
 
   protected static final float TWO_PI = (float) (2 * Math.PI);
   protected int timeSize;
