@@ -1,12 +1,15 @@
 package ddf.minim.ugens;
 
-import ddf.minim.AudioSignal;
 import ddf.minim.AudioOutput;
 
 public abstract class UGen
 {
 	private UGen in;
+	
+	// ddf: I don't believe this is being used for anything right now
+	//      and I don't recall what I thought I'd need it for.
 	protected AudioOutput out;
+	
 	protected float sampleRate;
 	
 	// TODO describe how this patching stuff works.
@@ -21,12 +24,25 @@ public abstract class UGen
 	 * sine.patch(gain).patch(out);
 	 * </pre>
 	 */
-	public UGen patch(UGen connectTo)
+	// ddf: this is final because we never want people to override it.
+	public final UGen patch(UGen connectTo)
 	{
-		connectTo.in = this;
+		// was:	connectTo.in = this;
+		// note that the default implementation of addInput 
+		// does exactly the same thing.
+		connectTo.addInput(this);
 		return connectTo;
 	}
 	
+	// ddf: Protected because users of UGens should never call this directly.
+	//      Sub-classes can override this to control what happens when something
+	//      is patched to them. See the Bus class.
+	protected void addInput(UGen input)
+	{
+		in = input;
+	}
+	
+	// ddf: I don't think we need this anymore.
 	public void patch(Frequency freq)
 	{
 		freq.useFrequency(this);
@@ -38,10 +54,10 @@ public abstract class UGen
 	 * 
 	 * @param out The AudioOutput you want to connect this UGen to.
 	 */
-	public void patch(AudioOutput output)
+	public final void patch(AudioOutput output)
 	{
 		out = output;
-		out.bus.patch(this);
+		patch(out.bus);
 		setSampleRate(out.sampleRate());
 	}
 	
@@ -81,16 +97,29 @@ public abstract class UGen
 	 */
 	protected abstract void ugentick(float[] channels);
 	
-	private void setSampleRate(float sr)
+	/**
+	 * Set the sample rate for this UGen.
+	 * 
+	 * @param newSampleRate the sample rate this UGen should generate at.
+	 */
+	// ddf: changed this to public because Bus needs to be able to call it
+	//      on all of its UGens when it has its sample rate set by being connected 
+	//      to an AudioOuput. Realized it's not actually a big deal for people to 
+	//      set the sample rate of any UGen they create whenever they want. In fact, 
+	//      could actually make total sense to want to do this with something playing 
+	//      back a chunk of audio loaded from disk. Made this final because it should 
+	//      never be overriden. If sub-classes need to know about sample rate changes 
+	//      the should override sampleRateChanged()
+	public final void setSampleRate(float newSampleRate)
 	{
-		if ( sampleRate != sr )
+		if ( sampleRate != newSampleRate )
 		{
-			sampleRate = sr;
+			sampleRate = newSampleRate;
 			sampleRateChanged();
 		}
 		if ( in != null )
 		{
-			in.setSampleRate(sr);
+			in.setSampleRate(newSampleRate);
 		}
 	}
 }

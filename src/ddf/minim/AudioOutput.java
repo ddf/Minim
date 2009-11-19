@@ -60,6 +60,15 @@ public class AudioOutput extends AudioSource implements Polyphonic
     synth = synthesizer;
     signals = new SignalChain();
     noteManager = new NoteManager(this);
+    // TODO ddf: this is problematic. just adding the bus to the signal chain
+    //      is not OK because it will change the indexing for getSignal to be
+    //      one off from what users expect. the easiest thing to do would be 
+    //      to have a second signal chain that bus and signals are added to 
+    //      and then set that one as the audio signal for the synth. though
+    //      that does put us in the situation of possibly answering FALSE for 
+    //      isSounding when they've patched in some UGens and can hear audio.
+    //      Though this could all be moot if we simply toss all the AudioSignal 
+    //      stuff in favor of using only UGens.
     bus = new Bus(this);
     signals.add(bus);
     synth.setAudioSignal(signals);
