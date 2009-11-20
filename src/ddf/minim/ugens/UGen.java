@@ -1,16 +1,37 @@
 package ddf.minim.ugens;
 
 import ddf.minim.AudioOutput;
+import ddf.minim.Minim;
 
 public abstract class UGen
 {
-	private UGen in;
+    private UGen[] inputUGens;
+    private int nInputs;
 	
 	// ddf: I don't believe this is being used for anything right now
 	//      and I don't recall what I thought I'd need it for.
 	protected AudioOutput out;
 	
 	protected float sampleRate;
+	
+	// TODO remove UGen empty constructor???
+	// jam3: here as a placeholder until everything is converted
+	//       to the new input array
+	public UGen()
+	{
+		//TODO jam3: remove default of 1 input
+		this( 1 );
+	}
+	
+	/**
+	 * 
+	 */
+	// jam3: initializes the inputUGens array with nIns "slots" for inputs
+	public UGen(int nIns)
+	{
+		nInputs = nIns;
+		inputUGens = new UGen[nInputs];
+	}
 	
 	// TODO describe how this patching stuff works.
 	/**
@@ -37,9 +58,18 @@ public abstract class UGen
 	// ddf: Protected because users of UGens should never call this directly.
 	//      Sub-classes can override this to control what happens when something
 	//      is patched to them. See the Bus class.
+    // jam3: In fact, all UGens should override this to specify where inputUGens go
 	protected void addInput(UGen input)
 	{
-		in = input;
+		// TODO determine correct default behaviour for addInput
+		// jam3: any default behavior here is going to be wrong
+        //       for now, patch directly to the first slot if there is one
+		if ( nInputs > 0)
+		{
+			inputUGens[0] = input;
+		} else {
+			Minim.debug("Tried to patch to a UGen with no inputs.");
+		}
 	}
 	
 	// ddf: I don't think we need this anymore.
@@ -71,9 +101,16 @@ public abstract class UGen
 	 */
 	public void tick(float[] channels)
 	{
-		if ( in != null )
+		if ( nInputs > 0 )
 		{
-			in.tick(channels);
+			for(UGen aUGen : inputUGens )
+			{
+				if ( aUGen != null )
+				{
+					// TODO jam3: figure out how to change this for non-audio signals
+					aUGen.tick(channels);					
+				}
+			}
 		}
 		uGenerate(channels);
 	}
@@ -117,9 +154,15 @@ public abstract class UGen
 			sampleRate = newSampleRate;
 			sampleRateChanged();
 		}
-		if ( in != null )
+		if ( nInputs > 0 )
 		{
-			in.setSampleRate(newSampleRate);
+			for(UGen aUGen : inputUGens )
+			{
+				if ( aUGen != null )
+				{
+					aUGen.setSampleRate(newSampleRate);
+				}
+			}
 		}
 	}
 }
