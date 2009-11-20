@@ -4,10 +4,10 @@ public class Noise extends UGen
 {
 
 	// Must define the noise types
-	public enum NoiseType { WHITE, PINK, RED };
+	public enum Tint { WHITE, PINK, RED };
 	
 	// the type of noise
-	private NoiseType noisTyp;
+	private Tint tint;
 	// the amplitude at which  we will generate noise
 	private float	amp;
 	// the last value
@@ -21,14 +21,14 @@ public class Noise extends UGen
 	
 	public Noise(float amplitude)
 	{
-		this( amplitude, NoiseType.WHITE ) ;
+		this( amplitude, Tint.WHITE ) ;
 	}
 
-	public Noise(float amplitude, NoiseType noiseType)
+	public Noise(float amplitude, Tint noiseType)
 	{
 		amp = amplitude;
 		last = 0f;
-		noisTyp = noiseType;
+		tint = noiseType;
 		
 	}
 	
@@ -36,7 +36,7 @@ public class Noise extends UGen
 	protected void ugentick(float[] channels) 
 	{
 		float n = 0f;
-		switch (noisTyp) 
+		switch (tint) 
 		{
 		case WHITE :
 			n = amp*(float)Math.random()*2 - 1;
