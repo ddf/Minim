@@ -51,7 +51,7 @@ public class Bus extends UGen implements AudioSignal
 	}
 	
 	@Override
-	protected void ugentick(float[] channels) 
+	protected void uGenerate(float[] channels) 
 	{
 		for(int i = 0; i < ugens.size(); i++)
 		{

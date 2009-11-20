@@ -16,7 +16,7 @@ public class Gain extends UGen
 	}
 
 	@Override
-	protected void ugentick(float[] channels) 
+	protected void uGenerate(float[] channels) 
 	{
 		for(int i = 0; i < channels.length; i++)
 		{

@@ -76,7 +76,7 @@ public class Oscil extends UGen
 	}
 	
 	@Override
-	protected void ugentick(float[] channels) 
+	protected void uGenerate(float[] channels) 
 	{
 		// figure out our sample value
 		float sample = amp * wave.value(step);

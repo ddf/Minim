@@ -75,7 +75,7 @@ public abstract class UGen
 		{
 			in.tick(channels);
 		}
-		ugentick(channels);
+		uGenerate(channels);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public abstract class UGen
 	 * Implement this method when you extend UGen.
 	 * @param channels
 	 */
-	protected abstract void ugentick(float[] channels);
+	protected abstract void uGenerate(float[] channels);
 	
 	/**
 	 * Set the sample rate for this UGen.

@@ -33,7 +33,7 @@ public class Noise extends UGen
 	}
 	
 	@Override
-	protected void ugentick(float[] channels) 
+	protected void uGenerate(float[] channels) 
 	{
 		float n = 0f;
 		switch (tint) 
