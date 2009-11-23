@@ -43,8 +43,7 @@ public class Oscil extends UGen
 	//standard constructor
 	public Oscil(Frequency frequency, float amplitude, Waveform waveform)
 	{
-		//waveform=WavetableGenerator.gen10(8192, new float[] {1});
-		//might be useful at some point, for a unified way of calling the different wavetables
+
 		wave = waveform;
 		freq = frequency;
 		amp = amplitude;

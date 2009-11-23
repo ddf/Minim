@@ -7,6 +7,8 @@ public class Waves
 	 * 
 	 *  @author nb
 	 */
+	//TODO discussion about function names + what to do with Saw(4.5)
+	
 	
 	//perfect waveforms
 	public final static Wavetable Sine = WavetableGenerator.gen10(8192, new float[] { 1 });
