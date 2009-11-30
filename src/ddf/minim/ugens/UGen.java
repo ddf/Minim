@@ -1,12 +1,110 @@
 package ddf.minim.ugens;
 
+import java.util.Arrays;
+
 import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
 
 public abstract class UGen
 {
-    private UGen[] inputUGens;
+	// jam3: enum is automatically static so it can't be in the nested class
+	public enum SignalType { CONTROL, AUDIO };
+	
+	// jam3: declaring an inner nested class here
+	class UGenInput
+	{
+		private int slot;
+		private UGen incoming;
+		private SignalType signalType;
+	    UGenInput()
+	    {
+	    	// jam3: default to a 0 input
+	    	this( 0 );
+	    }
+	    UGenInput(int sl)
+	    {
+	    	// TODO range checking on input slot number
+	    	this( sl, SignalType.AUDIO );
+	    }
+	    UGenInput(int sl, SignalType st)
+	    {
+	    	// TODO range checking on input slot number
+	    	slot = sl;
+	    	signalType = st;
+	    	uGenInputs[slot] = this;
+	    }
+	    int getSlot()
+	    {
+	    	return slot;
+	    }
+	    UGen getOuterUGen()
+	    {
+	    	return UGen.this;
+	    }
+	    UGen getIncomingUGen()
+	    {
+	    	return incoming;
+	    }
+	    void setIncomingUGen(UGen in)
+	    {
+	    	incoming = in;
+	    }
+	    // TODO Decide if it's a problem to give this a second name?
+	    void addInput(UGen in)
+	    {
+	    	setIncomingUGen( in );
+	    	System.out.println("UGenInput addInput called.");
+	    	
+	    }
+	    void printInput()
+	    {
+	    	String typeLabel = null;
+	    	String filled = null ; 
+	    	switch (signalType)
+	    	{
+	    	case AUDIO :
+	    		typeLabel = "AUDIO";
+	    		break;
+	    	case CONTROL :
+	    		typeLabel = "CONTROL";
+	    		break;	
+	    	}
+	    	if ( incoming == null)
+	    	{
+	    		filled = "not filled";
+	    	} else {
+	    		filled = "filled";
+	    	}
+	    		
+	    	System.out.println("UGenInput: slot = " + slot + " signal = " + typeLabel + " " + filled );
+	    }
+	    //void setLastValues(float[] channels)
+	    //{
+	    //	if (lastValues == null )
+	    //	{
+	    //		System.out.println("lastValues is null!");
+	    //		//lastValues = new float[channels.length];
+	    //	}
+	    //	if (channels == null )
+	    //	{
+	    //		System.out.println("channels is null!");
+	    //		//lastValues = new float[channels.length];
+	    //	}
+	    //	for( int i=0; i<channels.length; i++)
+	    //	{
+	    //		lastValues[i] = channels[i];
+	    //	}
+	    //	//lastValues = Arrays.copyOf(channels, channels.length);
+	    //}
+	    //float[] getLastValues()
+	    //{
+	    // 	return lastValues;
+	    //}
+	}
+	
+    private UGenInput[] uGenInputs;
     private int nInputs;
+	private float[] lastValues;
 	
 	// ddf: I don't believe this is being used for anything right now
 	//      and I don't recall what I thought I'd need it for.
@@ -30,7 +128,13 @@ public abstract class UGen
 	public UGen(int nIns)
 	{
 		nInputs = nIns;
-		inputUGens = new UGen[nInputs];
+		System.out.println("number of inputs in this UGen = " + nInputs);
+		uGenInputs = new UGenInput[nInputs];
+		//for( int i=0; i<nInputs; i++)
+		//{
+		//	uGenInputs[i] = new UGenInput(i);
+		//}
+		lastValues = new float[2]; // NOT CORRECT
 	}
 	
 	// TODO describe how this patching stuff works.
@@ -55,18 +159,26 @@ public abstract class UGen
 		return connectTo;
 	}
 	
+	// jam3: adding a patch method for inputs
+	public final UGen patch(UGenInput connectToInput)
+	{
+		connectToInput.addInput(this);		
+		return connectToInput.getOuterUGen();
+	}
+	
 	// ddf: Protected because users of UGens should never call this directly.
 	//      Sub-classes can override this to control what happens when something
 	//      is patched to them. See the Bus class.
-    // jam3: In fact, all UGens should override this to specify where inputUGens go
 	protected void addInput(UGen input)
 	{
 		// TODO determine correct default behaviour for addInput
 		// jam3: any default behavior here is going to be wrong
         //       for now, patch directly to the first slot if there is one
-		if ( nInputs > 0)
+		System.out.println("UGen addInput called.");
+		if (nInputs > 0)
 		{
-			inputUGens[0] = input;
+			//Call the method from the default UGenInput 
+			uGenInputs[0].addInput(input);
 		} else {
 			Minim.debug("Tried to patch to a UGen with no inputs.");
 		}
@@ -103,16 +215,32 @@ public abstract class UGen
 	{
 		if ( nInputs > 0 )
 		{
-			for(UGen aUGen : inputUGens )
-			{
-				if ( aUGen != null )
+			for( int i=0; i<nInputs; i++ )
+			{		
+				if (( uGenInputs[i] != null ) && ( uGenInputs[i].getIncomingUGen() != null ))
 				{
 					// TODO jam3: figure out how to change this for non-audio signals
-					aUGen.tick(channels);					
+					//uGenInputs[i].getIncomingUGen().tick(tmp[i]);
+					//aUGenInput.setLastValues(tmp[i]);
+					float[] tmp = new float[channels.length];
+					uGenInputs[i].getIncomingUGen().tick(tmp);
+					//System.out.println("ticked input " + uGenInputs[i].getSlot() + " value 0 = " + tmp[0] );
+					//aUGenInput.setLastValues(channels);
 				}
 			}
+			//channels = tmp[0];
 		}
 		uGenerate(channels);
+		for( int i=0; i<channels.length; i++ )
+		{		
+			lastValues[i]=channels[i];
+			//System.out.println(lastValues[i]);
+		}
+	}
+	
+	float[] getLastValues()
+	{
+		return lastValues;
 	}
 	
 	/**
@@ -156,13 +284,28 @@ public abstract class UGen
 		}
 		if ( nInputs > 0 )
 		{
-			for(UGen aUGen : inputUGens )
-			{
-				if ( aUGen != null )
+			for( int i=0; i<nInputs; i++ )
+			{		
+				if (( uGenInputs[i] != null ) && ( uGenInputs[i].getIncomingUGen() != null ))
 				{
-					aUGen.setSampleRate(newSampleRate);
+					// TODO jam3: figure out how to change this for non-audio signals
+					uGenInputs[i].getIncomingUGen().setSampleRate(newSampleRate);
 				}
-			}
+			}			
 		}
+	}
+	
+	public void printInputs()
+	{
+	   for( int i=0; i<nInputs; i++)
+	   {
+		   System.out.print("uGenInputs " + i + " ");
+		   if ( uGenInputs[ i ] == null )
+		   {
+			   System.out.println("null");   
+		   } else {
+			   uGenInputs[ i ].printInput();
+		   }
+	   }
 	}
 }
