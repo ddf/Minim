@@ -2,6 +2,7 @@ package ddf.minim.ugens;
 
 import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
+import java.util.ArrayList;
 
 public abstract class UGen
 {
@@ -11,36 +12,29 @@ public abstract class UGen
 	// jam3: declaring an inner nested class here
 	class UGenInput
 	{
-		private int slot;
 		private UGen incoming;
 		private InputType inputType;
 		
 	    UGenInput()
 	    {
-	    	// jam3: default to a slot 0 input
-	    	this(0);
+	    	// jam3: default to audio input
+	    	this(InputType.AUDIO);
 	    }
-	    UGenInput(int sl)
+	    UGenInput(InputType it)
 	    {
-	    	// TODO default to audio input?!?
-	    	this(sl, InputType.AUDIO);
+	    	inputType = it;
+	    	//try
+	    	//{
+	    		uGenInputs.add(this);
+	    	//} catch (ArrayIndexOutOfBoundsException e) 
+	    	//{
+	    	 //   System.err.println("Caught ArrayIndexOutOfBoundsException: " 
+	    	  //  		+ e.getMessage());
+	    	//}
 	    }
-	    UGenInput(int sl, InputType st)
+	    InputType getInputType()
 	    {
-	    	slot = sl;
-	    	inputType = st;
-	    	try
-	    	{
-	    		uGenInputs[slot] = this;
-	    	} catch (ArrayIndexOutOfBoundsException e) 
-	    	{
-	    	    System.err.println("Caught ArrayIndexOutOfBoundsException: " 
-	    	    		+ e.getMessage());
-	    	}
-	    }
-	    int getSlot()
-	    {
-	    	return slot;
+	    	return inputType;
 	    }
 	    UGen getOuterUGen()
 	    {
@@ -58,7 +52,7 @@ public abstract class UGen
 	    {
 	    	return (incoming != null);
 	    }
-	    String getTypeAsString()
+	    String getInputTypeAsString()
 	    {
 	    	String typeLabel = null;
 	    	switch (inputType)
@@ -74,32 +68,21 @@ public abstract class UGen
 	    }
 	    void printInput()
 	    {
-	    	Minim.debug("UGenInput: slot = " + slot 
-	    			+ " signal = " + getTypeAsString() + " " 
+	    	Minim.debug("UGenInput: " 
+	    			+ " signal = " + getInputTypeAsString() + " " 
 	    			+ isPatched() );
 	    }
 	}
 	
-    private UGenInput[] uGenInputs;
-    private int nInputs;
+    private ArrayList<UGenInput> uGenInputs;
 	private float[] lastValues;
 	protected float sampleRate;
+	// jam3: every UGen must have a mainAudio input.
+	public UGenInput mainAudio;
 	
-	// TODO remove UGen empty constructor???
-	// jam3: here as a placeholder until everything is converted
-	//       to the new input array
 	public UGen()
 	{
-		// TODO jam3: remove default of 1 input?
-		this(1);
-	}
-	
-	// jam3: initializes the inputUGens array with nIns "slots" for inputs
-	public UGen(int nIns)
-	{
-		nInputs = nIns;
-		Minim.debug("number of inputs in this UGen = " + nInputs);
-		uGenInputs = new UGenInput[nInputs];
+		uGenInputs = new ArrayList<UGenInput>();
 		// TODO How to set length of last values appropriately?
 		// jam3: Using "2" here is wrong.  Could make ArrayList and set size with tick?
 		lastValues = new float[2];
@@ -120,9 +103,7 @@ public abstract class UGen
 	// ddf: this is final because we never want people to override it.
 	public final UGen patch(UGen connectToUGen)
 	{
-		// was:	connectTo.in = this;
-		// note that the default implementation of addInput 
-		// does exactly the same thing.
+		// jam3: connecting to a UGen is the same as connecting to it's "mainAudio" input
 		connectToUGen.addInput(this);
 		return connectToUGen;
 	}
@@ -130,6 +111,7 @@ public abstract class UGen
 	public final UGen patch(UGenInput connectToInput)
 	{
 		connectToInput.setIncomingUGen(this);		
+		// TODO setSampleRate(sampleRate);
 		return connectToInput.getOuterUGen();
 	}
 	
@@ -138,17 +120,16 @@ public abstract class UGen
 	//      is patched to them. See the Bus class.
 	protected void addInput(UGen input)
 	{
-		// jam3: This default behavior is that an incoming signal will be
-		// 		patched to slot 0.  This follows the decision that slot 0 
-		//		is audio input if there is one.
+		// jam3: This default behavior is that the incoming signal will be added
+		// 		to some input called "audio" if it exists.
 		Minim.debug("UGen addInput called.");
-		// TODO change nInputs checking to an Exception?
-		if (nInputs > 0)
+		// TODO change input checking to an Exception?
+		if (mainAudio == null)
 		{
-			uGenInputs[0].setIncomingUGen(input);
-		} else {
-			Minim.debug("Tried to patch to a UGen with no inputs.");
-		}
+			System.out.println("Initializing mainAudio on something");
+			mainAudio = new UGenInput(InputType.AUDIO);
+		}	
+		this.mainAudio.setIncomingUGen(input);
 	}
 	
 	/**
@@ -173,19 +154,29 @@ public abstract class UGen
 	 */
 	public void tick(float[] channels)
 	{
-		if (nInputs > 0)
+		if (uGenInputs.size() > 0)
 		{
-			for(int i=0; i<nInputs; i++)
+			for(int i=0; i<uGenInputs.size(); i++)
 			{		
-				if ((uGenInputs[i] != null) && (uGenInputs[i].isPatched()))
+				if ((uGenInputs.get(i) != null) && (uGenInputs.get(i).isPatched()))
 				{
-					// TODO jam3: figure out how to change this for non-audio signals
-					float[] tmp = new float[channels.length];
-					uGenInputs[i].getIncomingUGen().tick(tmp);
+					float[] tmp;
+					switch (uGenInputs.get(i).inputType)
+					{
+					case CONTROL :
+						tmp = new float[1];
+						break;
+					default : // includes AUDIO
+						tmp = new float[channels.length];
+						break;
+					}
+					//float[] tmp = new float[channels.length];
+					uGenInputs.get(i).getIncomingUGen().tick(tmp);
 				}
 			}
 		}
 		uGenerate(channels);
+		//Minim.debug(" ticking : value = " + channels[0]);
 		System.arraycopy(channels, 0, lastValues, 0, channels.length);
 	}
 	
@@ -232,13 +223,13 @@ public abstract class UGen
 			sampleRate = newSampleRate;
 			sampleRateChanged();
 		}
-		if (nInputs > 0)
+		if (uGenInputs.size() > 0)
 		{
-			for(int i=0; i<nInputs; i++)
+			for(int i=0; i<uGenInputs.size(); i++)
 			{		
-				if ((uGenInputs[i] != null) && (uGenInputs[i].isPatched()))
+				if ((uGenInputs.get(i) != null) && (uGenInputs.get(i).isPatched()))
 				{
-					uGenInputs[i].getIncomingUGen().setSampleRate(newSampleRate);
+					uGenInputs.get(i).getIncomingUGen().setSampleRate(newSampleRate);
 				}
 			}			
 		}
@@ -246,14 +237,14 @@ public abstract class UGen
 	
 	public void printInputs()
 	{
-	   for(int i=0; i<nInputs; i++)
+	   for(int i=0; i<uGenInputs.size(); i++)
 	   {
 		   Minim.debug("uGenInputs " + i + " ");
-		   if (uGenInputs[i] == null)
+		   if (uGenInputs.get(i) == null)
 		   {
 			   Minim.debug("null");   
 		   } else {
-			   uGenInputs[i].printInput();
+			   uGenInputs.get(i).printInput();
 		   }
 	   }
 	}

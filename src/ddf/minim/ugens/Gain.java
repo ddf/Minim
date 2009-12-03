@@ -5,8 +5,7 @@ import ddf.minim.Minim;
 public class Gain extends UGen
 {
 	// jam3: define the inputs to gain
-    protected static int gainInputs = 2;
-	public UGenInput audio;
+    
 	public UGenInput amplitude;
 	private float value;
 	
@@ -17,11 +16,11 @@ public class Gain extends UGen
 	
 	public Gain(float gainVal)
 	{
-		super(gainInputs);
-		// jam3: These can't be instantiated until the uGenInputs array
+		super();
+		// jam3: These can't be instantiated until the uGenInputs ArrayList
 		//       in the super UGen has been constructed
-		audio = new UGenInput(0, InputType.AUDIO);
-		amplitude = new UGenInput(1, InputType.CONTROL);
+		//audio = new UGenInput(InputType.AUDIO);
+		amplitude = new UGenInput(InputType.CONTROL);
 		value = gainVal;
 	}
 	
@@ -35,7 +34,7 @@ public class Gain extends UGen
 	{
 		for(int i = 0; i < channels.length; i++)
 		{
-			float tmp = audio.getIncomingUGen().getLastValues()[i];
+			float tmp = mainAudio.getIncomingUGen().getLastValues()[i];
 			if ((amplitude == null) || (!amplitude.isPatched()))
 			{
 				tmp *= value;
