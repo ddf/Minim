@@ -52,6 +52,10 @@ public abstract class UGen
 	    {
 	    	return (incoming != null);
 	    }
+	    float[] getLastValues()
+		{
+			return getIncomingUGen().getLastValues();
+		}
 	    String getInputTypeAsString()
 	    {
 	    	String typeLabel = null;

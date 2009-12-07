@@ -11,12 +11,14 @@ public class Oscil extends UGen
 	//public UGenInput audio;
 	public UGenInput amplitude;
 	public UGenInput amplitudeModulation;
-	public UGenInput frequencyIn;
+	public UGenInput frequency;
 	public UGenInput frequencyModulation;
 	
 	// the waveform we will oscillate over
 	private Waveform  wave;
-	// the frequency at which we will oscillate
+	// the base frequency at which we will oscillate
+	private Frequency baseFreq;
+    // the current frequency at which we oscillate (includes modulation)
 	private Frequency freq;
 	// the amplitude at which we will oscillate
 	private float 	  amp;
@@ -46,9 +48,13 @@ public class Oscil extends UGen
 	public Oscil(Frequency frequency, float amplitude, Waveform waveform)
 	{
 		super();
-		frequencyIn = new UGenInput(InputType.CONTROL);
+		this.amplitude = new UGenInput(InputType.CONTROL);
+		this.amplitudeModulation = new UGenInput(InputType.CONTROL);
+		this.frequency = new UGenInput(InputType.CONTROL);
+		this.frequencyModulation = new UGenInput(InputType.CONTROL);
 		wave = waveform;
-		freq = frequency;
+		baseFreq = frequency;
+		freq = baseFreq;
 		amp = amplitude;
 		step = 0f;
 	}
@@ -68,22 +74,38 @@ public class Oscil extends UGen
 	protected void uGenerate(float[] channels) 
 	{		
 		// figure out our sample value
-		float sample = amp * wave.value(step);
+		float tmpAmp;
+		if ((amplitude != null) && (amplitude.isPatched()))
+		{
+			tmpAmp = amplitude.getLastValues()[0];
+		} else 
+		{
+			tmpAmp = amp;
+		}
+		
+		if ((amplitudeModulation != null) && (amplitudeModulation.isPatched()))
+		{
+			tmpAmp += amplitudeModulation.getLastValues()[0];
+		}
+		
+		float sample = tmpAmp * wave.value(step);
 		for(int i = 0; i < channels.length; i++)
 		{
 			channels[i] = sample;
 		}
-		//Minim.debug("Oscil::uGenerate sample = " + sample);
-		if ((frequencyIn !=null) && (frequencyIn.isPatched()))
+		
+		if ((frequency !=null) && (frequency.isPatched()))
 		{
-			//Frequency tmpFreq = new Frequency(frequencyIn.getOuterUGen().getLastValues()[0]);
-			//freq = tmpFreq;
-			//freq = Frequency.ofHertz(200f);
-			freq = Frequency.ofHertz(frequencyIn.getIncomingUGen().getLastValues()[0]);
-			//Minim.debug("Oscil::uGenerate freq = " + freq.asHz());
+			baseFreq = Frequency.ofHertz(frequency.getLastValues()[0]);
 			stepSizeChanged();
 		}
-			
+		
+		if ((frequencyModulation !=null) && (frequencyModulation.isPatched()))
+		{
+			freq = Frequency.ofHertz(baseFreq.asHz() + frequencyModulation.getLastValues()[0]);
+			stepSizeChanged();
+		}
+		
 		step += stepSize;
 		// make sure we don't exceed 1.0.
 		// floor is less expensive than %?
