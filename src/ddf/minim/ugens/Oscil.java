@@ -104,6 +104,9 @@ public class Oscil extends UGen
 		{
 			freq = Frequency.ofHertz(baseFreq.asHz() + frequencyModulation.getLastValues()[0]);
 			stepSizeChanged();
+		} else
+		{
+			freq = baseFreq;
 		}
 		
 		step += stepSize;

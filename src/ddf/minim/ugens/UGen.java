@@ -81,6 +81,8 @@ public abstract class UGen
     private ArrayList<UGenInput> uGenInputs;
 	private float[] lastValues;
 	protected float sampleRate;
+	private int nOutputs;
+	private int currentTick;
 	
 	public UGen()
 	{
@@ -88,6 +90,8 @@ public abstract class UGen
 		// TODO How to set length of last values appropriately?
 		// jam3: Using "2" here is wrong.  Could make ArrayList and set size with tick?
 		lastValues = new float[2];
+		nOutputs = 0;
+		currentTick = 0;
 	}
 	
 	// TODO describe how this patching stuff works.
@@ -107,12 +111,16 @@ public abstract class UGen
 	{
 		// jam3: connecting to a UGen is the same as connecting to it's "mainAudio" input
 		connectToUGen.addInput(this);
+		nOutputs += 1;
+		System.out.println("nOutputs = " + nOutputs);
 		return connectToUGen;
 	}
 	
 	public final UGen patch(UGenInput connectToInput)
 	{
-		connectToInput.setIncomingUGen(this);		
+		connectToInput.setIncomingUGen(this);
+		nOutputs +=1;
+		System.out.println("nOutputs = " + nOutputs);
 		// TODO setSampleRate(sampleRate);
 		return connectToInput.getOuterUGen();
 	}
@@ -158,30 +166,39 @@ public abstract class UGen
 	 */
 	public void tick(float[] channels)
 	{
-		if (uGenInputs.size() > 0)
+		if (nOutputs > 0)
 		{
-			for(int i=0; i<uGenInputs.size(); i++)
-			{		
-				if ((uGenInputs.get(i) != null) && (uGenInputs.get(i).isPatched()))
-				{
-					float[] tmp;
-					switch (uGenInputs.get(i).inputType)
+			currentTick = (currentTick + 1)%(nOutputs);
+			//System.out.println("currentTick = " + currentTick
+				//	+ " nOutputs = " + nOutputs );
+		}
+		if (0 == currentTick) 
+		{			
+			if (uGenInputs.size() > 0)
+			{
+				for(int i=0; i<uGenInputs.size(); i++)
+				{		
+					if ((uGenInputs.get(i) != null) && (uGenInputs.get(i).isPatched()))
 					{
-					case CONTROL :
-						tmp = new float[1];
-						break;
-					default : // includes AUDIO
-						tmp = new float[channels.length];
-						break;
+						float[] tmp;
+						switch (uGenInputs.get(i).inputType)
+						{
+						case CONTROL :
+							tmp = new float[1];
+							break;
+						default : // includes AUDIO
+							tmp = new float[channels.length];
+							break;
+						}
+						//float[] tmp = new float[channels.length];
+						uGenInputs.get(i).getIncomingUGen().tick(tmp);
 					}
-					//float[] tmp = new float[channels.length];
-					uGenInputs.get(i).getIncomingUGen().tick(tmp);
 				}
 			}
-		}
 		uGenerate(channels);
 		//Minim.debug(" ticking : value = " + channels[0]);
 		System.arraycopy(channels, 0, lastValues, 0, channels.length);
+		}
 	}
 	
 	/**
