@@ -2,7 +2,6 @@ package ddf.minim.ugens;
 
 public class Noise extends UGen 
 {
-
 	// Must define the noise types
 	public enum Tint { WHITE, PINK, RED };
 	
@@ -16,12 +15,12 @@ public class Noise extends UGen
 	public Noise()
 	{
 		// TODO remove this magic constant
-		this(1.0f);
+		this(1.0f, Tint.WHITE);
 	}
 	
 	public Noise(float amplitude)
 	{
-		this( amplitude, Tint.WHITE ) ;
+		this(amplitude, Tint.WHITE) ;
 	}
 
 	public Noise(float amplitude, Tint noiseType)
@@ -29,7 +28,6 @@ public class Noise extends UGen
 		amp = amplitude;
 		last = 0f;
 		tint = noiseType;
-		
 	}
 	
 	@Override
@@ -43,7 +41,7 @@ public class Noise extends UGen
 			break;
 		case RED :
 			float offset = (float)Math.random()*2;
-			n = amp*( ( last/amp + offset ) % 2f - 1 );
+			n = amp*((last/amp + offset) % 2f - 1);
 			last = n;
 			break;
 		}
