@@ -81,8 +81,6 @@ public abstract class UGen
     private ArrayList<UGenInput> uGenInputs;
 	private float[] lastValues;
 	protected float sampleRate;
-	// jam3: every UGen must have a mainAudio input.
-	public UGenInput mainAudio;
 	
 	public UGen()
 	{
@@ -128,12 +126,14 @@ public abstract class UGen
 		// 		to some input called "audio" if it exists.
 		Minim.debug("UGen addInput called.");
 		// TODO change input checking to an Exception?
-		if (mainAudio == null)
+		if (uGenInputs.size() > 0)
 		{
-			System.out.println("Initializing mainAudio on something");
-			mainAudio = new UGenInput(InputType.AUDIO);
-		}	
-		this.mainAudio.setIncomingUGen(input);
+			Minim.debug("Initializing default input on something");	
+			this.uGenInputs.get(0).setIncomingUGen(input);
+		}  else
+		{
+			System.err.println("Trying to connect to UGen with no default input.");
+		}
 	}
 	
 	/**
