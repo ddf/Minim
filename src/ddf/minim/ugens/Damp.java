@@ -24,7 +24,9 @@ public class Damp extends UGen
 	// the current size of the step
 	private float timeStepSize;
 	// the current time
-	private float now;
+	private float dampNow;
+	// the damp has been activated
+	private boolean isActivated;
 	
 	// constructors
 	public Damp()
@@ -41,8 +43,14 @@ public class Damp extends UGen
 		audio = new UGenInput(InputType.AUDIO);
 		dampTime = dT;
 		begAmp = beginningAmplitude;
-		now = 0f;
-		Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + now);
+		dampNow = 0f;  // TODO test value
+		isActivated = false;
+		Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + dampNow);
+	}
+	public void activate()
+	{
+		dampNow = 0f;
+		isActivated = true;
 	}
 	public void sampleRateChanged()
 	{
@@ -54,7 +62,7 @@ public class Damp extends UGen
 	protected void uGenerate(float[] channels) 
 	{
 		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + now);
-		if (now >= dampTime)
+		if ((!isActivated) || (dampNow >= dampTime))
 		{
 			for(int i = 0; i < channels.length; i++)
 			{
@@ -64,14 +72,15 @@ public class Damp extends UGen
 		} else 
 		{
 			// TODO if samplerate changes in the middle of this damp, there will be a glitch
-			amp = begAmp*(1 - (now/dampTime));
-			for(int i = 0; i < channels.length; i++)
+			amp = begAmp*(1 - (dampNow/dampTime));
+			//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " amp = " + amp + " now = " + now);
+				for(int i = 0; i < channels.length; i++)
 			{
 				float tmp = audio.getLastValues()[i];
-				tmp *= 0.5;
+				tmp *= amp;
 				channels[i] = tmp;
 			}
+			dampNow += timeStepSize;
 		}
-		now += timeStepSize;
 	}
 }

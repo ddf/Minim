@@ -36,12 +36,12 @@ public class Gain extends UGen
 	{
 		for(int i = 0; i < channels.length; i++)
 		{
-			float tmp = audio.getIncomingUGen().getLastValues()[i];
+			float tmp = audio.getLastValues()[i];
 			if ((amplitude == null) || (!amplitude.isPatched()))
 			{
 				tmp *= value;
 			} else {
-				tmp *= amplitude.getIncomingUGen().getLastValues()[i];
+				tmp *= amplitude.getLastValues()[i];
 			}
 			channels[i] = tmp;
 		}
