@@ -15,6 +15,10 @@ public class ADSR extends UGen
 	// jam3: define the inputs to Oscil
 	public UGenInput audio;
 
+	// amplitude before the ADSR hits
+	private float beforeAmplitude;
+	// amplitude after the release of the ADSR
+	private float afterAmplitude;
 	// the max amplitude of the envelope
 	private float maxAmplitude;
 	// the current amplitude
@@ -41,25 +45,33 @@ public class ADSR extends UGen
 	// constructors
 	public ADSR()
 	{
-		this(1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+		this(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
 	public ADSR(float maxAmp)
 	{
-		this(maxAmp, 1.0f, 1.0f, 1.0f, 1.0f);
+		this(maxAmp, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
 	public ADSR(float maxAmp, float attTime)
 	{
-		this(maxAmp, attTime, 1.0f, 1.0f, 1.0f);
+		this(maxAmp, attTime, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
 	public ADSR(float maxAmp, float attTime, float decTime)
 	{
-		this(maxAmp, attTime, decTime, 1.0f, 1.0f);
+		this(maxAmp, attTime, decTime, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl)
 	{
-		this(maxAmp, attTime, decTime, susLvl, 1.0f);
+		this(maxAmp, attTime, decTime, susLvl, susLvl, 0.0f, 0.0f);
 	}
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime)
+	{
+		this(maxAmp, attTime, decTime, susLvl, relTime, 0.0f, 0.0f);
+	}
+	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp)
+	{
+		this(maxAmp, attTime, decTime, susLvl, relTime, befAmp, 0.0f);
+	}
+	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp, float aftAmp)
 	{
 		super();
 		audio = new UGenInput(InputType.AUDIO);
@@ -68,7 +80,9 @@ public class ADSR extends UGen
 		decayTime = decTime;
 		sustainLevel = susLvl;
 		releaseTime = relTime;
-		amplitude = 0.0f;
+		beforeAmplitude = befAmp;
+		afterAmplitude = aftAmp;
+		amplitude = beforeAmplitude;
 		isTurnedOn = false;
 		isTurnedOff = false;
 		timeFromOn = -1.0f;
@@ -95,12 +109,20 @@ public class ADSR extends UGen
 	protected void uGenerate(float[] channels) 
 	{
 		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + now);
-		// before or after the envelope, just output zero
-		if ((!isTurnedOn) || (timeFromOff >= releaseTime))
+		// before the envelope, just output the beforeAmplitude
+		if (!isTurnedOn)
 		{
 			for(int i = 0; i < channels.length; i++)
 			{
-				channels[i] = 0.0f;
+				channels[i] = beforeAmplitude;
+			}
+		}
+		// after the envelope, just output the afterAmplitude
+		else if (timeFromOff >= releaseTime)
+		{
+			for(int i = 0; i < channels.length; i++)
+			{
+				channels[i] = afterAmplitude;
 			}
 		}
 		// inside the envelope
@@ -132,7 +154,7 @@ public class ADSR extends UGen
 			else //isTurnedOn and isTurnedOFF and timeFromOff < releaseTime
 			{
 				float timeRemain = (releaseTime - timeFromOff);
-				amplitude += (0 - amplitude)*timeStepSize/timeRemain;
+				amplitude += (afterAmplitude - amplitude)*timeStepSize/timeRemain;
 				timeFromOff += timeStepSize;
 			}
 			

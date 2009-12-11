@@ -71,7 +71,8 @@ public class Damp extends UGen
 			}
 		} else 
 		{
-			// TODO if samplerate changes in the middle of this damp, there will be a glitch
+			// TODO if samplerate changes in the middle of Damp, there will be a click
+			// TODO need to change to method as in ADSR
 			amp = begAmp*(1 - (dampNow/dampTime));
 			//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " amp = " + amp + " now = " + now);
 				for(int i = 0; i < channels.length; i++)
