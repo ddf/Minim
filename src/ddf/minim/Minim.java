@@ -356,7 +356,7 @@ public class Minim
    */
   public AudioPlayer loadFile(String filename, int bufferSize)
   {
-    AudioRecordingStream rec = mimp.getAudioRecordingStream(filename, bufferSize);
+    AudioRecordingStream rec = mimp.getAudioRecordingStream(filename, bufferSize, false);
     if ( rec != null )
     {
     	AudioFormat format = rec.getFormat();
@@ -374,6 +374,11 @@ public class Minim
     error("Couldn't load the file " + filename);
     return null;
   }  
+  
+  public AudioRecordingStream loadFileStream(String filename, int bufferSize, boolean inMemory)
+  {
+	  return mimp.getAudioRecordingStream(filename, bufferSize, inMemory);
+  }
 
   /**
    * Creates an {@link AudioRecorder} that will use <code>source</code> as its 

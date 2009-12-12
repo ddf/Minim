@@ -194,8 +194,9 @@ public class JSMinim implements MinimServiceProvider
 	}
 
 	public AudioRecordingStream getAudioRecordingStream(String filename,
-			int bufferSize)
+			int bufferSize, boolean inMemory)
 	{
+		// TODO: deal with the case of wanting to have the file fully in memory
 		AudioRecordingStream mstream = null;
 		AudioInputStream ais = getAudioInputStream(filename);
 		debug("Reading from " + ais.getClass().toString());

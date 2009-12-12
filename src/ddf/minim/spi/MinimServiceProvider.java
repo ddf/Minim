@@ -81,10 +81,11 @@ public interface MinimServiceProvider
    * in their sketch somewhere.
    * 
    * @param filename the name of the file to load into the AudioRecordingStream
-   * @param bufferSize the bufferSize to use in memory (implementations are free to ignore this, if they must)
+ * @param bufferSize the bufferSize to use in memory (implementations are free to ignore this, if they must)
+ * @param inMemory TODO
    * @return an AudioRecording stream that will stream the file
    */
-  AudioRecordingStream getAudioRecordingStream(String filename, int bufferSize);
+  AudioRecordingStream getAudioRecordingStream(String filename, int bufferSize, boolean inMemory);
   
   /**
    * Should return an {@link  AudioStream} with the requested parameters. What Minim is 
