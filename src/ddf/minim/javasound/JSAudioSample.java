@@ -20,14 +20,14 @@ package ddf.minim.javasound;
 
 import ddf.minim.AudioMetaData;
 import ddf.minim.AudioSample;
-import ddf.minim.spi.AudioSynthesizer;
+import ddf.minim.spi.AudioOut;
 
 final class JSAudioSample extends AudioSample
 {
   private SampleSignal sample;
   private AudioMetaData meta;
   
-  JSAudioSample(AudioMetaData mdata, SampleSignal ssig, AudioSynthesizer out)
+  JSAudioSample(AudioMetaData mdata, SampleSignal ssig, AudioOut out)
   {
     super(out);
     sample = ssig;

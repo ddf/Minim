@@ -18,6 +18,7 @@
 
 package ddf.minim;
 
+import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.SampleRecorder;
 
 
@@ -102,9 +103,10 @@ public class AudioRecorder
    * 
    * @return the audio that was recorded as an <code>AudioPlayer</code>
    */
-  public AudioPlayer save()
+  // TODO: this should return whatever our "file handle" interface winds up being.
+  public AudioRecordingStream save()
   {
-    return new AudioPlayer(recorder.save());
+    return recorder.save();
   }
 
   /**

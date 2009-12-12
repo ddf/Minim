@@ -24,10 +24,10 @@ import javax.sound.sampled.Mixer;
 
 import processing.core.PApplet;
 import ddf.minim.javasound.JSMinim;
+import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecording;
 import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.AudioStream;
-import ddf.minim.spi.AudioSynthesizer;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
 import ddf.minim.ugens.Instrument;
@@ -313,6 +313,7 @@ public class Minim
    *          the file or URL you want to load
    * @return an <code>AudioSnippet</code> of the requested file or URL
    */
+  /** @deprecated */
   public AudioSnippet loadSnippet(String filename)
   {
     AudioRecording c = mimp.getAudioRecording(filename);
@@ -358,12 +359,19 @@ public class Minim
     AudioRecordingStream rec = mimp.getAudioRecordingStream(filename, bufferSize);
     if ( rec != null )
     {
-      return new AudioPlayer(rec);
+    	AudioFormat format = rec.getFormat();
+        AudioOut out = mimp.getAudioOutput( format.getChannels(), 
+        										    bufferSize, 
+        										    format.getSampleRate(),
+        										    format.getSampleSizeInBits()
+        										  );
+        if ( out != null )
+        {
+        	return new AudioPlayer(rec, out);
+        }
     }
-    else
-    {
-      error("Couldn't load the file " + filename);
-    }
+
+    error("Couldn't load the file " + filename);
     return null;
   }  
 
@@ -477,15 +485,17 @@ public class Minim
   public AudioInput getLineIn(int type, int bufferSize,
                                      float sampleRate, int bitDepth)
   {
-    AudioStream stream = mimp.getAudioStream(type, bufferSize, sampleRate, bitDepth);
+    AudioStream stream = mimp.getAudioInput(type, bufferSize, sampleRate, bitDepth);
     if ( stream != null )
     {
-      return new AudioInput(stream);
+    	AudioOut out = mimp.getAudioOutput(type, bufferSize, sampleRate, bitDepth);
+    	if ( out != null )
+    	{
+    		return new AudioInput(stream, out);
+    	}
     }
-    else
-    {
-      error("Minim.getLineIn: attempt failed, could not secure an AudioInput.");
-    }
+
+    error("Minim.getLineIn: attempt failed, could not secure an AudioInput.");
     return null;
   }
 
@@ -570,15 +580,13 @@ public class Minim
   public AudioOutput getLineOut(int type, int bufferSize,
                                        float sampleRate, int bitDepth)
   {
-    AudioSynthesizer synth = mimp.getAudioSynthesizer(type, bufferSize, sampleRate, bitDepth);
-    if ( synth != null )
+    AudioOut out = mimp.getAudioOutput(type, bufferSize, sampleRate, bitDepth);
+    if ( out != null )
     {
-      return new AudioOutput(synth);
+      return new AudioOutput(out);
     }
-    else
-    {
-      error("Minim.getLineOut: attempt failed, could not secure a LineOut.");
-    }
+    
+    error("Minim.getLineOut: attempt failed, could not secure a LineOut.");
     return null;
   }
 

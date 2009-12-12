@@ -25,8 +25,10 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
 import ddf.minim.AudioMetaData;
+import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioRecording;
 
+/** @deprecated */
 class JSAudioRecordingClip implements AudioRecording
 {
   private Clip c;
@@ -142,4 +144,16 @@ class JSAudioRecordingClip implements AudioRecording
   {
     // don't need to do anything here
   }
+public int bufferSize() {
+	// TODO Auto-generated method stub
+	return 0;
+}
+public float[] read() {
+	// TODO Auto-generated method stub
+	return null;
+}
+public void read(MultiChannelBuffer buffer) {
+	// TODO Auto-generated method stub
+	
+}
 }

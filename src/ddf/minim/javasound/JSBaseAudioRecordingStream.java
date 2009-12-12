@@ -31,6 +31,7 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
 import ddf.minim.Minim;
+import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioRecordingStream;
 
 abstract class JSBaseAudioRecordingStream implements Runnable,
@@ -115,31 +116,31 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		{
 			if (play)
 			{
-        if ( shouldRead )
-        {
-  				// read in a full buffer of bytes from the file
-  				if (loop)
-  				{
-  					readBytesLoop();
-  				}
-  				else
-  				{
-  					readBytes();
-  				}
-  				// convert them to floating point
-  				// hand those arrays to our effect
-  				// and convert back to bytes
-  				process();
-        }
+		        if ( shouldRead )
+		        {
+		  				// read in a full buffer of bytes from the file
+		  				if (loop)
+		  				{
+		  					readBytesLoop();
+		  				}
+		  				else
+		  				{
+		  					readBytes();
+		  				}
+		  				// convert them to floating point
+		  				// hand those arrays to our effect
+		  				// and convert back to bytes
+		  				process();
+		        }
 				// write to the line.
 				writeBytes();
 				// send samples to the listener
-        // these will be what we just put into the line
-        // which means they should be pretty well sync'd
-        // with the audible result
-        broadcast();
-        // take a nap
-        Thread.yield();
+		        // these will be what we just put into the line
+		        // which means they should be pretty well sync'd
+		        // with the audible result
+		        broadcast();
+		        // take a nap
+		        Thread.yield();
 			}
       else
       {
@@ -189,7 +190,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 				}
 				if (actualRead == -1)
 				{
-          system.debug("Actual read was -1, pausing...");
+					system.debug("Actual read was -1, pausing...");
 					pause();
 					break;
 				}
@@ -288,25 +289,25 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		// the write call will block until the requested amount of bytes
 		// is written, however the user might stop the line in the
 		// middle of writing and then we get told how much was actually written.
-    // because of that, we might not need to write the entire array when we get here.
-    int needToWrite = rawBytes.length - bytesWritten;
+	    // because of that, we might not need to write the entire array when we get here.
+	    int needToWrite = rawBytes.length - bytesWritten;
 		int actualWrit = line.write(rawBytes, bytesWritten, needToWrite);
 		// if the total written is not equal to how much we needed to write
-    // then we need to remember where we were so that we don't read more 
-    // until we finished writing our entire rawBytes array.
-    if ( actualWrit != needToWrite )
-    {
-      system.debug("writeBytes: wrote " + actualWrit + " of " + needToWrite);
-      shouldRead = false;
-      bytesWritten += actualWrit;
-    }
-    else
-    {
-      // if it all got written, we should continue reading
-      // and we reset our bytesWritten value.
-      shouldRead = true; 
-      bytesWritten = 0;
-    }
+	    // then we need to remember where we were so that we don't read more 
+	    // until we finished writing our entire rawBytes array.
+	    if ( actualWrit != needToWrite )
+	    {
+	      system.debug("writeBytes: wrote " + actualWrit + " of " + needToWrite);
+	      shouldRead = false;
+	      bytesWritten += actualWrit;
+	    }
+	    else
+	    {
+	      // if it all got written, we should continue reading
+	      // and we reset our bytesWritten value.
+	      shouldRead = true; 
+	      bytesWritten = 0;
+	    }
 	}
 
 	private void broadcast()
@@ -365,8 +366,8 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		loop = false;
 		numLoops = 0;
 		play = true;
-    // will wake up our data processing thread.
-    iothread.interrupt();
+	    // will wake up our data processing thread.
+	    // iothread.interrupt();
 	}
 
 	public boolean isPlaying()
@@ -382,14 +383,14 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void loop(int n)
 	{
-    // let's get it cued before we muck with any of our state vars.
-    setMillisecondPosition(loopBegin);
+	    // let's get it cued before we muck with any of our state vars.
+	    setMillisecondPosition(loopBegin);
 		loop = true;
 		numLoops = n;
 		play = true;
 		line.start();
-    // will wake up our data processing thread.
-    iothread.interrupt();
+	    // will wake up our data processing thread.
+	    // iothread.interrupt();
 	}
 
 	public void open()
@@ -402,14 +403,14 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 	public void close()
 	{
 		finished = true;
-		try
-		{
-			iothread.join(10);
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+//		try
+//		{
+//			iothread.join(10);
+//		}
+//		catch (InterruptedException e)
+//		{
+//			e.printStackTrace();
+//		}
 		iothread = null;
 		try
 		{
@@ -467,29 +468,29 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	public void setMillisecondPosition(int millis)
 	{
-    // millis is guaranteed by methods that call this one to be 
-    // in the interval [0, getMillisecondLength()], so we don't do bounds checking
-    boolean wasPlaying = play;
-    play = false;
+	    // millis is guaranteed by methods that call this one to be 
+	    // in the interval [0, getMillisecondLength()], so we don't do bounds checking
+	    boolean wasPlaying = play;
+	    play = false;
 		if (millis < getMillisecondPosition())
 		{
 			rewind();
-      totalBytesRead = skip(millis);
+			totalBytesRead = skip(millis);
 		}
-    else
-    {
-      totalBytesRead += skip(millis - getMillisecondPosition());
-    }		
+	    else
+	    {
+	      totalBytesRead += skip(millis - getMillisecondPosition());
+	    }		
 		play = wasPlaying;
-    // if we're supposed to be playing we need to 
-    // poke the iothread, because it's possible it 
-    // will have dropped into it's long sleep while we 
-    // were doing our thing. this is especially 
-    // likely if we are setting to a previous position.
-    if ( play )
-    {
-      iothread.interrupt();
-    }
+	    // if we're supposed to be playing we need to 
+	    // poke the iothread, because it's possible it 
+	    // will have dropped into it's long sleep while we 
+	    // were doing our thing. this is especially 
+	    // likely if we are setting to a previous position.
+//	    if ( play )
+//	    {
+//	      iothread.interrupt();
+//	    }
 	}
 
 	public Control[] getControls()
@@ -511,4 +512,65 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
 	// skip forward millis
 	protected abstract int skip(int millis);
+	
+	// TODO: this implementation is way temporary
+	public float[] read()
+	{
+		if ( buffer.getSampleCount() != 1 )
+		{
+			buffer.changeSampleCount(1, true);
+			rawBytes = new byte[ buffer.getByteArrayBufferSize(format) ];
+		}
+		float[] samples = new float[buffer.getChannelCount()];
+		if ( play )
+		{
+			mRead();
+			for(int i = 0; i < buffer.getChannelCount(); i++)
+			{
+				samples[i] = buffer.getChannel(i)[0];
+			}
+		}
+		return samples;
+	}
+	
+	// TODO: likewise, a temporary implementation
+	public void read(MultiChannelBuffer outBuffer)
+	{
+		if ( buffer.getSampleCount() != outBuffer.getBufferSize() )
+		{
+			buffer.changeSampleCount(outBuffer.getBufferSize(), true);
+			rawBytes = new byte[ buffer.getByteArrayBufferSize(format) ];
+		}
+		if ( play )
+		{
+			mRead();
+		}
+		else
+		{
+			buffer.makeSilence();
+		}
+		for(int i = 0; i < buffer.getChannelCount(); i++)
+		{
+			outBuffer.setChannel(i, buffer.getChannel(i));
+		}
+	}
+	
+	private void mRead()
+	{
+		// read in a full buffer of bytes from the file
+		if (loop)
+		{
+			readBytesLoop();
+		}
+		else
+		{
+			readBytes();
+		}
+		// convert them to floating point
+		synchronized (buffer)
+		{
+			int frameCount = rawBytes.length / format.getFrameSize();
+			buffer.setSamplesFromBytes(rawBytes, 0, format, 0, frameCount);
+		}
+	}
 }

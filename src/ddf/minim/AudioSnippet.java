@@ -37,6 +37,7 @@ import ddf.minim.spi.AudioRecording;
  * @author Damien Di Fede
  */
 
+/** @deprecated */
 public class AudioSnippet extends Controller implements Playable
 {
 	private AudioRecording	recording;

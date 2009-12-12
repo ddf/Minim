@@ -2,7 +2,7 @@ package ddf.minim;
 
 import javax.sound.sampled.AudioFormat;
 
-import ddf.minim.spi.AudioStream;
+import ddf.minim.spi.AudioOut;
 
 /**
  * An <code>AudioSource</code> is a kind of wrapper around an
@@ -24,7 +24,7 @@ import ddf.minim.spi.AudioStream;
 // have it playback, for people that want to just analyze files.
 public class AudioSource extends Controller implements Effectable, Recordable
 {
-  private AudioStream stream;
+  private AudioOut stream;
   // the signal splitter used to manage listeners to the source
   // our stereobuffer will be the first in the list
   private SignalSplitter splitter;
@@ -63,7 +63,7 @@ public class AudioSource extends Controller implements Effectable, Recordable
    * @param istream
    *          the <code>AudioStream</code> to subscribe to and wrap
    */
-  public AudioSource(AudioStream istream)
+  public AudioSource(AudioOut istream)
   {
     super(istream.getControls());
     stream = istream;

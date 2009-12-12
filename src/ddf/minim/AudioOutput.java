@@ -18,7 +18,7 @@
 
 package ddf.minim;
 
-import ddf.minim.spi.AudioSynthesizer;
+import ddf.minim.spi.AudioOut;
 import ddf.minim.ugens.Bus;
 import ddf.minim.ugens.Instrument;
 
@@ -36,7 +36,7 @@ import ddf.minim.ugens.Instrument;
 public class AudioOutput extends AudioSource implements Polyphonic
 {
   // the synth attach our signals to
-  private AudioSynthesizer synth;
+  private AudioOut synth;
   // the signals added by the user
   private SignalChain signals;
   // the note manager for this output
@@ -54,7 +54,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
    * @param synthesizer
    *          the <code>AudioSynthesizer</code> to subscribe to
    */
-  public AudioOutput(AudioSynthesizer synthesizer)
+  public AudioOutput(AudioOut synthesizer)
   {
     super(synthesizer);
     synth = synthesizer;

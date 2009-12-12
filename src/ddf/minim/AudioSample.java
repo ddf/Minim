@@ -18,7 +18,7 @@
 
 package ddf.minim;
 
-import ddf.minim.spi.AudioStream;
+import ddf.minim.spi.AudioOut;
 
 /**
  * An <code>AudioSample</code> is a special kind of file playback that allows
@@ -46,9 +46,9 @@ public abstract class AudioSample extends AudioSource
    * 
    * @param stream the stream that will provide the audio
    */
-  public AudioSample(AudioStream stream)
+  public AudioSample(AudioOut output)
   {
-    super(stream);
+    super(output);
   }
   
   /**
