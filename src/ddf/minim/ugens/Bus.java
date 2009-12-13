@@ -1,6 +1,6 @@
 package ddf.minim.ugens;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 import ddf.minim.AudioOutput;
 import ddf.minim.AudioSignal;
@@ -14,11 +14,11 @@ import ddf.minim.Minim;
 public class Bus extends UGen implements AudioSignal
 {
 	private AudioOutput out;
-	private ArrayList<UGen> ugens;
+	private Vector<UGen> ugens;
 	
 	public Bus()
 	{
-		ugens = new ArrayList<UGen>();
+		ugens = new Vector<UGen>();
 	}
 	
 	// ddf: I do not expect users of the library to construct busses that they pass their output to.
@@ -29,7 +29,7 @@ public class Bus extends UGen implements AudioSignal
 	public Bus(AudioOutput output)
 	{
 		out = output;
-		ugens = new ArrayList<UGen>();
+		ugens = new Vector<UGen>();
 	}
 	
 	// ddf: override because everything that patches to us
