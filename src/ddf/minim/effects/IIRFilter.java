@@ -20,6 +20,7 @@ package ddf.minim.effects;
 
 import processing.core.PApplet;
 import ddf.minim.AudioEffect;
+import ddf.minim.ugens.UGen;
 
 /**
  * An Infinite Impulse Response, or IIR, filter is a filter that uses a set of
@@ -34,30 +35,26 @@ import ddf.minim.AudioEffect;
  * @author Damien Di Fede
  * 
  */
-public abstract class IIRFilter implements AudioEffect
+public abstract class IIRFilter extends UGen implements AudioEffect
 {
+	public final UGenInput audio;
+	public final UGenInput cutoff;
+	
   /** The a coefficients. */
   protected float[] a;
   /** The b coefficients. */
   protected float[] b;
-  /**
-   * The left channel input values to the left of the output value currently
-   * being calculated.
-   */
-  private float[] inLeft;
-  /** The previous left channel output values. */
-  private float[] outLeft;
-  /**
-   * The right channel input values to the left of the output value currently
-   * being calculated.
-   */
-  private float[] inRight;
-  /** The previous right channel output values. */
-  private float[] outRight;
+
+  /** The input values to the left of the output value currently being calculated. */
+  private float[][] in;
+  /** The previous output values. */
+  private float[][] out;
+
   /**
    * The current cutoff frequency of the filter in Hz.
    */
   private float freq;
+  
   /**
    * The sample rate of samples that will be filtered.
    */
@@ -74,9 +71,12 @@ public abstract class IIRFilter implements AudioEffect
    */
   public IIRFilter(float freq, float sampleRate)
   {
+  	super();
+  	audio = new UGenInput(InputType.AUDIO);
+  	cutoff = new UGenInput(InputType.CONTROL);
     srate = sampleRate;
     setFreq(freq);
-    initArrays();
+    initArrays(2);
   }
 
   /**
@@ -84,62 +84,66 @@ public abstract class IIRFilter implements AudioEffect
    * used.
    * 
    */
-  final void initArrays()
+  protected final synchronized void initArrays(int numChannels)
   {
     int memSize = (a.length >= b.length) ? a.length : b.length;
-    inLeft = new float[memSize];
-    outLeft = new float[memSize];
-    inRight = new float[memSize];
-    outRight = new float[memSize];
+    in = new float[numChannels][memSize];
+    out = new float[numChannels][memSize];
+  }
+  
+  public final synchronized void uGenerate(float[] channels)
+  {
+	  // make sure we have enough filter buffers 
+	  if ( in.length < channels.length )
+	  {
+		  initArrays(channels.length);
+	  }
+	  // apply the filter to the sample value in each channel
+	  for(int i = 0; i < channels.length; i++)
+	  {
+		  System.arraycopy(in[i], 0, in[i], 1, in[i].length - 1);
+		  in[i][0] = audio.getLastValues()[i];
+		  float y = 0;
+		  for(int ci = 0; ci < a.length; ci++)
+		  {
+			  y += a[ci] * in[i][ci];
+		  }
+		  for(int ci = 0; ci < b.length; ci++)
+		  {
+			  y += b[ci] * out[i][ci];
+		  }
+		  System.arraycopy(out[i], 0, out[i], 1, out[i].length - 1);
+		  out[i][0] = y;
+		  channels[i] = y;
+	  }
+	  // set a new cutoff frequency if that's being controlled
+	  if ( cutoff.isPatched() )
+	  {
+	  	setFreq( cutoff.getLastValues()[0] );
+	  }
   }
 
   public final synchronized void process(float[] signal)
   {
+	float[] tmp = new float[1];
     for (int i = 0; i < signal.length; i++)
     {
-      System.arraycopy(inLeft, 0, inLeft, 1, inLeft.length - 1);
-      inLeft[0] = signal[i];
-      float y = 0;
-      for (int j = 0; j < a.length; j++)
-      {
-        y += a[j] * inLeft[j];
-      }
-      for (int j = 0; j < b.length; j++)
-      {
-        y += b[j] * outLeft[j];
-      }
-      System.arraycopy(outLeft, 0, outLeft, 1, outLeft.length - 1);
-      outLeft[0] = y;
-      signal[i] = y;
+    	tmp[0] = signal[i];
+    	uGenerate(tmp);
+    	signal[i] = tmp[0];
     }
   }
 
   public final synchronized void process(float[] sigLeft, float[] sigRight)
   {
+	float[] tmp = new float[2];
     for (int i = 0; i < sigLeft.length; i++)
     {
-      System.arraycopy(inLeft, 0, inLeft, 1, inLeft.length - 1);
-      inLeft[0] = sigLeft[i];
-      System.arraycopy(inRight, 0, inRight, 1, inRight.length - 1);
-      inRight[0] = sigRight[i];
-      float yL = 0;
-      float yR = 0;
-      for (int j = 0; j < a.length; j++)
-      {
-        yL += a[j] * inLeft[j];
-        yR += a[j] * inRight[j];
-      }
-      for (int j = 0; j < b.length; j++)
-      {
-        yL += b[j] * outLeft[j];
-        yR += b[j] * outRight[j];
-      }
-      System.arraycopy(outLeft, 0, outLeft, 1, outLeft.length - 1);
-      outLeft[0] = yL;
-      sigLeft[i] = yL;
-      System.arraycopy(outRight, 0, outRight, 1, outRight.length - 1);
-      outRight[0] = yR;
-      sigRight[i] = yR;
+		tmp[0] = sigLeft[i];
+		tmp[1] = sigRight[i];
+		uGenerate(tmp);
+		sigLeft[i] = tmp[0];
+		sigRight[i] = tmp[1];
     }
   }
 
@@ -152,7 +156,8 @@ public abstract class IIRFilter implements AudioEffect
    */
   public final void setFreq(float f)
   {
-    if ( validFreq(f) )
+  	// no need to recalc if the cutoff isn't actually changing
+    if ( validFreq(f) && f != freq )
     {
       freq = f;
       calcCoeff();

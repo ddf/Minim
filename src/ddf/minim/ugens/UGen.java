@@ -10,7 +10,7 @@ public abstract class UGen
 	public enum InputType {CONTROL, AUDIO};
 	
 	// jam3: declaring an inner nested class here
-	class UGenInput
+	public class UGenInput
 	{
 		private UGen incoming;
 		private InputType inputType;
@@ -20,7 +20,8 @@ public abstract class UGen
 	    	// jam3: default to audio input
 	    	this(InputType.AUDIO);
 	    }
-	    UGenInput(InputType it)
+	    
+	    public UGenInput(InputType it)
 	    {
 	    	inputType = it;
 	    	//try
@@ -48,14 +49,17 @@ public abstract class UGen
 	    {
 	    	incoming = in;
 	    }
-	    boolean isPatched()
+	    
+	    public boolean isPatched()
 	    {
 	    	return (incoming != null);
 	    }
-	    float[] getLastValues()
-		{
-			return getIncomingUGen().getLastValues();
-		}
+	    
+			public float[] getLastValues()
+			{
+				return getIncomingUGen().getLastValues();
+			}
+	    
 	    String getInputTypeAsString()
 	    {
 	    	String typeLabel = null;
@@ -152,6 +156,7 @@ public abstract class UGen
 	 */
 	public final void patch(AudioOutput output)
 	{
+		Minim.debug("Patching " + this + " to the output " + output + ".");
 		patch(output.bus);
 		setSampleRate(output.sampleRate());
 	}
