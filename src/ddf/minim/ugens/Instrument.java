@@ -5,7 +5,7 @@ public interface Instrument
 	/**
 	 * Start playing a note.
 	 */
-	void noteOn();
+	void noteOn( float duration );
 	
 	/**
 	 * Stop playing a note.
