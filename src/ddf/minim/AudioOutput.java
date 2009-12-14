@@ -162,4 +162,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	  //	  and then tell this instrument to noteOff after duration
 	  noteManager.addEvent(startTime, duration, instrument);
   }
+  public void setTempo(float tempo)
+  {
+	  noteManager.setTempo(tempo);
+  }
 }

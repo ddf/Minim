@@ -10,6 +10,7 @@ public class NoteManager
 	// we use this do our timing, basically
 	private AudioOutput out;
 	private ArrayList<NoteEvent> events;
+	private float tempo;
 	
 	private class NoteEvent
 	{
@@ -30,13 +31,18 @@ public class NoteManager
 	{
 		out = parent;
 		events = new ArrayList<NoteEvent>();
+		tempo = 60f;
 	}
 	
 	synchronized void addEvent(float startTime, float duration, Instrument instrument)
 	{
-		int son = (int)(out.sampleRate() * startTime);
-		int soff = (int)(out.sampleRate() * duration);
+		int son = (int)(out.sampleRate() * startTime * 60f/tempo);
+		int soff = (int)(out.sampleRate() * duration * 60f/tempo);
 		events.add( new NoteEvent(instrument, son, soff) );
+	}
+	public void setTempo(float tempo)
+	{
+		this.tempo = tempo;
 	}
 	
 	synchronized public void tick()
