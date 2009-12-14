@@ -53,7 +53,7 @@ public class NoteManager
 			NoteEvent event = iter.next();
 			if ( event.samplesUntilNoteOn == 0 )
 			{
-				event.instrument.noteOn( event.samplesUntilNoteOff*out.sampleRate() );
+				event.instrument.noteOn( event.samplesUntilNoteOff/out.sampleRate() );
 			}
 			if ( event.samplesUntilNoteOff == 0 )
 			{
