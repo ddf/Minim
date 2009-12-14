@@ -41,6 +41,12 @@ public class Bus extends UGen implements AudioSignal
 		ugens.add(input);
 	}
 	
+	protected void removeInput(UGen input)
+	{
+		Minim.debug("Bus::removeInput - Removing " + input + " to the ugens list of " + this);
+		ugens.remove(input);
+	}
+	
 	protected void sampleRateChanged()
 	{
 		// ddf: need to let all of the UGens in our list know about the sample rate change

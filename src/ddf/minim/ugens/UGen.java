@@ -160,6 +160,27 @@ public abstract class UGen
 		patch(output.bus);
 		setSampleRate(output.sampleRate());
 	}
+	public final void unpatch(AudioOutput output)
+	{
+		Minim.debug("Unpatching " + this + " from the output " + output + ".");
+		unpatch(output.bus);
+		//setSampleRate(output.sampleRate());
+	}
+	public final UGen unpatch(UGen connectToUGen)
+	{
+		// jam3: connecting to a UGen is the same as connecting to it's "mainAudio" input
+		connectToUGen.removeInput(this);
+		nOutputs -= 1;
+		System.out.println("nOutputs = " + nOutputs);
+		return connectToUGen;
+	}
+	protected void removeInput(UGen input)
+	{
+		// jam3: This default behavior is that the incoming signal will be added
+		// 		to some input called "audio" if it exists.
+		Minim.debug("UGen removeInput called.");
+		// TODO Need to set default behavior for normal UGens on removeInput
+	}
 	
 	/**
 	 * Generates one sample frame for this UGen. 
