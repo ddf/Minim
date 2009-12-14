@@ -2,6 +2,7 @@ package ddf.minim.ugens;
 
 import ddf.minim.ugens.UGen.InputType;
 import ddf.minim.ugens.UGen.UGenInput;
+import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
 
 /**
@@ -41,6 +42,9 @@ public class ADSR extends UGen
 	private boolean isTurnedOn;
 	// the envelope has received noteOff
 	private boolean isTurnedOff;
+	// unpatch the note after it's finished
+	private boolean unpatchAfterNoteFinished;
+	private AudioOutput output;
 	
 	// constructors
 	public ADSR()
@@ -87,6 +91,7 @@ public class ADSR extends UGen
 		isTurnedOff = false;
 		timeFromOn = -1.0f;
 		timeFromOff = -1.0f;
+		unpatchAfterNoteFinished = false;
 		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + dampNow);
 	}
 	public void noteOn()
@@ -103,6 +108,12 @@ public class ADSR extends UGen
 	{
 		timeStepSize = 1/sampleRate;
 		setSampleRate(sampleRate);
+	}
+	
+	public void unpatchAfterNoteFinished(AudioOutput out)
+	{
+		unpatchAfterNoteFinished = true;
+		output = out;
 	}
 	
 	@Override
@@ -123,6 +134,10 @@ public class ADSR extends UGen
 			for(int i = 0; i < channels.length; i++)
 			{
 				channels[i] = afterAmplitude;
+				if (unpatchAfterNoteFinished)
+				{
+					unpatch(output);
+				}
 			}
 		}
 		// inside the envelope
