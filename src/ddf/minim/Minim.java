@@ -73,7 +73,7 @@ public class Minim
   /** The .snd file format. */
   public static AudioFileFormat.Type SND = AudioFileFormat.Type.SND;
 
-  private static boolean DEBUG = true;
+  private static boolean DEBUG = false;
   
   private MinimServiceProvider mimp = null;
   //private PApplet app;

@@ -166,4 +166,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
   {
 	  noteManager.setTempo(tempo);
   }
+  public void setNoteOffset(float noteOffset)
+  {
+	  noteManager.setNoteOffset(noteOffset);
+  }
 }
