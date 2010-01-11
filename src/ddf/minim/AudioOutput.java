@@ -40,7 +40,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
   // the signals added by the user
   private SignalChain signals;
   // the note manager for this output
-  public final NoteManager noteManager;
+  public final NoteManager noteManager;  
   // the Bus for UGens used by this output
   public final Bus bus;
 
@@ -162,12 +162,25 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	  //	  and then tell this instrument to noteOff after duration
 	  noteManager.addEvent(startTime, duration, instrument);
   }
+    
   public void setTempo(float tempo)
   {
 	  noteManager.setTempo(tempo);
   }
+  
   public void setNoteOffset(float noteOffset)
   {
 	  noteManager.setNoteOffset(noteOffset);
   }
+  
+  public void pauseNotes()
+  {
+  	noteManager.pause();
+  }
+  
+  public void resumeNotes()
+  {
+  	noteManager.resume();
+  }
+  
 }
