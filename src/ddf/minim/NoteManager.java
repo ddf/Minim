@@ -51,21 +51,23 @@ public class NoteManager
 		while ( iter.hasNext() )
 		{
 			NoteEvent event = iter.next();
-			if ( event.samplesUntilNoteOn == 0 )
+			if ( event.samplesUntilNoteOn > -1 )
 			{
-				event.instrument.noteOn( event.samplesUntilNoteOff/out.sampleRate() );
+				event.samplesUntilNoteOn--;
+				if ( event.samplesUntilNoteOn == -1 )
+				{
+					event.instrument.noteOn( (float)event.samplesUntilNoteOff/out.sampleRate() );
+				}
 			}
-			if ( event.samplesUntilNoteOff == 0 )
-			{
-				event.instrument.noteOff();
-				iter.remove();
-			}
-			if ( event.samplesUntilNoteOn < 0 )
+			else
 			{
 				event.samplesUntilNoteOff--;
+				if ( event.samplesUntilNoteOff == -1 )
+				{
+					event.instrument.noteOff();
+					iter.remove();
+				}
 			}
-			
-			event.samplesUntilNoteOn--;
 		}
 	}
 }

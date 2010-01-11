@@ -116,7 +116,7 @@ public abstract class UGen
 		// jam3: connecting to a UGen is the same as connecting to it's "mainAudio" input
 		connectToUGen.addInput(this);
 		nOutputs += 1;
-		System.out.println("nOutputs = " + nOutputs);
+		Minim.debug("UGen::patch(UGen) - nOutputs = " + nOutputs);
 		return connectToUGen;
 	}
 	
@@ -124,7 +124,7 @@ public abstract class UGen
 	{
 		connectToInput.setIncomingUGen(this);
 		nOutputs +=1;
-		System.out.println("nOutputs = " + nOutputs);
+		Minim.debug("UGen::patch(UGenInput) - nOutputs = " + nOutputs);
 		// TODO setSampleRate(sampleRate);
 		return connectToInput.getOuterUGen();
 	}
@@ -171,7 +171,7 @@ public abstract class UGen
 		// jam3: connecting to a UGen is the same as connecting to it's "mainAudio" input
 		connectToUGen.removeInput(this);
 		nOutputs -= 1;
-		System.out.println("nOutputs = " + nOutputs);
+		Minim.debug("UGen::unpatch - nOutputs = " + nOutputs);
 		return connectToUGen;
 	}
 	protected void removeInput(UGen input)
