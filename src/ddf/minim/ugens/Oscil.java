@@ -13,6 +13,7 @@ public class Oscil extends UGen
 	public UGenInput amplitudeModulation;
 	public UGenInput frequency;
 	public UGenInput frequencyModulation;
+	public UGenInput midiFrequency;
 	
 	// the waveform we will oscillate over
 	private Waveform  wave;
@@ -52,6 +53,7 @@ public class Oscil extends UGen
 		this.amplitudeModulation = new UGenInput(InputType.CONTROL);
 		this.frequency = new UGenInput(InputType.CONTROL);
 		this.frequencyModulation = new UGenInput(InputType.CONTROL);
+		this.midiFrequency = new UGenInput(InputType.CONTROL);
 		wave = waveform;
 		baseFreq = frequency;
 		freq = baseFreq;
@@ -92,6 +94,12 @@ public class Oscil extends UGen
 		for(int i = 0; i < channels.length; i++)
 		{
 			channels[i] = sample;
+		}
+		
+		if ((midiFrequency !=null) && (midiFrequency.isPatched()))
+		{
+			baseFreq = Frequency.ofMidiNote(midiFrequency.getLastValues()[0]);
+			stepSizeChanged();
 		}
 		
 		if ((frequency !=null) && (frequency.isPatched()))
