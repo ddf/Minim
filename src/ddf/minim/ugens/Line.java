@@ -19,12 +19,12 @@ public class Line extends UGen
 	private float endAmp;
 	// the current amplitude
 	private float amp;
-	// the time from amp to 0
-	private float dampTime;
+	// the time from begAmp to endAmp
+	private float lineTime;
 	// the current size of the step
 	private float timeStepSize;
 	// the current time
-	private float dampNow;
+	private float lineNow;
 	// the damp has been activated
 	private boolean isActivated;
 	
@@ -41,20 +41,25 @@ public class Line extends UGen
 	{
 		this(dT, beginningAmplitude, 0.0f);
 	}
-	public Line(float dT, float begAmplitude, float endAmplitude)
+	public Line(float lT, float begAmplitude, float endAmplitude)
 	{
 		super();
-		dampTime = dT;
+		lineTime = lT;
 		begAmp = begAmplitude;
+		amp = begAmp;
 		endAmp = endAmplitude;
-		dampNow = 0f;  // TODO test value
+		lineNow = 0f;  // TODO test value
 		isActivated = false;
-		Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + dampNow);
+		Minim.debug(" dampTime = " + lineTime + " begAmp = " + begAmp + " now = " + lineNow);
 	}
 	public void activate()
 	{
-		dampNow = 0f;
+		lineNow = 0f;
 		isActivated = true;
+	}
+	public void setLineTime( float newLineTime )
+	{
+		lineTime = newLineTime;
 	}
 	public void sampleRateChanged()
 	{
@@ -72,7 +77,7 @@ public class Line extends UGen
 			{
 				channels[i] = begAmp;
 			}
-		} else if (dampNow >= dampTime)
+		} else if (lineNow >= lineTime)
 		{
 			for(int i = 0; i < channels.length; i++)
 			{
@@ -82,13 +87,14 @@ public class Line extends UGen
 		{
 			// TODO if samplerate changes in the middle of Line, there will be a click
 			// TODO need to change to method as in ADSR
-			amp = begAmp*(1 - (dampNow/dampTime)) + endAmp*(dampNow/dampTime);
+			//amp = begAmp*(1 - (lineNow/lineTime)) + endAmp*(lineNow/lineTime);
+			amp += ( endAmp - amp )*timeStepSize/( lineTime - lineNow );
 			//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " amp = " + amp + " dampNow = " + dampNow);
 				for(int i = 0; i < channels.length; i++)
 			{
 				channels[i] = amp;
 			}
-			dampNow += timeStepSize;
+			lineNow += timeStepSize;
 		}
 	}
 }
