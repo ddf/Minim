@@ -57,6 +57,10 @@ public class Line extends UGen
 		lineNow = 0f;
 		isActivated = true;
 	}
+	public void setEndAmp( float newEndAmp )
+	{
+		endAmp = newEndAmp;
+	}
 	public void setLineTime( float newLineTime )
 	{
 		lineTime = newLineTime;

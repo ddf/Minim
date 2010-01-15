@@ -117,7 +117,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 		  channels[i] = y;
 	  }
 	  // set a new cutoff frequency if that's being controlled
-	  if ( cutoff.isPatched() )
+	  if ( ( cutoff != null ) && ( cutoff.isPatched() ) )
 	  {
 	  	setFreq( cutoff.getLastValues()[0] );
 	  }

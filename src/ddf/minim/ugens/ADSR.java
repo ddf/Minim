@@ -94,7 +94,17 @@ public class ADSR extends UGen
 		unpatchAfterNoteFinished = false;
 		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + dampNow);
 	}
-	public void noteOn()
+	public void setParameters( float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp, float aftAmp)
+	{
+		maxAmplitude = maxAmp;
+		attackTime = attTime;
+		decayTime = decTime;
+		sustainLevel = susLvl;
+		releaseTime = relTime;
+		beforeAmplitude = befAmp;
+		afterAmplitude = aftAmp;
+	}
+		public void noteOn()
 	{
 		timeFromOn = 0f;
 		isTurnedOn = true;
