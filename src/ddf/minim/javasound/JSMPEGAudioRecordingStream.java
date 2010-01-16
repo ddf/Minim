@@ -103,8 +103,7 @@ class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 			}
 			catch (IOException e)
 			{
-				system.error("Couldn't close the stream for reloading: "
-						+ e.getMessage());
+				system.error("JSMPEGAudioRecordingStream::rewind - Error closing the stream before reload: "	+ e.getMessage());
 			}
 			AudioInputStream encIn = system.getAudioInputStream(meta.fileName());
 			ais = (DecodedMpegAudioInputStream)system.getAudioInputStream(format, encIn);

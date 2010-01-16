@@ -55,18 +55,18 @@ class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
     // entire file without the mark being invalidated,
     // essentially means you are loading the file into memory
     // as it is played. which can mean out-of-memory for large files.
-		try
-		{
-			synchronized ( ais )
-			{
+    synchronized( ais )
+    {
+  		try
+  		{
         ais.close();
-        ais = system.getAudioInputStream(meta.fileName());
-			}
-		}
-		catch (IOException e)
-		{
-		  system.error("Couldn't rewind!");
-		}
+  		}
+  		catch (IOException e)
+  		{
+  		  system.error("JSPCMAudioRecordingStream::rewind - Error closing the stream before reload: " + e.getMessage());
+  		}
+      ais = system.getAudioInputStream(meta.fileName());
+    }
 	}
 	
 	protected int skip(int millis)
