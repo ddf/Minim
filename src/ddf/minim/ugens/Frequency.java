@@ -3,19 +3,32 @@ package ddf.minim.ugens;
 import ddf.minim.Minim;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.TreeMap;
 
+/**
+ * A <code>Frequency</code> is used to contain a frequency.
+ * This is generally used by an <code>Oscil</code> UGen, but
+ * can also be used to convert different notations of frequencies
+ * such as Hz, MIDI note number, and a pitch name (English or solfege).
+ *  
+ * @author nodog
+ *
+ */
 public class Frequency
 {
 	static float HZA4=440.0f;
 	static float MIDIA4=69.0f;
 	static float MIDIOCTAVE=12.0f;
 	
-	private static HashMap< String, Integer > noteNameOffsets = initializeNoteNameOffsets();
-	private static HashMap< String, Integer > initializeNoteNameOffsets()
+	// A TreeMap is used to force order so that later when creating the regex for
+	// the note names, an ordered list can be used.
+	private static TreeMap< String, Integer > noteNameOffsets = initializeNoteNameOffsets();
+	private static TreeMap< String, Integer > initializeNoteNameOffsets()
 	{
-		HashMap< String, Integer > initNNO = new HashMap< String, Integer >();
+		TreeMap< String, Integer > initNNO = new TreeMap< String, Integer >();
 		initNNO.put( "A", new Integer( 9 ) );
 		initNNO.put( "B", new Integer( 11 ) );
 		initNNO.put( "C", new Integer( 0 ) );
@@ -25,7 +38,9 @@ public class Frequency
 		initNNO.put( "G", new Integer( 7 ) );
 		initNNO.put( "La", new Integer( 9 ) );
 		initNNO.put( "Si", new Integer( 11 ) );
+		//initNNO.put( "Ti", new Integer( 11 ) );
 		initNNO.put( "Do", new Integer( 0 ) );
+		//initNNO.put( "Ut", new Integer( 0 ) );
 		initNNO.put( "Re", new Integer( 2 ) );
 		initNNO.put( "Mi", new Integer( 4 ) );
 		initNNO.put( "Fa", new Integer( 5 ) );
@@ -33,14 +48,52 @@ public class Frequency
 		return initNNO;
 	}
 
-
-	float freq;
+	// several regex expression are used in determining the Frequency of musical pitches
+	// want to build up the regex from components of noteName, noteNaturalness, and noteOctave
+	private static String noteNameRegex = initializeNoteNameRegex();
+	private static String initializeNoteNameRegex()
+	{
+		// noteName is built using the keys from the noteNameOffsets hashmap
+		// The reverserList is a bit ridiculous, but necessary to reverse the 
+		// order of the the keys so that Do and Fa come before D and F.
+		// (There is no .previous() method for a regular Iterator.)
+		ArrayList< String > reverserList = new ArrayList< String >();
+		Iterator< String > iterator = noteNameOffsets.keySet().iterator();
+		while( iterator.hasNext() )
+		{
+			reverserList.add( iterator.next() );	
+		}
+		// so that Do comes before D and is found first.
+		String nNR = "(";
+		ListIterator< String > listIterator = reverserList.listIterator( reverserList.size() );
+		while( listIterator.hasPrevious() )
+		{
+			nNR += listIterator.previous() + "|";
+		}
+		// remove last | or empty string is included
+		nNR = nNR.substring( 0, nNR.length() - 1 );
+		nNR += ")";
+		return nNR;
+	}
 	
-	Frequency(float hz)
+	private static String noteNaturalnessRegex = "[#b]";
+	private static String noteOctaveRegex = "(-1|10|[0-9])";
+	private static String pitchRegex = "^" + noteNameRegex 
+			+ "?[ ]*" + noteNaturalnessRegex + "*[ ]*" + noteOctaveRegex +"?$";
+
+	private float freq;
+	
+	// The constructors are way down here.
+	Frequency( float hz )
 	{
 		freq = hz;
 	}
 
+	Frequency( String pitchName )
+	{
+		freq = Frequency.ofPitch( pitchName ).asHz();
+	}
+	
 	public float asHz()
 	{
 		return freq;
@@ -50,17 +103,6 @@ public class Frequency
 	{
 		float midiNote = MIDIA4 + MIDIOCTAVE*(float)Math.log( freq/HZA4 )/(float)Math.log( 2.0 );
 		return midiNote;
-	}
-	
-	public String asPitch()
-	{
-		// TODO convert to something like "A4"
-		return "";
-	}
-	
-	void useFrequency(UGen freqGen)
-	{
-		
 	}
 	
 	public static Frequency ofHertz(float hz)
@@ -76,59 +118,44 @@ public class Frequency
 	
 	public static Frequency ofPitch(String pitchName)
 	{
-		// TODO return a frequency object that has the frequency of pitchName
-		float midiNote = 0.0f;
+		// builds up the value of a midiNote used to create the returned Frequency
+		float midiNote;
+		
+		// trim off any white space before or after
 		pitchName.trim();
 	
-		// check to see if this is a note
-		//String noteName = "([A-G]|(Do|Re|Mi|Fa|Sol|La_|Si))";
-		String noteName = "(";
-		Iterator<String> iterator = noteNameOffsets.keySet().iterator();
-		while( iterator.hasNext() )
-		{
-			noteName += iterator.next() + "|";
-			//System.out.println( iterator.next() );
-		}
-		noteName = noteName.substring( 0, noteName.length() - 1 );
-		noteName += ")";
-		Minim.debug( "noteName = " + noteName );
-		String noteNaturalness = "[#b]";
-		String noteOctave = "(-1|10|[0-9])";
-		String pitchRegex = "^" + noteName + "?" + noteNaturalness +"*" + noteOctave +"?$";
-			// "^([A-G]|(Do|Re|Mi|Fa|Sol|La_|Si))?[#b]*(-1|10|[0-9])?$";
+		// check to see if this is a note		
 		if ( pitchName.matches( pitchRegex ) )
 		{
-			Minim.debug(pitchName + " matches.");
-
-			// get octave0
-			Pattern pattern = Pattern.compile( noteOctave );
+			Minim.debug(pitchName + " matches the pitchRegex.");
+			float noteOctave;
+			
+			// get octave
+			Pattern pattern = Pattern.compile( noteOctaveRegex );
 			Matcher matcher = pattern.matcher( pitchName );
 			
-			String s;
-			float f;
 			if ( matcher.find() )
 			{
-				s = pitchName.substring(matcher.start(), matcher.end() );
-				f = Float.valueOf(s.trim()).floatValue();
-			} else
+				String octaveString = pitchName.substring( matcher.start(), matcher.end() );
+				noteOctave = Float.valueOf( octaveString.trim() ).floatValue();
+			} else  // default octave of 4
 			{
-				f = 4.0f;
+				noteOctave = 4.0f;
 			}
-			midiNote = f*12.0f + 12.0f;
+			midiNote = noteOctave*12.0f + 12.0f;
 			Minim.debug("midiNote based on octave = " + midiNote );
 
 			// get naturalness			
-			pattern = Pattern.compile( noteNaturalness );
+			pattern = Pattern.compile( noteNaturalnessRegex );
 			matcher = pattern.matcher( pitchName );
 			
 			while( matcher.find() )
 			{
-				
-				s = pitchName.substring(matcher.start(), matcher.end() );
-				if ( s.equals("#") )
+				String naturalnessString = pitchName.substring(matcher.start(), matcher.end() );
+				if ( naturalnessString.equals("#") )
 				{
 					midiNote += 1.0f;
-				} else
+				} else  // must be a "b"
 				{
 					midiNote -= 1.0f;
 				}
@@ -136,21 +163,24 @@ public class Frequency
 			Minim.debug("midiNote based on naturalness = " + midiNote );
 	
 			// get note
-			pattern = Pattern.compile( noteName );
+			pattern = Pattern.compile( noteNameRegex );
 			matcher = pattern.matcher( pitchName );
 			
 			if ( matcher.find() )
 			{	
-				s = pitchName.substring(matcher.start(), matcher.end() );
-				float noteOffset = (float) noteNameOffsets.get( s );
+				String noteNameString = pitchName.substring(matcher.start(), matcher.end() );
+				float noteOffset = (float) noteNameOffsets.get( noteNameString );
 				midiNote += noteOffset;
 			}
 			Minim.debug("midiNote based on noteName = " + midiNote );
+
+			// return a Frequency object with this midiNote
 			return new Frequency( ofMidiNote( midiNote ).asHz() );
 					
-		} else
+		} else  // string does not conform to note name syntax
 		{
 			Minim.debug(pitchName + " DOES NOT MATCH.");			
+			// return a Frequency object of 0.0 Hz.
 			return new Frequency( 0.0f );
 		}
 	}
