@@ -44,6 +44,7 @@ public class ADSR extends UGen
 	private boolean isTurnedOff;
 	// unpatch the note after it's finished
 	private boolean unpatchAfterNoteFinished;
+	private int unpatchCountdown;
 	private AudioOutput output;
 	
 	// constructors
@@ -123,6 +124,7 @@ public class ADSR extends UGen
 	public void unpatchAfterNoteFinished(AudioOutput out)
 	{
 		unpatchAfterNoteFinished = true;
+		unpatchCountdown = 0;
 		output = out;
 	}
 	
@@ -130,24 +132,27 @@ public class ADSR extends UGen
 	protected void uGenerate(float[] channels) 
 	{
 		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + now);
-		// before the envelope, just output the beforeAmplitude
+		// before the envelope, just output the beforeAmplitude*audio
 		if (!isTurnedOn)
 		{
 			for(int i = 0; i < channels.length; i++)
 			{
-				channels[i] = beforeAmplitude;
+				channels[i] = beforeAmplitude*audio.getLastValues()[i];
 			}
 		}
-		// after the envelope, just output the afterAmplitude
-		else if (timeFromOff >= releaseTime)
+		// after the envelope, just output the afterAmplitude*audio
+		else if (timeFromOff > releaseTime)
 		{
 			for(int i = 0; i < channels.length; i++)
 			{
-				channels[i] = afterAmplitude;
-				if (unpatchAfterNoteFinished)
-				{
-					unpatch(output);
-				}
+				channels[i] = afterAmplitude*audio.getLastValues()[i];
+				
+			}
+		
+			if ( ( unpatchAfterNoteFinished ) && ( unpatchCountdown-- <= 0) )
+			{
+			 	unpatch(output);
+			 	Minim.debug(" unpatching ADSR ");
 			}
 		}
 		// inside the envelope

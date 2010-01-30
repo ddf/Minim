@@ -72,6 +72,27 @@ public class Oscil extends UGen
 		stepSize = freq.asHz() / sampleRate;
 	}
 	
+	public void setFrequency( float hz )
+	{
+		baseFreq = Frequency.ofHertz( hz );
+		this.freq = baseFreq;
+		stepSizeChanged();
+	}
+
+	public void setFrequency( Frequency freq )
+	{
+		baseFreq = freq;
+		this.freq = baseFreq;
+		stepSizeChanged();
+	}
+	
+	public void setMidiFrequency( float midiNote )
+	{
+		baseFreq = Frequency.ofMidiNote( midiNote );
+		this.freq = baseFreq;
+		stepSizeChanged();
+	}
+	
 	@Override
 	protected void uGenerate(float[] channels) 
 	{		

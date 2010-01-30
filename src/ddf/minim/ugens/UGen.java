@@ -166,13 +166,13 @@ public abstract class UGen
 		unpatch(output.bus);
 		//setSampleRate(output.sampleRate());
 	}
-	public final UGen unpatch(UGen connectToUGen)
+	public final void unpatch(UGen connectToUGen)
 	{
 		// jam3: connecting to a UGen is the same as connecting to it's "mainAudio" input
 		connectToUGen.removeInput(this);
 		nOutputs -= 1;
 		Minim.debug("nOutputs = " + nOutputs);
-		return connectToUGen;
+		//return connectToUGen;
 	}
 	protected void removeInput(UGen input)
 	{
