@@ -61,10 +61,17 @@ public class Bus extends UGen implements AudioSignal
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
-		for(int i = 0; i < ugens.size(); i++)
+		// ddf: we use toArray here because it's possible that one of the
+		//      UGens in our list will remove itself from the list as part of
+		//      its tick (for example: ADSR has an unpatchAfterNoteFinished feature
+		//      which results in it unpatching itself during its uGenerate call).
+		//      If the list is modified while we are iterating over it, we won't 
+		//      generate audio correctly.
+		UGen[] ugensArray = ugens.toArray( new UGen[] {} );
+		for(int i = 0; i < ugensArray.length; i++)
 		{
 			float[] tmp = new float[channels.length];
-			UGen u = ugens.get(i);
+			UGen u = ugensArray[i];
 			u.tick(tmp);
 			for(int c = 0; c < channels.length; c++)
 			{
