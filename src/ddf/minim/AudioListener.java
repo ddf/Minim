@@ -50,4 +50,7 @@ public interface AudioListener
    * @param sampR the right channel of a STEREO sound stream
    */
   void samples(float[] sampL, float[] sampR);
+  
+  // TODO: consider replacing above two methods with this single one
+  // void samples( MultiChannelBuffer buffer );
 }
