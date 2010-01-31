@@ -20,6 +20,8 @@ package ddf.minim;
 
 import ddf.minim.spi.AudioOut;
 import ddf.minim.ugens.Bus;
+import ddf.minim.ugens.DefaultInstrument;
+import ddf.minim.ugens.Frequency;
 import ddf.minim.ugens.Instrument;
 
 /**
@@ -158,11 +160,19 @@ public class AudioOutput extends AudioSource implements Polyphonic
    */
   public void playNote(float startTime, float duration, Instrument instrument)
   {
-	  // TODO schedule this instrument to receive a noteOn startTime seconds from now
-	  //	  and then tell this instrument to noteOff after duration
 	  noteManager.addEvent(startTime, duration, instrument);
   }
-    
+
+  public void playNote( float startTime, float duration, float hz )
+  {
+	  noteManager.addEvent( startTime, duration, new DefaultInstrument( hz, this ) );
+  }
+ 
+  public void playNote( float startTime, float duration, String pitchName )
+  {
+	  noteManager.addEvent( startTime, duration, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+  }
+  
   public void setTempo(float tempo)
   {
 	  noteManager.setTempo(tempo);
