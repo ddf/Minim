@@ -1,8 +1,9 @@
 package ddf.minim.ugens;
 
+import java.util.ArrayList;
+
 import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
-import java.util.ArrayList;
 
 public abstract class UGen
 {

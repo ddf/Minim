@@ -1,12 +1,13 @@
 package ddf.minim.ugens;
 
-import ddf.minim.Minim;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import ddf.minim.Minim;
 
 /**
  * A <code>Frequency</code> is used to contain a frequency.

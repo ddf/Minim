@@ -49,10 +49,10 @@ import ddf.minim.AudioMetaData;
 import ddf.minim.AudioSample;
 import ddf.minim.Minim;
 import ddf.minim.Recordable;
+import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecording;
 import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.AudioStream;
-import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
 

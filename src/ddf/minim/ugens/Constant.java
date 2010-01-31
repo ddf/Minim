@@ -1,6 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.Minim;
 
 /**
  * Just outputs a constant value.

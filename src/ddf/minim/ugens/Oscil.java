@@ -1,8 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.Minim;
-import ddf.minim.ugens.UGen.InputType;
-import ddf.minim.ugens.UGen.UGenInput;
 
 public class Oscil extends UGen 
 {

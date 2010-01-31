@@ -1,7 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.ugens.UGen.InputType;
-import ddf.minim.ugens.UGen.UGenInput;
 import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
 

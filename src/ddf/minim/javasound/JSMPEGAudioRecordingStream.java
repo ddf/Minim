@@ -23,9 +23,10 @@ import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.SourceDataLine;
 
+import javazoom.spi.mpeg.sampled.convert.DecodedMpegAudioInputStream;
+
 import org.tritonus.share.sampled.AudioUtils;
 
-import javazoom.spi.mpeg.sampled.convert.DecodedMpegAudioInputStream;
 import ddf.minim.AudioMetaData;
 
 
