@@ -173,6 +173,31 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	  noteManager.addEvent( startTime, duration, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
   }
   
+  public void playNote( float startTime, float hz )
+  {
+	  noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( hz, this ) );
+  }
+ 
+  public void playNote( float startTime, String pitchName )
+  {
+	  noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+  }
+  
+  public void playNote( float hz )
+  {
+	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( hz, this ) );
+  }
+ 
+  public void playNote( String pitchName )
+  {
+	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+  }
+  
+  public void playNote()
+  {
+	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( "" ).asHz(), this ) );
+  }
+  
   public void setTempo(float tempo)
   {
 	  noteManager.setTempo(tempo);
