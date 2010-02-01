@@ -13,7 +13,7 @@ public class Oscil extends UGen
 	public UGenInput amplitudeModulation;
 	public UGenInput frequency;
 	public UGenInput frequencyModulation;
-	public UGenInput midiFrequency;
+	//public UGenInput midiFrequency;
 	
 	// the waveform we will oscillate over
 	private Waveform  wave;
@@ -53,7 +53,7 @@ public class Oscil extends UGen
 		this.amplitudeModulation = new UGenInput(InputType.CONTROL);
 		this.frequency = new UGenInput(InputType.CONTROL);
 		this.frequencyModulation = new UGenInput(InputType.CONTROL);
-		this.midiFrequency = new UGenInput(InputType.CONTROL);
+		//this.midiFrequency = new UGenInput(InputType.CONTROL);
 		wave = waveform;
 		baseFreq = frequency;
 		freq = baseFreq;
@@ -86,12 +86,13 @@ public class Oscil extends UGen
 		stepSizeChanged();
 	}
 	
-	public void setMidiFrequency( float midiNote )
+	/*public void setMidiFrequency( float midiNote )
 	{
 		baseFreq = Frequency.ofMidiNote( midiNote );
 		this.freq = baseFreq;
 		stepSizeChanged();
 	}
+	*/
 	
 	@Override
 	protected void uGenerate(float[] channels) 
@@ -117,12 +118,12 @@ public class Oscil extends UGen
 			channels[i] = sample;
 		}
 		
-		if ((midiFrequency !=null) && (midiFrequency.isPatched()))
+		/*if ((midiFrequency !=null) && (midiFrequency.isPatched()))
 		{
 			baseFreq = Frequency.ofMidiNote(midiFrequency.getLastValues()[0]);
 			stepSizeChanged();
 		}
-		
+		*/
 		if ((frequency !=null) && (frequency.isPatched()))
 		{
 			baseFreq = Frequency.ofHertz(frequency.getLastValues()[0]);

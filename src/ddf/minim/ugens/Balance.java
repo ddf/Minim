@@ -24,7 +24,7 @@ public class Balance extends UGen{
 		this.balanceVal = balanceVal;
 	}
 	
-	public void setValue(float balanceVal)
+	public void setBalance( float balanceVal )
 	{
 		this.balanceVal = balanceVal;
 	}

@@ -16,7 +16,7 @@ public class Waves
 	public final static Wavetable Sine = WavetableGenerator.gen10(8192, new float[] { 1 });
 	public final static Wavetable Saw = WavetableGenerator.gen7(8192, new float[] {-1,1}, new int[] {8192});
 	public final static Wavetable Square = WavetableGenerator.gen7(8192, new float[] {-1,-1,1,1}, new int[] {4096,0,4096});
-	public final static Wavetable Triangle = WavetableGenerator.gen7(8192, new float[] {-1,1,-1}, new int[] {4096,4096});
+	public final static Wavetable Triangle = WavetableGenerator.gen7(8192, new float[] {0,1,-1,0}, new int[] {2048,4096,2048});
 	//shortcut for a 0.25 Pulse
 	public final static Wavetable Pulse = WavetableGenerator.gen7(8192, new float[] {-1,-1,1,1}, new int[] {2048,0,6144});
 	

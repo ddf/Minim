@@ -4,7 +4,6 @@ import ddf.minim.Minim;
 
 /**
  * Just outputs a constant value.
- * Can be changed with the setValue method.
  * @author nodog
  *
  */
@@ -12,28 +11,41 @@ public class Constant extends UGen
 {
 	private float value;
 	
+	/**
+	 * Empty constructor for Constant.
+	 * Sets value to 1.0.
+	 */
 	public Constant()
 	{
 		this( 1.0f );
 	}
 	
-	public Constant(float val)
+	/**
+	 * Constructor for Constant.
+	 * Sets value to val.
+	 * @param val
+	 */
+	public Constant( float val )
 	{
 		super();
 		value = val;
 	}
 	
-	public void setValue(float val)
+	/**
+	 * Sets value of Constant during execution.
+	 * @param val
+	 */
+	public void setConstant( float val )
 	{
 		value = val;
 	}
 
 	@Override
-	protected void uGenerate(float[] channels) 
+	protected void uGenerate( float[] channels ) 
 	{
 		for(int i = 0; i < channels.length; i++)
 		{
-			channels[i] = value;
+			channels[ i ] = value;
 		}
 	} 
 }

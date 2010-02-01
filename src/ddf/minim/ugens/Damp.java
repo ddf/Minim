@@ -71,6 +71,16 @@ public class Damp extends UGen
 		}
 	}
 	
+	public void setAttackTime( float attackTime )
+	{
+		this.attackTime = attackTime;
+	}
+	
+	public void setDampTime( float dampTime )
+	{
+		this.dampTime = dampTime;
+	}
+	
 	public void setDampTimeFromDuration( float duration )
 	{
 		float tmpDampTime = duration - attackTime;

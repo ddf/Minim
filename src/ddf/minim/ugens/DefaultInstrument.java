@@ -11,7 +11,7 @@ public class DefaultInstrument implements Instrument
 	//Gain toneEnv;
 	//Damp toneEnv;
 	AudioOutput output;
-	Bus summer;
+	Summer summer;
 	LowPassSP lpFilter;
 		  
 	public DefaultInstrument( float frequency, AudioOutput output )
@@ -26,7 +26,7 @@ public class DefaultInstrument implements Instrument
 		//toneEnv = new Damp( 1.0f );
 		toneEnv = new Damp( 2.0f/frequency, 1.0f );
 		//toneEnv = new Gain( 0f );
-		summer = new Bus();
+		summer = new Summer();
 		
 		toneOsc.patch( toneEnv ).patch( summer );
 		noiseGen.patch( noiseEnv ).patch( lpFilter).patch( summer );
