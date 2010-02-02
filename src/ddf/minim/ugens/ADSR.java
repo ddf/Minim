@@ -41,8 +41,7 @@ public class ADSR extends UGen
 	// the envelope has received noteOff
 	private boolean isTurnedOff;
 	// unpatch the note after it's finished
-	private boolean unpatchAfterNoteFinished;
-	private int unpatchCountdown;
+	private boolean unpatchAfterRelease;
 	private AudioOutput output;
 	
 	// constructors
@@ -90,9 +89,9 @@ public class ADSR extends UGen
 		isTurnedOff = false;
 		timeFromOn = -1.0f;
 		timeFromOff = -1.0f;
-		unpatchAfterNoteFinished = false;
-		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + dampNow);
+		unpatchAfterRelease = false;
 	}
+	
 	public void setParameters( float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp, float aftAmp)
 	{
 		maxAmplitude = maxAmp;
@@ -103,7 +102,8 @@ public class ADSR extends UGen
 		beforeAmplitude = befAmp;
 		afterAmplitude = aftAmp;
 	}
-		public void noteOn()
+	
+	public void noteOn()
 	{
 		timeFromOn = 0f;
 		isTurnedOn = true;
@@ -113,17 +113,17 @@ public class ADSR extends UGen
 		timeFromOff = 0f;
 		isTurnedOff = true;
 	}
+	@Override
 	public void sampleRateChanged()
 	{
 		timeStepSize = 1/sampleRate;
 		setSampleRate(sampleRate);
 	}
 	
-	public void unpatchAfterNoteFinished(AudioOutput out)
+	public void unpatchAfterRelease( AudioOutput output )
 	{
-		unpatchAfterNoteFinished = true;
-		unpatchCountdown = 0;
-		output = out;
+		unpatchAfterRelease = true;
+		this.output = output;
 	}
 	
 	@Override
@@ -147,9 +147,9 @@ public class ADSR extends UGen
 				
 			}
 		
-			if ( ( unpatchAfterNoteFinished ) && ( unpatchCountdown-- <= 0) )
+			if ( unpatchAfterRelease )
 			{
-			 	unpatch(output);
+			 	unpatch( output );
 			 	Minim.debug(" unpatching ADSR ");
 			}
 		}

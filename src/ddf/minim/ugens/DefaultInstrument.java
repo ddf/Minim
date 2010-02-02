@@ -37,8 +37,8 @@ public class DefaultInstrument implements Instrument
 	{
 		summer.patch( output );
 		toneEnv.setDampTimeFromDuration( dur );
-		toneEnv.noteOn();
-		noiseEnv.noteOn();
+		toneEnv.activate();
+		noiseEnv.activate();
 		//toneEnv.setValue( 1.0f );
 		//summer.patch( output );
 	}

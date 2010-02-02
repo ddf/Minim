@@ -1,11 +1,17 @@
 package ddf.minim.ugens;
 
-
+/**
+ * GranulateRandom is granular synthesis of the incoming audio.
+ * Currently, there are no inputs to this UGen other than the incoming
+ * audio.  All parameters must be set at construction.
+ * 
+ * @author nodog
+ *
+ */
 public class GranulateRandom extends UGen
 {    
 	public UGenInput audio;
 	//public UGenInput amplitude;
-	private Waveform sine = Waves.Sine;
 	private boolean insideGrain;
 	private float timeSinceGrainStart;
 	private float timeSinceGrainStop;
@@ -21,10 +27,10 @@ public class GranulateRandom extends UGen
 	private float grainLengthMax = 0.010f;
 	private float spaceLengthMax = 0.020f;
 	
-	//public GranulateRandom()
-	//{
-	//	this( 0.01f, 0.02f, 0.0025f );
-	//}
+	public GranulateRandom()
+	{
+		this( 0.010f, 0.020f, 0.0025f, 0.10f, 0.20f, 0.025f  );
+	}
 	
 	public GranulateRandom(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
 			float grainLengthMax, float spaceLengthMax, float fadeLengthMax)
@@ -72,12 +78,10 @@ public class GranulateRandom extends UGen
 			if ( timeSinceGrainStart < fadeLength )
 			{
 				amp = timeSinceGrainStart/fadeLength;
-				//amp = sine.value( timeSinceGrainStart/( 4.0f*fadeLength ) );
 			}
 			else if ( timeSinceGrainStart > ( grainLength - fadeLength ) )
 			{
 				amp = ( grainLength - timeSinceGrainStart )/fadeLength;
-				//amp = sine.value( ( grainLength - timeSinceGrainStart )/( 4.0f*fadeLength ) );
 			}
 			
 			for(int i = 0; i < channels.length; i++)
@@ -85,7 +89,7 @@ public class GranulateRandom extends UGen
 				channels[i] = amp*audio.getLastValues()[i];
 			}
 			timeSinceGrainStart += timeStep;
-			if (timeSinceGrainStart > grainLength) 
+			if ( timeSinceGrainStart > grainLength ) 
 			{
 				timeSinceGrainStop = 0.0f;
 				insideGrain = false;
