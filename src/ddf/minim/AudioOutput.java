@@ -19,7 +19,7 @@
 package ddf.minim;
 
 import ddf.minim.spi.AudioOut;
-import ddf.minim.ugens.Bus;
+import ddf.minim.ugens.Summer;
 import ddf.minim.ugens.DefaultInstrument;
 import ddf.minim.ugens.Frequency;
 import ddf.minim.ugens.Instrument;
@@ -44,7 +44,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
   // the note manager for this output
   public final NoteManager noteManager;  
   // the Bus for UGens used by this output
-  public final Bus bus;
+  public final Summer bus;
 
   /**
    * Constructs an <code>AudioOutput</code> that will subscribe its buffers to
@@ -71,7 +71,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
     //      isSounding when they've patched in some UGens and can hear audio.
     //      Though this could all be moot if we simply toss all the AudioSignal 
     //      stuff in favor of using only UGens.
-    bus = new Bus(this);
+    bus = new Summer(this);
     signals.add(bus);
     synth.setAudioSignal(signals);
   }

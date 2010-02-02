@@ -6,7 +6,7 @@ package ddf.minim.ugens;
  */
 
 // Hidden for 2.0.2
-abstract class WavetableGenerator
+public abstract class WavetableGenerator
 {
 
 	// generates piecewise linear waveforms

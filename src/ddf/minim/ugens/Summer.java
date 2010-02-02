@@ -11,12 +11,12 @@ import ddf.minim.Minim;
  * @author ddf
  *
  */
-public class Bus extends UGen implements AudioSignal
+public class Summer extends UGen implements AudioSignal
 {
 	private AudioOutput out;
 	private Vector<UGen> ugens;
 	
-	public Bus()
+	public Summer()
 	{
 		ugens = new Vector<UGen>();
 	}
@@ -26,7 +26,7 @@ public class Bus extends UGen implements AudioSignal
 	//      In other words, the output passed to this constructor will always be the same output
 	//      that is constructing the bus. However, because AudioOutput is in a different package,
 	//      this must be a public constructor. :-/
-	public Bus(AudioOutput output)
+	public Summer(AudioOutput output)
 	{
 		out = output;
 		ugens = new Vector<UGen>();

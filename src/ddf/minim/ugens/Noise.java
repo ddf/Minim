@@ -37,11 +37,11 @@ public class Noise extends UGen
 		switch (tint) 
 		{
 		case WHITE :
-			n = amp*(float)Math.random()*2 - 1;
+			n = amp*(2.0f*(float)Math.random() - 1.0f);
 			break;
 		case RED :
-			float offset = (float)Math.random()*2;
-			n = amp*((last/amp + offset) % 2f - 1);
+			float offset = 2.0f*(float)Math.random();
+			n = amp*( ( ( last/amp + offset + 1f ) % 2f ) - 1f );
 			last = n;
 			break;
 		}

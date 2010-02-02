@@ -14,72 +14,115 @@ public class Damp extends UGen
 	public UGenInput audio;
 
 	// the initial amplitude of the damp
-	private float begAmp;
+	private float maxAmp;
 	// the current amplitude
 	private float amp;
-	// the time from amp to 0
+	// the time from maxAmp to 0
 	private float dampTime;
+	// the time from 0 to maxAmp
+	private float attackTime;
 	// the current size of the step
 	private float timeStepSize;
 	// the current time
-	private float dampNow;
+	private float now;
 	// the damp has been activated
 	private boolean isActivated;
 	
 	// constructors
 	public Damp()
 	{
-		this(1.0f, 1.0f);
+		this( 0.0f, 1.0f, 1.0f );
 	}
-	public Damp(float dT)
+	
+	public Damp( float dampTime )
 	{
-		this(dT, 1.0f);
+		this( 0.0f, dampTime, 1.0f );
 	}
-	public Damp(float dT, float beginningAmplitude)
+	
+	public Damp( float attackTime, float dampTime )
+	{
+		this( attackTime, dampTime, 1.0f );
+	}
+	
+	public Damp( float attackTime, float dampTime, float maxAmp )
 	{
 		super();
 		audio = new UGenInput(InputType.AUDIO);
-		dampTime = dT;
-		begAmp = beginningAmplitude;
-		dampNow = 0f;  // TODO test value
+		this.attackTime = attackTime;
+		this.dampTime = dampTime;
+		this.maxAmp = maxAmp;
 		isActivated = false;
-		Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + dampNow);
+		Minim.debug(" attackTime = " + attackTime + " dampTime = " + dampTime 
+				+ " maxAmp = " + this.maxAmp + " now = " + now );
 	}
-	public void activate()
+	
+	public void noteOn()
 	{
-		dampNow = 0f;
+		now = 0f;
 		isActivated = true;
+		if( timeStepSize > attackTime )
+		{
+			amp = maxAmp;
+		}  else
+		{
+			amp = 0f;
+		}
 	}
+	
+	public void setAttackTime( float attackTime )
+	{
+		this.attackTime = attackTime;
+	}
+	
+	public void setDampTime( float dampTime )
+	{
+		this.dampTime = dampTime;
+	}
+	
+	public void setDampTimeFromDuration( float duration )
+	{
+		float tmpDampTime = duration - attackTime;
+		if ( tmpDampTime > 0.0f )
+		{
+			dampTime = tmpDampTime;
+		} else
+		{
+			attackTime = duration/2.0f;
+			dampTime = duration/2.0f;
+		}
+	}
+	
 	public void sampleRateChanged()
 	{
 		timeStepSize = 1/sampleRate;
-		setSampleRate(sampleRate);
+		setSampleRate( sampleRate );
 	}
 	
 	@Override
-	protected void uGenerate(float[] channels) 
+	protected void uGenerate( float[] channels ) 
 	{
-		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + now);
-		if ((!isActivated) || (dampNow >= dampTime))
+		if ( ( !isActivated ) || ( now >= ( dampTime + attackTime ) ) )
 		{
-			for(int i = 0; i < channels.length; i++)
+			for( int i = 0; i < channels.length; i++ )
 			{
-				//channels[i] = 0.1f*audio.getLastValues()[i];
-				channels[i] = 0.0f;
+				channels[ i ] = 0.0f;
 			}
-		} else 
+		} else if ( now >= attackTime )  // in the damp time
 		{
-			// TODO if samplerate changes in the middle of Damp, there will be a click
-			// TODO need to change to method as in ADSR
-			amp = begAmp*(1 - (dampNow/dampTime));
-			//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " amp = " + amp + " now = " + now);
-				for(int i = 0; i < channels.length; i++)
+			amp += ( 0 - amp )*timeStepSize/( dampTime + attackTime - now );
+			for( int i = 0; i < channels.length; i++ )
 			{
-				float tmp = audio.getLastValues()[i];
-				tmp *= amp;
-				channels[i] = tmp;
+				channels[i] = amp*audio.getLastValues()[ i ];
 			}
-			dampNow += timeStepSize;
+			now += timeStepSize;
+		} else // in the attack time
+		{
+			amp += ( maxAmp - amp )*timeStepSize/( attackTime - now );
+			for( int i = 0; i < channels.length; i++ )
+			{
+				channels[i] = amp*audio.getLastValues()[ i ];
+			}
+			now += timeStepSize;
 		}
 	}
 }
