@@ -33,7 +33,8 @@ import ddf.minim.spi.AudioStream;
  *
  */
 public class AudioInput extends AudioSource
-{ 
+{  
+  
   /**
    * Constructs an <code>AudioInput</code> that subscribes to <code>stream</code> and 
    * can control the <code>DataLine</code> that <code>stream</code> is reading from.
@@ -42,7 +43,8 @@ public class AudioInput extends AudioSource
    */
   public AudioInput(AudioStream stream, AudioOut out)
   {
-    super(out);
+    super( out );
+    out.setAudioStream(stream);
     stream.open();
   }
 }

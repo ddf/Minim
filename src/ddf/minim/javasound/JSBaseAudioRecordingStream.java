@@ -419,7 +419,10 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 		catch (IOException e)
 		{
 		}
-		ais = null;		
+		ais = null;
+		
+		line.flush();
+		line.close();
 	}
 
 	public int bufferSize()

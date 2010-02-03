@@ -101,12 +101,17 @@ final class JSAudioInput extends Thread
   
   public void open()
   {
-    start();
+    // start();
+	line.start();
   }
   
   public void close()
   {
     finished = true;
+    // we are done, clean up the line
+    line.flush();
+    line.stop();
+    line.close();
   }
  
   public int bufferSize()
@@ -136,16 +141,19 @@ final class JSAudioInput extends Thread
 
 	public float[] read() 
 	{
-		// allocate enough bytes for one sample frame
-		byte[] bytes = new byte[line.getFormat().getFrameSize()];
-		// allocate enough floats for the number of channels
-		float[] samples = new float[line.getFormat().getChannels()];
 		// TODO: this is sort of terrible, but will do for now. would be much better
 		// to dig the conversion stuff out of FloatSampleBuffer and do this more directly
-		FloatSampleBuffer convert = new FloatSampleBuffer(bytes, 0, bytes.length, line.getFormat());
+		int numSamples = 1;
+		// allocate enough bytes for one sample frame
+		byte[] bytes = new byte[ line.getFormat().getFrameSize() ];
+		line.read(bytes, 0, bytes.length);
+		buffer.setSamplesFromBytes(bytes, 0, line.getFormat(), 0, numSamples);
+		// allocate enough floats for the number of channels
+		float[] samples = new float[ buffer.getChannelCount() ];
+
 		for(int i = 0; i < samples.length; i++)
 		{
-			samples[i] = convert.getChannel(i)[0];
+			samples[i] = buffer.getChannel(i)[0];
 		}		
 		return samples;
 	}

@@ -375,6 +375,15 @@ public class Minim
     return null;
   }  
   
+  /**
+   * Creates and AudioRecordingStream that you can use to read from the file yourself, 
+   * rather than wrapping it in an AudioPlayer that does the work for you.
+   * 
+   * @param filename the file to load
+   * @param bufferSize the bufferSize to use
+   * @param inMemory whether or not the file should be cached in memory as it is read
+   * @return and AudioRecordingStream that you can use to read from the file.
+   */
   public AudioRecordingStream loadFileStream(String filename, int bufferSize, boolean inMemory)
   {
 	  return mimp.getAudioRecordingStream(filename, bufferSize, inMemory);
@@ -502,6 +511,25 @@ public class Minim
 
     error("Minim.getLineIn: attempt failed, could not secure an AudioInput.");
     return null;
+  }
+  
+  /**
+   * Get the input as an AudioStream that you can read from yourself, rather than wrapped 
+   * in an AudioInput that does that work for you.
+   * 
+   * @param type
+   *          Minim.MONO or Minim.STEREO
+   * @param bufferSize
+   *          how long you want the <code>AudioInput</code>'s sample buffer to be
+   * @param sampleRate
+   *          the desired sample rate in Hertz (typically 44100)
+   * @param bitDepth
+   *          the desired bit depth (typically 16)
+   * @return an AudioStream that reads from the input source of the soundcard.
+   */
+  public AudioStream getInputStream(int type, int bufferSize, float sampleRate, int bitDepth)
+  {
+	  return mimp.getAudioInput(type, bufferSize, sampleRate, bitDepth);
   }
 
   /**
