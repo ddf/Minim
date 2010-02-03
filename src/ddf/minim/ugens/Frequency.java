@@ -123,7 +123,7 @@ public class Frequency
 		float midiNote;
 		
 		// trim off any white space before or after
-		pitchName.trim();
+		pitchName = pitchName.trim();
 	
 		// check to see if this is a note		
 		if ( pitchName.matches( pitchRegex ) )

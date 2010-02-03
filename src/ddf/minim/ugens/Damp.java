@@ -56,7 +56,7 @@ public class Damp extends UGen
 				+ " maxAmp = " + this.maxAmp + " now = " + now );
 	}
 	
-	public void noteOn()
+	public void activate()
 	{
 		now = 0f;
 		isActivated = true;

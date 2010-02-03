@@ -12,6 +12,7 @@ public class NoteManager
 	private AudioOutput out;
 	private float tempo;
 	private float noteOffset;
+	private float durationFactor;
 	private int   now;
 	// our events are stored in a map.
 	// the keys in this map are the "now" that the events should
@@ -68,6 +69,7 @@ public class NoteManager
 		events = new HashMap<Integer, ArrayList<NoteEvent>>();
 		tempo = 60f;
 		noteOffset = 0.0f;
+		durationFactor = 1.0f;
 		now = 0;
 		paused = false;
 	}
@@ -91,7 +93,7 @@ public class NoteManager
 			events.put(onAt, eventsAtOn);
 		}
 		
-		Integer offAt = new Integer( on + (int)(out.sampleRate() * duration * 60f/tempo) );
+		Integer offAt = new Integer( on + (int)(out.sampleRate() * duration * durationFactor * 60f/tempo) );
 		
 		if ( events.containsKey(offAt) )
 		{
@@ -115,6 +117,11 @@ public class NoteManager
 	public void setNoteOffset(float noteOffset)
 	{
 		this.noteOffset = noteOffset;
+	}
+	
+	public void setDurationFactor(float durationFactor)
+	{
+		this.durationFactor = durationFactor;
 	}
 	
 	public void pause()
