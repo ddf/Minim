@@ -6,6 +6,7 @@ import java.util.Random;
  * @author Mark Godfrey <mark.godfrey@gatech.edu>
  */
 
+// TODO Wavetable needs an add method
 public class Wavetable implements Waveform
 {
 

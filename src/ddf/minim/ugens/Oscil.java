@@ -1,6 +1,10 @@
 package ddf.minim.ugens;
 
-
+/**
+ * 
+ * @author Damien Di Fede, Anderson Mills
+ *
+ */
 public class Oscil extends UGen 
 {
 
@@ -39,7 +43,7 @@ public class Oscil extends UGen
 	//shortcut for building a sine wave
 	public Oscil(Frequency frequency, float amplitude)
 	{
-		this(frequency, amplitude, Waves.Sine);
+		this(frequency, amplitude, Waves.SINE);
 	}
 
 	//standard constructor

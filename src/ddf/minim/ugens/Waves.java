@@ -1,31 +1,53 @@
 package ddf.minim.ugens;
 
 /**
- * A waveforms library
+ * A library of waveforms.
  * 
- *  @author Nicolas Brix
+ *  @author Nicolas Brix, Anderson Mills
  */
 public class Waves 
 {
+	/**
+	 * standard size for a Wavetabel from Waves
+	 */
 	private static int tableSize = 8192;
 	private static int tSby2 = tableSize/2;
 	private static int tSby4 = tableSize/4;
 
-	//perfect waveforms
-	public final static Wavetable Sine = 
+	// Perfect waveforms
+	/** 
+	 * A pure sine wave.
+	 */
+	public final static Wavetable SINE = 
 		WavetableGenerator.gen10(tableSize, new float[] { 1 });
-	public final static Wavetable Saw = 
+	/**
+	 * A perfect sawtooth wave.
+	 */	
+	public final static Wavetable SAW = 
 		WavetableGenerator.gen7(tableSize, new float[] {0,-1,1,0}, new int[] {tSby2,0,tableSize - tSby2});
-	public final static Wavetable Square = 
+	/**
+	 * A perfect square wave with a 50% duty cycle.
+	 */
+	public final static Wavetable SQUARE = 
 		WavetableGenerator.gen7(tableSize, new float[] {-1,-1,1,1}, new int[] {tSby2,0,tableSize - tSby2});
-	public final static Wavetable Triangle = 
+	 /**
+	  * A perfect triangle wave.
+	  */
+
+	public final static Wavetable TRIANGLE = 
 		WavetableGenerator.gen7(tableSize, new float[] {0,1,-1,0}, new int[] {tSby4,tSby2,tableSize - tSby2 - tSby4});
-	//shortcut for a 0.25 Pulse
-	public final static Wavetable QuarterPulse = 
+	/**
+	 * A perfect square wave with a 25% duty cycle.
+	 */
+	public final static Wavetable QUARTERPULSE = 
 		WavetableGenerator.gen7(tableSize, new float[] {-1,-1,1,1}, new int[] {tSby4,0, tableSize - tSby4});
 	
-	//methods to build waveforms with numbers of harmonics
-	public static Wavetable Saw(int numberOfHarms)
+	/**
+	 * Builds a sawtooth wave from the first numberofHarms harmonics. 
+	 * @param numberOfHarms
+	 * @return Wavetable
+	 */
+	public static Wavetable saw(int numberOfHarms)
 	{
 		float[] content = new float[numberOfHarms];
 		for(int i=0;i<numberOfHarms;i++)
@@ -35,7 +57,12 @@ public class Waves
 		return WavetableGenerator.gen10(tableSize, content);
 	}
 
-	public static Wavetable Square(int numberOfHarms)
+	/**
+	 * Builds a square wave from the first numberofHarms harmonics. 
+	 * @param numberOfHarms
+	 * @return Wavetable
+	 */
+	public static Wavetable square(int numberOfHarms)
 	{
 		float[] content = new float[numberOfHarms+1];
 		for(int i=0;i<numberOfHarms;i+=2)
@@ -46,7 +73,12 @@ public class Waves
 		return WavetableGenerator.gen10(tableSize, content);
 	}
 	
-	public static Wavetable Triangle(int numberOfHarms)
+	/**
+	 * Builds a triangle wave from the first numberofHarms harmonics. 
+	 * @param numberOfHarms
+	 * @return Wavetable
+	 */
+	public static Wavetable triangle(int numberOfHarms)
 	{
 		float[] content = new float[numberOfHarms+1];
 		for(int i=0;i<numberOfHarms;i+=2)
@@ -57,15 +89,24 @@ public class Waves
 		return WavetableGenerator.gen10(tableSize, content);
 	}
 	
-	// methods to specify waveforms by duty cycle
-	public static Wavetable Pulse(float dutyCycle)
+	/**	
+	 * Constructs a square wave with specficed duty cycle.
+	 * @param dutyCycle
+	 * @return Wavetable
+	 */
+	public static Wavetable pulse(float dutyCycle)
 	{
 		//TODO exception for floats higher than 1
 		return WavetableGenerator.gen7(tableSize, new float[] {1,1,-1,-1}, 
 				new int[] {(int)(dutyCycle*tableSize),0,tableSize-(int)(dutyCycle*tableSize)});
 	}
 	
-	public static Wavetable Triangle(float dutyCycle)
+	/**	
+	 * Constructs a triangle wave with specficed duty cycle.
+	 * @param dutyCycle
+	 * @return Wavetable
+	 */
+	public static Wavetable triangle(float dutyCycle)
 	{
 		//TODO exception for floats higher than 1
 		int a=(int)(tableSize*dutyCycle*0.5);
@@ -73,61 +114,85 @@ public class Waves
 				new int[] {a,a,tSby2-a,tableSize-tSby2-a});
 	}
 	
-	public static Wavetable Saw(float dutyCycle)
+	/**	
+	 * Constructs a sawtooth wave with specficed duty cycle.
+	 * @param dutyCycle
+	 * @return Wavetable
+	 */
+	public static Wavetable saw(float dutyCycle)
 	{
 		//TODO exception for floats higher than 1
 		int a=(int)(tableSize*dutyCycle);
 		return WavetableGenerator.gen7(tableSize, new float[] {1,0,-1}, new int[] {a,tableSize-a});
 	}
 
-	public static Wavetable Square(float dutyCycle)
-	{//same as Pulse
-		return Pulse(dutyCycle);
+	/**	
+	 * Constructs a square wave with specficed duty cycle.
+	 * @param dutyCycle
+	 * @return Wavetable
+	 */
+	public static Wavetable square(float dutyCycle)
+	{//same as pulse
+		return pulse(dutyCycle);
 	}
 	
 	//TODO a dutycycled sine wavetable : i think a new warp() method in Wavetable would be the best
 
-	//Other waveforms
-	public static Wavetable RandomSaw(int numberOfHarms)
+	/**
+	 * Constructs a wave from the first numberofHarms harmonics given random amplitudes.
+	 * @param numberOfHarms
+	 * @return Wavetable
+	 */
+	public static Wavetable randomNHarms(int numberOfHarms)
 	{
-		float[] content = new float[numberOfHarms];
+		float[] harmAmps = new float[numberOfHarms];
 		for(int i=0;i<numberOfHarms;i++)
 		{
-			content[i]=(float)Math.random()*2 - 1;
+			harmAmps[i]=(float)Math.random()*2 - 1;
 		}
-		Wavetable rand=WavetableGenerator.gen10(tableSize, content);
-		rand.normalize();
-		return rand;
+		Wavetable builtWave=WavetableGenerator.gen10(tableSize, harmAmps);
+		builtWave.normalize();
+		return builtWave;
 	}
 	
-	public static Wavetable RandomSquare(int numberOfHarms)
+	/**
+	 * Constructs a wave from the numberOfHarms even harmonics given random amplitudes.
+	 * @param numberOfHarms
+	 * @return Wavetable
+	 */
+	public static Wavetable randomNOddHarms(int numberOfHarms)
 	{
-		float[] content = new float[numberOfHarms+1];
-		for(int i=0;i<numberOfHarms;i+=2)
+		float[] harmAmps = new float[numberOfHarms*2];
+		for(int i=0;i<numberOfHarms;i+=1)
 		{
-			content[i]=(float)Math.random()*2 - 1;
-			content[i+1]=0;
+			harmAmps[i*2]=(float)Math.random()*2 - 1;
+			harmAmps[i*2+1]=0.0f;
 		}
-		Wavetable rand=WavetableGenerator.gen10(tableSize, content);
-		rand.normalize();
-		return rand;
+		Wavetable builtWave=WavetableGenerator.gen10(tableSize, harmAmps);
+		builtWave.normalize();
+		return builtWave;
 	}
 	
-	// looped noise
+	/**
+	 * Constructs a wavetable of noise
+	 * @return Wavetable
+	 */
 	public static Wavetable RandomNoise()
 	{
-		float[] a = new float[tableSize];
-		for(int i=0;i<a.length;i++)
+		float[] builtArray = new float[tableSize];
+		for(int i=0;i<builtArray.length;i++)
 		{
-			a[i]=(float)Math.random()*2 - 1;
+			builtArray[i]=(float)Math.random()*2 - 1;
 		}
-		Wavetable rand = new Wavetable(a);
-		rand.normalize();
-		return rand;
+		Wavetable builtWave = new Wavetable(builtArray);
+		builtWave.normalize();
+		return builtWave;
 	}
 	
+	// TODO rewrite RandomPulses to be more comprehensible
 	//random impulses, proba being proportional to the number of impulses
 	//values for proba : 1 to 100
+	/*
 	public static Wavetable RandomPulses(float proba)
 	{
 		float[] a = new float[tableSize];
@@ -141,32 +206,32 @@ public class Waves
 		rand.normalize();
 		return rand;
 	}
+	*/
 	
-	//advanced user functions
-	public static Wavetable Custom(float[] amplitudes)
+	/**
+	 * Adds any number of Wavetables, each with their own amplitude
+	 * @param amps
+	 * @param waves
+	 * @return Wavetable
+	 */
+	public static Wavetable add( float[] amps, Wavetable ... waves )
 	{
-		return WavetableGenerator.gen10(tableSize, amplitudes);
-	}
-	
-	
-	//method for adding any number of wavetables, each with their own amplitude
-	public static Wavetable add(float [] amps, Wavetable ... waves)
-	{
-		if(amps.length != waves.length) 
+		if( amps.length != waves.length ) 
 		{
 			System.out.println("add() : amplitude array size must match the number of waveforms...");
 			System.out.println("...returning the first waveform ");
-			return waves[0];
+			return waves[ 0 ];
 		}
-		float[] acc= new float[tableSize];
-		for(int i=0;i<waves.length;i++)
+		float[] accumulate = new float[ tableSize ];
+		for( int i=0; i<waves.length; i++ )
 		{
-			waves[i].scale(amps[i]);
-			for(int j=0;j<tableSize;j++)
+			waves[ i ].scale( amps[ i ] );
+			// TODO Wavetable needs an add method and we should use it here.
+			for( int j=0; j<tableSize; j++ )
 			{
-				acc[j] += waves[i].get(j);
+				accumulate[ j ] += waves[ i ].get( j );
 			}
 		}
-		return new Wavetable(acc);
+		return new Wavetable( accumulate );
 	}
 }

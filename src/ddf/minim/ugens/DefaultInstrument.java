@@ -22,7 +22,7 @@ public class DefaultInstrument implements Instrument
 		noiseGen = new Noise( 0.4f*amplitude, Noise.Tint.WHITE );
 		noiseEnv = new Damp( 0.05f );
 		lpFilter = new LowPassSP( 2.0f*frequency, output.sampleRate() );
-		toneOsc = new Oscil( frequency, 0.9f*amplitude, Waves.Triangle );
+		toneOsc = new Oscil( frequency, 0.9f*amplitude, Waves.TRIANGLE );
 		//toneEnv = new Damp( 1.0f );
 		toneEnv = new Damp( 2.0f/frequency, 1.0f );
 		//toneEnv = new Gain( 0f );
