@@ -1,20 +1,29 @@
 package ddf.minim.ugens;
 
 /**
- * 
+ * Provides a UGen which iterates through a Waveform at a
+ * specified frequency.
  * @author Damien Di Fede, Anderson Mills
  *
  */
 public class Oscil extends UGen 
 {
-
-	// jam3: define the inputs to Oscil
-	//public UGenInput audio;
+	/**
+	 * specifies the amplitude of the oscillator.
+	 */
 	public UGenInput amplitude;
+	/**
+	 * specifies a change in amplitude of the oscillator
+	 */
 	public UGenInput amplitudeModulation;
+	/**
+	 * specifies the frequency of the oscillator
+	 */
 	public UGenInput frequency;
+	/**
+	 * specifies a change in frequency of the oscillator
+	 */
 	public UGenInput frequencyModulation;
-	//public UGenInput midiFrequency;
 	
 	// the waveform we will oscillate over
 	private Waveform  wave;
@@ -30,76 +39,96 @@ public class Oscil extends UGen
 	private float stepSize;
 	
 	//constructors
+	/**
+	 * Constructs an Oscil UGen given frequency in Hz, amplitude, and a waveform
+	 * @param frequencyInHertz
+	 * @param amplitude
+	 * @param waveform
+	 */
 	public Oscil(float frequencyInHertz, float amplitude, Waveform waveform)
 	{
 		this(Frequency.ofHertz(frequencyInHertz), amplitude, waveform);
 	}
-	
+	/**
+	 * Constructs an Oscil UGen given frequency in Hz and amplitude.
+	 * This oscillator uses a sine wave.
+	 * @param frequencyInHertz
+	 * @param amplitude
+	 */
 	public Oscil(float frequencyInHertz, float amplitude)
 	{
 		this(Frequency.ofHertz(frequencyInHertz), amplitude);
 	}
-
+	/**
+	 * Constructs an Oscil UGen given a Frequency and amplitude.
+	 * This oscillator uses a sine wave.
+	 * @param frequency
+	 * @param amplitude
+	 */
 	//shortcut for building a sine wave
 	public Oscil(Frequency frequency, float amplitude)
 	{
 		this(frequency, amplitude, Waves.SINE);
 	}
 
+	/**
+	 * Constructs an Oscil UGen given a Frequency, amplitude, and a waveform
+	 * @param frequency
+	 * @param amplitude
+	 * @param waveform
+	 */
 	//standard constructor
-	public Oscil(Frequency frequency, float amplitude, Waveform waveform)
+	public Oscil(Frequency freq, float amp, Waveform wave)
 	{
 		super();
 		this.amplitude = new UGenInput(InputType.CONTROL);
 		this.amplitudeModulation = new UGenInput(InputType.CONTROL);
 		this.frequency = new UGenInput(InputType.CONTROL);
 		this.frequencyModulation = new UGenInput(InputType.CONTROL);
-		//this.midiFrequency = new UGenInput(InputType.CONTROL);
-		wave = waveform;
-		baseFreq = frequency;
-		freq = baseFreq;
-		amp = amplitude;
+		this.wave = wave;
+		baseFreq = freq;
+		this.freq = baseFreq;
+		this.amp = amp;
 		step = 0f;
-	}
-		
+	}	
+	/**
+	 * This routine needs to be called anytime the sampleRate is changed.
+	 */
 	public void sampleRateChanged()
 	{
 		stepSizeChanged();
 		setSampleRate(sampleRate);
 	}
-	
-	public void stepSizeChanged()
+	private void stepSizeChanged()
 	{
-		stepSize = freq.asHz() / sampleRate;
+		stepSize = freq.asHz()/sampleRate;
 	}
-	
+	/**
+	 * Sets the frequency to a frequency in Hz after construction.
+	 * @param hz
+	 */
 	public void setFrequency( float hz )
 	{
 		baseFreq = Frequency.ofHertz( hz );
-		this.freq = baseFreq;
+		freq = baseFreq;
 		stepSizeChanged();
 	}
-
+	/**
+	 * Sets the frequency to a Frequency after construction.
+	 * @param freq
+	 */
 	public void setFrequency( Frequency freq )
 	{
 		baseFreq = freq;
 		this.freq = baseFreq;
 		stepSizeChanged();
 	}
-	
-	/*public void setMidiFrequency( float midiNote )
-	{
-		baseFreq = Frequency.ofMidiNote( midiNote );
-		this.freq = baseFreq;
-		stepSizeChanged();
-	}
-	*/
-	
 	@Override
 	protected void uGenerate(float[] channels) 
 	{		
 		// figure out our sample value
 		float tmpAmp;
+		// if something is plugged into amplitude
 		if ((amplitude != null) && (amplitude.isPatched()))
 		{
 			tmpAmp = amplitude.getLastValues()[0];
@@ -107,30 +136,26 @@ public class Oscil extends UGen
 		{
 			tmpAmp = amp;
 		}
-		
+		// if something has been plugged into amplitudeModulation
 		if ((amplitudeModulation != null) && (amplitudeModulation.isPatched()))
 		{
 			tmpAmp += amplitudeModulation.getLastValues()[0];
 		}
 		
+		// calculte the sample values
 		float sample = tmpAmp * wave.value(step);
 		for(int i = 0; i < channels.length; i++)
 		{
 			channels[i] = sample;
 		}
 		
-		/*if ((midiFrequency !=null) && (midiFrequency.isPatched()))
-		{
-			baseFreq = Frequency.ofMidiNote(midiFrequency.getLastValues()[0]);
-			stepSizeChanged();
-		}
-		*/
+		// if something is plugged into frequency
 		if ((frequency !=null) && (frequency.isPatched()))
 		{
 			baseFreq = Frequency.ofHertz(frequency.getLastValues()[0]);
 			stepSizeChanged();
 		}
-		
+		// if something is plugged into frequencyModulation
 		if ((frequencyModulation !=null) && (frequencyModulation.isPatched()))
 		{
 			freq = Frequency.ofHertz(baseFreq.asHz() + frequencyModulation.getLastValues()[0]);
@@ -140,12 +165,10 @@ public class Oscil extends UGen
 			freq = baseFreq;
 		}
 		
+		// increase time
 		step += stepSize;
 		// make sure we don't exceed 1.0.
 		// floor is less expensive than %?
 		step -= (float)Math.floor(step);
-		//Minim.debug("Oscil::uGenerate freq = " + freq.asHz()
-		//		+ "  step = " + step + "  stepSize = " + stepSize
-		//		+ "  sample = " + sample);
 	}
 }
