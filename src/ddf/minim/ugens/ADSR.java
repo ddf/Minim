@@ -4,14 +4,16 @@ import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
 
 /**
- * A UGen that plays audio through a standard ADSR
+ * A UGen that plays input audio through a standard ADSR
  * envelope based on time from noteOn and noteOff
- * @author nodog
+ * @author Anderson Mills
  *
  */
 public class ADSR extends UGen
 {
-	// jam3: define the inputs to Oscil
+	/**
+	 *  The default input is "audio."
+	 */
 	public UGenInput audio;
 
 	// amplitude before the ADSR hits
@@ -44,35 +46,75 @@ public class ADSR extends UGen
 	private boolean unpatchAfterRelease;
 	private AudioOutput output;
 	
-	// constructors
+	/**
+	 * Constructor for an ADSR envelope.
+	 * Maximum amplitude is set to 1.0.
+	 * Attack and decay times are set to 1 sec.
+	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
+	 * Amplitude before and after the envelope is set to 0.
+	 */
 	public ADSR()
 	{
 		this(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
+	/**
+	 * Constructor for an ADSR envelope with maximum amplitude.
+	 * Attack and decay times are set to 1 sec.
+	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
+	 * Amplitude before and after the envelope is set to 0.
+	 */
 	public ADSR(float maxAmp)
 	{
 		this(maxAmp, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
-	public ADSR(float maxAmp, float attTime)
+	/**
+	 * Constructor for an ADSR envelope with maximum amplitude, attack Time.
+	 * Decay time is set to 1 sec.
+	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
+	 * Amplitude before and after the envelope is set to 0.
+	 */
+	public ADSR( float maxAmp, float attTime )
 	{
-		this(maxAmp, attTime, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+		this(maxAmp, attTime, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 	}
-	public ADSR(float maxAmp, float attTime, float decTime)
+	/**
+	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, and decay time.
+	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
+	 * Amplitude before and after the envelope is set to 0.
+	 */
+	public ADSR( float maxAmp, float attTime, float decTime )
 	{
-		this(maxAmp, attTime, decTime, 1.0f, 1.0f, 0.0f, 0.0f);
+		this(maxAmp, attTime, decTime, 0.0f, 1.0f, 0.0f, 0.0f);
 	}
-	public ADSR(float maxAmp, float attTime, float decTime, float susLvl)
+	/**
+	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, and sustain level.
+	 * Release time is set to 1 sec.  Amplitude before and after the envelope is set to 0.
+	 */
+	public ADSR( float maxAmp, float attTime, float decTime, float susLvl )
 	{
-		this(maxAmp, attTime, decTime, susLvl, susLvl, 0.0f, 0.0f);
+		this(maxAmp, attTime, decTime, susLvl, susLvl, 1.0f, 0.0f);
 	}
+	/**
+	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
+	 * and release time.  Amplitude before and after the envelope is set to 0.
+	 */
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime)
 	{
 		this(maxAmp, attTime, decTime, susLvl, relTime, 0.0f, 0.0f);
 	}
+	/**
+	 * Constr
+	 * uctor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
+	 * release time, an amplitude before the envelope.  Amplitude after the envelope is set to 0.
+	 */
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp)
 	{
 		this(maxAmp, attTime, decTime, susLvl, relTime, befAmp, 0.0f);
 	}
+	/**
+	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
+	 * release time, an amplitude before the envelope, and an amplitude after the envelope.
+	 */
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp, float aftAmp)
 	{
 		super();
@@ -92,6 +134,9 @@ public class ADSR extends UGen
 		unpatchAfterRelease = false;
 	}
 	
+	/**
+	 * Permits the changing of the ADSR parameters.
+	 */
 	public void setParameters( float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp, float aftAmp)
 	{
 		maxAmplitude = maxAmp;
@@ -103,23 +148,36 @@ public class ADSR extends UGen
 		afterAmplitude = aftAmp;
 	}
 	
+	/**
+	 * Speficies that the ADSR envelope should begin.
+	 */
 	public void noteOn()
 	{
 		timeFromOn = 0f;
 		isTurnedOn = true;
 	}
+	/**
+	 * Specifies that the ADSR envelope should start the release time.
+	 */
 	public void noteOff()
 	{
 		timeFromOff = 0f;
 		isTurnedOff = true;
 	}
+	
+	/**
+	 * Use this method to notify the ADSR that the sample rate has changed.
+	 */
 	@Override
 	public void sampleRateChanged()
 	{
 		timeStepSize = 1/sampleRate;
 		setSampleRate(sampleRate);
 	}
-	
+	/**
+	 * Tell the ADSR that it should unpatch itself from the output after the release time.
+	 * @param output
+	 */
 	public void unpatchAfterRelease( AudioOutput output )
 	{
 		unpatchAfterRelease = true;
@@ -129,7 +187,6 @@ public class ADSR extends UGen
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
-		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + now);
 		// before the envelope, just output the beforeAmplitude*audio
 		if (!isTurnedOn)
 		{
@@ -144,9 +201,7 @@ public class ADSR extends UGen
 			for(int i = 0; i < channels.length; i++)
 			{
 				channels[i] = afterAmplitude*audio.getLastValues()[i];
-				
-			}
-		
+			}	
 			if ( unpatchAfterRelease )
 			{
 			 	unpatch( output );
@@ -168,12 +223,14 @@ public class ADSR extends UGen
 				// DECAY
 				else if ((timeFromOn > attackTime) && (timeFromOn <= (attackTime+decayTime)))
 				{
+					// use time remaining until sustain to change to sustain level
 					float timeRemain = (attackTime + decayTime - timeFromOn);
 					amplitude += (sustainLevel*maxAmplitude - amplitude)*timeStepSize/timeRemain;			
 				}
 				// SUSTAIN
 				else if (timeFromOn > (attackTime+decayTime))
 				{
+					// hold the sustain level
 					amplitude = sustainLevel*maxAmplitude;
 				}
 				timeFromOn += timeStepSize;
@@ -181,11 +238,12 @@ public class ADSR extends UGen
 			// RELEASE
 			else //isTurnedOn and isTurnedOFF and timeFromOff < releaseTime
 			{
+				// use remaining time to get to afterAmplitude
 				float timeRemain = (releaseTime - timeFromOff);
 				amplitude += (afterAmplitude - amplitude)*timeStepSize/timeRemain;
 				timeFromOff += timeStepSize;
 			}
-			
+			// finally multiply the input audio to generate the output
 			for(int i = 0; i < channels.length; i++)
 			{
 				channels[i] = amplitude*audio.getLastValues()[i];
