@@ -177,7 +177,7 @@ public class Waves
 	 * Constructs a wavetable of noise
 	 * @return Wavetable
 	 */
-	public static Wavetable RandomNoise()
+	public static Wavetable randomNoise()
 	{
 		float[] builtArray = new float[tableSize];
 		for(int i=0;i<builtArray.length;i++)

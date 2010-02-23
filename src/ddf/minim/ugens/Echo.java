@@ -2,7 +2,7 @@ package ddf.minim.ugens;
 
 
 
-public class Delay extends UGen
+public class Echo extends UGen
 {
 	/**
 	 * Delay unit 
@@ -44,7 +44,7 @@ public class Delay extends UGen
 
 	int j=0;
 	
-	public Delay(float delayInMs, int numberOfEchoes , int type, float ampli)
+	public Echo(float delayInMs, int numberOfEchoes , int type, float ampli)
 	{
 		this(delayInMs,ampli);
 		amps = new float[numberOfEchoes];
@@ -73,7 +73,7 @@ public class Delay extends UGen
 		}
 	}
 	
-	public Delay(float delayInMs, float [] amplitudes, float ampli)
+	public Echo(float delayInMs, float [] amplitudes, float ampli)
 	{
 		this(delayInMs,ampli);
 		amps = amplitudes;
@@ -81,7 +81,7 @@ public class Delay extends UGen
 	
 	
 	
-	public Delay(float delayInMs,float ampli)
+	public Echo(float delayInMs,float ampli)
 	{
 		super();
 		audio = new UGenInput(InputType.AUDIO);
