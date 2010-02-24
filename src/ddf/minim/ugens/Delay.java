@@ -1,163 +1,239 @@
 package ddf.minim.ugens;
 
+import java.util.Arrays;
 
-
+import ddf.minim.Minim;
+import ddf.minim.ugens.UGen.InputType;
+import ddf.minim.ugens.UGen.UGenInput;
+/**
+ * The Delay UGen is used to create delayed repetitions of the input audio.
+ * One can control the delay time and amplification of the repitition.
+ * One can also choose whether the repetition is fed back and/or the input is passed through.
+ * @author J Anderson Mills III
+ */
 public class Delay extends UGen
 {
-	/**
-	 * Delay unit 
-	 * You can specify a delay time in milliseconds, a number of echoes 
-	 * and the way the amplitude varies between the echoes 
-	 * The initial delay and number of echoes that you specify in the constructor 
-	 * will determine the length of the buffer so you can't have a longer delay 
-	 * when playing with the delay UGenInput.
-	 * 
-	 * @author nb
-	 * 
+	/** 
+	 * audio is the incoming audio
 	 */
-	//audio input
 	public UGenInput audio;
-	//initial delay in ms
-	private float delayMs;
-	//initial delay in samples
-	private int currentDelay;
-	//UGenIput to modify the delay
-	public UGenInput delay;
-	//array of amps for the echoes
-	private float[] amps;
-	//general amplitude of the set of echoes
-	private float amp;
-	//Input for the general amplitude
-	public UGenInput amplitude;
-	
-	//the buffer used to store samples
-	float[] buffer;
-	//size of the complete buffer
-	int limit;
-	
+	/**
+	 * delTime is the time for delay between repetitions.
+	 */
+	public UGenInput delTime;
+	/**
+	 * delAmp is the strength of each repetition compared to the previous.
+	 */
+	public UGenInput delAmp;
 
+	// current delay time
+	private float delayTime;
+	// maximum delay time
+	private float maxDelayTime;
+	// current feedback factor
+	private float amplitudeFactor;
+	// the delay buffer based on maximum delay time
+	private double[] delayBuffer;
+	// the bufferSize stored for convenience
+	private int bufferSize;
+	// the index of the input and output of the buffer
+	private int iBufferIn, iBufferOut;
+	// flag to include continual feedback.
+	private boolean feedBackOn;
+	// flag to pass the audio straight to the output.
+	private boolean passAudioOn;
 	
-	
-	public static final int ONES = 1;
-	public static final int EXP = 2;
-	public static final int LIN = 3;
-
-	int j=0;
-	
-	public Delay(float delayInMs, int numberOfEchoes , int type, float ampli)
+	// constructors
+	/**
+	 * Constructor for Delay.
+	 * @param maxDelayTime
+	 * 		is the maximum delay time for any one echo.  This defaults to 0.25s. 
+	 * @param amplitudeFactor
+	 *      is the amplification factor for feedback and should generally be from 0 to 1.
+	 *		This defaults to 0.5.
+	 * @param feedBackOn
+	 * 		is a boolean flag specifying if the repetition continue to feed back.
+	 *		The default value is false.
+	 * @param passAudioOn
+	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 *		This defaults to true.
+	 */
+	public Delay()
 	{
-		this(delayInMs,ampli);
-		amps = new float[numberOfEchoes];
-		
-		
-		if(type == 3)
-		{
-			for(int i=0;i<numberOfEchoes;i++)
-			{
-				amps[i]=(1 - (float)i/numberOfEchoes);
-			}
-		}
-		else if(type == 2)
-		{
-			for(int i=0;i<numberOfEchoes;i++)
-			{
-				amps[i]=(float)Math.exp(-i);//TODO : better exponential
-			}
-		}
-		else
-		{
-			for(int i=0;i<numberOfEchoes;i++)
-			{
-				amps[i]=1;
-			}
-		}
+		this( 0.25f, 0.5f, false, true );
 	}
-	
-	public Delay(float delayInMs, float [] amplitudes, float ampli)
+	/**
+	 * Constructor for Delay.
+	 * @param maxDelayTime
+	 * 		is the maximum delay time for any one echo. 
+	 * @param amplitudeFactor
+	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 *		This defaults to 0.5.
+	 * @param feedBackOn
+	 * 		is a boolean flag specifying if the repetition continue to feed back.
+	 *		The default value is false.
+	 * @param passAudio
+	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 *		This defaults to true.
+	 */
+	public Delay( float maxDelayTime )
 	{
-		this(delayInMs,ampli);
-		amps = amplitudes;
+		this( maxDelayTime, 0.5f, false, true );
 	}
-	
-	
-	
-	public Delay(float delayInMs,float ampli)
-	{
+	/**
+	 * Constructor for Delay.
+	 * @param maxDelayTime
+	 * 		is the maximum delay time for any one echo and the default echo time. 
+	 * @param amplitudeFactor
+	 *      is the amplification factor for feedback and should generally be from 0 to 1.
+	 * @param feedBackOn
+	 * 		is a boolean flag specifying if the repetition continue to feed back.
+	 *		The default value is false.
+	 * @param passAudioOn
+	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 *		This defaults to true.
+	 */
+	public Delay( float maxDelayTime, float amplitudeFactor )	
+	{	
+		this( maxDelayTime, amplitudeFactor, false, true );
+	}
+	/**
+	 * Constructor for Delay.
+	 * @param maxDelayTime
+	 * 		is the maximum delay time for any one echo and the default echo time. 
+	 * @param amplitudeFactor
+	 *      is the amplification factor for feedback and should generally be from 0 to 1.
+	 * @param feedBackOn
+	 * 		is a boolean flag specifying if the repetition continue to feed back.
+	 * @param passAudioOn
+	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 *		This defaults to true.
+	 */
+	public Delay( float maxDelayTime, float amplitudeFactor, boolean feedBackOn )	
+	{	
+		this( maxDelayTime, amplitudeFactor, feedBackOn, true );
+	}	
+	/**
+	 * Constructor for Delay.
+	 * @param maxDelayTime
+	 * 		is the maximum delay time for any one echo and the default echo time. 
+	 * @param amplitudeFactor
+	 *      is the amplification factor for feedback and should generally be from 0 to 1.
+	 * @param feedBackOn
+	 * 		is a boolean flag specifying if the repetition continue to feed back.
+	 * @param passAudioOn
+	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 */
+	public Delay( float maxDelayTime, float amplitudeFactor, boolean feedBackOn, boolean passAudioOn )	
+	{		
 		super();
-		audio = new UGenInput(InputType.AUDIO);
-		delay = new UGenInput(InputType.CONTROL);
-		amplitude = new UGenInput(InputType.CONTROL);
-		delayMs = delayInMs;
-		amp = ampli;
+		// jam3: These can't be instantiated until the uGenInputs ArrayList
+		//       in the super UGen has been constructed
+		audio = new UGenInput( InputType.AUDIO );
+		delTime = new UGenInput( InputType.CONTROL );
+		delAmp = new UGenInput( InputType.CONTROL );
+		this.maxDelayTime = maxDelayTime;
+		this.amplitudeFactor = amplitudeFactor;
+		this.feedBackOn = feedBackOn;
+		this.passAudioOn = passAudioOn;
+		delayTime = this.maxDelayTime;
+		iBufferIn = 0;
+		iBufferOut = 0;
+		bufferSize = 0;
 	}
-	public void sampleRateChanged()
+
+	/**
+	 * When the sample rate is changed the buffer needs to be resized.
+	 * Currently this causes the allocation of a completely new buffer, but 
+	 * since a change in sampleRate will result in a change in the playback
+	 * speed of the sound in the buffer, I'm okay with this.
+	 */
+	protected void sampleRateChanged()
 	{
-		currentDelay = (int)Math.floor(delayMs*sampleRate/1000);
-		limit = amps.length*currentDelay+1;
-		
-		buffer=new float[limit];
-		setSampleRate(sampleRate);
-		j=limit-1;
-		
+		delayBuffer = new double [ (int)( maxDelayTime*sampleRate ) ];
+		Arrays.fill( delayBuffer, 0.0 );
+		bufferSizeChanged();
 	}
-	
-	public void calcDelays()
+	// Recalculate the new bufferSize and make sure to clear out old data.
+	private void bufferSizeChanged()
 	{
-		currentDelay = (int)Math.floor(delayMs*sampleRate/1000);
+		int oldBufferSize = bufferSize;
+		int newBufferSize = (int)( delayTime * sampleRate );
+		if ( newBufferSize < oldBufferSize )
+		{
+			Arrays.fill( delayBuffer, newBufferSize, (int)( maxDelayTime*sampleRate ), 0.0 );
+		}
+		bufferSize = newBufferSize;
+		iBufferOut = ( iBufferIn + 1 )%bufferSize;
 	}
-	
-	
-	/*
-	 * Thoughts : every UGen should know the size of channels
-	 * Here for the delay, or for the filter, it would be useful to know how
-	 * many buffers we need to create.
-	 * 
-	 * For now it's mono
-	 * 
-	 * NB
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 2)
-	 * The way noteoff is defined in the current test instrument makes the delay useless if placed before
-	 * the gain (noteoff is basically saying gain=0 at the end of the note, which cancels any fadeout)
-	 * */
-	
-	
+    /**
+     * changes the time in between the echos to the value specified.
+     * @param delTime
+     * 		It can be up to the maxDelayTime specified.
+     * 		The lowest it can be is 1/sampleRate.	
+     */
+	public void setDelTime( float delTime )
+	{
+		this.delayTime = delTime;
+		bufferSizeChanged();
+	}
+	/**
+	 * changes the feedback amplification of the echos.
+	 * @param delAmp
+	 * 		This should normally be between 0 and 1 for decreasing feedback.
+	 * 		Phase inverted feedback can be generated with negative numbers, but each echa will be the inverse
+	 * 		of the one before it.
+	 */
+	public void setDelAmp( float delAmp )
+	{
+		this.amplitudeFactor = delAmp;
+	}
+
+	@Override
 	protected void uGenerate(float[] channels) 
 	{
-	
-		
-		
-		if ((amplitude != null) && (amplitude.isPatched()))
+		// mono-ize the signal
+		float tmpIn = 0;
+		for( int i = 0; i < channels.length; i++ )
 		{
-			
-			amp = amplitude.getLastValues()[0];
-
-		}
-		if ((delay != null) && (delay.isPatched()))
-		{
-			delayMs= (int)delay.getLastValues()[0];
-			calcDelays();
+			tmpIn += audio.getLastValues()[ i ]/channels.length;
 		}
 		
-		float tmp= audio.getLastValues()[0];
-		buffer[j]=tmp;
-		for(int i = 0; i < channels.length; i++)
+		// pull sound out of the buffer
+		float tmpOut = amplitudeFactor*(float)delayBuffer[ iBufferOut ];
+		
+		// put sound into the buffer
+		delayBuffer[ iBufferIn ] = tmpIn;
+		if ( feedBackOn ) 
 		{
-			channels[i] = tmp;
-			
-			for(int k =0; k< amps.length ; k++)
-			{
-				channels[i] += amp*amps[k]*buffer[(j+(k+1)*currentDelay)%limit];
-			}
+			delayBuffer[ iBufferIn ] +=tmpOut; 
 		}
 		
-		j--;
-		if(j<0) j = limit-1;
-
-
+		// update the buffer indexes
+		if ( ( delTime != null ) && ( delTime.isPatched() ) )
+		{
+			delayTime = delTime.getLastValues()[0];
+			bufferSizeChanged();
+		}
+		iBufferIn = ( iBufferIn + 1 )%bufferSize;
+		iBufferOut = ( iBufferOut + 1 )%bufferSize;
 		
-	}
+		// update the feedbackFactor
+		if ( ( delAmp != null ) && ( delAmp.isPatched() ) )
+		{
+			amplitudeFactor = delAmp.getLastValues()[0];
+		}
+			    
+		// pass the audio if necessary
+		if ( passAudioOn )
+		{
+			tmpOut += tmpIn;
+		}
+		
+		// put the delay signal out on all channels
+		for( int i = 0; i < channels.length; i++ )
+		{
+			channels[ i ] = tmpOut;
+		}
+	} 
 }
