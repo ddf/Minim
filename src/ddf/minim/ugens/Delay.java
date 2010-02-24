@@ -1,109 +1,163 @@
 package ddf.minim.ugens;
 
-import ddf.minim.Minim;
-import ddf.minim.ugens.UGen.InputType;
-import ddf.minim.ugens.UGen.UGenInput;
+
 
 public class Delay extends UGen
 {
+	/**
+	 * Delay unit 
+	 * You can specify a delay time in milliseconds, a number of echoes 
+	 * and the way the amplitude varies between the echoes 
+	 * The initial delay and number of echoes that you specify in the constructor 
+	 * will determine the length of the buffer so you can't have a longer delay 
+	 * when playing with the delay UGenInput.
+	 * 
+	 * @author nb
+	 * 
+	 */
+	//audio input
 	public UGenInput audio;
+	//initial delay in ms
+	private float delayMs;
+	//initial delay in samples
+	private int currentDelay;
+	//UGenIput to modify the delay
 	public UGenInput delay;
-	public UGenInput feedback;
+	//array of amps for the echoes
+	private float[] amps;
+	//general amplitude of the set of echoes
+	private float amp;
+	//Input for the general amplitude
+	public UGenInput amplitude;
+	
+	//the buffer used to store samples
+	float[] buffer;
+	//size of the complete buffer
+	int limit;
+	
 
-	private float delayTime;
-	private float maxDelayTime;
-	private float feedbackFactor;
-	private float[] delayBuffer;
-	private int iBufferIn, iBufferOut;
-	private boolean passOriginal;
 	
-	// constructors
-	public Delay()
-	{
-		this( 0.25f, 0.5f, true );
-	}
-	public Delay( float delayTime )
-	{
-		this( delayTime, 0.5f, true );
-	}
-	public Delay( float delayTime, float feedbackFactor, boolean passOriginal )	
-	{		
-		super();
-		// jam3: These can't be instantiated until the uGenInputs ArrayList
-		//       in the super UGen has been constructed
-		audio = new UGenInput( InputType.AUDIO );
-		delay = new UGenInput( InputType.CONTROL );
-		feedback = new UGenInput( InputType.CONTROL );
-		this.delayTime = delayTime;
-		this.feedbackFactor = feedbackFactor;
-		this.passOriginal = passOriginal;
-		maxDelayTime = this.delayTime;
-		iBufferIn = 0;
-		iBufferOut = 0;
-	}
 	
-	protected void sampleRateChanged()
+	public static final int ONES = 1;
+	public static final int EXP = 2;
+	public static final int LIN = 3;
+
+	int j=0;
+	
+	public Delay(float delayInMs, int numberOfEchoes , int type, float ampli)
 	{
-		delayBuffer = new float [ (int)( maxDelayTime*sampleRate ) ];
-		for( int i = 0; i<delayBuffer.length; i++)
+		this(delayInMs,ampli);
+		amps = new float[numberOfEchoes];
+		
+		
+		if(type == 3)
 		{
-			delayBuffer[ i ] = 0.0f;
+			for(int i=0;i<numberOfEchoes;i++)
+			{
+				amps[i]=(1 - (float)i/numberOfEchoes);
+			}
 		}
-		bufferSizeChanged();
-	}
-	protected void bufferSizeChanged()
-	{
-		//iBufferOut = (int)( delayTime * sampleRate ) - 1;
-		iBufferOut = ( iBufferIn + 1 )%(int)( delayTime * sampleRate );
-		Minim.debug("Delay: iBufferOut set to " + iBufferOut );
+		else if(type == 2)
+		{
+			for(int i=0;i<numberOfEchoes;i++)
+			{
+				amps[i]=(float)Math.exp(-i);//TODO : better exponential
+			}
+		}
+		else
+		{
+			for(int i=0;i<numberOfEchoes;i++)
+			{
+				amps[i]=1;
+			}
+		}
 	}
 	
-	public void setDelay( float delayTime )
+	public Delay(float delayInMs, float [] amplitudes, float ampli)
 	{
-		this.delayTime = delayTime;
-		bufferSizeChanged();
+		this(delayInMs,ampli);
+		amps = amplitudes;
 	}
-	public void setfeedback( float feedbackFactor )
+	
+	
+	
+	public Delay(float delayInMs,float ampli)
 	{
-		this.feedbackFactor = feedbackFactor;
+		super();
+		audio = new UGenInput(InputType.AUDIO);
+		delay = new UGenInput(InputType.CONTROL);
+		amplitude = new UGenInput(InputType.CONTROL);
+		delayMs = delayInMs;
+		amp = ampli;
 	}
-
-	@Override
+	public void sampleRateChanged()
+	{
+		currentDelay = (int)Math.floor(delayMs*sampleRate/1000);
+		limit = amps.length*currentDelay+1;
+		
+		buffer=new float[limit];
+		setSampleRate(sampleRate);
+		j=limit-1;
+		
+	}
+	
+	public void calcDelays()
+	{
+		currentDelay = (int)Math.floor(delayMs*sampleRate/1000);
+	}
+	
+	
+	/*
+	 * Thoughts : every UGen should know the size of channels
+	 * Here for the delay, or for the filter, it would be useful to know how
+	 * many buffers we need to create.
+	 * 
+	 * For now it's mono
+	 * 
+	 * NB
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 2)
+	 * The way noteoff is defined in the current test instrument makes the delay useless if placed before
+	 * the gain (noteoff is basically saying gain=0 at the end of the note, which cancels any fadeout)
+	 * */
+	
+	
 	protected void uGenerate(float[] channels) 
 	{
-		// monoize the signal
-		float tmpIn = 0;
-		for( int i = 0; i < channels.length; i++ )
+	
+		
+		
+		if ((amplitude != null) && (amplitude.isPatched()))
 		{
-			tmpIn += audio.getLastValues()[i]/channels.length;
+			
+			amp = amplitude.getLastValues()[0];
+
+		}
+		if ((delay != null) && (delay.isPatched()))
+		{
+			delayMs= (int)delay.getLastValues()[0];
+			calcDelays();
 		}
 		
-		// pull sound out of the buffer
-		float tmpOut = feedbackFactor*delayBuffer[ iBufferOut ];
-		
-		// put sound into the buffer
-		delayBuffer[ iBufferIn ] = tmpIn + tmpOut; 
-		
-		// update the buffer indexes
-		iBufferIn = ( iBufferIn + 1 )%(int)( delayTime*sampleRate );
-		iBufferOut = ( iBufferOut + 1 )%(int)( delayTime*sampleRate );
-		//Minim.debug("iBufferIn, iBufferOut = " + iBufferIn +", " + iBufferOut );
-		    //if ( ( amplitude == null ) || ( !amplitude.isPatched() ) )
-			//{
-			//	tmp *= value;
-			//} else {
-			//	tmp *= amplitude.getLastValues()[i];
-			//}
-		// pass the audio if necessary
-		if ( true == passOriginal )
+		float tmp= audio.getLastValues()[0];
+		buffer[j]=tmp;
+		for(int i = 0; i < channels.length; i++)
 		{
-			tmpOut += tmpIn;
+			channels[i] = tmp;
+			
+			for(int k =0; k< amps.length ; k++)
+			{
+				channels[i] += amp*amps[k]*buffer[(j+(k+1)*currentDelay)%limit];
+			}
 		}
 		
-		// put the delay signal out on all channels
-		for( int i = 0; i < channels.length; i++ )
-		{
-			channels[i] = tmpOut;
-		}
-	} 
+		j--;
+		if(j<0) j = limit-1;
+
+
+		
+	}
 }
