@@ -45,11 +45,16 @@ public class Wavetable implements Waveform
 		
 		// linearaly interpolate between the two samples we want.
 		int lowSamp = (int)Math.floor(whichSample);
-		int hiSamp = (int)Math.ceil(whichSample);
+		//int hiSamp = (int)Math.ceil(whichSample);
+		int hiSamp = lowSamp + 1;
 		
 		float rem = whichSample - lowSamp;
 		
-		return get(lowSamp) * (1-rem) + get(hiSamp) * rem;
+		return get(lowSamp) + rem*(get(hiSamp) - get(lowSamp));
+		//return get(lowSamp) * (1-rem) + get(hiSamp) * rem;
+		// This was here for testing.  
+		// Causes non-interpolation, but adds max # of oscillators
+		//return get(lowSamp);
 	}
 
 	public float[] getWaveform()
