@@ -1,5 +1,6 @@
 package ddf.minim.ugens;
 
+import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
 
 /**
@@ -27,6 +28,9 @@ public class Damp extends UGen
 	private float now;
 	// the damp has been activated
 	private boolean isActivated;
+	// unpatch the note after it's finished
+	private boolean unpatchAfterDamp;
+	private AudioOutput output;
 	
 	// constructors
 	public Damp()
@@ -98,14 +102,35 @@ public class Damp extends UGen
 		setSampleRate( sampleRate );
 	}
 	
+	/**
+	 * Tell the Damp that it should unpatch itself from the output after the release time.
+	 * @param output
+	 */
+	public void unpatchAfterDamp( AudioOutput output )
+	{
+		unpatchAfterDamp = true;
+		this.output = output;
+	}
+	
 	@Override
 	protected void uGenerate( float[] channels ) 
 	{
-		if ( ( !isActivated ) || ( now >= ( dampTime + attackTime ) ) )
+		if ( !isActivated ) 
 		{
 			for( int i = 0; i < channels.length; i++ )
 			{
 				channels[ i ] = 0.0f;
+			}
+		} else if ( now >= ( dampTime + attackTime ) )
+		{
+			for( int i = 0; i < channels.length; i++ )
+			{
+				channels[ i ] = 0.0f;
+			}
+			if ( unpatchAfterDamp )
+			{
+			 	unpatch( output );
+			 	Minim.debug(" unpatching Damp ");
 			}
 		} else if ( now >= attackTime )  // in the damp time
 		{
