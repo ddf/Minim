@@ -164,6 +164,7 @@ public abstract class UGen
 		// TODO jam3: nOutputs should only increase when this chain will be ticked!
 		nOutputs += 1;
 		Minim.debug("nOutputs = " + nOutputs);
+   	setSampleRate( connectToUGen.sampleRate );
 		return connectToUGen;
 	}
 	/**
@@ -177,6 +178,7 @@ public abstract class UGen
 		// TODO jam3: nOutputs should only increase when this chain will be ticked!
 		nOutputs +=1;
 		Minim.debug("nOutputs = " + nOutputs);
+		setSampleRate( connectToInput.getOuterUGen().sampleRate );
 		return connectToInput.getOuterUGen();
 	}
 	

@@ -1,120 +1,115 @@
 package ddf.minim.ugens;
 
+import ddf.minim.Minim;
 
-public class Pan extends UGen{
-	
-	/** A UGen for balance and stereo width
-	 * 
-	 * Width :
-	 * (formula is from Michael Gruhn on www.musicdsp.com)
-	 * 'width' is the stretch factor of the stereo field:
-	 *	width < 1: decrease in stereo width
-	 *	width = 1: no change
-	 *	width > 1: increase in stereo width
-	 *	width = 0: mono
-	 * 
-	 * 
-	 * Balance :
-	 * should be between -1 and +1
-	 * 
-	 * 
-	 * 
-	 * @author nb
+/** A UGen for panning a mono signal in a stereo field
+ * <p>
+ * Balance : should be between -1 and +1
+ *  
+ * 
+ * @author nb, ddf
+ */
+
+public class Pan extends UGen
+{
+	/**
+	 * UGens patched to balance should generate values between -1 and +1.
 	 */
-	
-	
-	
-	
-	public UGenInput audio;
 	public UGenInput balance;
-	private float currentBalance;
-	private float currentWidth;
-	public UGenInput width;
 
-	private boolean widthActivated=false;
-	private boolean balActivated=false;
+	private UGen  audio;
+	private float mBalance;
+	static private float PI2 = (float)Math.PI / 2.f;
 	
-	
-	
-	
-	public Pan(float bala, float wid)
+	/**
+	 * Construct a Pan UGen with a particular balance and width. 
+	 * @param fBalance a value of 0 means no change in the balance.
+	 * @param fWidth a value of 0 means no change in the width.
+	 */
+	public Pan(float fBalance)
 	{
 		super();
-		currentBalance = bala;
-		currentWidth = wid;
-		audio = new UGenInput(InputType.AUDIO);
-		balance = new UGenInput(InputType.CONTROL);
-		width = new UGenInput(InputType.CONTROL);
-		
-		if(bala != 0 ) balActivated = true;
-		if(wid != 0) widthActivated = true;
-		
+		mBalance = fBalance;
+		balance = new UGenInput(InputType.CONTROL);		
 	}
 	
-
-
-
+	@Override
+	protected void addInput( UGen in )
+	{
+		// System.out.println("Adding " + in.toString() + " to Pan.");
+		audio = in;
+	}
 	
+	@Override
+	protected void removeInput(UGen input)
+	{
+		if ( audio == input )
+		{
+			audio = null;
+		}
+	}
+	
+	@Override
+	protected void sampleRateChanged()
+	{
+		audio.setSampleRate(sampleRate);
+	}
+	
+	/**
+	 * NOTE: Currently only supports stereo audio!
+	 */
 	protected void uGenerate(float[] channels) 
 	{
-		if ((balance != null) && (balance.isPatched()))
+		if ( balance.isPatched() )
 		{
-			currentBalance = balance.getLastValues()[0];
+			mBalance = balance.getLastValues()[0];
 		}
 		
-		if ((width != null) && (width.isPatched()))
+		// ddf: we may want to do stereo panning in a different class
+//		if ( width.isPatched() )
+//		{
+//			mWidth = width.getLastValues()[0];
+//
+//		}
+		
+		// tick our audio as MONO because that's what a Pan is for!
+		float[] sample = new float[1];
+		if ( audio != null )
 		{
-			currentWidth = width.getLastValues()[0];
+			audio.tick(sample);
+		}
+		
+		// formula swiped from the MIDI spcification: http://www.midi.org/about-midi/rp36.shtml
+    // Left Channel Gain [dB] = 20*log (cos (Pi/2* max(0,CC#10 – 1)/126)
+    // Right Channel Gain [dB] = 20*log (sin (Pi /2* max(0,CC#10 – 1)/126)
+		
+		// dBvalue = 20.0 * log10 ( linear );
+		// dB = 20 * log (linear)
 
-		}
+		// conversely...
+	  // linear = pow ( 10.0, (0.05 * dBvalue) );
+		// linear = 10^(dB/20)
 		
-		for(int i=0;i<channels.length;i++)
-		{
-
-			channels[i]= audio.getLastValues()[i];
-		}
-
+		float normBalance = (mBalance+1.f) * 0.5f;
 		
-		if(balActivated)
-		{
-			/*//i dont like that code
-			float angle = (float)(-currentBalance/2*Math.PI);
-			float cos_coef = (float)Math.cos(angle);
-			float sin_coef = (float)Math.sin(angle);
-			float tmp = channels[0];
-			channels[0]  = tmp * cos_coef - channels[1] * sin_coef;
-			channels[1] = tmp * sin_coef + channels[1] * cos_coef;
-			*/
-			
-			if(currentBalance < 0)
-			{
-				channels[0] = channels[0]  + (-1)*currentBalance* channels[1];
-				channels[1] = (1 + currentBalance)* channels[1];
-			}
-			if(currentBalance > 0)
-			{
-				channels[1] = currentBalance * channels[0] + channels[1];
-				channels[0] = (1-currentBalance) * channels [0];
-			}
-			
-			
-		}
+		// note that I am calculating amplitude directly, by using the linear value
+		// that the MIDI specification suggests inputing into the dB formula.
+		float leftAmp = (float)Math.cos( PI2 * normBalance );
+		float rightAmp = (float)Math.sin( PI2 * normBalance);
 		
+		channels[0] = sample[0] * leftAmp;
+		channels[1] = sample[0] * rightAmp;
 		
-		if(widthActivated)
-		{
-			float tmp = 1/Math.max(1 + currentWidth , 2);
-			float coef_M = 1 * tmp;
-			float coef_S = currentWidth * tmp;
-			float m = (channels[0] + channels[1])*coef_M;
-			float s = (channels[0] - channels[1])*coef_S;
-			channels[0] = m-s;
-			channels[1] = m+s;
-		}
-		
-		
-		
+		// ddf: we may want to do the stereo panning in a different class
+//		if( mWidth != 0 )
+//		{
+//			float tmp = 1.f/Math.max(1.f + mWidth , 2.f);
+//			float coef_M = 1.f * tmp;
+//			float coef_S = mWidth * tmp;
+//			float m = (channels[0] + channels[1])*coef_M;
+//			float s = (channels[0] - channels[1])*coef_S;
+//			channels[0] = m-s;
+//			channels[1] = m+s;
+//		}		
 	}
-	
-
 }
