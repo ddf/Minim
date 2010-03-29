@@ -25,6 +25,11 @@ public class Oscil extends UGen
 	 */
 	public UGenInput frequencyModulation;
 	
+	/**
+	 * specifies the phase of the oscillator
+	 */
+	public UGenInput phase;
+	
 	// the waveform we will oscillate over
 	private Waveform  wave;
 	// the base frequency at which we will oscillate
@@ -33,6 +38,8 @@ public class Oscil extends UGen
 	private Frequency freq;
 	// the amplitude at which we will oscillate
 	private float 	  amp;
+	// the phase of the oscillator
+	private float     fPhase;
 	// where we will sample our waveform, moves between [0,1]
 	private float step;
 	// the step size we will use to advance our step
@@ -85,11 +92,13 @@ public class Oscil extends UGen
 		this.amplitudeModulation = new UGenInput(InputType.CONTROL);
 		this.frequency = new UGenInput(InputType.CONTROL);
 		this.frequencyModulation = new UGenInput(InputType.CONTROL);
+		this.phase = new UGenInput(InputType.CONTROL);
 		this.wave = wave;
 		baseFreq = freq;
 		this.freq = baseFreq;
 		this.amp = amp;
 		step = 0f;
+		fPhase = 0f;
 	}	
 	/**
 	 * This routine needs to be called anytime the sampleRate is changed.
@@ -103,6 +112,7 @@ public class Oscil extends UGen
 	{
 		stepSize = freq.asHz()/sampleRate;
 	}
+	
 	/**
 	 * Sets the frequency to a frequency in Hz after construction.
 	 * @param hz
@@ -113,6 +123,7 @@ public class Oscil extends UGen
 		freq = baseFreq;
 		stepSizeChanged();
 	}
+	
 	/**
 	 * Sets the frequency to a Frequency after construction.
 	 * @param freq
@@ -123,52 +134,79 @@ public class Oscil extends UGen
 		this.freq = baseFreq;
 		stepSizeChanged();
 	}
+	
+	public void setPhase( float newPhase )
+	{
+		fPhase = newPhase;
+	}
+	
+	public void resetPhase()
+	{
+		step = 0;
+	}
+	
 	@Override
 	protected void uGenerate(float[] channels) 
 	{		
 		// figure out our sample value
-		float tmpAmp;
+		float outAmp = amp;
 		// if something is plugged into amplitude
-		if ((amplitude != null) && (amplitude.isPatched()))
+		if ( amplitude.isPatched() )
 		{
-			tmpAmp = amplitude.getLastValues()[0];
-		} else 
-		{
-			tmpAmp = amp;
-		}
-		// if something has been plugged into amplitudeModulation
-		if ((amplitudeModulation != null) && (amplitudeModulation.isPatched()))
-		{
-			tmpAmp += amplitudeModulation.getLastValues()[0];
+			outAmp = amplitude.getLastValues()[0];
 		}
 		
-		// calculte the sample values
-		float sample = tmpAmp * wave.value(step);
+		// calculate the sample values
+		float sample = outAmp * wave.value(step);
+		
+		// if something has been plugged into amplitudeModulation
+		if ( amplitudeModulation.isPatched() )
+		{
+			sample += sample * amplitudeModulation.getLastValues()[0];
+		}
+		
 		for(int i = 0; i < channels.length; i++)
 		{
 			channels[i] = sample;
 		}
 		
 		// if something is plugged into frequency
-		if ((frequency !=null) && (frequency.isPatched()))
+		if ( frequency.isPatched() )
 		{
 			baseFreq = Frequency.ofHertz(frequency.getLastValues()[0]);
 			stepSizeChanged();
 		}
 		// if something is plugged into frequencyModulation
-		if ((frequencyModulation !=null) && (frequencyModulation.isPatched()))
+		if ( frequencyModulation.isPatched() )
 		{
 			freq = Frequency.ofHertz(baseFreq.asHz() + frequencyModulation.getLastValues()[0]);
 			stepSizeChanged();
-		} else
+		} 
+		else
 		{
 			freq = baseFreq;
 		}
 		
+		if ( phase.isPatched() )
+		{
+			fPhase = phase.getLastValues()[0];
+		}
+		
 		// increase time
-		step += stepSize;
-		// make sure we don't exceed 1.0.
-		// floor is less expensive than %?
-		step -= (float)Math.floor(step);
+		step += stepSize + fPhase;
+		
+		// don't be less than zero
+		if ( step < 0.f )
+		{
+			step *= -1f;
+		}
+		
+		// don't exceed 1.
+		// we don't use Math.floor because that involves casting up 
+		// to a double and then back to a float.
+		if ( step > 1.0f )
+		{
+			step -= (int)step;
+		}
 	}
 }
