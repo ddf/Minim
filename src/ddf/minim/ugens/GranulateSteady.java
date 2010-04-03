@@ -3,7 +3,7 @@ package ddf.minim.ugens;
 
 /**
  * A UGen which chops the incoming audio into steady grains
- * of sonud.  The envelope of these sounds has a linear fade
+ * of sound.  The envelope of these sounds has a linear fade
  * in and fade out.
  * @author Anderson Mills
  *
@@ -27,7 +27,7 @@ public class GranulateSteady extends UGen
 	 */
 	public UGenInput fadeLen;
 
-	// variables to determine the current placement wrt a grain
+	// variables to determine the current placement WRT a grain
 	private boolean insideGrain;
 	private float timeSinceGrainStart;
 	private float timeSinceGrainStop;
@@ -41,21 +41,21 @@ public class GranulateSteady extends UGen
 	private float maxAmp = 1.0f;	
 	
 	/**
-	 * Constructor for GranulateSteady
+	 * Constructor for GranulateSteady.
 	 * grainLength, length of each grain, defaults to 10 msec.
 	 * spaceLength, space between each grain, defaults to 20 msec.
 	 * fadeLength, length of the linear fade in and fade out of the grain envelope, defaults to 2.5 msec.
-	 * minAmp, minimum amplitude of the Granulate Steady UGen, defaults to 0.
-	 * maxAmp, maximum amplitude of the Granulate Steady UGen, defaults to 1.
+	 * minAmp, minimum amplitude of the envelope, defaults to 0.
+	 * maxAmp, maximum amplitude of the envelope, defaults to 1.
 	 */
 	public GranulateSteady()
 	{
-		this( 0.01f, 0.02f, 0.0025f );
+		this( 0.01f, 0.02f, 0.0025f, 0.0f, 1.0f );
 	}
 	/**
-	 * Constructor for GranulateSteady
-	 * minAmp, minimum amplitude of the Granulate Steady UGen, defaults to 0.
-	 * maxAmp, maximum amplitude of the Granulate Steady UGen, defaults to 1.
+	 * Constructor for GranulateSteady.
+	 * minAmp, minimum amplitude of the envelope, defaults to 0.
+	 * maxAmp, maximum amplitude of the envelope, defaults to 1.
 	 * @param grainLength
 	 * 			length of each grain
 	 * @param spaceLength
@@ -65,10 +65,10 @@ public class GranulateSteady extends UGen
 	 */
 	public GranulateSteady( float grainLength, float spaceLength, float fadeLength )
 	{
-		this( 0.01f, 0.02f, 0.0025f, 0.0f, 1.0f );
+		this( grainLength, spaceLength, fadeLength, 0.0f, 1.0f );
 	}
 	/**
-	 * Constructor for GranulateSteady
+	 * Constructor for GranulateSteady.
 	 * @param grainLength
 	 * 			length of each grain
 	 * @param spaceLength
@@ -76,9 +76,9 @@ public class GranulateSteady extends UGen
 	 * @param fadeLength
 	 * 			length of the linear fade in and fade out of the grain envelope
 	 * @param minAmp
-	 * 			minimum amplitude of the Granulate Steady UGen
+	 * 			minimum amplitude of the envelope
 	 * @param maxAmp
-	 * 			maximum amplitude of the Granulate Steady UGen
+	 * 			maximum amplitude of the envelope
 	 */
 	public GranulateSteady( float grainLength, float spaceLength, float fadeLength, float minAmp, float maxAmp )
 	{
@@ -110,10 +110,7 @@ public class GranulateSteady extends UGen
 	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()
 	{
-		if (fadeLength > grainLength/2.0)
-		{
-			fadeLength = grainLength/2.0f;
-		}
+		fadeLength = Math.min( fadeLength, grainLength/2.0f );
 	}
 	// Make those samples!
 	@Override

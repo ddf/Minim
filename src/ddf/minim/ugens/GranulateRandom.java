@@ -3,20 +3,26 @@ package ddf.minim.ugens;
 /**
  * GranulateRandom is granular synthesis of the incoming audio.
  * Currently, there are no inputs to this UGen other than the incoming
- * audio.  All parameters must be set at construction.
- * 
- * @author nodog
+ * audio.  All parameters must be set at construction. The envelope of these 
+ * sounds has a linear fade in and fade out.
+ * @author Anderson Mills
  *
  */
 public class GranulateRandom extends UGen
-{    
+{   
+	/**
+	 * The default input is "audio."
+	 */
 	public UGenInput audio;
-	//public UGenInput amplitude;
+	//TODO add the appropriate constructor parameters as inputs.
+	
+	// variables to determine the current placement WRT a grain
 	private boolean insideGrain;
 	private float timeSinceGrainStart;
 	private float timeSinceGrainStop;
 	private float timeStep;
 	
+	// variables to keep track of the grain value ranges
 	private float fadeLength = 0.0025f;
 	private float grainLength = 0.010f;
 	private float spaceLength = 0.020f;
@@ -26,14 +32,71 @@ public class GranulateRandom extends UGen
 	private float fadeLengthMax = 0.0025f;
 	private float grainLengthMax = 0.010f;
 	private float spaceLengthMax = 0.020f;
-	
+	private float minAmp = 0.0f;
+	private float maxAmp = 1.0f;	
+
+	/**
+	 * Constructor for GranulateRandom.
+	 * grainLengthMin, minimum grain length of each grain, defaults to 10 msec. 
+	 * spaceLengthMin, minimum space between each grain, defaults to 20 msec.
+	 * fadeLengthMin, minimum length of the linear fade in and fade out of the i
+	 * grain envelope, defaults to 2.5 msec.
+	 * grainLengthMax, maximum grain length of each grain, defaults to 100 msec.  
+	 * spaceLengthMax, maximum space between each grain, defaults to 200 msec.
+	 * fadeLengthMax, maximum length of the linear fade in and fade out of the
+	 * grain envelope, defaults to 25 msec.
+	 * minAmp, minimum amplitude of the envelope, defaults to 0.
+	 * maxAmp, maximum amplitude of the envelope, defaults to 1.
+	 */
 	public GranulateRandom()
 	{
-		this( 0.010f, 0.020f, 0.0025f, 0.10f, 0.20f, 0.025f  );
+		this( 0.010f, 0.020f, 0.0025f, 0.10f, 0.20f, 0.025f, 0.0f, 1.0f  );
 	}
-	
+	/**
+	 * Constructor for GranulateRandom.
+ 	 * minAmp, minimum amplitude of the envelope, defaults to 0.
+	 * maxAmp, maximum amplitude of the envelope, defaults to 1.
+	 * @param grainLengthMin
+	 * 			minimum grain length of each grain 
+	 * @param spaceLengthMin
+	 *			minimum space between each grain
+	 * @param fadeLengthMin
+	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * @param grainLengthMax
+	 * 			maximum grain length of each grain 
+	 * @param spaceLengthMax
+	 *			maximum space between each grain
+	 * @param fadeLengthMax
+	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 */
 	public GranulateRandom(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
-			float grainLengthMax, float spaceLengthMax, float fadeLengthMax)
+			float grainLengthMax, float spaceLengthMax, float fadeLengthMax )
+	{
+		this( grainLengthMin, spaceLengthMin, fadeLengthMin,
+			grainLengthMax, spaceLengthMax, fadeLengthMax, 0.0f, 1.0f );
+	}
+	/**
+	 * Constructor for GranulateRandom
+	 * @param grainLengthMin
+	 * 			minimum grain length of each grain 
+	 * @param spaceLengthMin
+	 *			minimum space between each grain
+	 * @param fadeLengthMin
+	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * @param grainLengthMax
+	 * 			maximum grain length of each grain 
+	 * @param spaceLengthMax
+	 *			maximum space between each grain
+	 * @param fadeLengthMax
+	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 * @param minAmp
+	 * 			minimum amplitude of the envelope
+	 * @param maxAmp
+	 * 			maximum amplitude of the envelope
+	 */
+	public GranulateRandom(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
+			float grainLengthMax, float spaceLengthMax, float fadeLengthMax,
+			float minAmp, float maxAmp)
 	{
 		super();
 		// jam3: These can't be instantiated until the uGenInputs ArrayList
@@ -50,63 +113,77 @@ public class GranulateRandom extends UGen
 		timeSinceGrainStop = 0.0f;
 		timeStep = 0.0f;
 	}
-
+	/**
+	 * Use this method to notify GranulateRandom that the sample rate has changed.
+	 */
 	public void sampleRateChanged()
 	{
 		timeStep = 1.0f/sampleRate;
 	}
-	
+	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()
 	{
 		fadeLength = Math.min( fadeLength, grainLength/2.0f );
 	}
-	
+	// This is just a helper function to generate a random number between two others.
+	// TODO place randomBetween somewhere more generic and useful.
 	private float randomBetween( float min, float max )
 	{
 		return (max - min)*(float)Math.random()	+ min;
 	}
-	
+	// Make the samples.  Must make the samples
 	@Override
 	protected void uGenerate( float[] channels ) 
 	{
-	
-		if ( insideGrain )
+		if ( insideGrain )  // inside a grain
 		{	
-			float amp = 1.0f;
-			
-			// TODO protection for overlapping in and out fades
-			if ( timeSinceGrainStart < fadeLength )
+			// start with an amplitude at maxAmp
+			float amp = maxAmp;
+			if ( timeSinceGrainStart < fadeLength )  // inside the rise 
 			{
-				amp = timeSinceGrainStart/fadeLength;
+				// linear fade in
+				amp *= timeSinceGrainStart/fadeLength;
 			}
-			else if ( timeSinceGrainStart > ( grainLength - fadeLength ) )
+			else if ( timeSinceGrainStart > ( grainLength - fadeLength ) )  // inside the decay
 			{
-				amp = ( grainLength - timeSinceGrainStart )/fadeLength;
+				// linear fade out
+				amp *= ( grainLength - timeSinceGrainStart )/fadeLength;
 			}
 			
+			// generate the sample
 			for(int i = 0; i < channels.length; i++)
 			{
 				channels[i] = amp*audio.getLastValues()[i];
 			}
+			
+			// increment time
 			timeSinceGrainStart += timeStep;
-			if ( timeSinceGrainStart > grainLength ) 
+		
+			if ( timeSinceGrainStart > grainLength )  // just after a grain 
 			{
+				// stop the grain
 				timeSinceGrainStop = 0.0f;
 				insideGrain = false;
+				// set a new spaceLength
 				spaceLength = randomBetween( spaceLengthMin, spaceLengthMax );
 			}
 		}
-		else
+		else  // outside a grain
 		{
 			for(int i = 0; i < channels.length; i++)
 			{
-				channels[i] = 0.0f;
+				channels[i] = minAmp;
 			}
+			
+			// increment time
 			timeSinceGrainStop += timeStep;
-			if (timeSinceGrainStop > spaceLength)
+
+			if (timeSinceGrainStop > spaceLength)  // just inside a grain again
 			{
+				// start the grain
 				timeSinceGrainStart = 0.0f;
 				insideGrain = true;
+				// set a new grain and fade length
 				grainLength = randomBetween( grainLengthMin, grainLengthMax );
 				fadeLength = randomBetween( fadeLengthMin, fadeLengthMax );
 				checkFadeLength();
