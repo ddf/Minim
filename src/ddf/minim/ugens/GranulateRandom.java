@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.ugens.UGen.UGenInput;
+
 /**
  * GranulateRandom is granular synthesis of the incoming audio.
  * Currently, there are no inputs to this UGen other than the incoming
@@ -14,8 +16,31 @@ public class GranulateRandom extends UGen
 	 * The default input is "audio."
 	 */
 	public UGenInput audio;
-	//TODO add the appropriate constructor parameters as inputs.
-	
+	/**
+	 * Controls the minimum length of each grain.
+	 */
+	public UGenInput grainLenMin;
+	/**
+	 * Controls the minimum space between each grain.
+	 */
+	public UGenInput spaceLenMin;
+	/**
+	 * Controls the minimum length of the fade in and fade out.
+	 */
+	public UGenInput fadeLenMin;
+	/**
+	 * Controls the manimum length of each grain.
+	 */
+	public UGenInput grainLenMax;
+	/**
+	 * Controls the manimum space between each grain.
+	 */
+	public UGenInput spaceLenMax;
+	/**
+	 * Controls the maximum length of the fade in and fade out.
+	 */
+	public UGenInput fadeLenMax;
+
 	// variables to determine the current placement WRT a grain
 	private boolean insideGrain;
 	private float timeSinceGrainStart;
@@ -165,6 +190,14 @@ public class GranulateRandom extends UGen
 				timeSinceGrainStop = 0.0f;
 				insideGrain = false;
 				// set a new spaceLength
+				if ( ( spaceLenMin != null ) && ( spaceLenMin.isPatched() ) )
+				{
+					spaceLengthMin = spaceLenMin.getLastValues()[0];
+				}
+				if ( ( spaceLenMax != null ) && ( spaceLenMax.isPatched() ) )
+				{
+					spaceLengthMax = spaceLenMax.getLastValues()[0];
+				}
 				spaceLength = randomBetween( spaceLengthMin, spaceLengthMax );
 			}
 		}
@@ -183,9 +216,29 @@ public class GranulateRandom extends UGen
 				// start the grain
 				timeSinceGrainStart = 0.0f;
 				insideGrain = true;
-				// set a new grain and fade length
+				// set a new grain length
+				if ( ( grainLenMin != null ) && ( grainLenMin.isPatched() ) )
+				{
+					grainLengthMin = grainLenMin.getLastValues()[0];
+				}
+				if ( ( grainLenMax != null ) && ( grainLenMax.isPatched() ) )
+				{
+					grainLengthMax = grainLenMax.getLastValues()[0];
+				}
 				grainLength = randomBetween( grainLengthMin, grainLengthMax );
+
+				// set a new fade length
+				if ( ( fadeLenMin != null ) && ( fadeLenMin.isPatched() ) )
+				{
+					fadeLengthMin = fadeLenMin.getLastValues()[0];
+				}
+				if ( ( fadeLenMax != null ) && ( fadeLenMax.isPatched() ) )
+				{
+					fadeLengthMax = fadeLenMax.getLastValues()[0];
+				}
 				fadeLength = randomBetween( fadeLengthMin, fadeLengthMax );
+
+				// make sure the fade length is correct
 				checkFadeLength();
 			}
 		}
