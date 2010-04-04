@@ -156,14 +156,13 @@ public class Oscil extends UGen
 			outAmp = amplitude.getLastValues()[0];
 		}
 		
-		// calculate the sample values
-		float sample = outAmp * wave.value(step);
-		
 		// if something has been plugged into amplitudeModulation
 		if ( amplitudeModulation.isPatched() )
 		{
-			sample += sample * amplitudeModulation.getLastValues()[0];
+			outAmp += amplitudeModulation.getLastValues()[0];
 		}
+		// calculate the sample values
+		float sample = outAmp * wave.value(step);
 		
 		for(int i = 0; i < channels.length; i++)
 		{

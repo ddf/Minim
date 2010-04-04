@@ -95,7 +95,7 @@ public class Damp extends UGen
 	 */
 	public Damp( float attackTime, float dampTime, float maxAmp )
 	{
-		this( attackTime, dampTime, 1.0f, 0.0f, 0.0f );
+		this( attackTime, dampTime, maxAmp, 0.0f, 0.0f );
 	}
 	/**
 	 * Constructor for Damp envelope.
