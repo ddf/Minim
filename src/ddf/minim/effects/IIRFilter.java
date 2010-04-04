@@ -54,11 +54,6 @@ public abstract class IIRFilter extends UGen implements AudioEffect
    * The current cutoff frequency of the filter in Hz.
    */
   private float freq;
-  
-  /**
-   * The sample rate of samples that will be filtered.
-   */
-  private float srate;
 
   /**
    * Constructs an IIRFilter with the given cutoff frequency that will be used
@@ -74,7 +69,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
   	super();
   	audio = new UGenInput(InputType.AUDIO);
   	cutoff = new UGenInput(InputType.CONTROL);
-    srate = sampleRate;
+    setSampleRate(sampleRate);
     setFreq(freq);
     initArrays(2);
   }
@@ -186,16 +181,6 @@ public abstract class IIRFilter extends UGen implements AudioEffect
   public final float frequency()
   {
     return freq;
-  }
-  
-  /**
-   * Returns the sample rate of audio that this filter will process.
-   * 
-   * @return the sample rate of audio that will be processed
-   */
-  public final float sampleRate()
-  {
-    return srate;
   }
 
   /**

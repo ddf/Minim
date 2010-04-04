@@ -1,6 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.Minim;
 
 /** A UGen for panning a mono signal in a stereo field
  * <p>
@@ -52,7 +51,7 @@ public class Pan extends UGen
 	@Override
 	protected void sampleRateChanged()
 	{
-		audio.setSampleRate(sampleRate);
+		audio.setSampleRate(sampleRate());
 	}
 	
 	/**

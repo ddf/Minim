@@ -1,6 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.Minim;
 
 public class Multiplier extends UGen
 {

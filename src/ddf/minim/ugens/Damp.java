@@ -184,10 +184,9 @@ public class Damp extends UGen
 	 * Use this method to notify the Damp that the sample rate has changed.
 	 */
 	@Override
-	public void sampleRateChanged()
+	protected void sampleRateChanged()
 	{
-		timeStepSize = 1/sampleRate;
-		setSampleRate( sampleRate );
+		timeStepSize = 1/sampleRate();
 	}	
 	/**
 	 * Tell the Damp that it should unpatch itself from the output after the release time.

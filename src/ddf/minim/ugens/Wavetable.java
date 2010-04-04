@@ -6,25 +6,40 @@ import java.util.Random;
  * @author Mark Godfrey <mark.godfrey@gatech.edu>
  */
 
-// TODO Wavetable needs an add method
 public class Wavetable implements Waveform
 {
 
-	protected float[]	waveform;
+	private float[]	waveform;
+	// precalculate this since we use it alot
+	private float   lengthForValue;
 
 	public Wavetable(int size)
 	{
 		waveform = new float[size];
+		lengthForValue = size - 1;
 	}
 
 	public Wavetable(float[] waveform)
 	{
 		this.waveform = waveform;
+		lengthForValue = waveform.length - 1;
+	}
+	
+	/**
+	 * Make a new Wavetable that has the same waveform values as wavetable.
+	 * @param wavetable
+	 */
+	public Wavetable( Wavetable wavetable )
+	{
+		waveform = new float[ wavetable.waveform.length ];
+		System.arraycopy(wavetable.waveform, 0, waveform, 0, waveform.length);
+		lengthForValue = waveform.length - 1;
 	}
 
 	public void setWaveform(float[] waveform)
 	{
 		this.waveform = waveform;
+		lengthForValue = waveform.length - 1;
 	}
 
 	public float get(int i)
@@ -36,22 +51,27 @@ public class Wavetable implements Waveform
 	 * At is expected to be in the range [0,1]. This will sample the waveform 
 	 * using this value and interpolate between actual sample values as needed.
 	 * 
-	 * @param at
-	 * @return
+	 * @param at a value in the range [0, 1]
+	 * @return this Wavetable sampled at the requested interval
 	 */
 	public float value(float at)
 	{
-		float whichSample = (float)(waveform.length-1) * at;
+		float whichSample = lengthForValue * at;
 		
-		// linearaly interpolate between the two samples we want.
-		int lowSamp = (int)Math.floor(whichSample);
-		//int hiSamp = (int)Math.ceil(whichSample);
+		// linearly interpolate between the two samples we want.
+		int lowSamp = (int)whichSample;
 		int hiSamp = lowSamp + 1;
+		// lowSamp might be the last sample in the waveform
+		// we need to make sure we wrap.
+		if ( hiSamp >= waveform.length )
+		{
+			hiSamp -= waveform.length;
+		}
 		
 		float rem = whichSample - lowSamp;
 		
-		return get(lowSamp) + rem*(get(hiSamp) - get(lowSamp));
-		//return get(lowSamp) * (1-rem) + get(hiSamp) * rem;
+		return waveform[lowSamp] + rem*(waveform[hiSamp] - waveform[lowSamp]);
+
 		// This was here for testing.  
 		// Causes non-interpolation, but adds max # of oscillators
 		//return get(lowSamp);
@@ -77,6 +97,19 @@ public class Wavetable implements Waveform
 		for (int i = 0; i < waveform.length; i++)
 		{
 			waveform[i] *= a;
+		}
+	}
+	
+	/**
+	 * Apply a DC offset to this Wavetable. In other words, add amount to every 
+	 * sample.
+	 * @param amount the amount to add to every sample in the table
+	 */
+	public void offset( float amount )
+	{
+		for(int i = 0; i < waveform.length; ++i)
+		{
+			waveform[i] += amount;
 		}
 	}
 

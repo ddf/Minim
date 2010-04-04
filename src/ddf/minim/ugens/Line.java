@@ -63,10 +63,10 @@ public class Line extends UGen
 	{
 		lineTime = newLineTime;
 	}
-	public void sampleRateChanged()
+	
+	protected void sampleRateChanged()
 	{
-		timeStepSize = 1/sampleRate;
-		setSampleRate(sampleRate);
+		timeStepSize = 1/sampleRate();
 	}
 	
 	@Override

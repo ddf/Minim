@@ -1,6 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.ugens.UGen.UGenInput;
 
 /**
  * GranulateRandom is granular synthesis of the incoming audio.
@@ -138,12 +137,13 @@ public class GranulateRandom extends UGen
 		timeSinceGrainStop = 0.0f;
 		timeStep = 0.0f;
 	}
+	
 	/**
 	 * Use this method to notify GranulateRandom that the sample rate has changed.
 	 */
-	public void sampleRateChanged()
+	protected void sampleRateChanged()
 	{
-		timeStep = 1.0f/sampleRate;
+		timeStep = 1.0f/sampleRate();
 	}
 	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()

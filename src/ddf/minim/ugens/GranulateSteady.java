@@ -100,13 +100,15 @@ public class GranulateSteady extends UGen
 		timeSinceGrainStop = 0.0f;
 		timeStep = 0.0f;
 	}
+	
 	/**
 	 * Use this method to notify GranulateSteady that the sample rate has changed.
 	 */
-	public void sampleRateChanged()
+	protected void sampleRateChanged()
 	{
-		timeStep = 1.0f/sampleRate;
+		timeStep = 1.0f/sampleRate();
 	}
+	
 	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()
 	{

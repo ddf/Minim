@@ -95,9 +95,23 @@ public class Frequency
 		freq = Frequency.ofPitch( pitchName ).asHz();
 	}
 	
+	/**
+	 * Returns the value of this Frequency in Hertz.
+	 * 
+	 */
 	public float asHz()
 	{
 		return freq;
+	}
+	
+	/**
+	 * Set this Frequency to be equal to the provided Hertz value.
+	 * 
+	 * @param hz
+	 */
+	public void setAsHz( float hz )
+	{
+		freq = hz;
 	}
 	
 	public float asMidiNote()

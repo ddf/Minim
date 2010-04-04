@@ -54,7 +54,7 @@ public class Summer extends UGen implements AudioSignal
 		// ddf: need to let all of the UGens in our list know about the sample rate change
 		for(int i = 0; i < ugens.size(); i++)
 		{
-			ugens.get(i).setSampleRate(sampleRate);
+			ugens.get(i).setSampleRate(sampleRate());
 		}
 	}
 	

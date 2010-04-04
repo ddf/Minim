@@ -2,12 +2,9 @@ package ddf.minim.ugens;
 
 import java.util.Arrays;
 
-import ddf.minim.Minim;
-import ddf.minim.ugens.UGen.InputType;
-import ddf.minim.ugens.UGen.UGenInput;
 /**
  * The Delay UGen is used to create delayed repetitions of the input audio.
- * One can control the delay time and amplification of the repitition.
+ * One can control the delay time and amplification of the repetition.
  * One can also choose whether the repetition is fed back and/or the input is passed through.
  * @author J Anderson Mills III
  */
@@ -150,7 +147,7 @@ public class Delay extends UGen
 	 */
 	protected void sampleRateChanged()
 	{
-		delayBuffer = new double [ (int)( maxDelayTime*sampleRate ) ];
+		delayBuffer = new double [ (int)( maxDelayTime*sampleRate() ) ];
 		Arrays.fill( delayBuffer, 0.0 );
 		bufferSizeChanged();
 	}
@@ -158,10 +155,10 @@ public class Delay extends UGen
 	private void bufferSizeChanged()
 	{
 		int oldBufferSize = bufferSize;
-		int newBufferSize = (int)( delayTime * sampleRate );
+		int newBufferSize = (int)( delayTime * sampleRate() );
 		if ( newBufferSize < oldBufferSize )
 		{
-			Arrays.fill( delayBuffer, newBufferSize, (int)( maxDelayTime*sampleRate ), 0.0 );
+			Arrays.fill( delayBuffer, newBufferSize, (int)( maxDelayTime*sampleRate() ), 0.0 );
 		}
 		bufferSize = newBufferSize;
 		iBufferOut = ( iBufferIn + 1 )%bufferSize;

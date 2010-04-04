@@ -90,20 +90,20 @@ public class NicolasDelay extends UGen
 		delayMs = delayInMs;
 		amp = ampli;
 	}
-	public void sampleRateChanged()
+	
+	protected void sampleRateChanged()
 	{
-		currentDelay = (int)Math.floor(delayMs*sampleRate/1000);
+		currentDelay = (int)Math.floor(delayMs*sampleRate()/1000);
 		limit = amps.length*currentDelay+1;
 		
 		buffer=new float[limit];
-		setSampleRate(sampleRate);
 		j=limit-1;
 		
 	}
 	
 	public void calcDelays()
 	{
-		currentDelay = (int)Math.floor(delayMs*sampleRate/1000);
+		currentDelay = (int)Math.floor(delayMs*sampleRate()/1000);
 	}
 	
 	

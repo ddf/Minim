@@ -12,18 +12,11 @@ public class Oscil extends UGen
 	 * specifies the amplitude of the oscillator.
 	 */
 	public UGenInput amplitude;
-	/**
-	 * specifies a change in amplitude of the oscillator
-	 */
-	public UGenInput amplitudeModulation;
+
 	/**
 	 * specifies the frequency of the oscillator
 	 */
 	public UGenInput frequency;
-	/**
-	 * specifies a change in frequency of the oscillator
-	 */
-	public UGenInput frequencyModulation;
 	
 	/**
 	 * specifies the phase of the oscillator
@@ -32,45 +25,47 @@ public class Oscil extends UGen
 	
 	// the waveform we will oscillate over
 	private Waveform  wave;
-	// the base frequency at which we will oscillate
-	private Frequency baseFreq;
-    // the current frequency at which we oscillate (includes modulation)
+    // the current frequency at which we oscillate
 	private Frequency freq;
-	// the amplitude at which we will oscillate
+	// our amplitude in the absence of an amplitude input
 	private float 	  amp;
-	// the phase of the oscillator
+	// the phase of the oscillator in the absence of a phase input
 	private float     fPhase;
 	// where we will sample our waveform, moves between [0,1]
 	private float step;
 	// the step size we will use to advance our step
 	private float stepSize;
+	// 1 / sampleRate, which is used to calculate stepSize
+	private float oneOverSampleRate;
 	
 	//constructors
 	/**
 	 * Constructs an Oscil UGen given frequency in Hz, amplitude, and a waveform
-	 * @param frequencyInHertz
-	 * @param amplitude
-	 * @param waveform
+	 * @param frequencyInHertz the frequency this should oscillate at
+	 * @param amplitude the base amplitude
+	 * @param waveform the waveform we will oscillate over
 	 */
 	public Oscil(float frequencyInHertz, float amplitude, Waveform waveform)
 	{
 		this(Frequency.ofHertz(frequencyInHertz), amplitude, waveform);
 	}
+	
 	/**
 	 * Constructs an Oscil UGen given frequency in Hz and amplitude.
 	 * This oscillator uses a sine wave.
-	 * @param frequencyInHertz
-	 * @param amplitude
+	 * @param frequencyInHertz the frequency this should oscillate at
+	 * @param amplitude the amplitude
 	 */
 	public Oscil(float frequencyInHertz, float amplitude)
 	{
 		this(Frequency.ofHertz(frequencyInHertz), amplitude);
 	}
+	
 	/**
 	 * Constructs an Oscil UGen given a Frequency and amplitude.
 	 * This oscillator uses a sine wave.
-	 * @param frequency
-	 * @param amplitude
+	 * @param frequency the frequency this should oscillate at
+	 * @param amplitude the amplitude
 	 */
 	//shortcut for building a sine wave
 	public Oscil(Frequency frequency, float amplitude)
@@ -89,79 +84,99 @@ public class Oscil extends UGen
 	{
 		super();
 		this.amplitude = new UGenInput(InputType.CONTROL);
-		this.amplitudeModulation = new UGenInput(InputType.CONTROL);
 		this.frequency = new UGenInput(InputType.CONTROL);
-		this.frequencyModulation = new UGenInput(InputType.CONTROL);
 		this.phase = new UGenInput(InputType.CONTROL);
 		this.wave = wave;
-		baseFreq = freq;
-		this.freq = baseFreq;
+		this.freq = freq;
 		this.amp = amp;
 		step = 0f;
 		fPhase = 0f;
+		oneOverSampleRate = 1.f;
 	}	
+	
 	/**
-	 * This routine needs to be called anytime the sampleRate is changed.
+	 * This routine will be called any time the sample rate changes.
 	 */
-	public void sampleRateChanged()
+	protected void sampleRateChanged()
 	{
+		oneOverSampleRate = 1 / sampleRate();
 		stepSizeChanged();
-		setSampleRate(sampleRate);
 	}
+	
+	// updates our step size based on the current frequency
 	private void stepSizeChanged()
 	{
-		stepSize = freq.asHz()/sampleRate;
+		stepSize = freq.asHz() * oneOverSampleRate;
 	}
 	
 	/**
-	 * Sets the frequency to a frequency in Hz after construction.
-	 * @param hz
+	 * Sets the frequency of this Oscil. You might want to do this to change 
+	 * the frequency of this Oscil in response to a button press or something.
+	 * For controlling frequency continuously over time you will usually want 
+	 * to use the frequency input.
+	 * 
+	 * @param hz the frequency, in Hertz, to set this Oscil to
 	 */
 	public void setFrequency( float hz )
 	{
-		baseFreq = Frequency.ofHertz( hz );
-		freq = baseFreq;
+		freq.setAsHz(hz);
 		stepSizeChanged();
 	}
 	
 	/**
-	 * Sets the frequency to a Frequency after construction.
-	 * @param freq
+	 * Sets the frequency of this Oscil. You might want to do this to change 
+	 * the frequency of this Oscil in response to a button press or something.
+	 * For controlling frequency continuously over time you will usually want 
+	 * to use the frequency input.
+	 * 
+	 * @param freq the Frequency to set this Oscil to
 	 */
-	public void setFrequency( Frequency freq )
+	public void setFrequency( Frequency newFreq )
 	{
-		baseFreq = freq;
-		this.freq = baseFreq;
+		freq.setAsHz( newFreq.asHz() );
 		stepSizeChanged();
 	}
 	
+	/**
+	 * Set the amount that the phase will be offset by. Oscil steps its time 
+	 * from 0 to 1, which means that the phase is also normalized. However, 
+	 * it still makes sense to set the phase to greater than 1 or even to 
+	 * a negative number.
+	 * 
+	 * @param newPhase 
+	 */
 	public void setPhase( float newPhase )
 	{
 		fPhase = newPhase;
 	}
 	
-	public void resetPhase()
+	/**
+	 * Resets the time-step used by the oscillator to be equal to the 
+	 * current phase value.  You will typically use this when starting a 
+	 * new note with an Oscil that you have already used so that the 
+	 * waveform will begin sounding at the beginning of its period, 
+	 * which will typically be a zero-crossing. In other words, use this
+	 * to prevent clicks when starting Oscils that have been used before.
+	 */
+	public void reset()
 	{
-		step = 0;
+		step = fPhase;
 	}
 	
 	@Override
 	protected void uGenerate(float[] channels) 
 	{		
-		// figure out our sample value
+		// start with our base amplitude
 		float outAmp = amp;
+		
 		// if something is plugged into amplitude
+		// then we override our base amplitude
 		if ( amplitude.isPatched() )
 		{
 			outAmp = amplitude.getLastValues()[0];
 		}
 		
-		// if something has been plugged into amplitudeModulation
-		if ( amplitudeModulation.isPatched() )
-		{
-			outAmp += amplitudeModulation.getLastValues()[0];
-		}
-		// calculate the sample values
+		// calculate the sample value
 		float sample = outAmp * wave.value(step);
 		
 		for(int i = 0; i < channels.length; i++)
@@ -170,20 +185,11 @@ public class Oscil extends UGen
 		}
 		
 		// if something is plugged into frequency
+		// we update our frequency and recalculate our stepSize
 		if ( frequency.isPatched() )
 		{
-			baseFreq = Frequency.ofHertz(frequency.getLastValues()[0]);
+			freq.setAsHz( frequency.getLastValues()[0] );
 			stepSizeChanged();
-		}
-		// if something is plugged into frequencyModulation
-		if ( frequencyModulation.isPatched() )
-		{
-			freq = Frequency.ofHertz(baseFreq.asHz() + frequencyModulation.getLastValues()[0]);
-			stepSizeChanged();
-		} 
-		else
-		{
-			freq = baseFreq;
 		}
 		
 		if ( phase.isPatched() )

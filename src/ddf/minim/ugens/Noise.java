@@ -66,9 +66,9 @@ public class Noise extends UGen
 	}
 	
 	@Override
-	public void sampleRateChanged()
+	protected void sampleRateChanged()
 	{
-		float dt = 1.0f/sampleRate;
+		float dt = 1.0f/sampleRate();
 		float RC = 1.0f/( 2.0f*(float)Math.PI*brownCutoffFreq );
 		brownAlpha = dt/( RC + dt );
 	}
