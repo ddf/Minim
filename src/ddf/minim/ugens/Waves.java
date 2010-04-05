@@ -26,6 +26,11 @@ public class Waves
 	public final static Wavetable SAW = 
 		WavetableGenerator.gen7(tableSize, new float[] {0,-1,1,0}, new int[] {tSby2,0,tableSize - tSby2});
 	/**
+	 * A perfect phasor wave going from 0 to 1.
+	 */	
+	public final static Wavetable PHASOR = 
+		WavetableGenerator.gen7(tableSize, new float[] {0,1}, new int[] {tableSize});
+	/**
 	 * A perfect square wave with a 50% duty cycle.
 	 */
 	public final static Wavetable SQUARE = 

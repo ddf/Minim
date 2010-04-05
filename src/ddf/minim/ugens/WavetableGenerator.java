@@ -17,7 +17,7 @@ public abstract class WavetableGenerator
 		//System.out.println("gen7: " + size + ", " + val + ", " + dist);
 		float[] waveform = new float[size];
 
-		// check lenghts of arrays
+		// check lengths of arrays
 		if (val.length - 1 != dist.length)
 		{
 			System.out.println("Input arrays of invalid sizes!");
