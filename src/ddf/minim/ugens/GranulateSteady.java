@@ -95,7 +95,7 @@ public class GranulateSteady extends UGen
 		this.fadeLength = fadeLength;
 		this.minAmp = minAmp;
 		this.maxAmp = maxAmp;
-		insideGrain = false;
+		insideGrain = true;
 		timeSinceGrainStart = 0.0f;
 		timeSinceGrainStop = 0.0f;
 		timeStep = 0.0f;
