@@ -203,7 +203,7 @@ public class Oscil extends UGen
 		// don't be less than zero
 		if ( step < 0.f )
 		{
-			step *= -1f;
+			step -= (int)step - 1f;
 		}
 		
 		// don't exceed 1.
