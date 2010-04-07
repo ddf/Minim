@@ -1,25 +1,24 @@
 package ddf.minim.ugens;
 
 /**
- * Provides a UGen which iterates through a Waveform at a
- * specified frequency.
+ * Provides a UGen which generates a Waveform at a specified frequency.
  * @author Damien Di Fede, Anderson Mills
  *
  */
 public class Oscil extends UGen 
 {
 	/**
-	 * specifies the amplitude of the oscillator.
+	 * Patch to this to control the amplitude of the oscillator with another UGen.
 	 */
 	public UGenInput amplitude;
 
 	/**
-	 * specifies the frequency of the oscillator
+	 * Patch to this to control the frequency of the oscillator with another UGen.
 	 */
 	public UGenInput frequency;
 	
 	/**
-	 * specifies the phase of the oscillator
+	 * Patch to this to control the phase of the oscillator with another UGen.
 	 */
 	public UGenInput phase;
 	

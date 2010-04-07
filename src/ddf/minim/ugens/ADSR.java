@@ -12,7 +12,10 @@ import ddf.minim.Minim;
 public class ADSR extends UGen
 {
 	/**
-	 *  The default input is "audio."
+	 *  The default input is "audio."<br/>
+	 *  You won't need to patch to this directly, since 
+	 *  simply patching to the ADSR itself will achieve 
+	 *  the same result.
 	 */
 	public UGenInput audio;
 
@@ -57,6 +60,7 @@ public class ADSR extends UGen
 	{
 		this(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
+	
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude.
 	 * Attack and decay times are set to 1 sec.
@@ -67,6 +71,7 @@ public class ADSR extends UGen
 	{
 		this(maxAmp, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
 	}
+	
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time.
 	 * Decay time is set to 1 sec.
@@ -77,6 +82,7 @@ public class ADSR extends UGen
 	{
 		this(maxAmp, attTime, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 	}
+	
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, and decay time.
 	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
@@ -86,6 +92,7 @@ public class ADSR extends UGen
 	{
 		this(maxAmp, attTime, decTime, 0.0f, 1.0f, 0.0f, 0.0f);
 	}
+	
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, and sustain level.
 	 * Release time is set to 1 sec.  Amplitude before and after the envelope is set to 0.
@@ -94,6 +101,7 @@ public class ADSR extends UGen
 	{
 		this(maxAmp, attTime, decTime, susLvl, susLvl, 1.0f, 0.0f);
 	}
+	
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
 	 * and release time.  Amplitude before and after the envelope is set to 0.
@@ -102,6 +110,7 @@ public class ADSR extends UGen
 	{
 		this(maxAmp, attTime, decTime, susLvl, relTime, 0.0f, 0.0f);
 	}
+	
 	/**
 	 * Constr
 	 * uctor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
@@ -111,6 +120,7 @@ public class ADSR extends UGen
 	{
 		this(maxAmp, attTime, decTime, susLvl, relTime, befAmp, 0.0f);
 	}
+	
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
 	 * release time, an amplitude before the envelope, and an amplitude after the envelope.
@@ -173,9 +183,10 @@ public class ADSR extends UGen
 	{
 		timeStepSize = 1/sampleRate();
 	}
+	
 	/**
 	 * Tell the ADSR that it should unpatch itself from the output after the release time.
-	 * @param output
+	 * @param output the output this should unpatch itself from
 	 */
 	public void unpatchAfterRelease( AudioOutput output )
 	{

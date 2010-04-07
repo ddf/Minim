@@ -26,23 +26,46 @@ public class Line extends UGen
 	// the damp has been activated
 	private boolean isActivated;
 	
-	// constructors
+	/**
+	 * Constructs a Line that starts a 1 and transitions to 0 over 1 second.
+	 */
 	public Line()
 	{
 		this(1.0f, 1.0f, 0.0f);
 	}
+	
+	/**
+	 * Constructs a Line that starts at 1 and transtions to 0 over dT seconds.
+	 * 
+	 * @param dT how long it should take, in seconds, to transtion from 1 to 0.
+	 */
 	public Line(float dT)
 	{
 		this(dT, 1.0f, 0.0f);
 	}
+	
+	/**
+	 * Constructs a Line that starts at beginningAmplitude and transtions to 0 over dT seconds.
+	 * 
+	 * @param dT how long it should take, in seconds, to transition to 0.
+	 * @param beginningAmplitude what value to begin at.
+	 */
 	public Line(float dT, float beginningAmplitude)
 	{
 		this(dT, beginningAmplitude, 0.0f);
 	}
-	public Line(float lT, float begAmplitude, float endAmplitude)
+	
+	/**
+	 * Constructs a Line that starts at begAmplitude and transitions to endAmplitude over dT seconds.
+	 * 
+	 * @param dT how long it should take, in seconds, to transition
+	 * @param begAmplitude the value to start at
+	 * @param endAmplitude the value to end at
+	 */
+	public Line(float dT, float begAmplitude, float endAmplitude)
 	{
 		super();
-		lineTime = lT;
+		lineTime = dT;
 		begAmp = begAmplitude;
 		amp = begAmp;
 		endAmp = endAmplitude;
@@ -50,15 +73,31 @@ public class Line extends UGen
 		isActivated = false;
 		Minim.debug(" dampTime = " + lineTime + " begAmp = " + begAmp + " now = " + lineNow);
 	}
+	
+	/**
+	 * Start the Line's transition.
+	 *
+	 */
 	public void activate()
 	{
 		lineNow = 0f;
 		isActivated = true;
 	}
+	
+	/**
+	 * Set the ending value of the Line's transition
+	 *
+	 * @param newEndAmp
+	 */
 	public void setEndAmp( float newEndAmp )
 	{
 		endAmp = newEndAmp;
 	}
+	
+	/**
+	 * Set the length of this Line's transition
+	 * @param newLineTime the new transition time (in seconds)
+	 */
 	public void setLineTime( float newLineTime )
 	{
 		lineTime = newLineTime;

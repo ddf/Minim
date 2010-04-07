@@ -13,7 +13,8 @@ import ddf.minim.Minim;
 public class Damp extends UGen
 {
 	/**
-	 *  The default input is "audio."
+	 *  The default input is "audio." You don't need to patch directly to this input,
+	 *  patching to the UGen itself will accomplish the same thing.
 	 */
 	public UGenInput audio;
 
@@ -150,6 +151,7 @@ public class Damp extends UGen
 	{
 		this.attackTime = attackTime;
 	}
+	
 	/**
 	 * Permits the setting of the attackTime parameter.
 	 * @param dampTime
@@ -159,6 +161,7 @@ public class Damp extends UGen
 	{
 		this.dampTime = dampTime;
 	}
+	
 	/**
 	 * Permits the setting of the attackTime parameter.  If attackTime is
 	 * positive, and less than the total duration, then the dampTime is 
@@ -180,14 +183,13 @@ public class Damp extends UGen
 			dampTime = duration/2.0f;
 		}
 	}
-	/**
-	 * Use this method to notify the Damp that the sample rate has changed.
-	 */
+	
 	@Override
 	protected void sampleRateChanged()
 	{
 		timeStepSize = 1/sampleRate();
 	}	
+
 	/**
 	 * Tell the Damp that it should unpatch itself from the output after the release time.
 	 * @param output

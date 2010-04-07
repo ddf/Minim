@@ -7,8 +7,10 @@ import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
 
 /**
- * A UGen that will group together other UGens and sum their output.
- * @author ddf
+ * A Summer allows you to sum the outputs of multiple UGens to be sent further down the chain.
+ * Unlike most UGen effects, you can patch more than one UGen to a Summer.
+ * 
+ * @author Damien Di Fede
  *
  */
 public class Summer extends UGen implements AudioSignal
@@ -16,11 +18,19 @@ public class Summer extends UGen implements AudioSignal
 	private AudioOutput out;
 	private Vector<UGen> ugens;
 	
+	/**
+	 * Constructs a Summer that you can patch multiple UGens to.
+	 *
+	 */
 	public Summer()
 	{
 		ugens = new Vector<UGen>();
 	}
 	
+	/**
+	 * Don't use this constructor, it won't stay public.
+	 * @param output
+	 */
 	// ddf: I do not expect users of the library to construct busses that they pass their output to.
 	//      This exists so that we can tick the noteManager for the provided output.
 	//      In other words, the output passed to this constructor will always be the same output

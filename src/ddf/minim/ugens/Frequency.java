@@ -15,7 +15,7 @@ import ddf.minim.Minim;
  * can also be used to convert different notations of frequencies
  * such as Hz, MIDI note number, and a pitch name (English or solfege).
  *  
- * @author nodog
+ * @author Anderson Mills
  *
  */
 public class Frequency
@@ -85,15 +85,16 @@ public class Frequency
 	private float freq;
 	
 	// The constructors are way down here.
-	Frequency( float hz )
+	private Frequency( float hz )
 	{
 		freq = hz;
 	}
 
-	Frequency( String pitchName )
-	{
-		freq = Frequency.ofPitch( pitchName ).asHz();
-	}
+	// ddf: this one isn't being used, apparently
+//	private Frequency( String pitchName )
+//	{
+//		freq = Frequency.ofPitch( pitchName ).asHz();
+//	}
 	
 	/**
 	 * Returns the value of this Frequency in Hertz.
@@ -114,23 +115,43 @@ public class Frequency
 		freq = hz;
 	}
 	
+	/**
+	 * Returns the midi note value of this Frequency
+	 * 
+	 */
 	public float asMidiNote()
 	{
 		float midiNote = MIDIA4 + MIDIOCTAVE*(float)Math.log( freq/HZA4 )/(float)Math.log( 2.0 );
 		return midiNote;
 	}
 	
+	/**
+	 * Construct a Frequency that represents the provided Hertz.
+	 * 
+	 * @param hz the Hz for this Frequency (440 is A4, for instance)
+	 */
 	public static Frequency ofHertz(float hz)
 	{
 		return new Frequency(hz);
 	}
 	
+	/**
+	 * Construct a Frequency from a MIDI note value.
+	 * 
+	 * @param midiNote a value in the range [0,127]
+	 * 
+	 */
 	public static Frequency ofMidiNote( float midiNote )
 	{
 		float hz = HZA4*(float)Math.pow( 2.0, ( midiNote - MIDIA4 )/MIDIOCTAVE );
 		return new Frequency(hz);
 	}
 	
+	/**
+	 * Construct a Frequency from a pitch name, such as A4 or Bb2.
+	 * 
+	 * @param pitchName the name of the pitch to convert to a Frequency.
+	 */
 	public static Frequency ofPitch(String pitchName)
 	{
 		// builds up the value of a midiNote used to create the returned Frequency

@@ -3,17 +3,32 @@ import ddf.minim.AudioOutput;
 //import ddf.minim.effects.IIRFilter;
 import ddf.minim.effects.LowPassSP;
 
+/**
+ * You can use this default instrument to make sound if you don't want to write 
+ * your own instrument. It's a good way to start playing around with the playNote
+ * method of AudioOutput. The default instrument makes a fuzzy triangle wave sound.
+ * 
+ * @author Anderson Mills
+ *
+ */
+
 public class DefaultInstrument implements Instrument
 {
-	Oscil toneOsc;
-	Noise noiseGen;
-	Damp noiseEnv, toneEnv;
+	private Oscil toneOsc;
+	private Noise noiseGen;
+	private Damp noiseEnv, toneEnv;
 	//Gain toneEnv;
 	//Damp toneEnv;
-	AudioOutput output;
-	Summer summer;
-	LowPassSP lpFilter;
-		  
+	private AudioOutput output;
+	private Summer summer;
+	private LowPassSP lpFilter;
+		 
+	/**
+	 * Construct a default instrument that will play a note at the given frequency on the given output.
+	 * 
+	 * @param frequency the frequency of the note
+	 * @param output the output to play the note on when noteOn is called
+	 */
 	public DefaultInstrument( float frequency, AudioOutput output )
 	{
 		this.output = output;
@@ -32,7 +47,7 @@ public class DefaultInstrument implements Instrument
 		noiseGen.patch( noiseEnv ).patch( lpFilter).patch( summer );
 		//.patch( output );
 	}
-		  
+
 	public void noteOn( float dur )
 	{
 		summer.patch( output );

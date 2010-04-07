@@ -2,10 +2,23 @@ package ddf.minim.ugens;
 
 import ddf.minim.spi.AudioRecordingStream;
 
+/**
+ * The FilePlayer UGen provides a way for you to wrap an AudioRecordingStream with 
+ * the UGen interface, allowing you to patching into a UGen graph any way you choose.
+ * You can get an AudioRecordingStream from Minim by calling Minim.loadFileStream.
+ * 
+ * @author Damien Di Fede
+ *
+ */
+
 public class FilePlayer extends UGen 
 {
 	private AudioRecordingStream mFileStream;
 	
+	/**
+	 * Construct a FilePlayer that will read from iFileStream.
+	 * @param iFileStream the AudioRecordingStream this should read from
+	 */
 	public FilePlayer( AudioRecordingStream iFileStream )
 	{
 		mFileStream = iFileStream;
@@ -16,7 +29,12 @@ public class FilePlayer extends UGen
 		mFileStream.play();
 	}
 	
-	
+	/**
+	 * Returns the wrapped AudioRecordingStream so that you can manipulate it while it 
+	 * plays back, by calling pause, play, skip, etc.
+	 * 
+	 * @return the wrapped AudioRecordingStream
+	 */
 	public AudioRecordingStream getStream()
 	{
 		return mFileStream;

@@ -3,7 +3,7 @@ package ddf.minim.ugens;
 
 /**
  * Just outputs a constant value.
- * @author nodog
+ * @author Anderson Mills
  *
  */
 public class Constant extends UGen

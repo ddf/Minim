@@ -59,6 +59,7 @@ public class Delay extends UGen
 	{
 		this( 0.25f, 0.5f, false, true );
 	}
+	
 	/**
 	 * Constructor for Delay.
 	 * @param maxDelayTime
@@ -77,6 +78,7 @@ public class Delay extends UGen
 	{
 		this( maxDelayTime, 0.5f, false, true );
 	}
+	
 	/**
 	 * Constructor for Delay.
 	 * @param maxDelayTime
@@ -94,6 +96,7 @@ public class Delay extends UGen
 	{	
 		this( maxDelayTime, amplitudeFactor, false, true );
 	}
+	
 	/**
 	 * Constructor for Delay.
 	 * @param maxDelayTime
@@ -110,6 +113,7 @@ public class Delay extends UGen
 	{	
 		this( maxDelayTime, amplitudeFactor, feedBackOn, true );
 	}	
+	
 	/**
 	 * Constructor for Delay.
 	 * @param maxDelayTime
@@ -151,6 +155,7 @@ public class Delay extends UGen
 		Arrays.fill( delayBuffer, 0.0 );
 		bufferSizeChanged();
 	}
+	
 	// Recalculate the new bufferSize and make sure to clear out old data.
 	private void bufferSizeChanged()
 	{
@@ -163,6 +168,7 @@ public class Delay extends UGen
 		bufferSize = newBufferSize;
 		iBufferOut = ( iBufferIn + 1 )%bufferSize;
 	}
+	
     /**
      * changes the time in between the echos to the value specified.
      * @param delTime
@@ -174,6 +180,7 @@ public class Delay extends UGen
 		this.delayTime = delTime;
 		bufferSizeChanged();
 	}
+	
 	/**
 	 * changes the feedback amplification of the echos.
 	 * @param delAmp
