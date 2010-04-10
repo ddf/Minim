@@ -50,6 +50,9 @@ public class Gain extends UGen
 	{
 		// linear = pow ( 10.0, (0.05 * dBvalue) );
 		 mValue = (float)Math.pow(10.0, (0.05 * dBvalue));
+		 
+		 audio = new UGenInput(InputType.AUDIO);
+		 gain = new UGenInput(InputType.CONTROL);
 	}
 	
 	/**
