@@ -1,5 +1,8 @@
 package ddf.minim.ugens;
 
+import ddf.minim.AudioMetaData;
+import ddf.minim.Minim;
+import ddf.minim.Playable;
 import ddf.minim.spi.AudioRecordingStream;
 
 /**
@@ -11,7 +14,7 @@ import ddf.minim.spi.AudioRecordingStream;
  *
  */
 
-public class FilePlayer extends UGen 
+public class FilePlayer extends UGen implements Playable
 {
 	private AudioRecordingStream mFileStream;
 	
@@ -30,14 +33,112 @@ public class FilePlayer extends UGen
 	}
 	
 	/**
-	 * Returns the wrapped AudioRecordingStream so that you can manipulate it while it 
-	 * plays back, by calling pause, play, skip, etc.
+	 * Returns the wrapped AudioRecordingStream.
 	 * 
 	 * @return the wrapped AudioRecordingStream
 	 */
 	public AudioRecordingStream getStream()
 	{
 		return mFileStream;
+	}
+	
+	public void play()
+	{
+		mFileStream.play();
+	}
+
+	public void play(int millis)
+	{
+		cue(millis);
+		play();
+	}
+
+	public void pause()
+	{
+		mFileStream.pause();
+	}
+
+	public void rewind()
+	{
+		cue(0);
+	}
+
+	public void loop()
+	{
+		mFileStream.loop(Minim.LOOP_CONTINUOUSLY);
+	}
+
+	public void loop(int n)
+	{
+		mFileStream.loop(n);
+	}
+
+	public int loopCount()
+	{
+		return mFileStream.getLoopCount();
+	}
+
+	public int length()
+	{
+		return mFileStream.getMillisecondLength();
+	}
+
+	public int position()
+	{
+		return mFileStream.getMillisecondPosition();
+	}
+
+	public void cue(int millis)
+	{
+		if (millis < 0)
+    {
+			millis = 0;
+    }
+    else if (millis > length())
+    {
+			millis = length();
+    }
+		mFileStream.setMillisecondPosition(millis);
+	}
+
+	public void skip(int millis)
+	{
+		int pos = position() + millis;
+		if (pos < 0)
+    {
+			pos = 0;
+    }
+		else if (pos > length())
+    {
+			pos = length();
+    }
+    Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
+    mFileStream.setMillisecondPosition(pos);
+	}
+
+	public boolean isLooping()
+	{
+		return mFileStream.getLoopCount() != 0;
+	}
+
+	public boolean isPlaying()
+	{
+		return mFileStream.isPlaying();
+	}
+
+	/**
+	 * Returns the meta data for the recording being played by this player.
+	 * 
+	 * @return the meta data for this player's recording
+	 */
+	public AudioMetaData getMetaData()
+	{
+		return mFileStream.getMetaData();
+	}
+
+	public void setLoopPoints(int start, int stop)
+	{
+		mFileStream.setLoopPoints(start, stop);
 	}
 	
 	/**
@@ -52,13 +153,16 @@ public class FilePlayer extends UGen
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
-		float[] samples = mFileStream.read();
-		// TODO: say the input is mono and output is stereo, what should we do?
-		// should we just copy like this and have the input come in the 
-		// left side? Or should we somehow expand across the extra channels?
-		// what about the opposite problem? stereo input to mono output?
-		int length = ( samples.length >= channels.length ) ? channels.length : samples.length;
-		System.arraycopy(samples, 0, channels, 0, length);
+		if ( mFileStream.isPlaying() )
+		{
+			float[] samples = mFileStream.read();
+			// TODO: say the input is mono and output is stereo, what should we do?
+			// should we just copy like this and have the input come in the 
+			// left side? Or should we somehow expand across the extra channels?
+			// what about the opposite problem? stereo input to mono output?
+			int length = ( samples.length >= channels.length ) ? channels.length : samples.length;
+			System.arraycopy(samples, 0, channels, 0, length);
+		}
 	}
 
 }
