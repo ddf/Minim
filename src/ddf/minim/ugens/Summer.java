@@ -85,7 +85,7 @@ public class Summer extends UGen implements AudioSignal
 			u.tick(tmp);
 			for(int c = 0; c < channels.length; c++)
 			{
-				channels[c] += tmp[c];
+				channels[c] += u.getLastValues()[c];
 			}
 		}
 	}
