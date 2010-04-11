@@ -329,10 +329,10 @@ public abstract class UGen
 					}
 				}
 			}
-		// and then uGenerate for this UGen	
-		uGenerate(channels);
-		// need to keep the last values generated so we have something to hand multiple outputs 
-		System.arraycopy(channels, 0, lastValues, 0, channels.length);
+			// and then uGenerate for this UGen	
+			uGenerate(channels);
+			// need to keep the last values generated so we have something to hand multiple outputs 
+			System.arraycopy(channels, 0, lastValues, 0, channels.length);
 		}
 	}
 	

@@ -1,11 +1,18 @@
 package ddf.minim.ugens;
-
+/**
+ * A UGen which simply returns the reciprocal value of it's input.
+ * @author nodog
+ *
+ */
 
 public class Reciprocal extends UGen
 {
-	// jam3: define the inputs to gain
-    
+	/**
+	 * denominator is the default input 
+	 */
 	public UGenInput denominator;
+	
+	//
 	private float fixedDenominator;
 	
 	public Reciprocal()
