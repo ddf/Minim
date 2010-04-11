@@ -72,7 +72,7 @@ public class Balance extends UGen
 		for(int i = 0; i < channels.length; i++)
 		{
 			float tmp = audio.getLastValues()[i];
-			if ( ( balance != null ) && ( balance.isPatched() ) )
+			if ( balance.isPatched() )
 			{
 				balanceVal = balance.getLastValues()[0];
 			}

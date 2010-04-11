@@ -87,7 +87,7 @@ public class BitCrush extends UGen
 			//float tmp = audio.getLastValues()[i];
 			// TODO: using these Math functions means values get casted up to a double.
 			//       we can do better by just using multiplication and casting to int.
-			if ((bitRes != null) && (bitRes.isPatched()))
+			if (bitRes.isPatched())
 			{
 				bitResolution = bitRes.getLastValues()[0];
 				nLevels = (float)Math.floor(Math.pow(2.0, bitResolution));

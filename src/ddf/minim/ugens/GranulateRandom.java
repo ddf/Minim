@@ -126,6 +126,12 @@ public class GranulateRandom extends UGen
 		// jam3: These can't be instantiated until the uGenInputs ArrayList
 		//       in the super UGen has been constructed
 		audio = new UGenInput(InputType.AUDIO);
+		grainLenMin = new UGenInput( InputType.CONTROL );
+		spaceLenMin = new UGenInput( InputType.CONTROL );
+		fadeLenMin = new UGenInput( InputType.CONTROL );
+		grainLenMax = new UGenInput( InputType.CONTROL );
+		spaceLenMax = new UGenInput( InputType.CONTROL );
+		fadeLenMax = new UGenInput( InputType.CONTROL );
 		this.grainLengthMin = grainLengthMin;
 		this.spaceLengthMin = spaceLengthMin;
 		this.fadeLengthMin = fadeLengthMin;
@@ -217,22 +223,22 @@ public class GranulateRandom extends UGen
 				timeSinceGrainStart = 0.0f;
 				insideGrain = true;
 				// set a new grain length
-				if ( ( grainLenMin != null ) && ( grainLenMin.isPatched() ) )
+				if ( grainLenMin.isPatched() ) 
 				{
 					grainLengthMin = grainLenMin.getLastValues()[0];
 				}
-				if ( ( grainLenMax != null ) && ( grainLenMax.isPatched() ) )
+				if ( grainLenMax.isPatched() ) 
 				{
 					grainLengthMax = grainLenMax.getLastValues()[0];
 				}
 				grainLength = randomBetween( grainLengthMin, grainLengthMax );
 
 				// set a new fade length
-				if ( ( fadeLenMin != null ) && ( fadeLenMin.isPatched() ) )
+				if ( fadeLenMin.isPatched() ) 
 				{
 					fadeLengthMin = fadeLenMin.getLastValues()[0];
 				}
-				if ( ( fadeLenMax != null ) && ( fadeLenMax.isPatched() ) )
+				if ( fadeLenMax.isPatched() ) 
 				{
 					fadeLengthMax = fadeLenMax.getLastValues()[0];
 				}

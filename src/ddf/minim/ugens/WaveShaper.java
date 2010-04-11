@@ -81,12 +81,12 @@ public class WaveShaper extends UGen
 	protected void uGenerate(float[] channels)
 	{
 		// get the incoming mapAmplitude if it exists
-		if ((mapAmplitude != null) && (mapAmplitude.isPatched()))
+		if (mapAmplitude.isPatched())
 		{
 			mapAmp = mapAmplitude.getLastValues()[0];
 		}
 		// get the incoming outAmplitude if it exists
-		if ((outAmplitude != null) && (outAmplitude.isPatched()))
+		if (outAmplitude.isPatched())
 		{
 			outAmp = outAmplitude.getLastValues()[0];
 		}

@@ -54,7 +54,7 @@ public class Midi2Hz extends UGen
 	{
 		for( int i = 0; i < channels.length; i++ )
 		{
-			if ( ( midiNoteIn == null ) || ( !midiNoteIn.isPatched() ) )
+			if ( !midiNoteIn.isPatched() )
 			{
 				channels[ i ] = Frequency.ofMidiNote( fixedMidiNoteIn ).asHz();
 			} else {

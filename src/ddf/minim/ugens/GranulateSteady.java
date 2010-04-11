@@ -148,7 +148,7 @@ public class GranulateSteady extends UGen
 				timeSinceGrainStop = 0.0f;
 				insideGrain = false;
 				// only set space volues at the beginning of a space
-				if ( ( spaceLen != null ) && ( spaceLen.isPatched() ) )
+				if ( spaceLen.isPatched() ) 
 				{
 					spaceLength = spaceLen.getLastValues()[0];
 				}
@@ -171,12 +171,12 @@ public class GranulateSteady extends UGen
 				timeSinceGrainStart = 0.0f;
 				insideGrain = true;
 				// only set the grain values at the beginning of a grain
-				if ( ( grainLen != null ) && ( grainLen.isPatched() ) )
+				if ( grainLen.isPatched() ) 
 				{
 					grainLength = grainLen.getLastValues()[0];
 					checkFadeLength();
 				}
-				if ( ( fadeLen != null ) && ( fadeLen.isPatched() ) )
+				if ( fadeLen.isPatched() )
 				{
 					fadeLength = fadeLen.getLastValues()[0];
 					checkFadeLength();

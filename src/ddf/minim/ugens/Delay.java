@@ -214,7 +214,7 @@ public class Delay extends UGen
 		}
 		
 		// update the buffer indexes
-		if ( ( delTime != null ) && ( delTime.isPatched() ) )
+		if ( delTime.isPatched() )
 		{
 			delayTime = delTime.getLastValues()[0];
 			bufferSizeChanged();
@@ -223,7 +223,7 @@ public class Delay extends UGen
 		iBufferOut = ( iBufferOut + 1 )%bufferSize;
 		
 		// update the feedbackFactor
-		if ( ( delAmp != null ) && ( delAmp.isPatched() ) )
+		if ( delAmp.isPatched() ) 
 		{
 			amplitudeFactor = delAmp.getLastValues()[0];
 		}
