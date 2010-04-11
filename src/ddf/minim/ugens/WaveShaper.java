@@ -1,7 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.Minim;
-
 /**
  * A UGen which provides waveshaping distortion.  The incoming "audio" signal
  * is used as an index to a Wavetable containing a "mapping" function and the

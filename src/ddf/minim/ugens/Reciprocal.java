@@ -12,39 +12,53 @@ public class Reciprocal extends UGen
 	 */
 	public UGenInput denominator;
 	
-	//
+	// for the non-Input denominator value
 	private float fixedDenominator;
 	
+	/**
+	 * 
+	 */
 	public Reciprocal()
 	{
 		this( 1.0f );
 	}
-	
+	/**
+	 * Constructor for Reciprocal
+	 * @param fixedDenominator
+	 * 			the denominator value if the input is never connected
+	 */
 	public Reciprocal( float fixedDenominator )
 	{
 		super();
-		// jam3: These can't be instantiated until the uGenInputs ArrayList
-		//       in the super UGen has been constructed
 		//audio = new UGenInput(InputType.AUDIO);
-		denominator = new UGenInput( InputType.CONTROL );
+		// for this UGen, denominator is the main input and can be audio
+		denominator = new UGenInput( InputType.AUDIO );
 		this.fixedDenominator = fixedDenominator;
 	}
 	
+	/**
+	 * Used to change the fixedDenominator value after instantiation
+	 * @param fixedDenominator 
+	 *			the denominator value if the input is never connected
+	 */
 	public void setReciprocal( float fixedDenominator )
 	{
 		this.fixedDenominator = fixedDenominator;
 	}
 
+	/**
+	 * Generate the sampleframe
+	 */
 	@Override
 	protected void uGenerate( float[] channels ) 
 	{
 		for( int i = 0; i < channels.length; i++ )
 		{
-			if ( ( denominator == null ) || ( !denominator.isPatched() ) )
+			if ( denominator.isPatched() )
 			{
-				channels[ i ] = 1.0f/fixedDenominator;
-			} else {
 				channels[ i ] = 1.0f/denominator.getLastValues()[ 0 ];
+			} else {
+				channels[ i ] = 1.0f/fixedDenominator;
 			}
 		}
 	} 
