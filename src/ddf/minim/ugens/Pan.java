@@ -56,6 +56,7 @@ public class Pan extends UGen
 	/**
 	 * NOTE: Currently only supports stereo audio!
 	 */
+	@Override
 	protected void uGenerate(float[] channels) 
 	{
 		if ( balance.isPatched() )

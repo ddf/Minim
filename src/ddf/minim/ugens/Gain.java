@@ -1,6 +1,10 @@
 package ddf.minim.ugens;
 
-
+/**
+ * Goin is an extension of Multiplier.
+ * @author Anderson Mills
+ *
+ */
 public class Gain extends Multiplier {
 
 	public Gain() {
@@ -12,4 +16,5 @@ public class Gain extends Multiplier {
 		// TODO Auto-generated constructor stub
 	}
 
+	// TODO add a dB value here.
 }

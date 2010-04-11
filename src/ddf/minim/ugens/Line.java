@@ -103,11 +103,18 @@ public class Line extends UGen
 		lineTime = newLineTime;
 	}
 	
+	/**
+	 * Change the timeStepSize when sampleRate changes.
+	 */
+	@Override
 	protected void sampleRateChanged()
 	{
 		timeStepSize = 1/sampleRate();
 	}
 	
+	/**
+	 * Generate one sampleframe for this UGen.
+	 */
 	@Override
 	protected void uGenerate(float[] channels) 
 	{

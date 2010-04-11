@@ -48,6 +48,11 @@ public class DefaultInstrument implements Instrument
 		//.patch( output );
 	}
 
+	/**
+	 * Turn on the default instrument
+	 * @param dur
+	 * 			The duration of the note.
+	 */
 	public void noteOn( float dur )
 	{
 		summer.patch( output );
@@ -58,6 +63,9 @@ public class DefaultInstrument implements Instrument
 		//summer.patch( output );
 	}
 		  
+	/**
+	 * Turn off the default instrument.
+	 */
 	public void noteOff()
 	{
 		//toneEnv.setValue( 0.0f );
