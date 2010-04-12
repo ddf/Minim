@@ -43,6 +43,8 @@ public class WaveShaper extends UGen
 	 * Constructor for WaveShaper.
 	 * mapWrap, a boolean flag to wrap the map around the ends 
 	 * instead of hitting the edge, defaults to false.
+	 * @param outAmp
+	 * 			the output amplitude multiplier of the shaped wave
 	 * @param mapAmp
 	 * 			amplitude over which to map the incoming signal
 	 * @param mapShape
@@ -54,6 +56,8 @@ public class WaveShaper extends UGen
 	}
 	/**
 	 * Constructor for WaveShaper.
+	 * @param outAmp
+	 * 			the output amplitude multiplier of the shaped wave
 	 * @param mapAmp
 	 * 			amplitude over which to map the incoming signal
 	 * @param mapShape
