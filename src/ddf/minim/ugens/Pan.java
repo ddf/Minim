@@ -3,8 +3,6 @@ package ddf.minim.ugens;
 
 /** A UGen for panning a mono signal in a stereo field
  * <p>
- * Balance : should be between -1 and +1
- *  
  * 
  * @author nb, ddf
  */
