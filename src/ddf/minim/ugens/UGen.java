@@ -337,7 +337,15 @@ public abstract class UGen
 	}
 	
 	/**
-	 * Implement this method when you extend UGen.
+	 * Implement this method when you extend UGen. It will be called when your UGen 
+	 * needs to generate one sample frame of audio. It is expected that you will 
+	 * assign values to the array and <em>not</em> simply modify the existing 
+	 * values. In the case where you write a UGen that takes audio input and 
+	 * modifies it, the pattern to follow is to have the first UGenInput you create 
+	 * be your audio input and then in uGenerate you will use the <code>getLastValues</code>
+	 * method of your audio UGenInput to retrieve the audio you want to modify, 
+	 * which you will then modify however 
+	 * you need to, assigning the result to the values in <code>channels</code>.
 	 * @param channels an array representing one sample frame. 
 	 */
 	protected abstract void uGenerate(float[] channels);

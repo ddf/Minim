@@ -83,7 +83,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public AudioSignal getSignal(int i)
   {
-    return signals.get(i);
+	  // get i+1 because the bus is signal 0.
+    return signals.get(i+1);
   }
 
   public void removeSignal(AudioSignal signal)
@@ -93,17 +94,21 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public AudioSignal removeSignal(int i)
   {
-    return signals.remove(i);
+	  // remove i+1 because the bus is 1
+    return signals.remove(i+1);
   }
 
   public void clearSignals()
   {
     signals.clear();
+    // make sure to add the bus back
+    signals.add(bus);
   }
 
   public void disableSignal(int i)
   {
-    signals.disable(i);
+	  // disable i+1 because the bus is 0
+    signals.disable(i+1);
   }
 
   public void disableSignal(AudioSignal signal)
@@ -113,7 +118,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public void enableSignal(int i)
   {
-    signals.enable(i);
+    signals.enable(i+1);
   }
 
   public void enableSignal(AudioSignal signal)
@@ -128,22 +133,35 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public boolean isSounding()
   {
-    return signals.hasEnabled();
+    for(int i = 1; i < signals.size(); i++)
+    {
+    	if ( signals.isEnabled( signals.get(i) ) )
+    	{
+    		return true;
+    	}
+    }
+    return false;
   }
 
   public void noSound()
   {
-    signals.disableAll();
+    for(int i = 1; i < signals.size(); i++)
+    {
+    	signals.disable(i);
+    }
   }
 
   public int signalCount()
   {
-    return signals.size();
+    return signals.size() - 1;
   }
 
   public void sound()
   {
-    signals.enableAll();
+    for(int i = 1; i < signals.size(); i++)
+    {
+    	signals.enable(i);
+    }
   }
 
   public boolean hasSignal(AudioSignal signal)
