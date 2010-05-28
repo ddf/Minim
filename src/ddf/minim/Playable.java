@@ -28,15 +28,15 @@ package ddf.minim;
 public interface Playable
 {
   /**
-   * Starts playback from the current position. If this was previous set to loop,
-   * looping will be disabled.
+   * Starts playback from the current position. 
+   * If this was previously set to loop, looping will be disabled.
    * 
    */
   void play();
   
   /**
-   * Starts playback <code>millis</code> from the beginning. If this was previous set to loop,
-   * looping will be disabled.
+   * Starts playback <code>millis</code> from the beginning. 
+   * If this was previously set to loop, looping will be disabled.
    * 
    * @param millis
    */
