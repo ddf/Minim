@@ -135,6 +135,19 @@ public class Oscil extends UGen
 		freq.setAsHz( newFreq.asHz() );
 		stepSizeChanged();
 	}
+
+	/**
+	 * Sets the amplitude of this Oscil. You might want to do this to change 
+	 * the amplitude of this Oscil in response to a button press or something.
+	 * For controlling amplitude continuously over time you will usually want 
+	 * to use the amplitude input.
+	 * 
+	 * @param newAmp amplitude to set this Oscil to
+	 */
+	public void setAmplitude( float newAmp )
+	{
+		amp = newAmp;
+	}
 	
 	/**
 	 * Set the amount that the phase will be offset by. Oscil steps its time 
