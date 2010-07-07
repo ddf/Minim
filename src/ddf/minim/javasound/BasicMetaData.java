@@ -24,15 +24,23 @@ class BasicMetaData extends AudioMetaData
 {
 	private String mFileName;
 	private long mLength;
-	BasicMetaData(String filename, long length)
+	private long mSampleFrameCount;
+	
+	BasicMetaData(String filename, long length, long sampleLength)
 	{
 		mFileName = filename;
 		mLength = length;
+		mSampleFrameCount = sampleLength;
 	}
 	
 	public int length()
 	{
 		return (int)mLength;
+	}
+	
+	public int sampleFrameCount()
+	{
+		return (int)mSampleFrameCount;
 	}
 	
 	public String fileName()
