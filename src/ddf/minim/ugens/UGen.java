@@ -399,16 +399,17 @@ public abstract class UGen
 		{
 			sampleRate = newSampleRate;
 			sampleRateChanged();
-		}
-		if (uGenInputs.size() > 0)
-		{
-			for(int i=0; i<uGenInputs.size(); i++)
-			{		
-				if ((uGenInputs.get(i) != null) && (uGenInputs.get(i).isPatched()))
-				{
-					uGenInputs.get(i).getIncomingUGen().setSampleRate(newSampleRate);
-				}
-			}			
+		
+			if (uGenInputs.size() > 0)
+			{
+				for(int i=0; i<uGenInputs.size(); i++)
+				{		
+					if ((uGenInputs.get(i) != null) && (uGenInputs.get(i).isPatched()))
+					{
+						uGenInputs.get(i).getIncomingUGen().setSampleRate(newSampleRate);
+					}
+				}			
+			}
 		}
 	}	
 	
