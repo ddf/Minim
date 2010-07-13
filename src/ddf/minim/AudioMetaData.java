@@ -41,6 +41,15 @@ public abstract class AudioMetaData
 	}
 	
 	/**
+	 * 
+	 * @return how many sample frames are in this recording
+	 */
+	public int sampleFrameCount()
+	{
+		return -1;
+	}
+	
+	/**
 	 * @return the name of the file / URL of the recording.
 	 */
 	public String fileName()

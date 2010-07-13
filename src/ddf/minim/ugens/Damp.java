@@ -38,7 +38,10 @@ public class Damp extends UGen
 	private boolean isActivated;
 	// unpatch the note after it's finished
 	private boolean unpatchAfterDamp;
+	// it might need to unpatch from an output
 	private AudioOutput output;
+	// or it might need to unpatch from another ugen
+	private UGen		ugenOutput;
 	
 	/**
 	 * Constructor for Damp envelope.
@@ -201,6 +204,17 @@ public class Damp extends UGen
 		this.output = output;
 	}
 	
+	/**
+	 * The the Damp that it should unpatch itself from this UGen after the release time.
+	 * @param output
+	 * 			UGen that this Damp is outputting to.
+	 */
+	public void unpatchAfterDamp( UGen output )
+	{
+		unpatchAfterDamp = true;
+		ugenOutput = output;
+	}
+	
 	@Override
 	protected void uGenerate( float[] channels ) 
 	{
@@ -221,7 +235,17 @@ public class Damp extends UGen
 			}
 			if ( unpatchAfterDamp )
 			{
-			 	unpatch( output );
+				if ( output != null )
+				{
+					unpatch( output );
+					output = null;
+				}
+				else if ( ugenOutput != null )
+				{
+					unpatch( ugenOutput );
+					ugenOutput = null;
+				}
+				unpatchAfterDamp = false;
 			 	Minim.debug(" unpatching Damp ");
 			}
 		}

@@ -26,7 +26,7 @@ class MP3MetaData extends BasicMetaData
 	
 	MP3MetaData(String filename, long length, Map tags)
 	{
-		super(filename, length);
+		super(filename, length, -1);
 		mTags = tags;
 	}
 	

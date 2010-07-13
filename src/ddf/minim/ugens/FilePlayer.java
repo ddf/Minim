@@ -163,6 +163,13 @@ public class FilePlayer extends UGen implements Playable
 			int length = ( samples.length >= channels.length ) ? channels.length : samples.length;
 			System.arraycopy(samples, 0, channels, 0, length);
 		}
+		else
+		{
+			for(int i = 0; i < channels.length; ++i)
+			{
+				channels[i] = 0;
+			}
+		}
 	}
 
 }

@@ -243,7 +243,7 @@ public class JSMinim implements MinimServiceProvider
 				if (line != null)
 				{
 					long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
-					BasicMetaData meta = new BasicMetaData(filename, length);
+					BasicMetaData meta = new BasicMetaData(filename, length, ais.getFrameLength());
 					mstream = new JSPCMAudioRecordingStream(this, meta, ais, line, bufferSize);
 				}
 			} // else
@@ -339,7 +339,7 @@ public class JSMinim implements MinimServiceProvider
 			{
 				samples = loadFloatAudio(ais, (int)ais.getFrameLength() * format.getFrameSize());
 				long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
-				meta = new BasicMetaData(filename, length);
+				meta = new BasicMetaData(filename, length, samples.getSampleCount());
 			}
 			AudioOut out = getAudioOutput(format.getChannels(), 
 			                                             bufferSize, 
@@ -386,7 +386,7 @@ public class JSMinim implements MinimServiceProvider
       SampleSignal ssig = new SampleSignal(samples);
       out.setAudioSignal(ssig);
       long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
-      BasicMetaData meta = new BasicMetaData(samples.toString(), length);
+      BasicMetaData meta = new BasicMetaData(samples.toString(), length, samples.getSampleCount());
       return new JSAudioSample(meta, ssig, out);
     }
     else
@@ -465,7 +465,7 @@ public class JSMinim implements MinimServiceProvider
 		if (meta == null)
 		{
 			// this means we're dealing with not-an-mp3
-			meta = new BasicMetaData(filename, clip.getMicrosecondLength() / 1000);
+			meta = new BasicMetaData(filename, clip.getMicrosecondLength() / 1000, -1);
 		}
 		return new JSAudioRecordingClip(clip, meta);
 	}
@@ -505,7 +505,7 @@ public class JSMinim implements MinimServiceProvider
 			{
 				samples = loadByteAudio(ais, (int)ais.getFrameLength() * format.getFrameSize());
 				long length = AudioUtils.bytes2Millis(samples.length, format);
-				meta = new BasicMetaData(filename, length);
+				meta = new BasicMetaData(filename, length, samples.length);
 			}
 			SourceDataLine line = getSourceDataLine(format, 2048);
 			if ( line != null )

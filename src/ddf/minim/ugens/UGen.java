@@ -331,8 +331,21 @@ public abstract class UGen
 			}
 			// and then uGenerate for this UGen	
 			uGenerate(channels);
-			// need to keep the last values generated so we have something to hand multiple outputs 
-			System.arraycopy(channels, 0, lastValues, 0, channels.length);
+			// TODO: this is not sufficient
+			// need to keep the last values generated so we have something to hand multiple outputs
+			if ( channels.length == 1 )
+			{
+				lastValues[0] = channels[0];
+				lastValues[1] = channels[0];
+			}
+			else if ( channels.length == 2)
+			{
+				System.arraycopy(channels, 0, lastValues, 0, channels.length);
+			}
+			else
+			{
+				Minim.error("UGen can't handle more than two channels in tick!!");
+			}
 		}
 	}
 	
