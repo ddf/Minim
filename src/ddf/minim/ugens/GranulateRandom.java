@@ -138,6 +138,8 @@ public class GranulateRandom extends UGen
 		this.grainLengthMax = grainLengthMax;
 		this.spaceLengthMax = spaceLengthMax;
 		this.fadeLengthMax = fadeLengthMax;
+		this.minAmp = minAmp;
+		this.maxAmp = maxAmp;
 		insideGrain = false;
 		timeSinceGrainStart = 0.0f;
 		timeSinceGrainStop = 0.0f;
@@ -150,6 +152,65 @@ public class GranulateRandom extends UGen
 	protected void sampleRateChanged()
 	{
 		timeStep = 1.0f/sampleRate();
+	}
+
+	/**
+	 * Immediately sets all public class members concerning time to new values. 
+	 * @param grainLengthMin
+	 * 			minimum grain length of each grain 
+	 * @param spaceLengthMin
+	 *			minimum space between each grain
+	 * @param fadeLengthMin
+	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * @param grainLengthMax
+	 * 			maximum grain length of each grain 
+	 * @param spaceLengthMax
+	 *			maximum space between each grain
+	 * @param fadeLengthMax
+	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 */
+	public void setAllTimeParameters(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
+			float grainLengthMax, float spaceLengthMax, float fadeLengthMax)
+	{
+		this.grainLengthMin = grainLengthMin;
+		this.spaceLengthMin = spaceLengthMin;
+		this.fadeLengthMin = fadeLengthMin;
+		this.grainLengthMax = grainLengthMax;
+		this.spaceLengthMax = spaceLengthMax;
+		this.fadeLengthMax = fadeLengthMax;
+	}
+
+	/**
+	 * Immediately sets all public class members to new values. 
+	 * @param grainLengthMin
+	 * 			minimum grain length of each grain 
+	 * @param spaceLengthMin
+	 *			minimum space between each grain
+	 * @param fadeLengthMin
+	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * @param grainLengthMax
+	 * 			maximum grain length of each grain 
+	 * @param spaceLengthMax
+	 *			maximum space between each grain
+	 * @param fadeLengthMax
+	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 * @param minAmp
+	 * 			minimum amplitude of the envelope
+	 * @param maxAmp
+	 * 			maximum amplitude of the envelope
+	 */
+	public void setAllParameters(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
+			float grainLengthMax, float spaceLengthMax, float fadeLengthMax,
+			float minAmp, float maxAmp)
+	{
+		this.grainLengthMin = grainLengthMin;
+		this.spaceLengthMin = spaceLengthMin;
+		this.fadeLengthMin = fadeLengthMin;
+		this.grainLengthMax = grainLengthMax;
+		this.spaceLengthMax = spaceLengthMax;
+		this.fadeLengthMax = fadeLengthMax;
+		this.minAmp = minAmp;
+		this.maxAmp = maxAmp;	
 	}
 	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()
