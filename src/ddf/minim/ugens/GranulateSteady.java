@@ -109,6 +109,44 @@ public class GranulateSteady extends UGen
 		timeStep = 1.0f/sampleRate();
 	}
 	
+	/**
+	 * Immediately sets all public class members concerning time to new values. 
+	 * @param grainLengthMin
+	 * 			grain length of each grain 
+	 * @param spaceLengthMin
+	 *			space between each grain
+	 * @param fadeLengthMin
+	 * 			length of the linear fade in and fade out of the grain envelope
+	 */
+	public void setAllTimeParameters( float grainLength, float spaceLength, float fadeLength )
+	{
+		this.grainLength = grainLength;
+		this.spaceLength = spaceLength;
+		this.fadeLength = fadeLength;
+	}
+
+	/**
+	 * Immediately sets all public class members to new values. 
+	 * @param grainLength
+	 * 			grain length of each grain 
+	 * @param spaceLength
+	 *			space between each grain
+	 * @param fadeLength
+	 * 			length of the linear fade in and fade out of the grain envelope
+	 * @param minAmp
+	 * 			minimum amplitude of the envelope
+	 * @param maxAmp
+	 * 			maximum amplitude of the envelope
+	 */
+	public void setAllParameters( float grainLength, float spaceLength, float fadeLength,
+			float minAmp, float maxAmp)
+	{
+		this.grainLength = grainLength;
+		this.spaceLength = spaceLength;
+		this.fadeLength = fadeLength;
+		this.minAmp = minAmp;
+		this.maxAmp = maxAmp;	
+	}
 	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()
 	{
