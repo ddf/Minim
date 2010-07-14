@@ -195,7 +195,6 @@ public class Oscil extends UGen
 		{
 			tmpStep -= (int)tmpStep - 1f;
 		}
-		
 		// don't exceed 1.
 		// we don't use Math.floor because that involves casting up 
 		// to a double and then back to a float.
@@ -226,7 +225,7 @@ public class Oscil extends UGen
 		}
 		
 		// increase time
-		//step += stepSize + fPhase;
+		// NOT THIS FROM BEFORE: step += stepSize + fPhase;
 		step += stepSize;
 		
 		// don't be less than zero
