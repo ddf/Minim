@@ -188,8 +188,24 @@ public class Oscil extends UGen
 			outAmp = amplitude.getLastValues()[0];
 		}
 		
+		// temporary step location with phase offset.
+		float tmpStep = step + fPhase;
+		// don't be less than zero
+		if ( tmpStep < 0.f )
+		{
+			tmpStep -= (int)tmpStep - 1f;
+		}
+		
+		// don't exceed 1.
+		// we don't use Math.floor because that involves casting up 
+		// to a double and then back to a float.
+		if ( tmpStep > 1.0f )
+		{
+			tmpStep -= (int)tmpStep;
+		}
+		
 		// calculate the sample value
-		float sample = outAmp * wave.value(step);
+		float sample = outAmp * wave.value(tmpStep);
 		
 		for(int i = 0; i < channels.length; i++)
 		{
@@ -210,7 +226,8 @@ public class Oscil extends UGen
 		}
 		
 		// increase time
-		step += stepSize + fPhase;
+		//step += stepSize + fPhase;
+		step += stepSize;
 		
 		// don't be less than zero
 		if ( step < 0.f )
