@@ -148,7 +148,10 @@ public class GranulateSteady extends UGen
 		this.maxAmp = maxAmp;	
 	}
 	
-	// set the state of this granulate to the very start of a grain
+	/**
+	 * Sets the state of this granulate to the very start of a grain. 
+	 * Useful for syncing the granulate timing with other audio.
+	 */
 	public void reset()
 	{
 		// start the grain

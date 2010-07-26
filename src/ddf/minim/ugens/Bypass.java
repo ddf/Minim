@@ -41,6 +41,11 @@ public class Bypass<T extends UGen> extends UGen
 	
 	private boolean mActive;
 	
+	/**
+	 * Construct a Bypass UGen that wraps a UGen of type T.
+	 * 
+	 * @param ugen
+	 */
 	public Bypass( T ugen )
 	{
 		mUGen = ugen;
@@ -48,22 +53,28 @@ public class Bypass<T extends UGen> extends UGen
 		mActive = false;
 	}
 	
+	/**
+	 * @return the wrapped UGen, cast to the class this Bypass was constructed with.
+	 */
 	public T ugen() 
 	{
 		return mUGen;
 	}
 	
-	public void sampleRateChanged()
+	@Override
+	protected void sampleRateChanged()
 	{
 		mUGen.setSampleRate( sampleRate() );
 	}
 	
+	@Override
 	protected void addInput( UGen input )
 	{
 		audio.setIncomingUGen( input );
 		input.patch( mUGen );
 	}
 	
+	@Override
 	protected void removeInput( UGen input )
 	{
 		if ( audio.getIncomingUGen() == input )
@@ -74,16 +85,29 @@ public class Bypass<T extends UGen> extends UGen
 		
 	}
 	
+	/**
+	 * Activate the bypass functionality. In other words, the wrapped UGen will NOT
+	 * have an effect on the UGen patched to this Bypass.
+	 */
 	public void activate()
 	{
 		mActive = true;
 	}
 	
+	/**
+	 * Deactivate the bypass functionality. In other words, the wrapped UGen WILL 
+	 * have an effect on the UGen patched to this Bypass, as if it was in the 
+	 * signal chain in place of this Bypass.
+	 */
 	public void deactivate()
 	{
 		mActive = false;
 	}
 	
+	/**
+	 * 
+	 * @return true if the bypass functionality is on.
+	 */
 	public boolean isActive()
 	{
 		return mActive;
