@@ -288,7 +288,15 @@ public abstract class UGen
 	protected void removeInput(UGen input)
 	{
 		Minim.debug("UGen removeInput called.");
-		// TODO Need to set default behavior for normal UGens on removeInput
+		// see if any of our ugen inputs currently have input as the incoming ugen
+		// set their incoming ugen to null if that's the case
+		for( int i = 0; i < uGenInputs.size(); i++)
+		{
+			if ( uGenInputs.get(i).getIncomingUGen() == input )
+			{
+				this.uGenInputs.get(i).setIncomingUGen(null);
+			}
+		}
 	}
 	
 	/**

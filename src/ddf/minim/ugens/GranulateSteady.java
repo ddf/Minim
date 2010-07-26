@@ -147,11 +147,32 @@ public class GranulateSteady extends UGen
 		this.minAmp = minAmp;
 		this.maxAmp = maxAmp;	
 	}
+	
+	// set the state of this granulate to the very start of a grain
+	public void reset()
+	{
+		// start the grain
+		timeSinceGrainStart = 0.0f;
+		insideGrain = true;
+		// only set the grain values at the beginning of a grain
+		if ( grainLen.isPatched() ) 
+		{
+			grainLength = grainLen.getLastValues()[0];
+			checkFadeLength();
+		}
+		if ( fadeLen.isPatched() )
+		{
+			fadeLength = fadeLen.getLastValues()[0];
+			checkFadeLength();
+		}
+	}
+	
 	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()
 	{
 		fadeLength = Math.min( fadeLength, grainLength/2.0f );
 	}
+	
 	// Make those samples!
 	@Override
 	protected void uGenerate( float[] channels ) 
@@ -205,20 +226,7 @@ public class GranulateSteady extends UGen
 
 			if ( timeSinceGrainStop > spaceLength )  // just inside a grain again
 			{
-				// start the grain
-				timeSinceGrainStart = 0.0f;
-				insideGrain = true;
-				// only set the grain values at the beginning of a grain
-				if ( grainLen.isPatched() ) 
-				{
-					grainLength = grainLen.getLastValues()[0];
-					checkFadeLength();
-				}
-				if ( fadeLen.isPatched() )
-				{
-					fadeLength = fadeLen.getLastValues()[0];
-					checkFadeLength();
-				}
+				reset();
 			}
 		}
 	} 

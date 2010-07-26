@@ -84,6 +84,14 @@ public class Line extends UGen
 		isActivated = true;
 	}
 	
+	public void activate( float duration, float beginAmp, float endingAmp )
+	{
+		begAmp = beginAmp;
+		endAmp = endingAmp;
+		lineTime = duration;
+		activate();
+	}
+	
 	/**
 	 * Set the ending value of the Line's transition
 	 *
