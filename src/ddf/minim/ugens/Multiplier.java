@@ -62,13 +62,22 @@ public class Multiplier extends UGen
 	{
 		for(int i = 0; i < channels.length; i++)
 		{
-			float tmp = audio.getLastValues()[i];
+			float tmp = 0;
+			
+			if ( audio.isPatched() )
+			{
+				tmp = audio.getLastValues()[i];
+			}
+			
 			if ( !amplitude.isPatched() ) 
 			{
 				tmp *= value;
-			} else {
+			} 
+			else 
+			{
 				tmp *= amplitude.getLastValues()[i];
 			}
+			
 			channels[i] = tmp;
 		}
 	} 
