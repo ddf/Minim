@@ -97,7 +97,14 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 	  for(int i = 0; i < channels.length; i++)
 	  {
 		  System.arraycopy(in[i], 0, in[i], 1, in[i].length - 1);
-		  in[i][0] = audio.getLastValues()[i];
+		  if ( audio.isPatched() )
+		  {
+			  in[i][0] = audio.getLastValues()[i];
+		  }
+		  else
+		  {
+			  in[i][0] = channels[i];
+		  }
 		  float y = 0;
 		  for(int ci = 0; ci < a.length; ci++)
 		  {
