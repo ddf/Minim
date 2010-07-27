@@ -1,4 +1,8 @@
 package ddf.minim.ugens;
+
+import ddf.minim.ugens.UGen.InputType;
+import ddf.minim.ugens.UGen.UGenInput;
+
 /**
  * Provides a UGen which generates noise.
  * @author Anderson Mills, Damien Di Fede
@@ -11,6 +15,11 @@ public class Noise extends UGen
 	 */
 	public enum Tint { WHITE, PINK, RED, BROWN };
 	
+	/**
+	 * Patch to this to control the amplitude of the noise with another UGen.
+	 */
+	public UGenInput amplitude;
+
 	// the type of noise
 	private Tint	tint;
 	// the amplitude at which  we will generate noise
@@ -35,7 +44,7 @@ public class Noise extends UGen
 	 * Constructor for white noise of the specified amplitude.
 	 * @param amplitude
 	 */
-	public Noise(float amplitude)
+	public Noise( float amplitude )
 	{
 		this( amplitude, Tint.WHITE ) ;
 	}
@@ -56,6 +65,7 @@ public class Noise extends UGen
 	 */
 	public Noise(float amplitude, Tint noiseType)
 	{
+		this.amplitude = new UGenInput(InputType.CONTROL);
 		amp = amplitude;
 		lastOutput = 0f;
 		tint = noiseType;
@@ -76,6 +86,16 @@ public class Noise extends UGen
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
+		// start with our base amplitude
+		float outAmp = amp;
+		
+		// if something is plugged into amplitude
+		// then we override our base amplitude
+		if ( amplitude.isPatched() )
+		{
+			outAmp = amplitude.getLastValues()[0];
+		}
+		
 		float n;
 		switch (tint) 
 		{
@@ -86,18 +106,18 @@ public class Noise extends UGen
 		case RED :
 			// I admit that I'm using the filter coefficients and 
 			// amplitude correction from audacity, a great audio editor.  
-			n = amp*(2.0f*(float)Math.random() - 1.0f);
+			n = outAmp*(2.0f*(float)Math.random() - 1.0f);
 			n = brownAlpha*n + ( 1 - brownAlpha )*lastOutput;
 			lastOutput = n;
 			n *= brownAmpCorr;
 			break;
 		// PINK noise has a 10db/decade (3db/octave) slope
 		case PINK :
-			n = amp*pink();
+			n = outAmp*pink();
 			break;
 		case WHITE :
 		default :
-			n = amp*(2.0f*(float)Math.random() - 1.0f);
+			n = outAmp*(2.0f*(float)Math.random() - 1.0f);
 			break;
 		}
 		for(int i = 0; i < channels.length; i++)
