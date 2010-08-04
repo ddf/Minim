@@ -27,9 +27,11 @@ import org.tritonus.share.sampled.FloatSampleBuffer;
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
 import ddf.minim.Minim;
+import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioStream;
 
-final class JSAudioStream extends Thread
+// This is our AudioInput!
+final class JSAudioInput extends Thread
                         implements AudioStream
 {
   private AudioListener listener;
@@ -43,7 +45,7 @@ final class JSAudioStream extends Thread
   private boolean mono;
   private byte[] rawBytes;
   
-  JSAudioStream(TargetDataLine tdl, int bufferSize)
+  JSAudioInput(TargetDataLine tdl, int bufferSize)
   {
     line = tdl;
     this.bufferSize = bufferSize;
@@ -99,12 +101,17 @@ final class JSAudioStream extends Thread
   
   public void open()
   {
-    start();
+    // start();
+	line.start();
   }
   
   public void close()
   {
     finished = true;
+    // we are done, clean up the line
+    line.flush();
+    line.stop();
+    line.close();
   }
  
   public int bufferSize()
@@ -131,4 +138,45 @@ final class JSAudioStream extends Thread
   {
     return line.getControls();
   }
+
+	public float[] read() 
+	{
+		// TODO: this is sort of terrible, but will do for now. would be much better
+		// to dig the conversion stuff out of FloatSampleBuffer and do this more directly
+		int numSamples = 1;
+		// allocate enough bytes for one sample frame
+		byte[] bytes = new byte[ line.getFormat().getFrameSize() ];
+		line.read(bytes, 0, bytes.length);
+		buffer.setSamplesFromBytes(bytes, 0, line.getFormat(), 0, numSamples);
+		// allocate enough floats for the number of channels
+		float[] samples = new float[ buffer.getChannelCount() ];
+
+		for(int i = 0; i < samples.length; i++)
+		{
+			samples[i] = buffer.getChannel(i)[0];
+		}		
+		return samples;
+	}
+
+	public void read(MultiChannelBuffer buffer) 
+	{
+		// create our converter object
+		int numChannels = line.getFormat().getChannels();
+		int numSamples = buffer.getBufferSize();
+		float sampleRate = line.getFormat().getSampleRate();
+		FloatSampleBuffer convert = new FloatSampleBuffer( numChannels, numSamples, sampleRate );
+		// allocate enough bytes for the size of this buffer
+		byte[] bytes = new byte[ convert.getByteArrayBufferSize(line.getFormat()) ];
+		// read the bytes
+		line.read(bytes, 0, bytes.length);
+		// convert the bytes
+		convert.setSamplesFromBytes(bytes, 0, line.getFormat(), 0, numSamples);
+		// copy the converted floats into the MultiChannelBuffer
+		// make sure it has the correct number of channels first
+		buffer.setChannelCount(numChannels);
+		for(int i = 0; i < convert.getChannelCount(); i++)
+		{
+			buffer.setChannel(i, convert.getChannel(i));
+		}
+	}
 }

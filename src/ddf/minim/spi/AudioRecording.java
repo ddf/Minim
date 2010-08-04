@@ -27,16 +27,18 @@ import ddf.minim.AudioMetaData;
  * @author Damien Di Fede
  * 
  */
-public interface AudioRecording extends AudioResource
+/** @deprecated */
+public interface AudioRecording extends AudioResource, AudioStream
 {
 	/**
-	 * Starts playback of the source.
+	 * Allows playback/reads of the source. 
 	 * 
 	 */
 	void play();
 
 	/**
-	 * Stops playback of the source.
+	 * Disallows playback/reads of the source. If this is pause, all calls to read 
+	 * will generate arrays full of zeros (silence).
 	 * 
 	 */
 	void pause();

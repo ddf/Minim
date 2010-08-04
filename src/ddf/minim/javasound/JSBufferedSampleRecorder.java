@@ -174,7 +174,7 @@ final class JSBufferedSampleRecorder implements SampleRecorder
     // this is fine because the recording will always be 
     // in a raw format (WAV, AU, etc).
     long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
-    BasicMetaData meta = new BasicMetaData(filePath, length);
+    BasicMetaData meta = new BasicMetaData(filePath, length, ais.getFrameLength());
     JSPCMAudioRecordingStream recording = new JSPCMAudioRecordingStream(system, meta, ais, sdl, 1024);
     return recording;
   }

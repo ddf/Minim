@@ -28,29 +28,33 @@ import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
 import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
-import ddf.minim.spi.AudioSynthesizer;
+import ddf.minim.MultiChannelBuffer;
+import ddf.minim.spi.AudioOut;
+import ddf.minim.spi.AudioStream;
 
-final class JSAudioSynthesizer extends Thread implements AudioSynthesizer
+final class JSAudioOutput extends Thread implements AudioOut
 {
 	private AudioListener		listener;
+	private AudioStream			stream;
 	private AudioSignal			signal;
 	private AudioEffect			effect;
 
 	private SourceDataLine		line;
 	private AudioFormat			format;
 	private FloatSampleBuffer	buffer;
-	private int						bufferSize;
+	private MultiChannelBuffer	mcBuffer;
+	private int					bufferSize;
 	private boolean				finished;
-	private byte[]					outBytes;
+	private byte[]				outBytes;
 
-	JSAudioSynthesizer(SourceDataLine sdl, int bufferSize)
+	JSAudioOutput(SourceDataLine sdl, int bufferSize)
 	{
 		super();
 		this.bufferSize = bufferSize;
 		format = sdl.getFormat();
 
-		buffer = new FloatSampleBuffer(format.getChannels(), bufferSize,
-													format.getSampleRate());
+		buffer = new FloatSampleBuffer(format.getChannels(), bufferSize, format.getSampleRate());
+		mcBuffer = new MultiChannelBuffer(bufferSize, format.getChannels());
 		outBytes = new byte[buffer.getByteArrayBufferSize(format)];
 		finished = false;
 		line = sdl;
@@ -62,32 +66,31 @@ final class JSAudioSynthesizer extends Thread implements AudioSynthesizer
 		while (!finished)
 		{
 			buffer.makeSilence();
+			
+			if ( signal != null )
+			{
+				readSignal();
+			}
+			else if ( stream != null )
+			{
+				readStream();
+			}
 			if (line.getFormat().getChannels() == Minim.MONO)
 			{
-				// mrr, don't like this, but it's necessary because of how
-				// the constructor for AudioSource works.
-				if (signal != null)
-				{
-					signal.generate(buffer.getChannel(0));
-				}
 				effect.process(buffer.getChannel(0));
 				listener.samples(buffer.getChannel(0));
 			}
 			else
 			{
-				if (signal != null)
-				{
-					signal.generate(buffer.getChannel(0), buffer.getChannel(1));
-				}
 				effect.process(buffer.getChannel(0), buffer.getChannel(1));
 				listener.samples(buffer.getChannel(0), buffer.getChannel(1));
 			}
 			buffer.convertToByteArray(outBytes, 0, format);
-      if ( line.available() == line.getBufferSize() )
-      {
-        Minim.error("Likely buffer underrun in AudioOutput.");
-      }
-      line.write(outBytes, 0, outBytes.length);
+			if ( line.available() == line.getBufferSize() )
+			{
+			  Minim.debug("Likely buffer underrun in AudioOutput.");
+			}
+			line.write(outBytes, 0, outBytes.length);
 			try
 			{
 				Thread.sleep(1);
@@ -100,6 +103,28 @@ final class JSAudioSynthesizer extends Thread implements AudioSynthesizer
 		line.stop();
 		line.close();
 		line = null;
+	}
+
+	// TODO: ditch this eventually
+	private void readSignal() 
+	{
+		if (line.getFormat().getChannels() == Minim.MONO)
+		{
+			signal.generate(buffer.getChannel(0));
+		}
+		else
+		{
+			signal.generate(buffer.getChannel(0), buffer.getChannel(1));
+		}
+	}
+	
+	private void readStream()
+	{
+		stream.read(mcBuffer);
+		for(int i = 0; i < mcBuffer.getChannelCount(); i++)
+		{
+			System.arraycopy(mcBuffer.getChannel(i), 0, buffer.getChannel(i), 0, buffer.getSampleCount());
+		}
 	}
 
 	public void open()
@@ -140,5 +165,10 @@ final class JSAudioSynthesizer extends Thread implements AudioSynthesizer
 	public Control[] getControls()
 	{
 		return line.getControls();
+	}
+
+	public void setAudioStream(AudioStream stream) 
+	{
+		this.stream = stream;	
 	}
 }

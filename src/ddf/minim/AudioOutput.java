@@ -18,7 +18,11 @@
 
 package ddf.minim;
 
-import ddf.minim.spi.AudioSynthesizer;
+import ddf.minim.spi.AudioOut;
+import ddf.minim.ugens.Summer;
+import ddf.minim.ugens.DefaultInstrument;
+import ddf.minim.ugens.Frequency;
+import ddf.minim.ugens.Instrument;
 
 /**
  * An <code>AudioOutput</code> is used to generate audio with
@@ -34,9 +38,13 @@ import ddf.minim.spi.AudioSynthesizer;
 public class AudioOutput extends AudioSource implements Polyphonic
 {
   // the synth attach our signals to
-  private AudioSynthesizer synth;
+  private AudioOut synth;
   // the signals added by the user
   private SignalChain signals;
+  // the note manager for this output
+  public final NoteManager noteManager;  
+  // the Bus for UGens used by this output
+  public final Summer bus;
 
   /**
    * Constructs an <code>AudioOutput</code> that will subscribe its buffers to
@@ -48,11 +56,23 @@ public class AudioOutput extends AudioSource implements Polyphonic
    * @param synthesizer
    *          the <code>AudioSynthesizer</code> to subscribe to
    */
-  public AudioOutput(AudioSynthesizer synthesizer)
+  public AudioOutput(AudioOut synthesizer)
   {
     super(synthesizer);
     synth = synthesizer;
     signals = new SignalChain();
+    noteManager = new NoteManager(this);
+    // TODO ddf: this is problematic. just adding the bus to the signal chain
+    //      is not OK because it will change the indexing for getSignal to be
+    //      one off from what users expect. the easiest thing to do would be 
+    //      to have a second signal chain that bus and signals are added to 
+    //      and then set that one as the audio signal for the synth. though
+    //      that does put us in the situation of possibly answering FALSE for 
+    //      isSounding when they've patched in some UGens and can hear audio.
+    //      Though this could all be moot if we simply toss all the AudioSignal 
+    //      stuff in favor of using only UGens.
+    bus = new Summer(this);
+    signals.add(bus);
     synth.setAudioSignal(signals);
   }
 
@@ -63,7 +83,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public AudioSignal getSignal(int i)
   {
-    return signals.get(i);
+	  // get i+1 because the bus is signal 0.
+    return signals.get(i+1);
   }
 
   public void removeSignal(AudioSignal signal)
@@ -73,17 +94,21 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public AudioSignal removeSignal(int i)
   {
-    return signals.remove(i);
+	  // remove i+1 because the bus is 1
+    return signals.remove(i+1);
   }
 
   public void clearSignals()
   {
     signals.clear();
+    // make sure to add the bus back
+    signals.add(bus);
   }
 
   public void disableSignal(int i)
   {
-    signals.disable(i);
+	  // disable i+1 because the bus is 0
+    signals.disable(i+1);
   }
 
   public void disableSignal(AudioSignal signal)
@@ -93,7 +118,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public void enableSignal(int i)
   {
-    signals.enable(i);
+    signals.enable(i+1);
   }
 
   public void enableSignal(AudioSignal signal)
@@ -108,26 +133,112 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public boolean isSounding()
   {
-    return signals.hasEnabled();
+    for(int i = 1; i < signals.size(); i++)
+    {
+    	if ( signals.isEnabled( signals.get(i) ) )
+    	{
+    		return true;
+    	}
+    }
+    return false;
   }
 
   public void noSound()
   {
-    signals.disableAll();
+    for(int i = 1; i < signals.size(); i++)
+    {
+    	signals.disable(i);
+    }
   }
 
   public int signalCount()
   {
-    return signals.size();
+    return signals.size() - 1;
   }
 
   public void sound()
   {
-    signals.enableAll();
+    for(int i = 1; i < signals.size(); i++)
+    {
+    	signals.enable(i);
+    }
   }
 
   public boolean hasSignal(AudioSignal signal)
   {
     return signals.contains(signal);
   }
+  
+  /**
+   * Play a note startTime seconds from now, for the given duration, using the given instrument.
+   * 
+   * @param startTime
+   * @param duration
+   * @param instrument
+   */
+  public void playNote(float startTime, float duration, Instrument instrument)
+  {
+	  noteManager.addEvent(startTime, duration, instrument);
+  }
+
+  public void playNote( float startTime, float duration, float hz )
+  {
+	  noteManager.addEvent( startTime, duration, new DefaultInstrument( hz, this ) );
+  }
+ 
+  public void playNote( float startTime, float duration, String pitchName )
+  {
+	  noteManager.addEvent( startTime, duration, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+  }
+  
+  public void playNote( float startTime, float hz )
+  {
+	  noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( hz, this ) );
+  }
+ 
+  public void playNote( float startTime, String pitchName )
+  {
+	  noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+  }
+  
+  public void playNote( float hz )
+  {
+	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( hz, this ) );
+  }
+ 
+  public void playNote( String pitchName )
+  {
+	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+  }
+  
+  public void playNote()
+  {
+	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( "" ).asHz(), this ) );
+  }
+  
+  public void setTempo( float tempo )
+  {
+	  noteManager.setTempo( tempo );
+  }
+  
+  public void setNoteOffset( float noteOffset )
+  {
+	  noteManager.setNoteOffset( noteOffset );
+  }
+  
+  public void setDurationFactor( float durationFactor )
+  {
+	  noteManager.setDurationFactor( durationFactor );
+  }
+  
+  public void pauseNotes()
+  {
+  	noteManager.pause();
+  }
+  
+  public void resumeNotes()
+  {
+  	noteManager.resume();
+  }
+  
 }

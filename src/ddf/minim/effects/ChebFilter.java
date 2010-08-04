@@ -84,7 +84,7 @@ public class ChebFilter extends IIRFilter
     setPoles(poles);
     canCalc = true;
     calcCoeff();
-    initArrays();
+    initArrays(2);
   }
 
   /**
@@ -190,7 +190,7 @@ public class ChebFilter extends IIRFilter
     }
     poles = p;
     calcCoeff();
-    initArrays();
+    initArrays(2);
   }
 
   /**
@@ -203,7 +203,7 @@ public class ChebFilter extends IIRFilter
     return poles;
   }
 
-  protected void calcCoeff()
+  protected synchronized void calcCoeff()
   {
     a = new float[0];
     b = new float[0];

@@ -49,10 +49,10 @@ import ddf.minim.AudioMetaData;
 import ddf.minim.AudioSample;
 import ddf.minim.Minim;
 import ddf.minim.Recordable;
+import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecording;
 import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.AudioStream;
-import ddf.minim.spi.AudioSynthesizer;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
 
@@ -194,10 +194,15 @@ public class JSMinim implements MinimServiceProvider
 	}
 
 	public AudioRecordingStream getAudioRecordingStream(String filename,
-			int bufferSize)
+			int bufferSize, boolean inMemory)
 	{
+		// TODO: deal with the case of wanting to have the file fully in memory
 		AudioRecordingStream mstream = null;
 		AudioInputStream ais = getAudioInputStream(filename);
+		if ( inMemory && ais.markSupported() )
+		{
+			ais.mark( (int)ais.getFrameLength() * ais.getFormat().getFrameSize() );
+		}
 		debug("Reading from " + ais.getClass().toString());
 		if (ais != null)
 		{
@@ -242,7 +247,7 @@ public class JSMinim implements MinimServiceProvider
 				if (line != null)
 				{
 					long length = AudioUtils.frames2Millis(ais.getFrameLength(), format);
-					BasicMetaData meta = new BasicMetaData(filename, length);
+					BasicMetaData meta = new BasicMetaData(filename, length, ais.getFrameLength());
 					mstream = new JSPCMAudioRecordingStream(this, meta, ais, line, bufferSize);
 				}
 			} // else
@@ -288,18 +293,18 @@ public class JSMinim implements MinimServiceProvider
 		return props;
 	}
 
-	public AudioStream getAudioStream(int type, int bufferSize,
+	public AudioStream getAudioInput(int type, int bufferSize,
 			float sampleRate, int bitDepth)
 	{
 		if (bitDepth != 8 && bitDepth != 16)
-			throw new IllegalArgumentException(
-															"Unsupported bit depth, use either 8 or 16.");
-		AudioFormat format = new AudioFormat(sampleRate, bitDepth, type, true,
-															false);
+		{
+			throw new IllegalArgumentException("Unsupported bit depth, use either 8 or 16.");
+		}
+		AudioFormat format = new AudioFormat(sampleRate, bitDepth, type, true, false);
 		TargetDataLine line = getTargetDataLine(format, bufferSize * 4);
 		if (line != null)
 		{
-			return new JSAudioStream(line, bufferSize);
+			return new JSAudioInput(line, bufferSize);
 		}
 		return null;
 	}
@@ -338,9 +343,9 @@ public class JSMinim implements MinimServiceProvider
 			{
 				samples = loadFloatAudio(ais, (int)ais.getFrameLength() * format.getFrameSize());
 				long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
-				meta = new BasicMetaData(filename, length);
+				meta = new BasicMetaData(filename, length, samples.getSampleCount());
 			}
-			AudioSynthesizer out = getAudioSynthesizer(format.getChannels(), 
+			AudioOut out = getAudioOutput(format.getChannels(), 
 			                                             bufferSize, 
 			                                             format.getSampleRate(), 
 			                                             format.getSampleSizeInBits());
@@ -375,7 +380,7 @@ public class JSMinim implements MinimServiceProvider
   
   private JSAudioSample getAudioSampleImp(FloatSampleBuffer samples, AudioFormat format, int bufferSize)
   {
-    AudioSynthesizer out = getAudioSynthesizer( samples.getChannelCount(), 
+    AudioOut out = getAudioOutput( samples.getChannelCount(), 
                                                 bufferSize, 
                                                 format.getSampleRate(), 
                                                 format.getSampleSizeInBits()
@@ -385,7 +390,7 @@ public class JSMinim implements MinimServiceProvider
       SampleSignal ssig = new SampleSignal(samples);
       out.setAudioSignal(ssig);
       long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
-      BasicMetaData meta = new BasicMetaData(samples.toString(), length);
+      BasicMetaData meta = new BasicMetaData(samples.toString(), length, samples.getSampleCount());
       return new JSAudioSample(meta, ssig, out);
     }
     else
@@ -396,7 +401,7 @@ public class JSMinim implements MinimServiceProvider
     return null;
   }
 
-	public AudioSynthesizer getAudioSynthesizer(int type, int bufferSize,
+	public AudioOut getAudioOutput(int type, int bufferSize,
 			float sampleRate, int bitDepth)
 	{
 		if (bitDepth != 8 && bitDepth != 16)
@@ -407,11 +412,12 @@ public class JSMinim implements MinimServiceProvider
 		SourceDataLine sdl = getSourceDataLine(format, bufferSize);
 		if (sdl != null)
 		{
-			return new JSAudioSynthesizer(sdl, bufferSize);
+			return new JSAudioOutput(sdl, bufferSize);
 		}
 		return null;
 	}
 
+	/** @deprecated */
 	public AudioRecording getAudioRecordingClip(String filename)
 	{
 		Clip clip = null;
@@ -463,11 +469,12 @@ public class JSMinim implements MinimServiceProvider
 		if (meta == null)
 		{
 			// this means we're dealing with not-an-mp3
-			meta = new BasicMetaData(filename, clip.getMicrosecondLength() / 1000);
+			meta = new BasicMetaData(filename, clip.getMicrosecondLength() / 1000, -1);
 		}
 		return new JSAudioRecordingClip(clip, meta);
 	}
 	
+	/** @deprecated */
 	public AudioRecording getAudioRecording(String filename)
 	{
 		AudioMetaData meta = null;
@@ -502,7 +509,7 @@ public class JSMinim implements MinimServiceProvider
 			{
 				samples = loadByteAudio(ais, (int)ais.getFrameLength() * format.getFrameSize());
 				long length = AudioUtils.bytes2Millis(samples.length, format);
-				meta = new BasicMetaData(filename, length);
+				meta = new BasicMetaData(filename, length, samples.length);
 			}
 			SourceDataLine line = getSourceDataLine(format, 2048);
 			if ( line != null )

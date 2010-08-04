@@ -72,6 +72,7 @@ public interface MinimServiceProvider
    * @param filename the name of the file to load into the AudioRecording
    * @return an AudioRecording that can play the file
    */
+  /** @deprecated */
   AudioRecording getAudioRecording(String filename);
   
   /**
@@ -80,10 +81,11 @@ public interface MinimServiceProvider
    * in their sketch somewhere.
    * 
    * @param filename the name of the file to load into the AudioRecordingStream
-   * @param bufferSize the bufferSize to use in memory (implementations are free to ignore this, if they must)
+ * @param bufferSize the bufferSize to use in memory (implementations are free to ignore this, if they must)
+ * @param inMemory TODO
    * @return an AudioRecording stream that will stream the file
    */
-  AudioRecordingStream getAudioRecordingStream(String filename, int bufferSize);
+  AudioRecordingStream getAudioRecordingStream(String filename, int bufferSize, boolean inMemory);
   
   /**
    * Should return an {@link  AudioStream} with the requested parameters. What Minim is 
@@ -96,11 +98,11 @@ public interface MinimServiceProvider
    * @param bitDepth what the bit depth of the stream should be
    * @return an AudioStream that is reading from the active audio input of the computer
    */
-  AudioStream getAudioStream(int type, int bufferSize, float sampleRate, int bitDepth);
+  AudioStream getAudioInput(int type, int bufferSize, float sampleRate, int bitDepth);
   
   /**
-   * Should return an {@link AudioSynthesizer} that can generate audio that will be heard through 
-   * the computer's speakers.
+   * Should return an {@link AudioOut} that can be used to generate audio that will 
+   * be heard through the computer's speakers.
    * 
    * @param type Minim.STEREO or Minim.MONO
    * @param bufferSize how big the in-memory buffer should be
@@ -108,7 +110,7 @@ public interface MinimServiceProvider
    * @param bitDepth what the bit depth of the generated audio should be
    * @return an AudioSynthesizer that will output to the computer's speakers
    */
-  AudioSynthesizer getAudioSynthesizer(int type, int bufferSize, float sampleRate, int bitDepth);
+  AudioOut getAudioOutput(int type, int bufferSize, float sampleRate, int bitDepth);
   
   /**
    * Should return an {@link AudioSample} that will load the requested file into memory.

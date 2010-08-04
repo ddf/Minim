@@ -18,8 +18,7 @@
 
 package ddf.minim.spi;
 
-import ddf.minim.AudioEffect;
-import ddf.minim.AudioListener;
+import ddf.minim.MultiChannelBuffer;
 
 /**
  * An <code>AudioStream</code> is a stream of samples that is coming from 
@@ -32,27 +31,21 @@ import ddf.minim.AudioListener;
  *
  */
 public interface AudioStream extends AudioResource
-{  
+{    
   /**
-   * Set the AudioListener to receive samples from this source.
+   * Reads the next sample frame.
    * 
-   * @param listener
-   *          the AudioListener to receive samples
+   * @return an array of floats containing the value of each channel in the sample frame just read.
+   * 		 The size of the returned array will be the same size as getFormat().getChannels(). 
    */
-  void setAudioListener(AudioListener listener);
-
-  /**
-   * Set the AudioEffect to apply to this stream.
-   * 
-   * @param effect
-   *          the AudioEffect to apply to the stream
-   */
-  void setAudioEffect(AudioEffect effect);
+  float[] read();
   
   /**
-   * The size of the buffer that will be sent to listeners and effects.
+   * Reads buffer.getBufferSize() sample frames and puts them into buffer's channels.
+   * The provided buffer will be forced to have the same number of channels that this 
+   * AudioStream does.
    * 
-   * @return the size of the buffer sent to listeners
+   * @param buffer The MultiChannelBuffer to fill with audio samples.
    */
-  int bufferSize();
+  void read(MultiChannelBuffer buffer);
 }

@@ -18,6 +18,7 @@
 
 package ddf.minim;
 
+import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioStream;
 
 /**
@@ -32,15 +33,18 @@ import ddf.minim.spi.AudioStream;
  *
  */
 public class AudioInput extends AudioSource
-{ 
+{  
+  
   /**
    * Constructs an <code>AudioInput</code> that subscribes to <code>stream</code> and 
    * can control the <code>DataLine</code> that <code>stream</code> is reading from.
    * 
    * @param stream the <code>AudioStream</code> that this will subscribe to for samples
    */
-  public AudioInput(AudioStream stream)
+  public AudioInput(AudioStream stream, AudioOut out)
   {
-    super(stream);
+    super( out );
+    out.setAudioStream(stream);
+    stream.open();
   }
 }

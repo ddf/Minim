@@ -24,12 +24,13 @@ import javax.sound.sampled.Mixer;
 
 import processing.core.PApplet;
 import ddf.minim.javasound.JSMinim;
+import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecording;
 import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.AudioStream;
-import ddf.minim.spi.AudioSynthesizer;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
+import ddf.minim.ugens.Instrument;
 
 /**
  * The <code>Minim</code> class is how you get what you want from JavaSound.
@@ -312,6 +313,7 @@ public class Minim
    *          the file or URL you want to load
    * @return an <code>AudioSnippet</code> of the requested file or URL
    */
+  /** @deprecated */
   public AudioSnippet loadSnippet(String filename)
   {
     AudioRecording c = mimp.getAudioRecording(filename);
@@ -354,17 +356,38 @@ public class Minim
    */
   public AudioPlayer loadFile(String filename, int bufferSize)
   {
-    AudioRecordingStream rec = mimp.getAudioRecordingStream(filename, bufferSize);
+    AudioRecordingStream rec = mimp.getAudioRecordingStream(filename, bufferSize, false);
     if ( rec != null )
     {
-      return new AudioPlayer(rec);
+    	AudioFormat format = rec.getFormat();
+        AudioOut out = mimp.getAudioOutput( format.getChannels(), 
+        										    bufferSize, 
+        										    format.getSampleRate(),
+        										    format.getSampleSizeInBits()
+        										  );
+        if ( out != null )
+        {
+        	return new AudioPlayer(rec, out);
+        }
     }
-    else
-    {
-      error("Couldn't load the file " + filename);
-    }
+
+    error("Couldn't load the file " + filename);
     return null;
   }  
+  
+  /**
+   * Creates and AudioRecordingStream that you can use to read from the file yourself, 
+   * rather than wrapping it in an AudioPlayer that does the work for you.
+   * 
+   * @param filename the file to load
+   * @param bufferSize the bufferSize to use
+   * @param inMemory whether or not the file should be cached in memory as it is read
+   * @return and AudioRecordingStream that you can use to read from the file.
+   */
+  public AudioRecordingStream loadFileStream(String filename, int bufferSize, boolean inMemory)
+  {
+	  return mimp.getAudioRecordingStream(filename, bufferSize, inMemory);
+  }
 
   /**
    * Creates an {@link AudioRecorder} that will use <code>source</code> as its 
@@ -476,16 +499,37 @@ public class Minim
   public AudioInput getLineIn(int type, int bufferSize,
                                      float sampleRate, int bitDepth)
   {
-    AudioStream stream = mimp.getAudioStream(type, bufferSize, sampleRate, bitDepth);
+    AudioStream stream = mimp.getAudioInput(type, bufferSize, sampleRate, bitDepth);
     if ( stream != null )
     {
-      return new AudioInput(stream);
+    	AudioOut out = mimp.getAudioOutput(type, bufferSize, sampleRate, bitDepth);
+    	if ( out != null )
+    	{
+    		return new AudioInput(stream, out);
+    	}
     }
-    else
-    {
-      error("Minim.getLineIn: attempt failed, could not secure an AudioInput.");
-    }
+
+    error("Minim.getLineIn: attempt failed, could not secure an AudioInput.");
     return null;
+  }
+  
+  /**
+   * Get the input as an AudioStream that you can read from yourself, rather than wrapped 
+   * in an AudioInput that does that work for you.
+   * 
+   * @param type
+   *          Minim.MONO or Minim.STEREO
+   * @param bufferSize
+   *          how long you want the <code>AudioInput</code>'s sample buffer to be
+   * @param sampleRate
+   *          the desired sample rate in Hertz (typically 44100)
+   * @param bitDepth
+   *          the desired bit depth (typically 16)
+   * @return an AudioStream that reads from the input source of the soundcard.
+   */
+  public AudioStream getInputStream(int type, int bufferSize, float sampleRate, int bitDepth)
+  {
+	  return mimp.getAudioInput(type, bufferSize, sampleRate, bitDepth);
   }
 
   /**
@@ -569,17 +613,70 @@ public class Minim
   public AudioOutput getLineOut(int type, int bufferSize,
                                        float sampleRate, int bitDepth)
   {
-    AudioSynthesizer synth = mimp.getAudioSynthesizer(type, bufferSize, sampleRate, bitDepth);
-    if ( synth != null )
+    AudioOut out = mimp.getAudioOutput(type, bufferSize, sampleRate, bitDepth);
+    if ( out != null )
     {
-      return new AudioOutput(synth);
+      return new AudioOutput(out);
     }
-    else
-    {
-      error("Minim.getLineOut: attempt failed, could not secure a LineOut.");
-    }
+    
+    error("Minim.getLineOut: attempt failed, could not secure a LineOut.");
     return null;
   }
 
+  /**
+   * Play the note A4 (or random?) right now for 1 second.
+   *
+   */
+  public void playNote()
+  {
+	  playNote(440.0f);
+  }
+  
+  /**
+   * Play a note at the given frequency right now for 1 second.
+   * 
+   * @param frequency
+   */
+  public void playNote(float frequency)
+  {
+	  playNote(1.0f, frequency);
+  }
+  
+  /**
+   * Play a note for the given duration, starting right now, at the given frequency.
+   * 
+   * @param duration
+   * @param frequency
+   */
+  public void playNote(float duration, float frequency)
+  {
+	  playNote(0.0f, duration, frequency);
+  }
+  
+  /**
+   * Play a note startTime seconds from now, for the given duration, at the given frequency.
+   * 
+   * @param startTime
+   * @param duration
+   * @param frequency
+   */
+  public void playNote(float startTime, float duration, float frequency)
+  {
+	  // TODO use the default instrument to play this note.
+  }
+  
+  /**
+   * Play a note startTime seconds from now, for the given duration, using the given instrument.
+   * 
+   * @param startTime
+   * @param duration
+   * @param instrument
+   */
+  public void playNote(float startTime, float duration, Instrument instrument)
+  {
+	  // TODO schedule this instrument to receive a noteOn startTime seconds from now
+	  //	  and then tell this instrument to noteOff after duration
+	  //noteManager.addEvent(startTime, duration, instrument);
+  }
   
 }

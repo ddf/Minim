@@ -26,12 +26,13 @@ import org.tritonus.share.sampled.AudioUtils;
 
 import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
+import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioRecording;
 
 
 // TODO: there is so much here that is the same as JSBaseAudioRecordingStream
 //       should find a way to share that code.
-
+/** @deprecated */
 class JSAudioRecording implements AudioRecording, Runnable
 {
 	private AudioMetaData		  meta;
@@ -335,5 +336,20 @@ class JSAudioRecording implements AudioRecording, Runnable
 	public int getMillisecondLength()
 	{
 		return meta.length();
+	}
+
+	public int bufferSize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public float[] read() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void read(MultiChannelBuffer buffer) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -19,6 +19,7 @@
 package ddf.minim.spi;
 
 import ddf.minim.AudioEffect;
+import ddf.minim.AudioListener;
 import ddf.minim.AudioSignal;
 
 /**
@@ -30,15 +31,27 @@ import ddf.minim.AudioSignal;
  * @author Damien Di Fede
  * 
  */
-public interface AudioSynthesizer extends AudioStream
+// TODO: this shouldn't be an audio stream because it's meant to be an OUTPUT
+public interface AudioOut extends AudioResource
 {
   /**
-   * Sets the AudioSignal used by this sythesizer.
+   * @return the size of the buffer used by this output.
+   */
+  int bufferSize();
+  
+  /**
+   * Sets the AudioSignal that this output will use to generate sound.
    * 
    * @param signal
    *          the AudioSignal used to generate sound
    */
   void setAudioSignal(AudioSignal signal);
+  
+  /**
+   * Sets the AudioStream that this output will use to generate sound.
+   * @param stream
+   */
+  void setAudioStream(AudioStream stream);
 
   /**
    * Sets the AudioEffect to apply to the signal.
@@ -47,4 +60,10 @@ public interface AudioSynthesizer extends AudioStream
    *          the AudioEffect to apply to the signal
    */
   void setAudioEffect(AudioEffect effect);
+  
+  /**
+   * Sets the AudioListener that will have sound broadcasted to it as the output generates.
+   * @param listen
+   */
+  void setAudioListener(AudioListener listen);
 }
