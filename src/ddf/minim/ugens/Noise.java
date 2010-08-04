@@ -1,7 +1,5 @@
 package ddf.minim.ugens;
 
-import ddf.minim.ugens.UGen.InputType;
-import ddf.minim.ugens.UGen.UGenInput;
 
 /**
  * Provides a UGen which generates noise.
