@@ -20,8 +20,6 @@ public class Noise extends UGen
 
 	// the type of noise
 	private Tint	tint;
-	// the amplitude at which  we will generate noise
-	private float	amp;
 	// the last output value
 	private float	lastOutput;
 	// cutoff frequency for brown/red noise
@@ -61,10 +59,10 @@ public class Noise extends UGen
 	 * @param noiseType
 	 * 		specifies the tint of the noise: WHITE, PINK, RED, BROWN
 	 */
-	public Noise(float amplitude, Tint noiseType)
+	public Noise(float amplitudeValue, Tint noiseType)
 	{
-		this.amplitude = new UGenInput(InputType.CONTROL);
-		amp = amplitude;
+		amplitude = new UGenInput(InputType.CONTROL);
+    amplitude.setLastValue(amplitudeValue);
 		lastOutput = 0f;
 		tint = noiseType;
 		if ( tint == Tint.PINK )
@@ -85,14 +83,7 @@ public class Noise extends UGen
 	protected void uGenerate(float[] channels) 
 	{
 		// start with our base amplitude
-		float outAmp = amp;
-		
-		// if something is plugged into amplitude
-		// then we override our base amplitude
-		if ( amplitude.isPatched() )
-		{
-			outAmp = amplitude.getLastValues()[0];
-		}
+		float outAmp = amplitude.getLastValue();
 		
 		float n;
 		switch (tint) 

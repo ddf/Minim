@@ -36,8 +36,6 @@ public class BitCrush extends UGen
 	 */
 	public UGenInput bitRes;
 	
-	
-	private float bitResolution;
 	private float nLevels;
 	private float halfNLevels;
 	
@@ -63,8 +61,8 @@ public class BitCrush extends UGen
 		//audio = new UGenInput(InputType.AUDIO);
 		audio = new UGenInput(InputType.AUDIO);
 		bitRes = new UGenInput(InputType.CONTROL);
-		bitResolution = localBitRes;
-		nLevels = (float)Math.floor(Math.pow(2.0, bitResolution));
+    bitRes.setLastValue(localBitRes);
+		nLevels = (float)Math.floor(Math.pow(2.0, localBitRes));
 		halfNLevels = nLevels/2.0f;
 		Minim.debug("bitCrush initializing to " + nLevels + " levels.");
 	}
@@ -76,24 +74,20 @@ public class BitCrush extends UGen
 	 */
 	public void setBitRes(float localBitRes)
 	{
-		bitResolution = localBitRes;
+		bitRes.setLastValue(localBitRes);
 	}
 
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
+    float[] lastValues = audio.getLastValues();
 		for(int i = 0; i < channels.length; i++)
 		{
-			//float tmp = audio.getLastValues()[i];
-			// TODO: using these Math functions means values get casted up to a double.
-			//       we can do better by just using multiplication and casting to int.
-			if (bitRes.isPatched())
-			{
-				bitResolution = bitRes.getLastValues()[0];
-				nLevels = (float)Math.floor(Math.pow(2.0, bitResolution));
-				halfNLevels = nLevels/2.0f;
-			}
-			channels[i]=(float)(Math.floor(halfNLevels*(audio.getLastValues()[i]))/halfNLevels);
+			float res = bitRes.getLastValue();
+		  nLevels = (float)( (int)(res*res) );
+			halfNLevels = nLevels * 0.5f;
+      float floored = (float)Math.floor( halfNLevels*lastValues[i] ); 
+			channels[i] = floored / halfNLevels;
 		}
 	} 
 }

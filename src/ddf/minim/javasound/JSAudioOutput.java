@@ -110,7 +110,11 @@ final class JSAudioOutput extends Thread implements AudioOut
 	{
 		if (line.getFormat().getChannels() == Minim.MONO)
 		{
+      //long start = System.nanoTime();
 			signal.generate(buffer.getChannel(0));
+      //long end = System.nanoTime();
+      //long elap = (end - start) / 1000;
+      //System.out.println("Generated a buffer in " + elap + " microseconds.");
 		}
 		else
 		{

@@ -49,11 +49,8 @@ public abstract class IIRFilter extends UGen implements AudioEffect
   private float[][] in;
   /** The previous output values. */
   private float[][] out;
-
-  /**
-   * The current cutoff frequency of the filter in Hz.
-   */
-  private float freq;
+  
+  private float prevCutoff;
 
   /**
    * Constructs an IIRFilter with the given cutoff frequency that will be used
@@ -70,6 +67,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
   	audio = new UGenInput(InputType.AUDIO);
   	cutoff = new UGenInput(InputType.CONTROL);
     setSampleRate(sampleRate);
+    prevCutoff = -1;
     setFreq(freq);
     initArrays(2);
   }
@@ -97,14 +95,8 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 	  for(int i = 0; i < channels.length; i++)
 	  {
 		  System.arraycopy(in[i], 0, in[i], 1, in[i].length - 1);
-		  if ( audio.isPatched() )
-		  {
-			  in[i][0] = audio.getLastValues()[i];
-		  }
-		  else
-		  {
-			  in[i][0] = channels[i];
-		  }
+		  in[i][0] = audio.getLastValues()[i];
+
 		  float y = 0;
 		  for(int ci = 0; ci < a.length; ci++)
 		  {
@@ -118,19 +110,21 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 		  out[i][0] = y;
 		  channels[i] = y;
 	  }
-	  // set a new cutoff frequency if that's being controlled
-	  if ( ( cutoff != null ) && ( cutoff.isPatched() ) )
-	  {
-	  	setFreq( cutoff.getLastValues()[0] );
-	  }
+    
+    if ( cutoff.getLastValue() != prevCutoff )
+    {
+      calcCoeff();
+      prevCutoff = cutoff.getLastValue();
+    }
   }
 
   public final synchronized void process(float[] signal)
   {
-	float[] tmp = new float[1];
+    audio.setChannelCount(1);
+    float[] tmp = new float[1];
     for (int i = 0; i < signal.length; i++)
     {
-    	tmp[0] = signal[i];
+    	audio.setLastValue( signal[i] );
     	uGenerate(tmp);
     	signal[i] = tmp[0];
     }
@@ -138,14 +132,15 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 
   public final synchronized void process(float[] sigLeft, float[] sigRight)
   {
-	float[] tmp = new float[2];
+    audio.setChannelCount(2);
+    float[] tmp = new float[2];
     for (int i = 0; i < sigLeft.length; i++)
     {
-		tmp[0] = sigLeft[i];
-		tmp[1] = sigRight[i];
-		uGenerate(tmp);
-		sigLeft[i] = tmp[0];
-		sigRight[i] = tmp[1];
+  		audio.getLastValues()[0] = sigLeft[i];
+  		audio.getLastValues()[1] = sigRight[i];
+  		uGenerate(tmp);
+  		sigLeft[i] = tmp[0];
+  		sigRight[i] = tmp[1];
     }
   }
 
@@ -159,9 +154,10 @@ public abstract class IIRFilter extends UGen implements AudioEffect
   public final void setFreq(float f)
   {
   	// no need to recalc if the cutoff isn't actually changing
-    if ( validFreq(f) && f != freq )
+    if ( validFreq(f) && f != cutoff.getLastValue() )
     {
-      freq = f;
+      prevCutoff = f;
+      cutoff.setLastValue(f);
       calcCoeff();
     }
   }
@@ -187,7 +183,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
    */
   public final float frequency()
   {
-    return freq;
+    return cutoff.getLastValue();
   }
 
   /**

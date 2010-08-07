@@ -29,8 +29,6 @@ public class Balance extends UGen
 	 */
 	public UGenInput balance;
 	
-	private float balanceVal;
-	
 	/**
 	 * Construct a Balance with a value of 0 (no change).
 	 *
@@ -53,18 +51,17 @@ public class Balance extends UGen
 		//audio = new UGenInput(InputType.AUDIO);
 		audio = new UGenInput(InputType.AUDIO);
 		balance = new UGenInput(InputType.CONTROL);
-		this.balanceVal = balanceVal;
+    balance.setLastValue(balanceVal);
 	}
-	
-	/**
-	 * Set the balance value directly.
-	 * 
-	 * @param balanceVal a value in the range [-1, 1]
-	 */
-	public void setBalance( float balanceVal )
-	{
-		this.balanceVal = balanceVal;
-	}
+  
+  /**
+   * Set the balance setting to balanceVal.
+   * @param balanceVal
+   */
+  public void setBalance( float balanceVal )
+  {
+    balance.setLastValue(balanceVal);
+  }
 
 	@Override
 	protected void uGenerate(float[] channels) 
@@ -72,11 +69,8 @@ public class Balance extends UGen
 		for(int i = 0; i < channels.length; i++)
 		{
 			float tmp = audio.getLastValues()[i];
-			if ( balance.isPatched() )
-			{
-				balanceVal = balance.getLastValues()[0];
-			}
-			channels[i] = tmp*(float)Math.min( 1.0f, Math.max( 0.0f, 1.0f + Math.pow( -1.0f, i )* balanceVal ) );
+			float bal = balance.getLastValue();
+			channels[i] = tmp*(float)Math.min( 1.0f, Math.max( 0.0f, 1.0f + Math.pow( -1.0f, i )* bal) );
 		}
 	} 
 }

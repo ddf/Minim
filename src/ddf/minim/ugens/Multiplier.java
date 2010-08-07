@@ -21,9 +21,6 @@ public class Multiplier extends UGen
 	 */
 	public UGenInput amplitude;
 	
-	
-	private float value;
-	
 	/**
 	 * Construct a Multiplier with a fixed value of 1, which will mean incoming audio is not changed.
 	 *
@@ -45,7 +42,7 @@ public class Multiplier extends UGen
 		//audio = new UGenInput(InputType.AUDIO);
 		audio = new UGenInput(InputType.AUDIO);
 		amplitude = new UGenInput(InputType.CONTROL);
-		value = multValue;
+		amplitude.setLastValue(multValue);
 	}
 	
 	/**
@@ -54,7 +51,7 @@ public class Multiplier extends UGen
 	 */
 	public void setValue( float multValue )
 	{
-		value = multValue;
+		amplitude.setLastValue( multValue );
 	}
 
 	@Override
@@ -62,23 +59,7 @@ public class Multiplier extends UGen
 	{
 		for(int i = 0; i < channels.length; i++)
 		{
-			float tmp = 0;
-			
-			if ( audio.isPatched() )
-			{
-				tmp = audio.getLastValues()[i];
-			}
-			
-			if ( !amplitude.isPatched() ) 
-			{
-				tmp *= value;
-			} 
-			else 
-			{
-				tmp *= amplitude.getLastValues()[i];
-			}
-			
-			channels[i] = tmp;
+			channels[i] = amplitude.getLastValue() * audio.getLastValues()[i];
 		}
 	} 
 }

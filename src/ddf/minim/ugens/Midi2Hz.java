@@ -15,8 +15,6 @@ public class Midi2Hz extends UGen
 	 */
 	public UGenInput midiNoteIn;
 	
-	private float fixedMidiNoteIn;
-	
 	/**
 	 * Construct a Midi2Hz that generates a fixed value from MIDI note 0.
 	 *
@@ -37,7 +35,7 @@ public class Midi2Hz extends UGen
 		//       in the super UGen has been constructed
 		//audio = new UGenInput(InputType.AUDIO);
 		midiNoteIn = new UGenInput( InputType.CONTROL );
-		this.fixedMidiNoteIn = fixedMidiNoteIn;
+    midiNoteIn.setLastValue( fixedMidiNoteIn );
 	}
 	
 	/**
@@ -46,7 +44,7 @@ public class Midi2Hz extends UGen
 	 */
 	public void setMidiNoteIn( float fixedMidiNoteIn )
 	{
-		this.fixedMidiNoteIn = fixedMidiNoteIn;
+		midiNoteIn.setLastValue( fixedMidiNoteIn );
 	}
 
 	@Override
@@ -54,12 +52,7 @@ public class Midi2Hz extends UGen
 	{
 		for( int i = 0; i < channels.length; i++ )
 		{
-			if ( !midiNoteIn.isPatched() )
-			{
-				channels[ i ] = Frequency.ofMidiNote( fixedMidiNoteIn ).asHz();
-			} else {
-				channels[ i ] = Frequency.ofMidiNote( midiNoteIn.getLastValues()[ 0 ] ).asHz();
-			}
+			channels[ i ] = Frequency.ofMidiNote( midiNoteIn.getLastValue() ).asHz();
 		}
 	} 
 }

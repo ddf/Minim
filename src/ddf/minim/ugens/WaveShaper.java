@@ -30,14 +30,10 @@ public class WaveShaper extends UGen
 	 */
 	public UGenInput mapAmplitude;
 	
-	// the current mapping amplitude of the input signal
-	float mapAmp;
-	// the current output amplitude of the input signal
-	float outAmp;
 	// flag to wrap the map around the ends instead of hitting the edge
-	boolean wrapMap;
+	private boolean wrapMap;
 	// the current waveshape for mapping
-	Wavetable mapShape;
+	private Wavetable mapShape;
 	
 	/**
 	 * Constructor for WaveShaper.
@@ -69,11 +65,14 @@ public class WaveShaper extends UGen
 	{
 		super();
 		audio = new UGenInput(InputType.AUDIO);
-		mapAmplitude = new UGenInput(InputType.CONTROL);
-		outAmplitude = new UGenInput(InputType.CONTROL);
+		
+    mapAmplitude = new UGenInput(InputType.CONTROL);
+    mapAmplitude.setLastValue(mapAmp);
+		
+    outAmplitude = new UGenInput(InputType.CONTROL);
+    outAmplitude.setLastValue(outAmp);
+    
 		this.mapShape = mapShape;
-		this.outAmp = outAmp;
-		this.mapAmp = mapAmp;
 		this.wrapMap = wrapMap;
 	}
 
@@ -84,22 +83,11 @@ public class WaveShaper extends UGen
 	@Override
 	protected void uGenerate(float[] channels)
 	{
-		// get the incoming mapAmplitude if it exists
-		if (mapAmplitude.isPatched())
-		{
-			mapAmp = mapAmplitude.getLastValues()[0];
-		}
-		// get the incoming outAmplitude if it exists
-		if (outAmplitude.isPatched())
-		{
-			outAmp = outAmplitude.getLastValues()[0];
-		}
-
 		// run over the length of the channel array
 		for(int i = 0; i < channels.length; i++)
 		{
 			// bring in the audio as index, scale by the map amplitude, and normalize
-			float tmpIndex = ( mapAmp*audio.getLastValues()[i] )/2.0f + 0.5f;
+			float tmpIndex = ( mapAmplitude.getLastValue()*audio.getLastValues()[i] )/2.0f + 0.5f;
 			
 			// handle the cases where it goes out of bouds
 			if ( wrapMap )  // wrap oround
@@ -122,7 +110,7 @@ public class WaveShaper extends UGen
 	        }
 			
 			// now that tmpIndex is good, look up the wavetable value and multiply by outAmp
-			channels[i] = outAmp*mapShape.value( tmpIndex );
+			channels[i] = outAmplitude.getLastValue()*mapShape.value( tmpIndex );
 		}
 	}
 }

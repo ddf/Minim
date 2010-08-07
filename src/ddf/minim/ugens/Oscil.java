@@ -24,16 +24,14 @@ public class Oscil extends UGen
 	
 	// the waveform we will oscillate over
 	private Waveform  wave;
-    // the current frequency at which we oscillate
-	private Frequency freq;
-	// our amplitude in the absence of an amplitude input
-	private float 	  amp;
-	// the phase of the oscillator in the absence of a phase input
-	private float     fPhase;
-	// where we will sample our waveform, moves between [0,1]
+
+  // where we will sample our waveform, moves between [0,1]
 	private float step;
 	// the step size we will use to advance our step
 	private float stepSize;
+	// what was our frequency from the last time we updated our step size
+  // stashed so that we don't do more math than necessary
+  private float prevFreq;
 	// 1 / sampleRate, which is used to calculate stepSize
 	private float oneOverSampleRate;
 	
@@ -79,17 +77,21 @@ public class Oscil extends UGen
 	 * @param waveform
 	 */
 	//standard constructor
-	public Oscil(Frequency freq, float amp, Waveform wave)
+	public Oscil(Frequency freq, float amp, Waveform waveform)
 	{
 		super();
-		this.amplitude = new UGenInput(InputType.CONTROL);
-		this.frequency = new UGenInput(InputType.CONTROL);
-		this.phase = new UGenInput(InputType.CONTROL);
-		this.wave = wave;
-		this.freq = freq;
-		this.amp = amp;
+    
+		amplitude = new UGenInput(InputType.CONTROL);
+    amplitude.setLastValue(amp);
+		
+    frequency = new UGenInput(InputType.CONTROL);
+    frequency.setLastValue(freq.asHz());
+    
+		phase = new UGenInput(InputType.CONTROL);
+    phase.setLastValue(0.f);
+		
+    wave = waveform;
 		step = 0f;
-		fPhase = 0f;
 		oneOverSampleRate = 1.f;
 	}	
 	
@@ -99,13 +101,20 @@ public class Oscil extends UGen
 	protected void sampleRateChanged()
 	{
 		oneOverSampleRate = 1 / sampleRate();
-		stepSizeChanged();
+    // don't call updateStepSize because it checks for frequency change
+    stepSize = frequency.getLastValue() * oneOverSampleRate;
+    prevFreq = frequency.getLastValue();
 	}
 	
 	// updates our step size based on the current frequency
-	private void stepSizeChanged()
+	private void updateStepSize()
 	{
-		stepSize = freq.asHz() * oneOverSampleRate;
+    float currFreq = frequency.getLastValue();
+    if ( prevFreq != currFreq )
+    {
+      stepSize = currFreq * oneOverSampleRate;
+      prevFreq = currFreq;
+    }
 	}
 	
 	/**
@@ -118,8 +127,8 @@ public class Oscil extends UGen
 	 */
 	public void setFrequency( float hz )
 	{
-		freq.setAsHz(hz);
-		stepSizeChanged();
+		frequency.setLastValue(hz);
+		updateStepSize();
 	}
 	
 	/**
@@ -132,8 +141,8 @@ public class Oscil extends UGen
 	 */
 	public void setFrequency( Frequency newFreq )
 	{
-		freq.setAsHz( newFreq.asHz() );
-		stepSizeChanged();
+		frequency.setLastValue( newFreq.asHz() );
+		updateStepSize();
 	}
 
 	/**
@@ -146,7 +155,7 @@ public class Oscil extends UGen
 	 */
 	public void setAmplitude( float newAmp )
 	{
-		amp = newAmp;
+    amplitude.setLastValue(newAmp);
 	}
 	
 	/**
@@ -159,7 +168,7 @@ public class Oscil extends UGen
 	 */
 	public void setPhase( float newPhase )
 	{
-		fPhase = newPhase;
+    phase.setLastValue(newPhase);
 	}
 	
 	/**
@@ -172,24 +181,17 @@ public class Oscil extends UGen
 	 */
 	public void reset()
 	{
-		step = fPhase;
+		step = phase.getLastValue();
 	}
 	
 	@Override
 	protected void uGenerate(float[] channels) 
 	{		
 		// start with our base amplitude
-		float outAmp = amp;
-		
-		// if something is plugged into amplitude
-		// then we override our base amplitude
-		if ( amplitude.isPatched() )
-		{
-			outAmp = amplitude.getLastValues()[0];
-		}
+		float outAmp = amplitude.getLastValue();
 		
 		// temporary step location with phase offset.
-		float tmpStep = step + fPhase;
+		float tmpStep = step + phase.getLastValue();
 		// don't be less than zero
 		if ( tmpStep < 0.f )
 		{
@@ -211,18 +213,9 @@ public class Oscil extends UGen
 			channels[i] = sample;
 		}
 		
-		// if something is plugged into frequency
-		// we update our frequency and recalculate our stepSize
-		if ( frequency.isPatched() )
-		{
-			freq.setAsHz( frequency.getLastValues()[0] );
-			stepSizeChanged();
-		}
-		
-		if ( phase.isPatched() )
-		{
-			fPhase = phase.getLastValues()[0];
-		}
+		// update our step size. 
+    // this will check to make sure the frequency has changed.
+		updateStepSize();
 		
 		// increase time
 		// NOT THIS FROM BEFORE: step += stepSize + fPhase;

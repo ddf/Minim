@@ -257,14 +257,8 @@ public class GranulateRandom extends UGen
 				timeSinceGrainStop = 0.0f;
 				insideGrain = false;
 				// set a new spaceLength
-				if ( ( spaceLenMin != null ) && ( spaceLenMin.isPatched() ) )
-				{
-					spaceLengthMin = spaceLenMin.getLastValues()[0];
-				}
-				if ( ( spaceLenMax != null ) && ( spaceLenMax.isPatched() ) )
-				{
-					spaceLengthMax = spaceLenMax.getLastValues()[0];
-				}
+				spaceLengthMin = spaceLenMin.getLastValue();
+				spaceLengthMax = spaceLenMax.getLastValue();
 				spaceLength = randomBetween( spaceLengthMin, spaceLengthMax );
 			}
 		}
@@ -284,25 +278,13 @@ public class GranulateRandom extends UGen
 				timeSinceGrainStart = 0.0f;
 				insideGrain = true;
 				// set a new grain length
-				if ( grainLenMin.isPatched() ) 
-				{
-					grainLengthMin = grainLenMin.getLastValues()[0];
-				}
-				if ( grainLenMax.isPatched() ) 
-				{
-					grainLengthMax = grainLenMax.getLastValues()[0];
-				}
+				grainLengthMin = grainLenMin.getLastValue();
+			  grainLengthMax = grainLenMax.getLastValue();
 				grainLength = randomBetween( grainLengthMin, grainLengthMax );
 
 				// set a new fade length
-				if ( fadeLenMin.isPatched() ) 
-				{
-					fadeLengthMin = fadeLenMin.getLastValues()[0];
-				}
-				if ( fadeLenMax.isPatched() ) 
-				{
-					fadeLengthMax = fadeLenMax.getLastValues()[0];
-				}
+				fadeLengthMin = fadeLenMin.getLastValue();
+				fadeLengthMax = fadeLenMax.getLastValue();
 				fadeLength = randomBetween( fadeLengthMin, fadeLengthMax );
 
 				// make sure the fade length is correct

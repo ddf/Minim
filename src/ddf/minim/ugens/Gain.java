@@ -67,18 +67,12 @@ public class Gain extends UGen
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
-		if ( audio.isPatched() )
+		// TODO: not fond of the fact that we cast up to doubles for this math function.
+	  mValue = (float)Math.pow(10.0, (0.05 * gain.getLastValue()));
+		
+		for(int i = 0; i < channels.length; ++i)
 		{
-			if ( gain.isPatched() )
-			{
-				// TODO: not fond of the fact that we cast up to doubles for this math function.
-				mValue = (float)Math.pow(10.0, (0.05 * gain.getLastValues()[0]));
-			}
-			
-			for(int i = 0; i < channels.length; ++i)
-			{
-				channels[i] = mValue * audio.getLastValues()[i];
-			}			
+			channels[i] = mValue * audio.getLastValues()[i];
 		}
 	}
 }

@@ -15,8 +15,8 @@ public class Pan extends UGen
 	public UGenInput pan;
 
 	private UGen  audio;
-	private float mPanValue;
-	static private float PI2 = (float)Math.PI / 2.f;
+	
+	static private float PIOVER2 = (float)Math.PI / 2.f;
 	
 	/**
 	 * Construct a Pan UGen with a particular balance and width. 
@@ -25,8 +25,8 @@ public class Pan extends UGen
 	public Pan(float panValue)
 	{
 		super();
-		mPanValue = panValue;
-		pan = new UGenInput(InputType.CONTROL);		
+		pan = new UGenInput(InputType.CONTROL);
+    pan.setLastValue(panValue);
 	}
 	
 	/**
@@ -37,7 +37,7 @@ public class Pan extends UGen
 	 */
 	public void setPan( float panValue )
 	{
-		mPanValue = panValue;
+		pan.setLastValue( panValue );
 	}
 	
 	@Override
@@ -45,6 +45,8 @@ public class Pan extends UGen
 	{
 		// System.out.println("Adding " + in.toString() + " to Pan.");
 		audio = in;
+    // we only deal in MONO!
+    audio.setAudioChannelCount(1);
 	}
 	
 	@Override
@@ -59,8 +61,19 @@ public class Pan extends UGen
 	@Override
 	protected void sampleRateChanged()
 	{
-		audio.setSampleRate(sampleRate());
+    if ( audio != null )
+    {
+      audio.setSampleRate(sampleRate());
+    }
 	}
+  
+  public void setAudioChannelCount( int numberOfChannels )
+  {
+    if ( numberOfChannels != 2 )
+    {
+      throw new IllegalArgumentException("Pan MUST be ticked with STEREO output! It doesn't make sense in any other context!");
+    }
+  }
 	
 	/**
 	 * NOTE: Currently only supports stereo audio!
@@ -68,21 +81,18 @@ public class Pan extends UGen
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
-		if ( pan.isPatched() )
-		{
-			mPanValue = pan.getLastValues()[0];
-		}
-		
+    if ( channels.length != 2 )
+    {
+      throw new IllegalArgumentException("Pan MUST be ticked with STEREO output! It doesn't make sense in any other context!");
+    }
+    
+		float panValue = pan.getLastValue();
+    
 		// tick our audio as MONO because that's what a Pan is for!
 		float[] sample = new float[1];
 		if ( audio != null )
 		{
 			audio.tick(sample);
-			// we need to then get the last value because 
-			// something else might have already ticked our audio input
-			// in that case, sample will not be filled with anything
-			// in tick.
-			sample[0] = audio.getLastValues()[0];
 		}
 		
 		// formula swiped from the MIDI spcification: http://www.midi.org/about-midi/rp36.shtml
@@ -96,12 +106,12 @@ public class Pan extends UGen
 		// linear = pow ( 10.0, (0.05 * dBvalue) );
 		// linear = 10^(dB/20)
 		
-		float normBalance = (mPanValue+1.f) * 0.5f;
+		float normBalance = (panValue + 1.f) * 0.5f;
 		
 		// note that I am calculating amplitude directly, by using the linear value
 		// that the MIDI specification suggests inputing into the dB formula.
-		float leftAmp = (float)Math.cos( PI2 * normBalance );
-		float rightAmp = (float)Math.sin( PI2 * normBalance);
+		float leftAmp = (float)Math.cos( PIOVER2 * normBalance );
+		float rightAmp = (float)Math.sin( PIOVER2 * normBalance);
 		
 		channels[0] = sample[0] * leftAmp;
 		channels[1] = sample[0] * rightAmp;		

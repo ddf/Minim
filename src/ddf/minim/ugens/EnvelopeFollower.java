@@ -39,10 +39,15 @@ public class EnvelopeFollower extends UGen
   
   protected void uGenerate( float[] out )
   {
-    if ( audio.isPatched() )
+    // mono-ize the signal
+    float signal = 0;
+    float[] lastValues = audio.getLastValues();
+    for(int i = 0; i < out.length; ++i)
     {
-      m_buffer[m_bufferCount++] = audio.getLastValues()[0];
+      signal += lastValues[i] / lastValues.length;
     }
+    
+    m_buffer[m_bufferCount++] = signal;
 
     // full buffer, find the envelope value
     if ( m_bufferCount == m_buffer.length )

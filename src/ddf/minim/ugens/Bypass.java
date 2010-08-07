@@ -121,17 +121,7 @@ public class Bypass<T extends UGen> extends UGen
 		// but stomp the result if we are active
 		if ( mActive )
 		{
-			if ( audio.isPatched() )
-			{
-				System.arraycopy(audio.getLastValues(), 0, channels, 0, channels.length);
-			}
-			else
-			{
-				for(int i = 0; i < channels.length; ++i)
-				{
-					channels[i] = 0;
-				}
-			}
+			System.arraycopy(audio.getLastValues(), 0, channels, 0, channels.length);
 		}
 	}
 

@@ -18,11 +18,15 @@
 
 package ddf.minim;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.Control;
+
 import ddf.minim.spi.AudioOut;
-import ddf.minim.ugens.Summer;
+import ddf.minim.spi.AudioStream;
 import ddf.minim.ugens.DefaultInstrument;
 import ddf.minim.ugens.Frequency;
 import ddf.minim.ugens.Instrument;
+import ddf.minim.ugens.Summer;
 
 /**
  * An <code>AudioOutput</code> is used to generate audio with
@@ -42,9 +46,45 @@ public class AudioOutput extends AudioSource implements Polyphonic
   // the signals added by the user
   private SignalChain signals;
   // the note manager for this output
-  public final NoteManager noteManager;  
+  private NoteManager noteManager;  
   // the Bus for UGens used by this output
   public final Summer bus;
+  
+  private class SampleGenerator implements AudioSignal
+  {
+    public void generate(float[] signal)
+    {
+      if ( signals.size() > 0 )
+      {
+        signals.generate(signal);
+      }
+      
+      float[] tick = new float[1];
+      for(int i = 0; i < signal.length; ++i)
+      {
+        noteManager.tick();
+        bus.tick(tick);
+        signal[i] += tick[0];
+      }
+    }
+
+    public void generate(float[] left, float[] right)
+    {
+      if ( signals.size() > 0 )
+      {
+        signals.generate(left, right);
+      }
+      
+      float[] tick = new float[2];
+      for(int i = 0; i < left.length; ++i)
+      {
+        noteManager.tick();
+        bus.tick(tick);
+        left[i] += tick[0];
+        right[i] += tick[1];
+      }
+    }   
+  }
 
   /**
    * Constructs an <code>AudioOutput</code> that will subscribe its buffers to
@@ -71,9 +111,12 @@ public class AudioOutput extends AudioSource implements Polyphonic
     //      isSounding when they've patched in some UGens and can hear audio.
     //      Though this could all be moot if we simply toss all the AudioSignal 
     //      stuff in favor of using only UGens.
-    bus = new Summer(this);
-    signals.add(bus);
-    synth.setAudioSignal(signals);
+    bus = new Summer();
+    // configure it
+    bus.setSampleRate( getFormat().getSampleRate() );
+    bus.setAudioChannelCount( getFormat().getChannels() );
+    
+    synth.setAudioSignal( new SampleGenerator() );
   }
 
   public void addSignal(AudioSignal signal)
@@ -84,7 +127,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
   public AudioSignal getSignal(int i)
   {
 	  // get i+1 because the bus is signal 0.
-    return signals.get(i+1);
+    return signals.get(i);
   }
 
   public void removeSignal(AudioSignal signal)
@@ -95,20 +138,18 @@ public class AudioOutput extends AudioSource implements Polyphonic
   public AudioSignal removeSignal(int i)
   {
 	  // remove i+1 because the bus is 1
-    return signals.remove(i+1);
+    return signals.remove(i);
   }
 
   public void clearSignals()
   {
     signals.clear();
-    // make sure to add the bus back
-    signals.add(bus);
   }
 
   public void disableSignal(int i)
   {
 	  // disable i+1 because the bus is 0
-    signals.disable(i+1);
+    signals.disable(i);
   }
 
   public void disableSignal(AudioSignal signal)
@@ -118,7 +159,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public void enableSignal(int i)
   {
-    signals.enable(i+1);
+    signals.enable(i);
   }
 
   public void enableSignal(AudioSignal signal)
@@ -153,7 +194,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 
   public int signalCount()
   {
-    return signals.size() - 1;
+    return signals.size();
   }
 
   public void sound()

@@ -12,9 +12,6 @@ public class Reciprocal extends UGen
 	 */
 	public UGenInput denominator;
 	
-	// for the non-Input denominator value
-	private float fixedDenominator;
-	
 	/**
 	 * 
 	 */
@@ -33,7 +30,7 @@ public class Reciprocal extends UGen
 		//audio = new UGenInput(InputType.AUDIO);
 		// for this UGen, denominator is the main input and can be audio
 		denominator = new UGenInput( InputType.AUDIO );
-		this.fixedDenominator = fixedDenominator;
+    denominator.setLastValue(fixedDenominator);
 	}
 	
 	/**
@@ -43,7 +40,7 @@ public class Reciprocal extends UGen
 	 */
 	public void setReciprocal( float fixedDenominator )
 	{
-		this.fixedDenominator = fixedDenominator;
+		denominator.setLastValue( fixedDenominator );
 	}
 
 	/**
@@ -54,12 +51,7 @@ public class Reciprocal extends UGen
 	{
 		for( int i = 0; i < channels.length; i++ )
 		{
-			if ( denominator.isPatched() )
-			{
-				channels[ i ] = 1.0f/denominator.getLastValues()[ 0 ];
-			} else {
-				channels[ i ] = 1.0f/fixedDenominator;
-			}
+			channels[ i ] = 1.0f / denominator.getLastValue();
 		}
 	} 
 }
