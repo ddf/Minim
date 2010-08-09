@@ -132,14 +132,11 @@ public class GranulateRandom extends UGen
 		grainLenMax = new UGenInput( InputType.CONTROL );
 		spaceLenMax = new UGenInput( InputType.CONTROL );
 		fadeLenMax = new UGenInput( InputType.CONTROL );
-		this.grainLengthMin = grainLengthMin;
-		this.spaceLengthMin = spaceLengthMin;
-		this.fadeLengthMin = fadeLengthMin;
-		this.grainLengthMax = grainLengthMax;
-		this.spaceLengthMax = spaceLengthMax;
-		this.fadeLengthMax = fadeLengthMax;
-		this.minAmp = minAmp;
-		this.maxAmp = maxAmp;
+		
+		setAllParameters( grainLengthMin, spaceLengthMin, fadeLengthMin, 
+		                  grainLengthMax, spaceLengthMax, fadeLengthMax,
+		                  minAmp, maxAmp );
+		
 		insideGrain = false;
 		timeSinceGrainStart = 0.0f;
 		timeSinceGrainStop = 0.0f;
@@ -172,12 +169,7 @@ public class GranulateRandom extends UGen
 	public void setAllTimeParameters(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
 			float grainLengthMax, float spaceLengthMax, float fadeLengthMax)
 	{
-		this.grainLengthMin = grainLengthMin;
-		this.spaceLengthMin = spaceLengthMin;
-		this.fadeLengthMin = fadeLengthMin;
-		this.grainLengthMax = grainLengthMax;
-		this.spaceLengthMax = spaceLengthMax;
-		this.fadeLengthMax = fadeLengthMax;
+	  setAllParameters(grainLengthMin, spaceLengthMin, fadeLengthMin, grainLengthMax, spaceLengthMax, fadeLengthMax, minAmp, maxAmp);
 	}
 
 	/**
@@ -203,26 +195,37 @@ public class GranulateRandom extends UGen
 			float grainLengthMax, float spaceLengthMax, float fadeLengthMax,
 			float minAmp, float maxAmp)
 	{
+	  grainLenMin.setLastValue(grainLengthMin);
+	  grainLenMax.setLastValue(grainLengthMax);
+	  fadeLenMin.setLastValue(fadeLengthMin);
+	  fadeLenMax.setLastValue(fadeLengthMax);
+	  spaceLenMin.setLastValue(spaceLengthMin);
+	  spaceLenMax.setLastValue(spaceLengthMax);
+	  
 		this.grainLengthMin = grainLengthMin;
 		this.spaceLengthMin = spaceLengthMin;
 		this.fadeLengthMin = fadeLengthMin;
 		this.grainLengthMax = grainLengthMax;
 		this.spaceLengthMax = spaceLengthMax;
 		this.fadeLengthMax = fadeLengthMax;
+		
 		this.minAmp = minAmp;
 		this.maxAmp = maxAmp;	
 	}
+	
 	// This makes sure that fadeLength isn't more than half the grainLength
 	private void checkFadeLength()
 	{
 		fadeLength = Math.min( fadeLength, grainLength/2.0f );
 	}
+	
 	// This is just a helper function to generate a random number between two others.
 	// TODO place randomBetween somewhere more generic and useful.
 	private float randomBetween( float min, float max )
 	{
 		return (max - min)*(float)Math.random()	+ min;
 	}
+	
 	// Make the samples.  Must make the samples
 	@Override
 	protected void uGenerate( float[] channels ) 

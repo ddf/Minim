@@ -102,11 +102,11 @@ public abstract class UGen
         if ( m_lastValues.length != numberOfChannels )
         {
           m_lastValues = new float[numberOfChannels];
-          // make sure our incoming UGen knows about this
-          if ( m_inputType == InputType.AUDIO && m_incoming != null )
-          {
-            m_incoming.setAudioChannelCount( numberOfChannels );
-          }
+        }
+        // make sure our incoming UGen knows about this
+        if ( m_inputType == InputType.AUDIO && m_incoming != null )
+        {
+          m_incoming.setAudioChannelCount( numberOfChannels );
         }
       }
 	    

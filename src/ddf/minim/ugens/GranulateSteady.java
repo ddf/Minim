@@ -34,6 +34,8 @@ public class GranulateSteady extends UGen
 	private float timeStep;
 	
 	// variables to keep track of the grain values
+	// these are only set when appropriate for the algorithm
+	// the user-manipulated values are held by the inputs
 	private float grainLength = 0.010f;
 	private float spaceLength = 0.020f;
 	private float fadeLength = 0.0025f;
@@ -90,11 +92,7 @@ public class GranulateSteady extends UGen
 		spaceLen = new UGenInput( InputType.CONTROL );
 		fadeLen = new UGenInput( InputType.CONTROL );
 		//amplitude = new UGenInput(InputType.CONTROL);
-		this.grainLength = grainLength;
-		this.spaceLength = spaceLength;
-		this.fadeLength = fadeLength;
-		this.minAmp = minAmp;
-		this.maxAmp = maxAmp;
+		setAllParameters( grainLength, spaceLength, fadeLength, minAmp, maxAmp );
 		insideGrain = true;
 		timeSinceGrainStart = 0.0f;
 		timeSinceGrainStop = 0.0f;
@@ -120,9 +118,7 @@ public class GranulateSteady extends UGen
 	 */
 	public void setAllTimeParameters( float grainLength, float spaceLength, float fadeLength )
 	{
-		this.grainLength = grainLength;
-		this.spaceLength = spaceLength;
-		this.fadeLength = fadeLength;
+		setAllParameters( grainLength, spaceLength, fadeLength, minAmp, maxAmp );
 	}
 
 	/**
@@ -141,6 +137,9 @@ public class GranulateSteady extends UGen
 	public void setAllParameters( float grainLength, float spaceLength, float fadeLength,
 			float minAmp, float maxAmp)
 	{
+	  grainLen.setLastValue(grainLength);
+	  spaceLen.setLastValue(spaceLength);
+	  fadeLen.setLastValue(fadeLength);
 		this.grainLength = grainLength;
 		this.spaceLength = spaceLength;
 		this.fadeLength = fadeLength;
