@@ -64,12 +64,16 @@ public abstract class IIRFilter extends UGen implements AudioEffect
   public IIRFilter(float freq, float sampleRate)
   {
   	super();
+  	setSampleRate(sampleRate);
+  	
   	audio = new UGenInput(InputType.AUDIO);
   	cutoff = new UGenInput(InputType.CONTROL);
-    setSampleRate(sampleRate);
-    prevCutoff = -1;
-    setFreq(freq);
-    initArrays(2);
+  	
+  	// set our center frequency
+  	cutoff.setLastValue(freq);
+  	
+  	// force use to calculate coefficients the first time we generate
+  	prevCutoff = -1.f;
   }
 
   /**
@@ -77,7 +81,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
    * used.
    * 
    */
-  protected final synchronized void initArrays(int numChannels)
+  private final void initArrays(int numChannels)
   {
     int memSize = (a.length >= b.length) ? a.length : b.length;
     in = new float[numChannels][memSize];
@@ -86,11 +90,19 @@ public abstract class IIRFilter extends UGen implements AudioEffect
   
   public final synchronized void uGenerate(float[] channels)
   {
+    // make sure our coefficients are up-to-date
+    if ( cutoff.getLastValue() != prevCutoff )
+    {
+      calcCoeff();
+      prevCutoff = cutoff.getLastValue();
+    }
+    
 	  // make sure we have enough filter buffers 
-	  if ( in.length < channels.length )
+	  if ( in == null || in.length < channels.length )
 	  {
 		  initArrays(channels.length);
 	  }
+	  
 	  // apply the filter to the sample value in each channel
 	  for(int i = 0; i < channels.length; i++)
 	  {
@@ -110,12 +122,6 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 		  out[i][0] = y;
 		  channels[i] = y;
 	  }
-    
-    if ( cutoff.getLastValue() != prevCutoff )
-    {
-      calcCoeff();
-      prevCutoff = cutoff.getLastValue();
-    }
   }
 
   public final synchronized void process(float[] signal)

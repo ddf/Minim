@@ -52,10 +52,12 @@ public class ChebFilter extends IIRFilter
   public static final int LP = 1;
   /** A constant used to indicate a high pass filter. */
   public static final int HP = 2;
+  
   private static final float PI = (float) Math.PI;
+  private static final float TWO_PI = (float)Math.PI * 2.f;
+  
   private int type, poles;
   private float ripple;
-  private boolean canCalc;
 
   /**
    * Constructs a Chebyshev filter with a cutoff of the given frequency, of the given
@@ -78,13 +80,10 @@ public class ChebFilter extends IIRFilter
       float sampleRate)
   {
     super(frequency, sampleRate);
-    canCalc = false;
-    setType(type);
-    setRipple(ripple);
-    setPoles(poles);
-    canCalc = true;
-    calcCoeff();
-    initArrays(2);
+    
+    this.type = type;
+    this.ripple = ripple;
+    this.poles = poles;
   }
 
   /**
@@ -100,8 +99,12 @@ public class ChebFilter extends IIRFilter
       Minim.error("Invalid filter type, defaulting to low pass.");
       t = LP;
     }
-    type = t;
-    calcCoeff();
+    
+    if ( type != t )
+    {
+      type = t;
+      calcCoeff();
+    }
   }
 
   /**
@@ -120,8 +123,11 @@ public class ChebFilter extends IIRFilter
    */
   public void setRipple(float r)
   {
-    ripple = r;
-    calcCoeff();
+    if ( ripple != r )
+    {
+      ripple = r;
+      calcCoeff();
+    }
   }
 
   /**
@@ -175,8 +181,7 @@ public class ChebFilter extends IIRFilter
   {
     if (p < 2)
     {
-      Minim
-          .error("ChebFilter.setPoles: The number of poles must be at least 2.");
+      Minim.error("ChebFilter.setPoles: The number of poles must be at least 2.");
       return;
     }
     if (p % 2 != 0)
@@ -190,7 +195,6 @@ public class ChebFilter extends IIRFilter
     }
     poles = p;
     calcCoeff();
-    initArrays(2);
   }
 
   /**
@@ -202,40 +206,52 @@ public class ChebFilter extends IIRFilter
   {
     return poles;
   }
+  
+  //where the poles will wind up
+  float[] ca = new float[23];
+  float[] cb = new float[23];
+  
+  // temporary arrays for working with ca and cb
+  float[] ta = new float[23];
+  float[] tb = new float[23];
+  
+  //arrays to hold the two-pole coefficients
+  // used during the aggregation process
+  float[] pa = new float[3]; 
+  float[] pb = new float[2]; 
 
   protected synchronized void calcCoeff()
   {
-    a = new float[0];
-    b = new float[0];
-    if (!canCalc) return;
-    // where the poles will wind up
-    float[] ca = new float[23];
-    float[] cb = new float[23];
-    // temporary arrays for working with ca and cb
-    float[] ta = new float[23];
-    float[] tb = new float[23];
-    // arrays to hold the two-pole coefficients
-    // used during the aggregation process
-    float[] pa = new float[3];
-    float[] pb = new float[2];
+    System.out.println("ChebFilter is calculating coefficients...");
+    
+    // initialize our arrays
+    for(int i = 0; i < 23; ++i)
+    {
+      ca[i] = cb[i] = ta[i] = tb[i] = 0.f;
+    }
+    
     // I don't know why this must be done
-    ca[2] = 1;
-    cb[2] = 1;
+    ca[2] = 1.f;
+    cb[2] = 1.f;
+    
     // calculate two poles at a time
     for (int p = 1; p <= poles / 2; p++)
     {
       // calc pair p, put the results in pa and pb
       calcTwoPole(p, pa, pb);
+      
       // copy ca and cb into ta and tb
       System.arraycopy(ca, 0, ta, 0, ta.length);
       System.arraycopy(cb, 0, tb, 0, tb.length);
+      
       // add coefficients to the cascade
       for (int i = 2; i < 23; i++)
       {
-        ca[i] = pa[0] * ta[i] + pa[1] * ta[i - 1] + pa[2] * ta[i - 2];
-        cb[i] = tb[i] - pb[0] * tb[i - 1] - pb[1] * tb[i - 2];
+        ca[i] = pa[0]*ta[i] + pa[1]*ta[i-1] + pa[2]* ta[i-2];
+        cb[i] = tb[i] - pb[0]*tb[i-1] - pb[1] * tb[i-2];
       }
     }
+    
     // final stage of combining coefficients
     cb[2] = 0;
     for (int i = 0; i < 21; i++)
@@ -243,6 +259,7 @@ public class ChebFilter extends IIRFilter
       ca[i] = ca[i + 2];
       cb[i] = -cb[i + 2];
     }
+    
     // normalize the gain
     float sa = 0;
     float sb = 0;
@@ -259,14 +276,24 @@ public class ChebFilter extends IIRFilter
         sb += cb[i] * (float) Math.pow(-1, i);
       }
     }
+    
     float gain = sa / (1 - sb);
+    
     for (int i = 0; i < 21; i++)
     {
       ca[i] /= gain;
     }
+    
     // initialize the coefficient arrays used by process()
-    a = new float[poles + 1];
-    b = new float[poles];
+    // but only if the number of poles has changed
+    if ( a == null || a.length != poles + 1 )
+    {
+      a = new float[poles + 1];
+    }
+    if ( b == null || b.length != poles )
+    {
+      b = new float[poles];
+    }
     // copy the values from ca and cb into a and b
     // in this implementation cb[0] = 0 and cb[1] is where
     // the b coefficients begin, so they are numbered the way
@@ -280,42 +307,95 @@ public class ChebFilter extends IIRFilter
   private void calcTwoPole(int p, float[] pa, float[] pb)
   {
     float np = (float) poles;
+    
+    // precalc
     float angle = PI / (np * 2) + (p - 1) * PI / np;
+    
     float rp = -(float) Math.cos(angle);
     float ip = (float) Math.sin(angle);
+    
     // warp from a circle to an ellipse
     if (ripple > 0)
     {
-      float es = 1 / (float) Math
-          .sqrt(Math.pow(100.0f / (100.0f - ripple), 2) - 1);
-      float vx = (1 / np) * (float) Math.log(es + Math.sqrt(es * es + 1));
-      float kx = (1 / np) * (float) Math.log(es + Math.sqrt(es * es - 1));
-      kx = (float) (Math.exp(kx) + Math.exp(-kx)) / 2;
-      rp *= ((Math.exp(vx) - Math.exp(-vx)) / 2) / kx;
-      ip *= ((Math.exp(vx) + Math.exp(-vx)) / 2) / kx;
+      // precalc
+      float ratio = 100.f / (100.f - ripple);
+      float ratioSquared = ratio * ratio;
+      
+      float es = 1.f / (float) Math.sqrt( ratioSquared - 1.f );
+      
+      float oneOverNP = 1.f / np;
+      float esSquared = es * es;
+      
+      float vx = oneOverNP * (float) Math.log( es + Math.sqrt(esSquared + 1.f) );
+      float kx = oneOverNP * (float) Math.log( es + Math.sqrt(esSquared - 1.f) );
+      
+      float expKX = (float)Math.exp(kx);
+      float expNKX = (float)Math.exp(-kx);
+      
+      kx = (expKX + expNKX) * 0.5f;
+      
+      float expVX = (float)Math.exp(vx);
+      float expNVX = (float)Math.exp(-vx);
+      float oneOverKX = 1.f / kx;
+      
+      rp *= ( (expVX - expNVX) * 0.5f ) * oneOverKX;
+      ip *= ( (expVX + expNVX) * 0.5f ) * oneOverKX;
     }
+    
     // s-domain to z-domain conversion
-    float t = 2 * (float) Math.tan(0.5);
-    float w = 2 * PI * (frequency()/sampleRate());
+    float t = 2.f * (float) Math.tan(0.5f);
+    float w = TWO_PI * ( frequency() / sampleRate() );
     float m = rp * rp + ip * ip;
-    float d = 4 - 4 * rp * t + m * t * t;
-    float x0 = (t * t) / d;
-    float x1 = (2 * t * t) / d;
-    float x2 = (t * t) / d;
-    float y1 = (8 - 2 * m * t * t) / d;
-    float y2 = (-4 - 4 * rp * t - m * t * t) / d;
+    
+    // precalc
+    float fourTimesRPTimesT = 4.f * rp * t;
+    float tSquared = t * t;
+    float mTimesTsquared = m * tSquared;
+    float tSquaredTimes2 = 2.f * tSquared;
+    
+    float d = 4.f - fourTimesRPTimesT + mTimesTsquared;
+    
+    // precalc
+    float oneOverD = 1.f / d;
+    
+    float x0 =  tSquared * oneOverD;
+    float x1 =  tSquaredTimes2 * oneOverD;
+    float x2 = x0;
+    
+    float y1 = ( 8.f - (tSquaredTimes2 * m) ) * oneOverD;
+    float y2 = ( -4.f - fourTimesRPTimesT - mTimesTsquared ) * oneOverD;
+    
     // LP to LP, or LP to HP transform
     float k;
+    float halfW = w*0.5f;
+    
     if (type == HP)
-      k = -(float) Math.cos(w / 2 + 0.5f) / (float) Math.cos(w / 2 - 0.5f);
+    {
+      k = -(float)Math.cos( halfW + 0.5f ) / (float)Math.cos( halfW - 0.5f );
+    }
     else
-      k = (float) Math.sin(0.5f - w / 2) / (float) Math.sin(0.5 + w / 2);
-    d = 1 + y1 * k - y2 * k * k;
-    pa[0] = (x0 - x1 * k + x2 * k * k) / d;
-    pa[1] = (-2 * x0 * k + x1 + x1 * k * k - 2 * x2 * k) / d;
-    pa[2] = (x0 * k * k - x1 * k + x2) / d;
-    pb[0] = (2 * k + y1 + y1 * k * k - 2 * y2 * k) / d;
-    pb[1] = (-(k * k) - y1 * k + y2) / d;
+    {
+      k = (float)Math.sin(0.5f - halfW) / (float)Math.sin(0.5f + halfW);
+    }
+    
+    // precalc
+    float kSquared = k * k;
+    float x1timesK = x1 * k;
+    float kDoubled = 2.f * k;
+    float y1timesK = y1 * k;
+    
+    d = 1.f + y1timesK - y2 * kSquared;
+    
+    // precalc
+    oneOverD = 1.f / d;
+    
+    pa[0] = ( x0 - x1timesK + (x2 * kSquared) ) * oneOverD;
+    pa[1] = ( (-kDoubled * x0) + x1 + (x1 * kSquared) - (kDoubled * x2) ) * oneOverD;
+    pa[2] = ( (x0 * kSquared) - x1timesK + x2) * oneOverD;
+    
+    pb[0] = ( kDoubled + y1 + (y1 * kSquared) - (y2 * kDoubled) ) * oneOverD;
+    pb[1] = ( -kSquared - y1timesK + y2 ) * oneOverD;
+    
     if (type == HP)
     {
       pa[1] = -pa[1];
