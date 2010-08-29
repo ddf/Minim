@@ -225,7 +225,7 @@ public class JSMinim implements MinimServiceProvider
 				SourceDataLine line = getSourceDataLine(format, bufferSize);
 				if (decAis != null && line != null)
 				{
-					Map props = getID3Tags(filename);
+					Map<String, Object> props = getID3Tags(filename);
 					long lengthInMillis = -1;
 					if (props.containsKey("duration"))
 					{
@@ -255,10 +255,11 @@ public class JSMinim implements MinimServiceProvider
 		return mstream;
 	}
 
-	private Map getID3Tags(String filename)
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getID3Tags(String filename)
 	{
 		debug("Getting the properties.");
-		Map props = new HashMap();
+		Map<String, Object> props = new HashMap<String, Object>();
 		try
 		{
 			MpegAudioFileReader reader = new MpegAudioFileReader(this);
@@ -270,7 +271,7 @@ public class JSMinim implements MinimServiceProvider
 			if (baseFileFormat instanceof TAudioFileFormat)
 			{
 				TAudioFileFormat fileFormat = (TAudioFileFormat)baseFileFormat;
-				props = fileFormat.properties();
+				props = (Map<String, Object>)fileFormat.properties();
 				if (props.size() == 0)
 				{
 					error("No file properties available for " + filename + ".");
@@ -328,7 +329,7 @@ public class JSMinim implements MinimServiceProvider
 				// converts the stream to PCM audio from mp3 audio
 				ais = getAudioInputStream(format, ais);
 				// get a map of properties so we can find out how long it is
-				Map props = getID3Tags(filename);
+				Map<String, Object> props = getID3Tags(filename);
 				// there is a property called mp3.length.bytes, but that is
 				// the length in bytes of the mp3 file, which will of course
 				// be much shorter than the decoded version. so we use the
@@ -451,7 +452,7 @@ public class JSMinim implements MinimServiceProvider
 					error("Error obtaining Javasound Clip: " + e.getMessage());
 					return null;
 				}
-				Map props = getID3Tags(filename);
+				Map<String, Object> props = getID3Tags(filename);
 				long lengthInMillis = -1;
 				if (props.containsKey("duration"))
 				{
@@ -494,7 +495,7 @@ public class JSMinim implements MinimServiceProvider
 				// converts the stream to PCM audio from mp3 audio
 				ais = getAudioInputStream(format, ais);
 				//	 get a map of properties so we can find out how long it is
-				Map props = getID3Tags(filename);
+				Map<String, Object> props = getID3Tags(filename);
 				// there is a property called mp3.length.bytes, but that is
 				// the length in bytes of the mp3 file, which will of course
 				// be much shorter than the decoded version. so we use the

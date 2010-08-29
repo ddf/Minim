@@ -222,7 +222,7 @@ public class ChebFilter extends IIRFilter
 
   protected synchronized void calcCoeff()
   {
-    System.out.println("ChebFilter is calculating coefficients...");
+    // System.out.println("ChebFilter is calculating coefficients...");
     
     // initialize our arrays
     for(int i = 0; i < 23; ++i)

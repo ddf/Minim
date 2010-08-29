@@ -22,9 +22,9 @@ import java.util.Map;
 
 class MP3MetaData extends BasicMetaData
 {
-	private Map mTags;
+	private Map<String, Object> mTags;
 	
-	MP3MetaData(String filename, long length, Map tags)
+	MP3MetaData(String filename, long length, Map<String, Object> tags)
 	{
 		super(filename, length, -1);
 		mTags = tags;
