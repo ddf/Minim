@@ -144,10 +144,10 @@ public abstract class UGen
 	    public void setIncomingUGen(UGen in)
 	    {      
 	    	m_incoming = in;
-        if ( m_inputType == InputType.AUDIO )
-        {
-          m_incoming.setAudioChannelCount( m_lastValues.length );
-        }
+            if ( m_incoming != null && m_inputType == InputType.AUDIO )
+            {
+              m_incoming.setAudioChannelCount( m_lastValues.length );
+            }
 	    }
 	    
 	    /**

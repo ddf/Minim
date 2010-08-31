@@ -81,19 +81,21 @@ public class NoteManager
 		int on = now + (int)(out.sampleRate() * ( startTime + noteOffset ) * 60f/tempo);
 		Integer onAt = new Integer( on );
 		
+		float actualDuration = duration * durationFactor * 60f/tempo;
+		
 		if ( events.containsKey(onAt) )
 		{
 			ArrayList<NoteEvent> eventsAtOn = events.get(onAt);
-			eventsAtOn.add( new NoteOnEvent(instrument, duration) );
+			eventsAtOn.add( new NoteOnEvent(instrument, actualDuration) );
 		}
 		else
 		{
 			ArrayList<NoteEvent> eventsAtOn = new ArrayList<NoteEvent>();
-			eventsAtOn.add( new NoteOnEvent(instrument, duration) );
+			eventsAtOn.add( new NoteOnEvent(instrument, actualDuration) );
 			events.put(onAt, eventsAtOn);
 		}
 		
-		Integer offAt = new Integer( on + (int)(out.sampleRate() * duration * durationFactor * 60f/tempo) );
+		Integer offAt = new Integer( on + (int)(out.sampleRate() * actualDuration) );
 		
 		if ( events.containsKey(offAt) )
 		{
