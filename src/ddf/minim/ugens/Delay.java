@@ -131,13 +131,22 @@ public class Delay extends UGen
 		// jam3: These can't be instantiated until the uGenInputs ArrayList
 		//       in the super UGen has been constructed
 		audio = new UGenInput( InputType.AUDIO );
+		
+		// time members
 		delTime = new UGenInput( InputType.CONTROL );
-		delAmp = new UGenInput( InputType.CONTROL );
+		delTime.setLastValue( maxDelayTime );
 		this.maxDelayTime = maxDelayTime;
+		delayTime = maxDelayTime;
+		
+		// amplitude member
+		delAmp = new UGenInput( InputType.CONTROL );
+		delAmp.setLastValue( amplitudeFactor );
 		this.amplitudeFactor = amplitudeFactor;
+
+		// flags
 		this.feedBackOn = feedBackOn;
 		this.passAudioOn = passAudioOn;
-		delayTime = this.maxDelayTime;
+
 		iBufferIn = 0;
 		iBufferOut = 0;
 		bufferSize = 0;
@@ -175,22 +184,24 @@ public class Delay extends UGen
      * 		It can be up to the maxDelayTime specified.
      * 		The lowest it can be is 1/sampleRate.	
      */
-	public void setDelTime( float delTime )
+	public void setDelTime( float delayTime )
 	{
-		this.delayTime = delTime;
+		this.delayTime = delayTime;
+		delTime.setLastValue( delayTime );
 		bufferSizeChanged();
 	}
 	
 	/**
 	 * changes the feedback amplification of the echos.
-	 * @param delAmp
+	 * @param delayAmplitude
 	 * 		This should normally be between 0 and 1 for decreasing feedback.
 	 * 		Phase inverted feedback can be generated with negative numbers, but each echa will be the inverse
 	 * 		of the one before it.
 	 */
-	public void setDelAmp( float delAmp )
+	public void setDelAmp( float delayAmplitude )
 	{
-		this.amplitudeFactor = delAmp;
+	    amplitudeFactor = delayAmplitude;
+		delAmp.setLastValue( delayAmplitude );
 	}
 
 	@Override
