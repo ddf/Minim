@@ -81,6 +81,7 @@ public class Line extends UGen
 	public void activate()
 	{
 		lineNow = 0f;
+		amp = begAmp;
 		isActivated = true;
 	}
 	
