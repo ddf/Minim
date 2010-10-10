@@ -48,6 +48,7 @@ public class ADSR extends UGen
 	// unpatch the note after it's finished
 	private boolean unpatchAfterRelease;
 	private AudioOutput output;
+	private UGen ugenOutput;
 	
 	/**
 	 * Constructor for an ADSR envelope.
@@ -194,6 +195,16 @@ public class ADSR extends UGen
 		this.output = output;
 	}
 	
+	/**
+	 * Tell the ADSR that it should unpatch itself from this UGen after the release time.
+	 * 
+	 */
+	public void unpatchAfterRelease( UGen ugen )
+	{
+	    unpatchAfterRelease = true;
+	    ugenOutput = ugen;
+	}
+	
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
@@ -214,7 +225,16 @@ public class ADSR extends UGen
 			}	
 			if ( unpatchAfterRelease )
 			{
-			 	unpatch( output );
+			    if ( output != null )
+			    {
+			        unpatch( output );
+			        output = null;
+			    }
+			    if ( ugenOutput != null )
+			    {
+			        unpatch( ugenOutput );
+			        ugenOutput = null;
+			    }
 			 	Minim.debug(" unpatching ADSR ");
 			}
 		}
