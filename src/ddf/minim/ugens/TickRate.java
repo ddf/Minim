@@ -27,9 +27,14 @@ public class TickRate extends UGen
 		bInterpolate = false;
 	}
 	
-	public void setInterpolation( boolean doInterpolate )
+	public final void setInterpolation( boolean doInterpolate )
 	{
 		bInterpolate = doInterpolate;
+	}
+	
+	public final boolean isInterpolating()
+	{
+	    return bInterpolate;
 	}
 	
 	@Override

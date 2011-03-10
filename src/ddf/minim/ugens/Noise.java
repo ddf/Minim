@@ -71,6 +71,23 @@ public class Noise extends UGen
 		}
 	}
 	
+	public void setTint( Tint noiseType )
+	{
+	    if ( tint != noiseType )
+	    {
+	        if ( noiseType == Tint.PINK )
+	        {
+	            initPink();
+	        }
+	        tint = noiseType;
+	    }
+	}
+	
+	public final Tint getTint()
+	{
+	    return tint;
+	}
+	
 	@Override
 	protected void sampleRateChanged()
 	{

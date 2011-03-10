@@ -22,6 +22,12 @@ public class Oscil extends UGen
 	 */
 	public UGenInput phase;
 	
+	/**
+	 * Patch to this to control the DC offset of the Oscil.
+	 * Useful when using an Oscil as a modulator.
+	 */
+	public UGenInput offset;
+	
 	// the waveform we will oscillate over
 	private Waveform  wave;
 
@@ -89,6 +95,9 @@ public class Oscil extends UGen
     
 		phase = new UGenInput(InputType.CONTROL);
     phase.setLastValue(0.f);
+    
+        offset = new UGenInput(InputType.CONTROL);
+        offset.setLastValue( 0.f );
 		
     wave = waveform;
 		step = 0f;
@@ -206,7 +215,7 @@ public class Oscil extends UGen
 		}
 		
 		// calculate the sample value
-		float sample = outAmp * wave.value(tmpStep);
+		float sample = outAmp * wave.value(tmpStep) + offset.getLastValue();
 		
 		for(int i = 0; i < channels.length; i++)
 		{
