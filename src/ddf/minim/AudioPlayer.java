@@ -42,41 +42,6 @@ public class AudioPlayer extends AudioSource implements Playable
 	// the rec that this plays
 	private AudioRecordingStream	recording;
 	private AudioOut		output;
-	
-	// TODO: this is a temporary adaptor. eventually we want the spi output interface
-	//       to let you plug an AudioStream directly into it and NOT an AudioSignal.
-//	private class StreamSignal implements AudioSignal
-//	{
-//		private AudioStream stream;
-//		private MultiChannelBuffer buffer;
-//		
-//		public StreamSignal(AudioStream as, int bufferSize) 
-//		{ 
-//			stream = as;
-//			buffer = new MultiChannelBuffer(bufferSize, as.getFormat().getChannels());
-//		}
-//		
-//		public void generate(float[] mono)
-//		{
-//			if ( buffer.getBufferSize() != mono.length )
-//			{
-//				buffer.setBufferSize(mono.length);
-//			}
-//			stream.read(buffer);
-//			System.arraycopy(buffer.getChannel(0), 0, mono, 0, mono.length);
-//		}
-//		
-//		public void generate(float[] left, float[] right)
-//		{
-//			if ( buffer.getBufferSize() != left.length )
-//			{
-//				buffer.setBufferSize(left.length);
-//			}
-//			stream.read(buffer);
-//			System.arraycopy(buffer.getChannel(0), 0, left, 0, left.length);
-//			System.arraycopy(buffer.getChannel(1), 0, right, 0, right.length);
-//		}
-//	}
 
 	/**
 	 * Constructs an <code>AudioPlayer</code> that plays <code>recording</code>.

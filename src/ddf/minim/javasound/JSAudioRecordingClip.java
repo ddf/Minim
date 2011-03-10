@@ -31,129 +31,131 @@ import ddf.minim.spi.AudioRecording;
 /** @deprecated */
 class JSAudioRecordingClip implements AudioRecording
 {
-  private Clip c;
-  private int loopCount;
-  private AudioMetaData meta;
-  private boolean playing;
-  
-  JSAudioRecordingClip(Clip clip, AudioMetaData mdata)
-  {
-    c = clip;
-    // because Clip doesn't give access to the loop count
-    // we just loop it ourselves by triggering off of a STOP event
-    c.addLineListener(
-        new LineListener()
-        {
-          public void update(LineEvent event)
-          {
-            if ( event.getType().equals(LineEvent.Type.STOP) )
-            {
-              if ( playing && loopCount != 0 )
-              {
-                c.setMicrosecondPosition(0);
-                c.start();
-                if ( loopCount > 0 )
-                {
-                  loopCount--;
-                }
-              }
-              else
-              {
-                playing = false;
-              }
-            }
-          }
-        }
-    );
-    playing = false;
-    loopCount = 0;
-    meta = mdata;
-  }
-  public int getLoopCount()
-  {
-    return loopCount;
-  }
+	private Clip			c;
+	private int				loopCount;
+	private AudioMetaData	meta;
+	private boolean			playing;
 
-  public int getMillisecondLength()
-  {
-    return (int) c.getMicrosecondLength() / 1000;
-  }
+	JSAudioRecordingClip(Clip clip, AudioMetaData mdata)
+	{
+		c = clip;
+		// because Clip doesn't give access to the loop count
+		// we just loop it ourselves by triggering off of a STOP event
+		c.addLineListener( new LineListener()
+		{
+			public void update(LineEvent event)
+			{
+				if ( event.getType().equals( LineEvent.Type.STOP ) )
+				{
+					if ( playing && loopCount != 0 )
+					{
+						c.setMicrosecondPosition( 0 );
+						c.start();
+						if ( loopCount > 0 )
+						{
+							loopCount--;
+						}
+					}
+					else
+					{
+						playing = false;
+					}
+				}
+			}
+		} );
+		playing = false;
+		loopCount = 0;
+		meta = mdata;
+	}
 
-  public int getMillisecondPosition()
-  {
-    return (int) c.getMicrosecondPosition() / 1000;
-  }
+	public int getLoopCount()
+	{
+		return loopCount;
+	}
 
-  public AudioMetaData getMetaData()
-  {
-    return meta;
-  }
+	public int getMillisecondLength()
+	{
+		return (int)c.getMicrosecondLength() / 1000;
+	}
 
-  public boolean isPlaying()
-  {
-    return playing;
-  }
+	public int getMillisecondPosition()
+	{
+		return (int)c.getMicrosecondPosition() / 1000;
+	}
 
-  public void loop(int count)
-  {
-    play();
-    loopCount = count; 
-  }
+	public AudioMetaData getMetaData()
+	{
+		return meta;
+	}
 
-  public void setLoopPoints(int start, int end)
-  {
-    c.setLoopPoints(start, end);
-  }
+	public boolean isPlaying()
+	{
+		return playing;
+	}
 
-  public void setMillisecondPosition(int pos)
-  {
-    c.setMicrosecondPosition(pos*1000);
-  }
+	public void loop(int count)
+	{
+		play();
+		loopCount = count;
+	}
 
-  public void play()
-  {
-    if ( c.getMicrosecondPosition() != c.getMicrosecondLength() )
-    {
-      c.start();
-      playing = true;
-    }
-  }
+	public void setLoopPoints(int start, int end)
+	{
+		c.setLoopPoints( start, end );
+	}
 
-  public void pause()
-  {
-    c.stop();
-    playing = false;
-  }
+	public void setMillisecondPosition(int pos)
+	{
+		c.setMicrosecondPosition( pos * 1000 );
+	}
 
-  public void close()
-  {
-    c.close();
-  }
+	public void play()
+	{
+		if ( c.getMicrosecondPosition() != c.getMicrosecondLength() )
+		{
+			c.start();
+			playing = true;
+		}
+	}
 
-  public Control[] getControls()
-  {
-    return c.getControls();
-  }
+	public void pause()
+	{
+		c.stop();
+		playing = false;
+	}
 
-  public AudioFormat getFormat()
-  {
-    return c.getFormat();
-  }
+	public void close()
+	{
+		c.close();
+	}
 
-  public void open()
-  {
-    // don't need to do anything here
-  }
-public int bufferSize() {
-	// TODO Auto-generated method stub
-	return 0;
-}
-public float[] read() {
-	// TODO Auto-generated method stub
-	return null;
-}
-public void read(MultiChannelBuffer buffer) {
-	// TODO Auto-generated method stub
-	
-}
+	public Control[] getControls()
+	{
+		return c.getControls();
+	}
+
+	public AudioFormat getFormat()
+	{
+		return c.getFormat();
+	}
+
+	public void open()
+	{
+		// don't need to do anything here
+	}
+
+	public int bufferSize()
+	{
+		return 0;
+	}
+
+	public float[] read()
+	{
+		return null;
+	}
+
+	public void read(MultiChannelBuffer buffer)
+	{
+
+	}
 }

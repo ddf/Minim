@@ -522,7 +522,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
     // skip forward millis
     protected abstract int skip(int millis);
 
-    // TODO: this implementation is way temporary
+    // TODO: this implementation of float[] read is way temporary
     public float[] read()
     {
         if ( buffer.getSampleCount() != 1 )
@@ -542,7 +542,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         return samples;
     }
 
-    // TODO: likewise, a temporary implementation
+    // FIXME: temporary implementation of read
     public void read(MultiChannelBuffer outBuffer)
     {
         if ( buffer.getSampleCount() != outBuffer.getBufferSize() )

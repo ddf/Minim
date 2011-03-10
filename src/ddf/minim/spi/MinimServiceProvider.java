@@ -82,7 +82,7 @@ public interface MinimServiceProvider
    * 
    * @param filename the name of the file to load into the AudioRecordingStream
  * @param bufferSize the bufferSize to use in memory (implementations are free to ignore this, if they must)
- * @param inMemory TODO
+ * @param inMemory TODO figure out if this inMemory thing really makes sense.
    * @return an AudioRecording stream that will stream the file
    */
   AudioRecordingStream getAudioRecordingStream(String filename, int bufferSize, boolean inMemory);

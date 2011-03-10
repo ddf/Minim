@@ -105,7 +105,7 @@ final class JSAudioOutput extends Thread implements AudioOut
 		line = null;
 	}
 
-	// TODO: ditch this eventually
+	// TODO: ditch readSignal eventually
 	private void readSignal() 
 	{
 		if (line.getFormat().getChannels() == Minim.MONO)

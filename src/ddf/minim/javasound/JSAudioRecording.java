@@ -31,6 +31,7 @@ import ddf.minim.spi.AudioRecording;
 
 // TODO: there is so much here that is the same as JSBaseAudioRecordingStream
 //       should find a way to share that code.
+// TODO (ddf): really need to talk about why this is deprecated and how to deal with it moving forward.
 /** @deprecated */
 class JSAudioRecording implements AudioRecording, Runnable
 {
@@ -344,19 +345,16 @@ class JSAudioRecording implements AudioRecording, Runnable
 
     public int bufferSize()
     {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public float[] read()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void read(MultiChannelBuffer buffer)
     {
-        // TODO Auto-generated method stub
 
     }
 }

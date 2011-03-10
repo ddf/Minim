@@ -194,25 +194,6 @@ public class Waves
 		return builtWave;
 	}
 	
-	// TODO rewrite RandomPulses to be more comprehensible
-	//random impulses, proba being proportional to the number of impulses
-	//values for proba : 1 to 100
-	/*
-	public static Wavetable RandomPulses(float proba)
-	{
-		float[] a = new float[tableSize];
-		if(proba<1 || proba > 100) proba=50;//could be changed for more freedom
-		proba = 1 - proba/10000;
-		for(int i=0;i<a.length;i++)
-		{
-			if(Math.random()>proba) a[i]=(float)Math.random()*2-1;
-		}
-		Wavetable rand = new Wavetable(a);
-		rand.normalize();
-		return rand;
-	}
-	*/
-	
 	/**
 	 * Adds any number of Wavetables, each with their own amplitude
 	 * @param amps

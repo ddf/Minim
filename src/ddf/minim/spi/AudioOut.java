@@ -31,7 +31,6 @@ import ddf.minim.AudioSignal;
  * @author Damien Di Fede
  * 
  */
-// TODO: this shouldn't be an audio stream because it's meant to be an OUTPUT
 public interface AudioOut extends AudioResource
 {
   /**
@@ -45,6 +44,7 @@ public interface AudioOut extends AudioResource
    * @param signal
    *          the AudioSignal used to generate sound
    */
+  // TODO (ddf) this needs to go away at some point
   void setAudioSignal(AudioSignal signal);
   
   /**
@@ -59,6 +59,7 @@ public interface AudioOut extends AudioResource
    * @param effect
    *          the AudioEffect to apply to the signal
    */
+  // TODO (ddf) this needs to go away at some point
   void setAudioEffect(AudioEffect effect);
   
   /**

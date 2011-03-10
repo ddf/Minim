@@ -18,11 +18,7 @@
 
 package ddf.minim;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.Control;
-
 import ddf.minim.spi.AudioOut;
-import ddf.minim.spi.AudioStream;
 import ddf.minim.ugens.DefaultInstrument;
 import ddf.minim.ugens.Frequency;
 import ddf.minim.ugens.Instrument;
@@ -41,245 +37,238 @@ import ddf.minim.ugens.Summer;
  */
 public class AudioOutput extends AudioSource implements Polyphonic
 {
-  // the synth attach our signals to
-  private AudioOut synth;
-  // the signals added by the user
-  private SignalChain signals;
-  // the note manager for this output
-  private NoteManager noteManager;  
-  // the Bus for UGens used by this output
-  public final Summer bus;
-  
-  private class SampleGenerator implements AudioSignal
-  {
-    public void generate(float[] signal)
-    {
-      if ( signals.size() > 0 )
-      {
-        signals.generate(signal);
-      }
-      
-      float[] tick = new float[1];
-      for(int i = 0; i < signal.length; ++i)
-      {
-        noteManager.tick();
-        bus.tick(tick);
-        signal[i] += tick[0];
-      }
-    }
+	// the synth attach our signals to
+	private AudioOut	synth;
+	// the signals added by the user
+	private SignalChain	signals;
+	// the note manager for this output
+	private NoteManager	noteManager;
+	// the Bus for UGens used by this output
+	public final Summer	bus;
 
-    public void generate(float[] left, float[] right)
-    {
-      if ( signals.size() > 0 )
-      {
-        signals.generate(left, right);
-      }
-      
-      float[] tick = new float[2];
-      for(int i = 0; i < left.length; ++i)
-      {
-        noteManager.tick();
-        bus.tick(tick);
-        left[i] += tick[0];
-        right[i] += tick[1];
-      }
-    }   
-  }
+	private class SampleGenerator implements AudioSignal
+	{
+		public void generate(float[] signal)
+		{
+			if ( signals.size() > 0 )
+			{
+				signals.generate( signal );
+			}
 
-  /**
-   * Constructs an <code>AudioOutput</code> that will subscribe its buffers to
-   * <code>synthesizer</code> and be able to control the <code>DataLine</code>
-   * the synthesizer uses for output. If the synth does not have an associated
-   * <code>DataLine</code>, then calls to <code>Controller</code>'s
-   * methods will result in a <code>NullPointerException</code>.
-   * 
-   * @param synthesizer
-   *          the <code>AudioSynthesizer</code> to subscribe to
-   */
-  public AudioOutput(AudioOut synthesizer)
-  {
-    super(synthesizer);
-    synth = synthesizer;
-    signals = new SignalChain();
-    noteManager = new NoteManager(this);
-    // TODO ddf: this is problematic. just adding the bus to the signal chain
-    //      is not OK because it will change the indexing for getSignal to be
-    //      one off from what users expect. the easiest thing to do would be 
-    //      to have a second signal chain that bus and signals are added to 
-    //      and then set that one as the audio signal for the synth. though
-    //      that does put us in the situation of possibly answering FALSE for 
-    //      isSounding when they've patched in some UGens and can hear audio.
-    //      Though this could all be moot if we simply toss all the AudioSignal 
-    //      stuff in favor of using only UGens.
-    bus = new Summer();
-    // configure it
-    bus.setSampleRate( getFormat().getSampleRate() );
-    bus.setAudioChannelCount( getFormat().getChannels() );
-    
-    synth.setAudioSignal( new SampleGenerator() );
-  }
+			float[] tick = new float[1];
+			for ( int i = 0; i < signal.length; ++i )
+			{
+				noteManager.tick();
+				bus.tick( tick );
+				signal[i] += tick[0];
+			}
+		}
 
-  public void addSignal(AudioSignal signal)
-  {
-    signals.add(signal);
-  }
+		public void generate(float[] left, float[] right)
+		{
+			if ( signals.size() > 0 )
+			{
+				signals.generate( left, right );
+			}
 
-  public AudioSignal getSignal(int i)
-  {
-	  // get i+1 because the bus is signal 0.
-    return signals.get(i);
-  }
+			float[] tick = new float[2];
+			for ( int i = 0; i < left.length; ++i )
+			{
+				noteManager.tick();
+				bus.tick( tick );
+				left[i] += tick[0];
+				right[i] += tick[1];
+			}
+		}
+	}
 
-  public void removeSignal(AudioSignal signal)
-  {
-    signals.remove(signal);
-  }
+	/**
+	 * Constructs an <code>AudioOutput</code> that will subscribe its buffers to
+	 * <code>synthesizer</code> and be able to control the <code>DataLine</code>
+	 * the synthesizer uses for output. If the synth does not have an associated
+	 * <code>DataLine</code>, then calls to <code>Controller</code>'s methods
+	 * will result in a <code>NullPointerException</code>.
+	 * 
+	 * @param synthesizer
+	 *            the <code>AudioSynthesizer</code> to subscribe to
+	 */
+	public AudioOutput(AudioOut synthesizer)
+	{
+		super( synthesizer );
+		synth = synthesizer;
+		signals = new SignalChain();
+		noteManager = new NoteManager( this );
+		bus = new Summer();
+		// configure it
+		bus.setSampleRate( getFormat().getSampleRate() );
+		bus.setAudioChannelCount( getFormat().getChannels() );
 
-  public AudioSignal removeSignal(int i)
-  {
-	  // remove i+1 because the bus is 1
-    return signals.remove(i);
-  }
+		synth.setAudioSignal( new SampleGenerator() );
+	}
 
-  public void clearSignals()
-  {
-    signals.clear();
-  }
+	public void addSignal(AudioSignal signal)
+	{
+		signals.add( signal );
+	}
 
-  public void disableSignal(int i)
-  {
-	  // disable i+1 because the bus is 0
-    signals.disable(i);
-  }
+	public AudioSignal getSignal(int i)
+	{
+		// get i+1 because the bus is signal 0.
+		return signals.get( i );
+	}
 
-  public void disableSignal(AudioSignal signal)
-  {
-    signals.disable(signal);
-  }
+	public void removeSignal(AudioSignal signal)
+	{
+		signals.remove( signal );
+	}
 
-  public void enableSignal(int i)
-  {
-    signals.enable(i);
-  }
+	public AudioSignal removeSignal(int i)
+	{
+		// remove i+1 because the bus is 1
+		return signals.remove( i );
+	}
 
-  public void enableSignal(AudioSignal signal)
-  {
-    signals.enable(signal);
-  }
+	public void clearSignals()
+	{
+		signals.clear();
+	}
 
-  public boolean isEnabled(AudioSignal signal)
-  {
-    return signals.isEnabled(signal);
-  }
+	public void disableSignal(int i)
+	{
+		// disable i+1 because the bus is 0
+		signals.disable( i );
+	}
 
-  public boolean isSounding()
-  {
-    for(int i = 1; i < signals.size(); i++)
-    {
-    	if ( signals.isEnabled( signals.get(i) ) )
-    	{
-    		return true;
-    	}
-    }
-    return false;
-  }
+	public void disableSignal(AudioSignal signal)
+	{
+		signals.disable( signal );
+	}
 
-  public void noSound()
-  {
-    for(int i = 1; i < signals.size(); i++)
-    {
-    	signals.disable(i);
-    }
-  }
+	public void enableSignal(int i)
+	{
+		signals.enable( i );
+	}
 
-  public int signalCount()
-  {
-    return signals.size();
-  }
+	public void enableSignal(AudioSignal signal)
+	{
+		signals.enable( signal );
+	}
 
-  public void sound()
-  {
-    for(int i = 1; i < signals.size(); i++)
-    {
-    	signals.enable(i);
-    }
-  }
+	public boolean isEnabled(AudioSignal signal)
+	{
+		return signals.isEnabled( signal );
+	}
 
-  public boolean hasSignal(AudioSignal signal)
-  {
-    return signals.contains(signal);
-  }
-  
-  /**
-   * Play a note startTime seconds from now, for the given duration, using the given instrument.
-   * 
-   * @param startTime
-   * @param duration
-   * @param instrument
-   */
-  public void playNote(float startTime, float duration, Instrument instrument)
-  {
-	  noteManager.addEvent(startTime, duration, instrument);
-  }
+	public boolean isSounding()
+	{
+		for ( int i = 1; i < signals.size(); i++ )
+		{
+			if ( signals.isEnabled( signals.get( i ) ) )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
-  public void playNote( float startTime, float duration, float hz )
-  {
-	  noteManager.addEvent( startTime, duration, new DefaultInstrument( hz, this ) );
-  }
- 
-  public void playNote( float startTime, float duration, String pitchName )
-  {
-	  noteManager.addEvent( startTime, duration, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
-  }
-  
-  public void playNote( float startTime, float hz )
-  {
-	  noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( hz, this ) );
-  }
- 
-  public void playNote( float startTime, String pitchName )
-  {
-	  noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
-  }
-  
-  public void playNote( float hz )
-  {
-	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( hz, this ) );
-  }
- 
-  public void playNote( String pitchName )
-  {
-	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
-  }
-  
-  public void playNote()
-  {
-	  noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( "" ).asHz(), this ) );
-  }
-  
-  public void setTempo( float tempo )
-  {
-	  noteManager.setTempo( tempo );
-  }
-  
-  public void setNoteOffset( float noteOffset )
-  {
-	  noteManager.setNoteOffset( noteOffset );
-  }
-  
-  public void setDurationFactor( float durationFactor )
-  {
-	  noteManager.setDurationFactor( durationFactor );
-  }
-  
-  public void pauseNotes()
-  {
-  	noteManager.pause();
-  }
-  
-  public void resumeNotes()
-  {
-  	noteManager.resume();
-  }
-  
+	public void noSound()
+	{
+		for ( int i = 1; i < signals.size(); i++ )
+		{
+			signals.disable( i );
+		}
+	}
+
+	public int signalCount()
+	{
+		return signals.size();
+	}
+
+	public void sound()
+	{
+		for ( int i = 1; i < signals.size(); i++ )
+		{
+			signals.enable( i );
+		}
+	}
+
+	public boolean hasSignal(AudioSignal signal)
+	{
+		return signals.contains( signal );
+	}
+
+	/**
+	 * Play a note startTime seconds from now, for the given duration, using the
+	 * given instrument.
+	 * 
+	 * @param startTime
+	 * @param duration
+	 * @param instrument
+	 */
+	public void playNote(float startTime, float duration, Instrument instrument)
+	{
+		noteManager.addEvent( startTime, duration, instrument );
+	}
+
+	public void playNote(float startTime, float duration, float hz)
+	{
+		noteManager.addEvent( startTime, duration, new DefaultInstrument( hz, this ) );
+	}
+
+	public void playNote(float startTime, float duration, String pitchName)
+	{
+		noteManager.addEvent( startTime, duration, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+	}
+
+	public void playNote(float startTime, float hz)
+	{
+		noteManager
+				.addEvent( startTime, 1.0f, new DefaultInstrument( hz, this ) );
+	}
+
+	public void playNote(float startTime, String pitchName)
+	{
+		noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+	}
+
+	public void playNote(float hz)
+	{
+		noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( hz, this ) );
+	}
+
+	public void playNote(String pitchName)
+	{
+		noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
+	}
+
+	public void playNote()
+	{
+		noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( "" ).asHz(), this ) );
+	}
+
+	public void setTempo(float tempo)
+	{
+		noteManager.setTempo( tempo );
+	}
+
+	public void setNoteOffset(float noteOffset)
+	{
+		noteManager.setNoteOffset( noteOffset );
+	}
+
+	public void setDurationFactor(float durationFactor)
+	{
+		noteManager.setDurationFactor( durationFactor );
+	}
+
+	public void pauseNotes()
+	{
+		noteManager.pause();
+	}
+
+	public void resumeNotes()
+	{
+		noteManager.resume();
+	}
+
 }

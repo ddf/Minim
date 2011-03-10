@@ -68,7 +68,7 @@ public class Gain extends UGen
 	protected void uGenerate(float[] channels) 
 	{
 		// TODO: not fond of the fact that we cast up to doubles for this math function.
-	  mValue = (float)Math.pow(10.0, (0.05 * gain.getLastValue()));
+		mValue = (float)Math.pow(10.0, (0.05 * gain.getLastValue()));
 		
 		for(int i = 0; i < channels.length; ++i)
 		{
