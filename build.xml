@@ -1,0 +1,36 @@
+<project name="minim" default="library">
+  <path id="deps.path">
+    <fileset dir="lib">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+  <target name="compile">
+    <mkdir dir="build/java"/>
+    <javac srcdir="src" destdir="build/java" includeAntRuntime="false">
+      <classpath refid="deps.path"/>
+    </javac>
+  </target>
+
+  <target name="library" depends="compile">
+    <jar destfile="library/minim.jar" basedir="build/java" includes="**/*.class"
+	 excludes="ddf/minim/javasound/*.class">
+    </jar>
+    <jar destfile="library/jsminim.jar" basedir="build/java"
+	 includes="ddf/minim/javasound/*.class">
+    </jar>
+    <copy todir="library">
+      <path refid="deps.path"/>
+    </copy>
+  </target>
+
+  <target name="doc">
+    <javadoc sourcepath="src" destdir="doc">
+      <classpath refid="deps.path"/>
+    </javadoc>
+  </target>
+
+  <target name="clean">
+    <delete dir="build"/>
+    <delete dir="library"/>
+  </target>
+</project>
