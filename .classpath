@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
-	<classpathentry kind="lib" path="lib/mp3spi1.9.4.jar"/>
-	<classpathentry kind="lib" path="lib/tritonus_aos.jar"/>
-	<classpathentry kind="lib" path="lib/tritonus_share.jar"/>
-	<classpathentry kind="lib" path="lib/core.jar"/>
+	<classpathentry kind="lib" path="/Users/damien/Documents/Processing/libraries/minim/library/jl1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/damien/Documents/Processing/libraries/minim/library/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="/Users/damien/Documents/Processing/libraries/minim/library/tritonus_aos.jar"/>
+	<classpathentry kind="lib" path="/Users/damien/Documents/Processing/libraries/minim/library/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="/Users/damien/Documents/Processing/libraries/minim/ext/core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
