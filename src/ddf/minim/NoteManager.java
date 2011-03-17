@@ -146,10 +146,11 @@ public class NoteManager
 			if ( events.containsKey(Now) )
 			{
 				ArrayList<NoteEvent> eventsToSend = events.get(Now);
-				Iterator<NoteEvent> iter = eventsToSend.iterator();
-				while( iter.hasNext() )
+				// ddf: change this to a for loop from an iterator so that
+				// 		this list can be safely concurrently modified.
+				for( int i = 0; i < eventsToSend.size(); ++i )
 				{
-					iter.next().send();
+					eventsToSend.get(i).send();
 				}
 				// remove this list because we've sent all the events
 				events.remove(Now);
