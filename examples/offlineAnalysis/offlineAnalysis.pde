@@ -1,7 +1,9 @@
 /**
-  * This sketch demonstrates how to get a channel of audio from an AudioSample and then manipulate it to change the AudioSample after it
-  * has been loaded. 
-  */
+  * This sketch demonstrates two ways to accomplish offline (non-realtime) analysis of an audio file.<br>
+  * The first method, which uses an AudioSample, is what you see running.<br>
+  * The second method, which uses an AudioRecordingStream and is only available in Minim Beta 2.1.0 and beyond,<br>
+  * can be viewed by looking at the offlineAnalysis.pde file.
+  **/
 
 import ddf.minim.*;
 import ddf.minim.analysis.*;
@@ -79,7 +81,7 @@ void analyzeUsingAudioSample()
 void analyzeUsingAudioRecordingStream()
 {
   int fftSize = 1024;
-  AudioRecordingStream stream = minim.loadFileStream("jingle.mp3", fftSize, false /* do not store in memory */);
+  AudioRecordingStream stream = minim.loadFileStream("jingle.mp3", fftSize, false);
   // tell it to "play" so we can read from it.
   stream.play();
   // create the fft we'll use for analysis
