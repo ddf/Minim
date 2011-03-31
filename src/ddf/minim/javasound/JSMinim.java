@@ -41,7 +41,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javazoom.spi.mpeg.sampled.file.MpegAudioFormat;
 
 import org.tritonus.share.sampled.AudioUtils;
-import org.tritonus.share.sampled.FloatSampleBuffer;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
 import processing.core.PApplet;

@@ -29,7 +29,6 @@ import javax.sound.sampled.SourceDataLine;
 
 import org.tritonus.share.sampled.AudioSystemShadow;
 import org.tritonus.share.sampled.AudioUtils;
-import org.tritonus.share.sampled.FloatSampleBuffer;
 import org.tritonus.share.sampled.file.AudioOutputStream;
 
 import ddf.minim.Minim;

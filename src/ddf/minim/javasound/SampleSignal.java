@@ -18,8 +18,6 @@
 
 package ddf.minim.javasound;
 
-import org.tritonus.share.sampled.FloatSampleBuffer;
-
 import ddf.minim.AudioSignal;
 import ddf.minim.BufferedAudio;
 import ddf.minim.Minim;
