@@ -8,7 +8,8 @@ You can accomplish this in two ways:
 
 * Click on the Downloads button (at https://github.com/ddf/Minim) and select one of the packages provided.
 * Extract the contents of that package into a directory named minim inside of the libraries folder in your sketchbook. 
-* Open Processing and in the Sketch -> Import Library menu you should see 'minim' in the contributed libraries list. This version will override the version included with Processing.
+* Open Processing and in the Sketch -> Import Library menu you should see 'minim' in the contributed libraries list. 
+* This version will override the version included with Processing.
 
 2) Clone the repository using git.
 
@@ -18,16 +19,17 @@ You can accomplish this in two ways:
 	git clone git://github.com/ddf/Minim.git minim
 
 * You will now have a readonly copy of this repository that you can keep sync'd by periodically pulling the latest updates ( using 'git pull' ).
-* Open Processing and in the Sketch -> Import Library menu you should see 'minim' in the contributed libraries list. This downloaded version will now override the version included with Processing.
+* Open Processing and in the Sketch -> Import Library menu you should see 'minim' in the contributed libraries list. 
+* This downloaded version will now override the version included with Processing.
 
 DEVELOP
 
-This repository is already setup as an Eclipse project. Once you have acquired a copy of the repository in one of the above two ways, you can import it into Eclipse as an existing project and browse around the source, changing what you might like. To do so you must:
+This repository is already setup as an Eclipse project. Once you have acquired a copy of the repository in one of the above two ways, you can import it into Eclipse as an existing project and browse around the source, making any changes you want. To do so you must:
 
 * Set your Eclipse workspace to be the 'libraries' folder of your Processing sketchbook.
 * Right-click in the Package Explorer and choose 'Import...'.
 * Under General choose 'Existing Projects into Workspace' and hit 'Next'.
-* Use the 'Select root directory' option use browse to choose the libraries folder of your Processing sketchbook.
+* Use the 'Select root directory' option and use Browse to choose the libraries folder of your Processing sketchbook.
 * It should find a project named 'minim'. Make sure it is checked.
 * Make sure that 'Copy projects into workspace' is not checked.
 * Click 'Finish'.
@@ -55,8 +57,7 @@ If you intend to make changes to the source that you want submit to the main dev
 * Click on Import... and choose code_formatting_style.xml from the sketchbook/libraries/minim directory
 * Click Apply and then OK.
 
-If you change your Active profile, be sure to change it back to 'Minim
-Standards' before editing Minim source.
+If you change your Active profile, be sure to change it back to 'Minim Standards' before editing Minim source.
 
 
 HAVE FUN!
