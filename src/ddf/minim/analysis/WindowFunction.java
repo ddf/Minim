@@ -76,6 +76,21 @@ public abstract class WindowFunction
       samples[n] *= value(samples.length, n);
     }
   }
+  
+  /**
+   * Apply the window to a portion of this sample buffer,
+   * given an offset from the beginning of the buffer 
+   * and the number of samples to be windowed.
+   */
+  public void apply(float[] samples, int offset, int length)
+  {
+	  this.length = length;
+	  
+	  for(int n = offset; n < offset + length; ++n)
+	  {
+		  samples[n] *= value(length, n - offset);
+	  }
+  }
 
   /** 
    * Generates the curve of the window function.

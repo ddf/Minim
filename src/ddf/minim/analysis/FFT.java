@@ -72,14 +72,11 @@ public class FFT extends FourierTransform
       Minim.error("Can't scale a frequency band by a negative value.");
       return;
     }
-    if (spectrum[i] != 0)
-    {
-      real[i] /= spectrum[i];
-      imag[i] /= spectrum[i];
-      spectrum[i] *= s;
-      real[i] *= spectrum[i];
-      imag[i] *= spectrum[i];
-    }
+    
+    real[i] *= s;
+    imag[i] *= s;
+    spectrum[i] *= s;
+    
     if (i != 0 && i != timeSize / 2)
     {
       real[timeSize - i] = real[i];
@@ -159,11 +156,28 @@ public class FFT extends FourierTransform
     }
     doWindow(buffer);
     // copy samples to real/imag in bit-reversed order
-    bitReverseSamples(buffer);
+    bitReverseSamples(buffer, 0);
     // perform the fft
     fft();
     // fill the spectrum buffer with amplitudes
     fillSpectrum();
+  }
+  
+  @Override
+  public void forward(float[] buffer, int startAt)
+  {
+	  if ( buffer.length - startAt < timeSize )
+	  {
+		  Minim.error( "FourierTransform.forward: not enough samples in the buffer between " + 
+		               startAt + " and " + buffer.length + " to perform a transform."
+		             );
+		  return;  
+	  }
+	  
+	  windowFunction.apply( buffer, startAt, timeSize );
+	  bitReverseSamples(buffer, startAt);
+	  fft();
+	  fillSpectrum();
   }
 
   /**
@@ -224,11 +238,11 @@ public class FFT extends FourierTransform
 
   // copies the values in the samples array into the real array
   // in bit reversed order. the imag array is filled with zeros.
-  private void bitReverseSamples(float[] samples)
+  private void bitReverseSamples(float[] samples, int startAt)
   {
-    for (int i = 0; i < samples.length; i++)
+    for (int i = 0; i < timeSize; ++i)
     {
-      real[i] = samples[reverse[i]];
+      real[i] = samples[ startAt + reverse[i] ];
       imag[i] = 0.0f;
     }
   }
