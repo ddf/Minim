@@ -65,7 +65,7 @@ public class Delay extends UGen
 	 * @param maxDelayTime
 	 * 		is the maximum delay time for any one echo. 
 	 * @param amplitudeFactor
-	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 * 	 	is the amplification factor for feedback and should generally be from 0 to 1.
 	 *		This defaults to 0.5.
 	 * @param feedBackOn
 	 * 		is a boolean flag specifying if the repetition continue to feed back.
