@@ -19,6 +19,8 @@ public class EnvelopeFollower extends UGen
   private int     m_bufferCount;
   // the current value of the envelope
   private float m_envelope;
+  // the previous value of the envelope
+  private float m_prevEnvelope;
   
   public EnvelopeFollower( float attackInSeconds, float releaseInSeconds, int bufferSize )
   {
@@ -27,6 +29,7 @@ public class EnvelopeFollower extends UGen
     m_buffer = new float[bufferSize];
     m_bufferCount = 0;
     m_envelope = 0.f;
+    m_prevEnvelope = 0.f;
     
     audio = new UGenInput( InputType.AUDIO );
   }
@@ -52,6 +55,7 @@ public class EnvelopeFollower extends UGen
     // full buffer, find the envelope value
     if ( m_bufferCount == m_buffer.length )
     {
+      m_prevEnvelope = m_envelope;
       m_envelope = 0.f;
       
       for(int i = 0; i < m_buffer.length; ++i )
@@ -72,9 +76,11 @@ public class EnvelopeFollower extends UGen
       m_bufferCount = 0;
     }
     
+    // lerp between previous value and current value
+    float outEnv = m_prevEnvelope + (m_envelope - m_prevEnvelope) * ( (float)m_bufferCount / (float)m_buffer.length );
     for (int i = 0; i < out.length; i++)
     {
-      out[i] = m_envelope;
+      out[i] = outEnv;
     }
   }
 }

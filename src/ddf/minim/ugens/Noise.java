@@ -17,6 +17,11 @@ public class Noise extends UGen
 	 * Patch to this to control the amplitude of the noise with another UGen.
 	 */
 	public UGenInput amplitude;
+	
+	/**
+	 * Patch to this to offset the value of the noise by a fixed value. 
+	 */
+	public UGenInput offset;
 
 	// the type of noise
 	private Tint	tint;
@@ -34,7 +39,7 @@ public class Noise extends UGen
 	 */
 	public Noise()
 	{
-		this( 1.0f, Tint.WHITE );
+		this( 1.0f, 0.f, Tint.WHITE );
 	}
 	/**
 	 * Constructor for white noise of the specified amplitude.
@@ -42,7 +47,7 @@ public class Noise extends UGen
 	 */
 	public Noise( float amplitude )
 	{
-		this( amplitude, Tint.WHITE ) ;
+		this( amplitude, 0.f, Tint.WHITE ) ;
 	}
 	/**
 	 * Constructor for noise of the specified tint with an amplitude of 1.0.
@@ -51,18 +56,30 @@ public class Noise extends UGen
 	 */
 	public Noise( Tint noiseType )
 	{
-		this( 1.0f, noiseType ) ;
+		this( 1.0f, 0.f, noiseType ) ;
 	}
 	/**
-	 * Costructor for noise of a specific tint with a specified amplitude.
-	 * @param amplitude
+	 * Constructor for noise of a specific tint with a specified amplitude.
+	 * @param amplitudeValue
 	 * @param noiseType
 	 * 		specifies the tint of the noise: WHITE, PINK, RED, BROWN
 	 */
 	public Noise(float amplitudeValue, Tint noiseType)
 	{
+		this(amplitudeValue, 0.f, noiseType);
+	}
+	/**
+	 * Constructor for noise of a specific tint with a specified amplitude and offset.
+	 * @param amplitudeValue 
+	 * @param offsetValue
+	 * @param noiseType
+	 */
+	public Noise(float amplitudeValue, float offsetValue, Tint noiseType)
+	{
 		amplitude = new UGenInput(InputType.CONTROL);
-    amplitude.setLastValue(amplitudeValue);
+		amplitude.setLastValue(amplitudeValue);
+		offset = new UGenInput(InputType.CONTROL);
+		offset.setLastValue(offsetValue);
 		lastOutput = 0f;
 		tint = noiseType;
 		if ( tint == Tint.PINK )
@@ -126,6 +143,7 @@ public class Noise extends UGen
 			n = outAmp*(2.0f*(float)Math.random() - 1.0f);
 			break;
 		}
+		n += offset.getLastValue();
 		for(int i = 0; i < channels.length; i++)
 		{
 			channels[i] = n;
