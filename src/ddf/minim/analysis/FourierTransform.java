@@ -616,6 +616,23 @@ public abstract class FourierTransform
     avg /= (hiBound - lowBound + 1);
     return avg;
   }
+  
+  /**
+   * Get the Real part of the Complex representation of the spectrum.
+   */
+  public float[] getSpectrumReal()
+  {
+	  return real;
+  }
+  
+  /**
+   * Get the Imaginary part of the Complex representation of the spectrum.
+   */
+  public float[] getSpectrumImaginary()
+  {
+	  return imag;
+  }
+  
 
   /**
    * Performs a forward transform on <code>buffer</code>.
