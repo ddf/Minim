@@ -116,8 +116,7 @@ public class Vocoder extends UGen
 				{
 					outIndex -= m_outputSamples.length;
 				}
-				m_outputSamples[outIndex] += m_analysisSamples[a]
-						* m_outputScale;
+				m_outputSamples[outIndex] += m_analysisSamples[a] * m_outputScale;
 			}
 
 			m_triggerCount = m_windowSpacing;
