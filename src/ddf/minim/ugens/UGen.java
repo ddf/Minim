@@ -285,6 +285,7 @@ public abstract class UGen
 	// ddf: this is final because we never want people to override it.
 	public final UGen patch(UGen connectToUGen)
 	{
+		setSampleRate( connectToUGen.m_sampleRate );
 		// jam3: connecting to a UGen is the same as connecting to it's first
 		// input
 		connectToUGen.addInput( this );
@@ -292,7 +293,6 @@ public abstract class UGen
 		// ticked!
 		m_nOutputs += 1;
 		Minim.debug( "m_nOutputs = " + m_nOutputs );
-		setSampleRate( connectToUGen.m_sampleRate );
 		return connectToUGen;
 	}
 
@@ -304,12 +304,12 @@ public abstract class UGen
 	 */
 	public final UGen patch(UGenInput connectToInput)
 	{
+		setSampleRate( connectToInput.getOuterUGen().m_sampleRate );
 		connectToInput.setIncomingUGen( this );
 		// TODO jam3: m_nOutputs should only increase when this chain will be
 		// ticked!
 		m_nOutputs += 1;
 		Minim.debug( "m_nOutputs = " + m_nOutputs );
-		setSampleRate( connectToInput.getOuterUGen().m_sampleRate );
 
 		return connectToInput.getOuterUGen();
 	}
@@ -354,9 +354,9 @@ public abstract class UGen
 	public final void patch(AudioOutput output)
 	{
 		Minim.debug( "Patching " + this + " to the output " + output + "." );
-		patch( output.bus );
 		setSampleRate( output.sampleRate() );
 		setAudioChannelCount( output.getFormat().getChannels() );
+		patch( output.bus );
 	}
 
 	/**
