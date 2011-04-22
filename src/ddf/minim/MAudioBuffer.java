@@ -54,6 +54,18 @@ final class MAudioBuffer implements AudioBuffer
   {
     return samples[i];
   }
+  
+  public synchronized float get(float i)
+  {
+	  int lowSamp = (int)i;
+	  int hiSamp = lowSamp + 1;
+	  if ( hiSamp == samples.length )
+	  {
+		  return samples[lowSamp];
+	  }
+	  float lerp = i - lowSamp;
+	  return samples[lowSamp] + lerp*(samples[hiSamp] - samples[lowSamp]);
+  }
 
   public synchronized void set(float[] buffer)
   {

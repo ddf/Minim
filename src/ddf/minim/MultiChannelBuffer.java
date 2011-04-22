@@ -25,6 +25,16 @@ public class MultiChannelBuffer
 		return channels.size();
 	}
 	
+	public float getSample( int channelNumber, int sampleIndex )
+	{
+		return channels.get( channelNumber ).get(  sampleIndex );
+	}
+	
+	public float getSample( int channelNumber, float sample )
+	{
+		return channels.get( channelNumber ).get( sample );
+	}
+	
 	public float[] getChannel(int channelNumber)
 	{
 		return channels.get(channelNumber).toArray();
