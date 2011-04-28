@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import java.util.Arrays;
+
 import ddf.minim.Minim;
 
 /**
@@ -94,6 +96,14 @@ public class Line extends UGen
 	}
 	
 	/**
+	 * Has the line completed its lerp.
+	 */
+	public boolean isAtEnd()
+	{
+		return (lineNow >= lineTime);
+	}
+	
+	/**
 	 * Set the ending value of the Line's transition
 	 *
 	 * @param newEndAmp
@@ -130,24 +140,17 @@ public class Line extends UGen
 		//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " now = " + now);
 		if (!isActivated)
 		{
-			for(int i = 0; i < channels.length; i++)
-			{
-				channels[i] = begAmp;
-			}
-		} else if (lineNow >= lineTime)
+			Arrays.fill( channels, begAmp );
+		} 
+		else if (lineNow >= lineTime)
 		{
-			for(int i = 0; i < channels.length; i++)
-			{
-				channels[i] = endAmp;
-			}
-		} else 
+			Arrays.fill( channels, endAmp );
+		} 
+		else 
 		{
 			amp += ( endAmp - amp )*timeStepSize/( lineTime - lineNow );
 			//Minim.debug(" dampTime = " + dampTime + " begAmp = " + begAmp + " amp = " + amp + " dampNow = " + dampNow);
-				for(int i = 0; i < channels.length; i++)
-			{
-				channels[i] = amp;
-			}
+			Arrays.fill( channels, amp );
 			lineNow += timeStepSize;
 		}
 	}
