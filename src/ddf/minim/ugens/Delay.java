@@ -170,12 +170,15 @@ public class Delay extends UGen
 	{
 		int oldBufferSize = bufferSize;
 		int newBufferSize = (int)( delayTime * sampleRate() );
-		if ( newBufferSize < oldBufferSize )
+		if ( newBufferSize > 0 )
 		{
-			Arrays.fill( delayBuffer, newBufferSize, (int)( maxDelayTime*sampleRate() ), 0.0 );
+			if ( newBufferSize < oldBufferSize )
+			{
+				Arrays.fill( delayBuffer, newBufferSize, (int)( maxDelayTime*sampleRate() ), 0.0 );
+			}
+			bufferSize = newBufferSize;
+			iBufferOut = ( iBufferIn + 1 )%bufferSize;
 		}
-		bufferSize = newBufferSize;
-		iBufferOut = ( iBufferIn + 1 )%bufferSize;
 	}
 	
     /**

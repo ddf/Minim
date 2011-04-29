@@ -45,7 +45,7 @@ public class EnvelopeFollower extends UGen
     // mono-ize the signal
     float signal = 0;
     float[] lastValues = audio.getLastValues();
-    for(int i = 0; i < out.length; ++i)
+    for(int i = 0; i < lastValues.length; ++i)
     {
       signal += lastValues[i] / lastValues.length;
     }
