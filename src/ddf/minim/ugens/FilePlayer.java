@@ -160,8 +160,19 @@ public class FilePlayer extends UGen implements Playable
 			// should we just copy like this and have the input come in the 
 			// left side? Or should we somehow expand across the extra channels?
 			// what about the opposite problem? stereo input to mono output?
-			int length = ( samples.length >= channels.length ) ? channels.length : samples.length;
-			System.arraycopy(samples, 0, channels, 0, length);
+			if ( samples.length == channels.length )
+			{
+				System.arraycopy(samples, 0, channels, 0, channels.length);
+			}
+			else if ( samples.length == 1 && channels.length == 2 )
+			{
+				channels[0] = samples[0];
+				channels[1] = samples[1];
+			}
+			else if ( channels.length == 1 && samples.length == 2 )
+			{
+				channels[0] = (samples[0]+samples[1])/2.0f;
+			}
 		}
 		else
 		{
