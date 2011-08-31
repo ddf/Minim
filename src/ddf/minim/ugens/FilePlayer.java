@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import java.util.Arrays;
+
 import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
 import ddf.minim.Playable;
@@ -156,19 +158,17 @@ public class FilePlayer extends UGen implements Playable
 		if ( mFileStream.isPlaying() )
 		{
 			float[] samples = mFileStream.read();
-			// TODO: say the input is mono and output is stereo, what should we do?
-			// should we just copy like this and have the input come in the 
-			// left side? Or should we somehow expand across the extra channels?
-			// what about the opposite problem? stereo input to mono output?
+			// hopefully normal case
 			if ( samples.length == channels.length )
 			{
 				System.arraycopy(samples, 0, channels, 0, channels.length);
 			}
-			else if ( samples.length == 1 && channels.length == 2 )
+			// special case: mono expands out to all channels.
+			else if ( samples.length == 1 )
 			{
-				channels[0] = samples[0];
-				channels[1] = samples[1];
+				Arrays.fill(  channels, samples[0] );
 			}
+			// special case: we are stereo, output is mono.
 			else if ( channels.length == 1 && samples.length == 2 )
 			{
 				channels[0] = (samples[0]+samples[1])/2.0f;
@@ -176,10 +176,7 @@ public class FilePlayer extends UGen implements Playable
 		}
 		else
 		{
-			for(int i = 0; i < channels.length; ++i)
-			{
-				channels[i] = 0;
-			}
+			Arrays.fill( channels, 0 );
 		}
 	}
 
