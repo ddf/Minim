@@ -545,7 +545,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
     public void read(MultiChannelBuffer outBuffer)
     {
         if ( buffer.getSampleCount() != outBuffer.getBufferSize() )
-        {
+        {	
             buffer.changeSampleCount( outBuffer.getBufferSize(), true );
             rawBytes = new byte[buffer.getByteArrayBufferSize( format )];
         }
@@ -559,7 +559,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         }
         for ( int i = 0; i < buffer.getChannelCount(); i++ )
         {
-            outBuffer.setChannel( i, buffer.getChannel( i ) );
+            outBuffer.setChannel( i, buffer.getChannel(i) );
         }
     }
 

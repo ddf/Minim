@@ -1,18 +1,16 @@
 package ddf.minim;
 
-import java.util.ArrayList;
 
 public class MultiChannelBuffer 
 {
 	// TODO: consider just wrapping a FloatSampleBuffer
-	private ArrayList<MAudioBuffer> channels;
-	private int bufferSize;
+	private float[][]	channels;
+	private int 		bufferSize;
 	
 	public MultiChannelBuffer(int bufferSize, int numChannels)
 	{
-		channels = new ArrayList<MAudioBuffer>(numChannels);
+		channels = new float[numChannels][bufferSize];
 		this.bufferSize = bufferSize;
-		setChannelCount(numChannels);
 	}
 	
 	public int getBufferSize()
@@ -22,38 +20,46 @@ public class MultiChannelBuffer
 	
 	public int getChannelCount()
 	{
-		return channels.size();
+		return channels.length;
 	}
 	
 	public float getSample( int channelNumber, int sampleIndex )
 	{
-		return channels.get( channelNumber ).get(  sampleIndex );
+		return channels[channelNumber][sampleIndex];
 	}
 	
 	public float getSample( int channelNumber, float sample )
 	{
-		return channels.get( channelNumber ).get( sample );
+		  int lowSamp = (int)sample;
+		  int hiSamp = lowSamp + 1;
+		  if ( hiSamp == bufferSize )
+		  {
+			  return channels[channelNumber][lowSamp];
+		  }
+		  float lerp = sample - lowSamp;
+		  return channels[channelNumber][lowSamp] + lerp*(channels[channelNumber][hiSamp] - channels[channelNumber][lowSamp]);
+	}
+	
+	public void setSample( int channelNumber, int sampleIndex, float value )
+	{
+		channels[channelNumber][sampleIndex] = value;
 	}
 	
 	public float[] getChannel(int channelNumber)
 	{
-		return channels.get(channelNumber).toArray();
+		return channels[channelNumber];
 	}
 	
 	public void setChannel(int channelNumber, float[] samples)
 	{
-		channels.get(channelNumber).set(samples);
+		System.arraycopy( samples, 0, channels[channelNumber], 0, bufferSize );
 	}
 	
 	public void setChannelCount(int numChannels)
 	{
-		if ( channels.size() != numChannels )
+		if ( channels.length != numChannels )
 		{
-			channels.clear();
-			for(int i = 0; i < numChannels; i++)
-			{
-				channels.add( new MAudioBuffer(bufferSize) );
-			}
+			channels = new float[numChannels][bufferSize];
 		}
 	}
 	
@@ -62,9 +68,10 @@ public class MultiChannelBuffer
 		if ( this.bufferSize != bufferSize )
 		{
 			this.bufferSize = bufferSize;
-			int channelCount = channels.size();
-			channels.clear();
-			setChannelCount(channelCount);
+			for( int i = 0; i < channels.length; ++i )
+			{
+				channels[i] = new float[bufferSize];
+			}
 		}
 	}
 }
