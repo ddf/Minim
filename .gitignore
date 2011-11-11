@@ -1,7 +1,6 @@
 bin/
 doc/
 javadoc/
-prodoc/
 dist/
 *.swp
 .DS_Store
