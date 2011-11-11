@@ -1,8 +1,7 @@
 bin/
 doc/
-<<<<<<< HEAD
-=======
+javadoc/
+prodoc/
 dist/
 *.swp
 .DS_Store
->>>>>>> upstream/master
