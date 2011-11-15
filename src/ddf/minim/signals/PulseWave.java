@@ -18,7 +18,6 @@
 
 package ddf.minim.signals;
 
-import processing.core.PApplet;
 
 /**
  * A pulse wave is a square wave whose peaks and valleys are different length.
@@ -57,7 +56,7 @@ public class PulseWave extends Oscillator
    */
   public void setPulseWidth(float w)
   {
-    width = PApplet.constrain(w, 1, 30);
+    width = w < 1 ? 1 : ( w > 30 ? 30 : w );
   }
 
   /**

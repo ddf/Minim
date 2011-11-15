@@ -18,7 +18,6 @@
 
 package ddf.minim.analysis;
 
-import processing.core.PApplet;
 import ddf.minim.AudioBuffer;
 import ddf.minim.Minim;
 
@@ -414,40 +413,40 @@ public class BeatDetect
 	 * @param p
 	 *           the PApplet to draw in
 	 */
-	public void drawGraph(PApplet p)
-	{
-		if (algorithm == SOUND_ENERGY)
-		{
-			// draw valGraph
-			for (int i = 0; i < valCnt; i++)
-			{
-				p.stroke(255);
-				p.line(i, (p.height / 2) - valGraph[i], i, (p.height / 2)
-						+ valGraph[i]);
-			}
-			// draw varGraph
-			for (int i = 0; i < varCnt - 1; i++)
-			{
-				p.stroke(255);
-				p.line(i, p.height - varGraph[i], i + 1, p.height - varGraph[i + 1]);
-			}
-		}
-		else
-		{
-			p.strokeWeight(5);
-			for (int i = 0; i < fTimer.length; i++)
-			{
-				int c = (i % 3 == 0) ? p.color(255, 0, 0) : p.color(255);
-				p.stroke(c);
-				long clock = System.currentTimeMillis();
-				if (clock - fTimer[i] < sensitivity)
-				{
-					float h = PApplet.map(clock - fTimer[i], 0, sensitivity, 100, 0);
-					p.line((i * 10), p.height - h, (i * 10), p.height);
-				}
-			}
-		}
-	}
+//	public void drawGraph(PApplet p)
+//	{
+//		if (algorithm == SOUND_ENERGY)
+//		{
+//			// draw valGraph
+//			for (int i = 0; i < valCnt; i++)
+//			{
+//				p.stroke(255);
+//				p.line(i, (p.height / 2) - valGraph[i], i, (p.height / 2)
+//						+ valGraph[i]);
+//			}
+//			// draw varGraph
+//			for (int i = 0; i < varCnt - 1; i++)
+//			{
+//				p.stroke(255);
+//				p.line(i, p.height - varGraph[i], i + 1, p.height - varGraph[i + 1]);
+//			}
+//		}
+//		else
+//		{
+//			p.strokeWeight(5);
+//			for (int i = 0; i < fTimer.length; i++)
+//			{
+//				int c = (i % 3 == 0) ? p.color(255, 0, 0) : p.color(255);
+//				p.stroke(c);
+//				long clock = System.currentTimeMillis();
+//				if (clock - fTimer[i] < sensitivity)
+//				{
+//					float h = PApplet.map(clock - fTimer[i], 0, sensitivity, 100, 0);
+//					p.line((i * 10), p.height - h, (i * 10), p.height);
+//				}
+//			}
+//		}
+//	}
 
 	private void sEnergy(float[] samples)
 	{
@@ -467,12 +466,12 @@ public class BeatDetect
 		// compute C using a linear digression of C with V
 		float C = (-0.0025714f * V) + 1.5142857f;
 		// filter negaive values
-		float diff = PApplet.max(instant - C * E, 0);
+		float diff = (float)Math.max(instant - C * E, 0);
 		pushVal(diff);
 		// find the average of only the positive values in dBuffer
 		float dAvg = specAverage(dBuffer);
 		// filter negative values
-		float diff2 = PApplet.max(diff - dAvg, 0);
+		float diff2 = (float)Math.max(diff - dAvg, 0);
 		pushVar(diff2);
 		// report false if it's been less than 'sensitivity'
 		// milliseconds since the last true value
@@ -509,9 +508,9 @@ public class BeatDetect
 			E = average(feBuffer[i]);
 			V = variance(feBuffer[i], E);
 			C = (-0.0025714f * V) + 1.5142857f;
-			diff = PApplet.max(instant - C * E, 0);
+			diff = (float)Math.max(instant - C * E, 0);
 			dAvg = specAverage(fdBuffer[i]);
-			diff2 = PApplet.max(diff - dAvg, 0);
+			diff2 = (float)Math.max(diff - dAvg, 0);
 			if (System.currentTimeMillis() - fTimer[i] < sensitivity)
 			{
 				fIsOnset[i] = false;
@@ -592,7 +591,7 @@ public class BeatDetect
 		float V = 0;
 		for (int i = 0; i < arr.length; i++)
 		{
-			V += PApplet.pow(arr[i] - val, 2);
+			V += (float)Math.pow(arr[i] - val, 2);
 		}
 		V /= arr.length;
 		return V;

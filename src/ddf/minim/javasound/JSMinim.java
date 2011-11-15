@@ -21,6 +21,7 @@ package ddf.minim.javasound;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -43,7 +44,6 @@ import javazoom.spi.mpeg.sampled.file.MpegAudioFormat;
 import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
-import processing.core.PApplet;
 import ddf.minim.AudioMetaData;
 import ddf.minim.AudioSample;
 import ddf.minim.Minim;
@@ -66,16 +66,70 @@ import ddf.minim.spi.SampleRecorder;
 public class JSMinim implements MinimServiceProvider
 {
 	private boolean debug;
-  private PApplet app;
-  private Mixer   inputMixer;
-  private Mixer   outputMixer;
+	private Object  fileLoader;
+	private Method  sketchPath;
+	private Method  createInput;
+	private Mixer   inputMixer;
+	private Mixer   outputMixer;
 
-	public JSMinim(PApplet parent)
+	public JSMinim(Object parent)
 	{
 		debug = false;
-    app = parent;
-    inputMixer = null;
-    outputMixer = null;
+		fileLoader = parent;
+		inputMixer = null;
+		outputMixer = null;
+		
+		String error = "";
+		
+		try
+		{
+			sketchPath = parent.getClass().getMethod( "sketchPath", String.class );
+			if ( sketchPath.getReturnType() != String.class )
+			{
+				error += "The method sketchPath in the file loading object provided does not return a String!\n";
+				sketchPath = null;
+			}
+		}
+		catch( NoSuchMethodException ex )
+		{
+			error += "Couldn't find a sketchPath method on the file loading object provided!\n";
+		}
+		catch( Exception ex )
+		{
+			error += "Failed to get method sketchPath from file loading object provided!\n" + ex.getMessage() + "\n";
+		}
+		
+		if ( error.length() > 0 )
+		{
+			error += "File recording will be disabled.";
+			error( error );
+		}
+		
+		error = "";
+		
+		try
+		{
+			createInput = parent.getClass().getMethod( "createInput", String.class );
+			if ( createInput.getReturnType() != InputStream.class )
+			{
+				error += "The method createInput in the file loading object provided does not return an InputStream!\n";
+				createInput = null;
+			}
+		}
+		catch( NoSuchMethodException ex )
+		{
+			error += "Couldn't find a createInput method in the file loading object provided!\n";
+		}
+		catch( Exception ex )
+		{
+			error += "Failed to get method createInput from the file loading object provided!\n" + ex.getMessage() + "\n";
+		}
+		
+		if ( error.length() > 0 )
+		{
+			error += "File loading will be disabled.";
+			error( error );
+		}
 	}
   
   public void setInputMixer(Mixer mix)
@@ -120,30 +174,33 @@ public class JSMinim implements MinimServiceProvider
 	{
 		if ( debug )
 		{
-			PApplet.println("==== JavaSound Minim Debug ====");
+			System.out.println("==== JavaSound Minim Debug ====");
 			String[] lines = s.split("\n");
 			for(int i = 0; i < lines.length; i++)
 			{
-				PApplet.println("==== " + lines[i]);
+				System.out.println("==== " + lines[i]);
 			}
-			PApplet.println();
+			System.out.println();
 		}
 	}
 	
 	void error(String s)
 	{
-		PApplet.println("==== JavaSound Minim Error ====");
+		System.out.println("==== JavaSound Minim Error ====");
 		String[] lines = s.split("\n");
 		for(int i = 0; i < lines.length; i++)
 		{
-			PApplet.println("==== " + lines[i]);
+			System.out.println("==== " + lines[i]);
 		}
-		PApplet.println();
+		System.out.println();
 	}
 
 	public SampleRecorder getSampleRecorder(Recordable source, String fileName,
 			boolean buffered)
 	{
+		// do nothing if we can't generate a place to put the file
+		if ( sketchPath == null ) return null;
+		
 		String ext = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 		debug("createRecorder: file extension is " + ext + ".");
 		AudioFileFormat.Type fileType = null;
@@ -172,23 +229,34 @@ public class JSMinim implements MinimServiceProvider
 			error("The extension " + ext + " is not a recognized audio file type.");
 			return null;
 		}
+		
 		SampleRecorder recorder = null;
-		if (buffered)
+		
+		try
 		{
-			recorder = new JSBufferedSampleRecorder(this,
-                                  app.sketchPath(fileName),
-																	fileType,
-																	source.getFormat(),
-																	source.bufferSize());
+			String destPath = (String)sketchPath.invoke( fileLoader, fileName );
+			if (buffered)
+			{
+				recorder = new JSBufferedSampleRecorder(this,
+	                                  					destPath,
+														fileType,
+														source.getFormat(),
+														source.bufferSize());
+			}
+			else
+			{
+				recorder = new JSStreamingSampleRecorder(this,
+														 destPath,
+														 fileType,
+														 source.getFormat(),
+														source.bufferSize());
+			}
 		}
-		else
+		catch( Exception ex )
 		{
-			recorder = new JSStreamingSampleRecorder(this,
-                                  app.sketchPath(fileName),
-																	fileType,
-																	source.getFormat(),
-																	source.bufferSize());
+			Minim.error( "Couldn't invoke the sketchPath method: " + ex.getMessage() );
 		}
+		
 		return recorder;
 	}
 
@@ -262,7 +330,7 @@ public class JSMinim implements MinimServiceProvider
 		try
 		{
 			MpegAudioFileReader reader = new MpegAudioFileReader(this);
-			InputStream stream = app.createInput(filename);
+			InputStream stream = (InputStream)createInput.invoke(fileLoader, filename);
 			AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
 																							stream,
 																							stream.available());
@@ -290,6 +358,11 @@ public class JSMinim implements MinimServiceProvider
 		{
 			error("Couldn't access " + filename + ": " + e.getMessage());
 		}
+		catch( Exception e )
+		{
+			error("Error invoking createInput on the file loader object: " + e.getMessage());
+		}
+		
 		return props;
 	}
 
@@ -607,13 +680,13 @@ public class JSMinim implements MinimServiceProvider
 		{
 			try
 			{
-        InputStream is = app.createInput(filename);
+				InputStream is = (InputStream)createInput.invoke(fileLoader, filename);
 				debug("Base input stream is: " + is.toString());
 				bis = new BufferedInputStream(is);
 				ais = getAudioInputStream(bis);
-        // don't mark it like this because it means the entire
-        // file will be loaded into memory as it plays. this 
-        // will cause out-of-memory problems with very large files.
+				// don't mark it like this because it means the entire
+				// file will be loaded into memory as it plays. this 
+				// will cause out-of-memory problems with very large files.
 				// ais.mark((int)ais.available());
 				debug("Acquired AudioInputStream.\n" + "It is "
 						+ ais.getFrameLength() + " frames long.\n"
@@ -626,6 +699,10 @@ public class JSMinim implements MinimServiceProvider
 			catch (UnsupportedAudioFileException uafe)
 			{
 				error("Unsupported Audio File: " + uafe.getMessage());
+			}
+			catch( Exception e )
+			{
+				error( "Error invoking createInput on the file loader object: " + e.getMessage() );
 			}
 		}
 		return ais;

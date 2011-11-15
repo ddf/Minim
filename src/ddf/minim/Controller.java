@@ -22,8 +22,6 @@ import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.Control;
 import javax.sound.sampled.FloatControl;
 
-import processing.core.PApplet;
-
 /**
  * <code>Controller</code> is the base class of all Minim classes that deal
  * with audio I/O. It provides control over the underlying <code>DataLine</code>,
@@ -148,7 +146,9 @@ public class Controller
     public float value()
     {
       int millis = (int)System.currentTimeMillis();
-      return PApplet.map(millis, tstart, tend, vstart, vend);
+      float norm = (float)(millis-tstart) / (tend-tstart);
+      float range = (float)(vend-vstart);
+      return vstart + range*norm;
     }
     
     public boolean done()
@@ -167,11 +167,11 @@ public class Controller
   {
     if (controls.length > 0)
     {
-      PApplet.println("Available controls are:");
+      System.out.println("Available controls are:");
       for (int i = 0; i < controls.length; i++)
       {
         Control.Type type = controls[i].getType();
-        PApplet.print("  " + type.toString());
+        System.out.print("  " + type.toString());
         if (type == VOLUME || type == GAIN || type == BALANCE || type == PAN)
         {
           FloatControl fc = (FloatControl) controls[i];
@@ -180,19 +180,19 @@ public class Controller
           {
             shiftSupported = "doesn't";
           }
-          PApplet.println(", which has a range of " + fc.getMaximum() + " to "
+          System.out.println(", which has a range of " + fc.getMaximum() + " to "
               + fc.getMinimum() + " and " + shiftSupported
               + " support shifting.");
         }
         else
         {
-          PApplet.println("");
+          System.out.println("");
         }
       }
     }
     else
     {
-      PApplet.println("There are no controls available for this line.");
+      System.out.println("There are no controls available for this line.");
     }
   }
 

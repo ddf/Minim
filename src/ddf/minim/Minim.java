@@ -22,7 +22,6 @@ import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Mixer;
 
-import processing.core.PApplet;
 import ddf.minim.javasound.JSMinim;
 import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecording;
@@ -30,7 +29,6 @@ import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.AudioStream;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
-import ddf.minim.ugens.Instrument;
 
 /**
  * The <code>Minim</code> class is how you get what you want from JavaSound.
@@ -77,34 +75,48 @@ public class Minim
 
 	private MinimServiceProvider		mimp				= null;
 
-	// private PApplet app;
-
 	/**
-	 * Creates an instance of Minim that will use the Javasound implementation.
+	 * Creates an instance of Minim that will use the JavaSound implementation.
+	 * <p>
+	 * The JavaSound implementation requires an Object that can handle two important
+	 * file system operations so that it doesn't have to worry about details of 
+	 * the current environment. These two methods are:
+	 * <p>
+	 * <code>
+	 * String sketchPath( String fileName )<br/>
+	 * InputStream createInput( String fileName )<br/>
+	 * </code>
+	 * </p>
+	 * These are methods that are defined in Processing, which Minim was originally 
+	 * designed to cleanly interface with. The <code>sketchPath</code> method is 
+	 * expected to transform a filename into an absolute path and is used when 
+	 * attempting to create an AudioRecorder. The <code>createInput</code> method 
+	 * is used when loading files and is expected to take a filename, which is 
+	 * not necessarily an absolute path, and return an <code>InputStream</code> 
+	 * that can be used to read the file. For example, in Processing, the <code>createInput</code>
+	 * method will search in the data folder, the sketch folder, handle URLs, and absolute paths.
+	 * If you are using Minim outside of Processing, you can handle whatever cases are 
+	 * appropriate for your project.
 	 * 
-	 * @param parent
-	 *            the PApplet that will be used for loading files
+	 * @param fileSystem
+	 *            the Object that will be used for file operations
 	 */
-	public Minim(PApplet parent)
+	public Minim( Object fileSystem )
 	{
-		// app = parent;
-		mimp = new JSMinim( parent );
+		this( new JSMinim(fileSystem) );
 	}
 
 	/**
 	 * Creates an instance of Minim that will use the provided implementation
 	 * for audio.
 	 * 
-	 * @param parent
-	 *            the PApplet that will be used for loading files
-	 * @param msp
+	 * @param implementation
 	 *            the MinimServiceProvider that will be used for returning audio
 	 *            resources
 	 */
-	public Minim(PApplet parent, MinimServiceProvider msp)
+	public Minim( MinimServiceProvider implementation )
 	{
-		// app = parent;
-		mimp = msp;
+		mimp = implementation;
 		mimp.start();
 	}
 
@@ -118,9 +130,9 @@ public class Minim
 	 */
 	public static void error(String s)
 	{
-		PApplet.println( "=== Minim Error ===" );
-		PApplet.println( "=== " + s );
-		PApplet.println();
+		System.out.println( "=== Minim Error ===" );
+		System.out.println( "=== " + s );
+		System.out.println();
 	}
 
 	/**
@@ -138,12 +150,12 @@ public class Minim
 		if ( DEBUG )
 		{
 			String[] lines = s.split( "\n" );
-			PApplet.println( "=== Minim Debug ===" );
+			System.out.println( "=== Minim Debug ===" );
 			for ( int i = 0; i < lines.length; i++ )
 			{
-				PApplet.println( "=== " + lines[i] );
+				System.out.println( "=== " + lines[i] );
 			}
-			PApplet.println();
+			System.out.println();
 		}
 	}
 

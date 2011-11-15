@@ -18,7 +18,6 @@
 
 package ddf.minim.effects;
 
-import processing.core.PApplet;
 import ddf.minim.AudioEffect;
 import ddf.minim.ugens.UGen;
 
@@ -208,16 +207,22 @@ public abstract class IIRFilter extends UGen implements AudioEffect
    */
   public final void printCoeff()
   {
-    PApplet.println("Filter coefficients: ");
-    for (int i = 0; i < a.length; i++)
+    System.out.println("Filter coefficients: ");
+    if ( a != null )
     {
-      PApplet.print("  A" + i + ": " + a[i]);
+    	for (int i = 0; i < a.length; i++)
+    	{
+    		System.out.print("  A" + i + ": " + a[i]);
+    	}
     }
-    PApplet.println();
-    for (int i = 0; i < b.length; i++)
+    System.out.println();
+    if ( b != null )
     {
-      PApplet.print("  B" + (i + 1) + ": " + b[i]);
+    	for (int i = 0; i < b.length; i++)
+    	{
+    		System.out.print("  B" + (i + 1) + ": " + b[i]);
+    	}
+    	System.out.println();
     }
-    PApplet.println();
   }
 }

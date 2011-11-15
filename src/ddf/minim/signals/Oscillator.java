@@ -18,7 +18,6 @@
 
 package ddf.minim.signals;
 
-import processing.core.PApplet;
 import ddf.minim.AudioListener;
 import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
@@ -112,7 +111,7 @@ public abstract class Oscillator implements AudioSignal
     freqMod = null;
   }
 
-public final float sampleRate()
+  public final float sampleRate()
   {
     return srate;
   }
@@ -156,7 +155,7 @@ public final float sampleRate()
    */
   public final void setAmp(float a)
   {
-    newAmp = PApplet.constrain(a, 0, 1);
+    newAmp = constrain( a, 0, 1 );
   }
   
   /**
@@ -177,7 +176,7 @@ public final float sampleRate()
    */
   public final void setPan(float p)
   {
-    newPan = PApplet.constrain(p, -1, 1);
+    newPan = constrain(p, -1, 1);
   }
   
   /**
@@ -190,7 +189,7 @@ public final float sampleRate()
   public final void setPanNoGlide(float p)
   {
 	setPan(p);
-	pan = PApplet.constrain(p, -1, 1);
+	pan = constrain(p, -1, 1);
   }
   
   /**
@@ -257,7 +256,7 @@ public final float sampleRate()
   private final float generate(float fmod, float amod)
   {
 	step += fmod;
-	step = step - PApplet.floor(step);
+	step = step - (float)Math.floor(step);
     return amp * amod * value(step);
   }
 
@@ -364,19 +363,21 @@ public final float sampleRate()
   private void stepStep()
   {
     step += stepSize;
-    step = step - PApplet.floor(step);
+    step = step - (float)Math.floor(step);
   }
 
   private void calcLRScale()
   {
     if (pan <= 0)
     {
-      rightScale = PApplet.map(pan, -1, 0, 0, 1);
+      // map -1, 0 to 0, 1
+      rightScale = pan + 1;
       leftScale = 1;
     }
     if (pan >= 0)
     {
-      leftScale = PApplet.map(pan, 0, 1, 1, 0);
+      // map 0, 1 to 1, 0;
+      leftScale = 1 - pan;
       rightScale = 1;
     }
     if (pan == 0)
@@ -433,4 +434,9 @@ public final float sampleRate()
    * @return the value of the waveform at <code>step</code>
    */
   protected abstract float value(float step);
+  
+  float constrain( float val, float min, float max )
+  {
+	  return val < min ? min : ( val > max ? max : val );
+  }
 }

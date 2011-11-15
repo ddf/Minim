@@ -18,7 +18,6 @@
 
 package ddf.minim.signals;
 
-import processing.core.PApplet;
 import ddf.minim.AudioSignal;
 
 /**
@@ -68,7 +67,7 @@ public class PinkNoise implements AudioSignal
    */
   public void setAmp(float a)
   {
-    amp = PApplet.constrain(a, 0, 1);
+    amp = constrain(a, 0, 1);
   }
 
   /**
@@ -79,7 +78,7 @@ public class PinkNoise implements AudioSignal
    */
   public void setPan(float p)
   {
-    pan = PApplet.constrain(p, -1, 1);
+    pan = constrain(p, -1, 1);
     calcLRScale();
   }
 
@@ -143,23 +142,30 @@ public class PinkNoise implements AudioSignal
     sum = 2f * (sum / maxSumEver) - 1f;
     return sum;
   }
-
+  
   private void calcLRScale()
   {
     if (pan <= 0)
     {
-      rightScale = PApplet.map(pan, -1, 0, 0, 1);
+      // map -1, 0 to 0, 1
+      rightScale = pan + 1;
       leftScale = 1;
     }
     if (pan >= 0)
     {
-      leftScale = PApplet.map(pan, 0, 1, 1, 0);
+      // map 0, 1 to 1, 0;
+      leftScale = 1 - pan;
       rightScale = 1;
     }
     if (pan == 0)
     {
       leftScale = rightScale = 1;
     }
+  }
+  
+  float constrain( float val, float min, float max )
+  {
+	  return val < min ? min : ( val > max ? max : val );
   }
 
 }
