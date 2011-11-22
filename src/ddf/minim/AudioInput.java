@@ -46,5 +46,33 @@ public class AudioInput extends AudioSource
     super( out );
     out.setAudioStream(stream);
     stream.open();
+    
+    disableMonitoring();
+  }
+  
+  public void enableMonitoring()
+  {
+    // make sure we don't make sound
+    if ( hasControl(VOLUME) )
+    {
+    	setVolume( 1 );
+    }
+    else if ( hasControl(GAIN) )
+    {
+    	setGain( 0 );
+    }	  
+  }
+  
+  public void disableMonitoring()
+  {
+    // make sure we don't make sound
+    if ( hasControl(VOLUME) )
+    {
+    	setVolume( 0 );
+    }
+    else if ( hasControl(GAIN) )
+    {
+    	setGain( -64 );
+    }
   }
 }
