@@ -411,6 +411,45 @@ public abstract class FourierTransform
   {
     return bandWidth;
   }
+  
+  /**
+   * Returns the bandwidth of the requested average band. Using this information 
+   * and the return value of {@link getAverageBandWidth} you can determine the 
+   * lower and upper frequency of any average band.
+   */
+  public float getAverageBandWidth( int averageIndex )
+  {
+    if ( whichAverage == LINAVG )
+    {
+      // an average represents a certain number of bands in the spectrum
+      int avgWidth = (int) spectrum.length / averages.length;
+      return avgWidth * getBandWidth();
+            
+    }
+    else if ( whichAverage == LOGAVG )
+    {
+      // which "octave" is this index in?
+      int octave = averageIndex / avgPerOctave;
+      float lowFreq, hiFreq, freqStep;
+      // figure out the low frequency for this octave
+      if (octave == 0)
+      {
+        lowFreq = 0;
+      }
+      else
+      {
+        lowFreq = (sampleRate / 2) / (float) Math.pow(2, octaves - octave);
+      }
+      // and the high frequency for this octave
+      hiFreq = (sampleRate / 2) / (float) Math.pow(2, octaves - octave - 1);
+      // each average band within the octave will be this big
+      freqStep = (hiFreq - lowFreq) / avgPerOctave;
+      
+      return freqStep;
+    }
+	    
+	  return 0;
+  }
 
   /**
    * Sets the amplitude of the <code>i<sup>th</sup></code> frequency band to
