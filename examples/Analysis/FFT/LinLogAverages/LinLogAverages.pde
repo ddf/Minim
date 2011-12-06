@@ -25,12 +25,12 @@ float spectrumScale = 2;
 
 void setup()
 {
-  size(640, 480, P3D);
+  size(512, 480, P3D);
   height3 = height/3;
   height23 = 2*height/3;
 
   minim = new Minim(this);
-  jingle = minim.loadFile("jingle.mp3", 2048);
+  jingle = minim.loadFile("jingle.mp3", 1024);
   // loop the file
   jingle.loop();
   // create an FFT object that has a time-domain buffer the same size as jingle's sample buffer

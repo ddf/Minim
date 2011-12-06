@@ -33,17 +33,21 @@ void setup()
 
   minim = new Minim(this);
   minim.debugOn();
-  jingle = minim.loadFile("jingle.mp3", 2048);
+  jingle = minim.loadFile("jingle.mp3", 1024);
+  
   // loop the file
   jingle.loop();
+  
   // create an FFT object that has a time-domain buffer the same size as jingle's sample buffer
   // note that this needs to be a power of two 
   // and that it means the size of the spectrum will be 1024. 
   // see the online tutorial for more info.
   fftLin = new FFT(jingle.bufferSize(), jingle.sampleRate());
+  
   // calculate the averages by grouping frequency bands linearly. use 30 averages.
   fftLin.linAverages(30);
   fftLog = new FFT(jingle.bufferSize(), jingle.sampleRate());
+  
   // calculate averages based on a miminum octave width of 22 Hz
   // split each octave into three bands
   // this should result in 30 averages

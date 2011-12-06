@@ -30,27 +30,34 @@ void setup()
 void analyzeUsingAudioSample()
 {
    AudioSample jingle = minim.loadSample("jingle.mp3", 2048);
+   
   // get the left channel of the audio as a float array
   // getChannel is defined in the interface BuffereAudio, 
   // which also defines two constants to use as an argument
   // BufferedAudio.LEFT and BufferedAudio.RIGHT
-  float[] leftChannel = jingle.getChannel(BufferedAudio.LEFT);
+  float[] leftChannel = jingle.getChannel(AudioSample.LEFT);
+  
   // then we create an array we'll copy sample data into for the FFT object
   // this should be as large as you want your FFT to be. generally speaking, 1024 is probably fine.
   int fftSize = 1024;
   float[] fftSamples = new float[fftSize];
   FFT fft = new FFT( fftSize, jingle.sampleRate() );
+  
   // now we'll analyze the samples in chunks
   int totalChunks = (leftChannel.length / fftSize) + 1;
+  
   // allocate a 2-dimentional array that will hold all of the spectrum data for all of the chunks.
   // the second dimension if fftSize/2 because the spectrum size is always half the number of samples analyzed.
   spectra = new float[totalChunks][fftSize/2];
+  
   for(int chunkIdx = 0; chunkIdx < totalChunks; ++chunkIdx)
   {
     int chunkStartIndex = chunkIdx * fftSize;
+   
     // the chunk size will always be fftSize, except for the 
     // last chunk, which will be however many samples are left in source
     int chunkSize = min( leftChannel.length - chunkStartIndex, fftSize );
+   
     // copy first chunk into our analysis array
     arraycopy( leftChannel, // source of the copy
                chunkStartIndex, // index to start in the source
@@ -68,6 +75,7 @@ void analyzeUsingAudioSample()
     
     // now analyze this buffer
     fft.forward( fftSamples );
+   
     // and copy the resulting spectrum into our spectra array
     for(int i = 0; i < 512; ++i)
     {
@@ -82,30 +90,39 @@ void analyzeUsingAudioRecordingStream()
 {
   int fftSize = 1024;
   AudioRecordingStream stream = minim.loadFileStream("jingle.mp3", fftSize, false);
+  
   // tell it to "play" so we can read from it.
   stream.play();
+  
   // create the fft we'll use for analysis
   FFT fft = new FFT( fftSize, stream.getFormat().getSampleRate() );
+  
   // create the buffer we use for reading from the stream
   MultiChannelBuffer buffer = new MultiChannelBuffer(fftSize, stream.getFormat().getChannels());
+  
   // figure out how many samples are in the stream so we can allocate the correct number of spectra
   int totalSamples = int( (stream.getMillisecondLength() / 1000.0) * stream.getFormat().getSampleRate() );
+  
   // now we'll analyze the samples in chunks
   int totalChunks = (totalSamples / fftSize) + 1;
   println("Analyzing " + totalSamples + " samples for total of " + totalChunks + " chunks.");
+  
   // allocate a 2-dimentional array that will hold all of the spectrum data for all of the chunks.
   // the second dimension if fftSize/2 because the spectrum size is always half the number of samples analyzed.
   spectra = new float[totalChunks][fftSize/2];
+  
   for(int chunkIdx = 0; chunkIdx < totalChunks; ++chunkIdx)
   {
     println("Chunk " + chunkIdx);
     println("  Reading...");
     stream.read( buffer );
     println("  Analyzing...");    
+  
     // now analyze the left channel
     fft.forward( buffer.getChannel(0) );
-    println("  Copying...");
+    
     // and copy the resulting spectrum into our spectra array
+    println("  Copying...");
     for(int i = 0; i < 512; ++i)
     {
       spectra[chunkIdx][i] = fft.getBand(i);
