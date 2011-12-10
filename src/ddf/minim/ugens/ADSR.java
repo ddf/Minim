@@ -70,7 +70,7 @@ public class ADSR extends UGen
 	 */
 	public ADSR(float maxAmp)
 	{
-		this(maxAmp, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+		this(maxAmp, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class ADSR extends UGen
 	 */
 	public ADSR( float maxAmp, float attTime, float decTime, float susLvl )
 	{
-		this(maxAmp, attTime, decTime, susLvl, susLvl, 1.0f, 0.0f);
+		this(maxAmp, attTime, decTime, susLvl, 1.0f, 0.0f, 0.0f);
 	}
 	
 	/**
@@ -160,12 +160,16 @@ public class ADSR extends UGen
 	}
 	
 	/**
-	 * Speficies that the ADSR envelope should begin.
+	 * Specifies that the ADSR envelope should begin.
 	 */
 	public void noteOn()
 	{
 		timeFromOn = 0f;
 		isTurnedOn = true;
+		
+		// ddf: reset these so that the envelope can be retriggered
+		timeFromOff = -1.f;
+		isTurnedOff = false;
 	}
 	/**
 	 * Specifies that the ADSR envelope should start the release time.
@@ -235,7 +239,7 @@ public class ADSR extends UGen
 			        unpatch( ugenOutput );
 			        ugenOutput = null;
 			    }
-			 	Minim.debug(" unpatching ADSR ");
+			    unpatchAfterRelease = false;
 			}
 		}
 		// inside the envelope
