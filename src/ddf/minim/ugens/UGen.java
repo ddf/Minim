@@ -1,6 +1,8 @@
 package ddf.minim.ugens;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
 
@@ -100,6 +102,21 @@ public abstract class UGen
 			// assume one channel. good for controls and mono audio.
 			m_lastValues = new float[1];
 		}
+		
+		/**
+		 * This constructor generates a UGenInput of the specified type
+		 * with an initial value.
+		 * 
+		 * @param type 	the InputType of this UGenInput
+		 * @param value the initial value used for all last values
+		 */
+		public UGenInput( InputType type, float value )
+		{
+			m_inputType = type;
+			m_allInputs.add( this );
+			m_lastValues = new float[1];
+			m_lastValues[0] = value;
+		}
 
 		/**
 		 * Set the number of channels this input should generate.
@@ -110,13 +127,26 @@ public abstract class UGen
 		{
 			if ( m_lastValues.length != numberOfChannels )
 			{
+				// make sure we keep the value we already had when 
+				// our channel count changes.
+				float val = m_lastValues.length > 0 ? m_lastValues[0] : 0;
 				m_lastValues = new float[numberOfChannels];
+				Arrays.fill(m_lastValues, val);
 			}
+			
 			// make sure our incoming UGen knows about this
 			if ( m_inputType == InputType.AUDIO && m_incoming != null )
 			{
 				m_incoming.setAudioChannelCount( numberOfChannels );
 			}
+		}
+		
+		/**
+		 * Get the number of channels this input will generate.
+		 */
+		public int channelCount()
+		{
+			return m_lastValues.length;
 		}
 
 		/**
@@ -589,5 +619,20 @@ public abstract class UGen
 				m_allInputs.get( i ).printInput();
 			}
 		}
+	}
+	
+	protected UGenInput addControl()
+	{
+		return new UGenInput( InputType.CONTROL );
+	}
+	
+	protected UGenInput addControl( float initialValue )
+	{
+		return new UGenInput( InputType.CONTROL, initialValue );
+	}
+	
+	protected UGenInput addAudio()
+	{
+		return new UGenInput( InputType.AUDIO );
 	}
 }
