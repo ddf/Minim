@@ -1,5 +1,29 @@
 package ddf.minim.ugens;
 
+/**
+ * A Flanger is a specialized kind of delay that uses an LFO (low frequency
+ * oscillator) to vary the amount of delay applied to each sample. This causes a
+ * sweeping frequency kind of sound as the signal reinforces or cancels itself
+ * in various ways. In particular the peaks and notches created in the frequency
+ * spectrum are related to each other in a linear harmonic series. This causes
+ * the spectrum to look like a comb and should be apparent in the visualization.
+ * <p>
+ * Inputs for the Flanger are:
+ * <ul>
+ * <li>delay (in milliseconds): the minimum amount of delay applied to an incoming sample</li>
+ * <li>rate (in Hz): the frequency of the LFO</li>
+ * <li>depth (in milliseconds): the maximum amount of delay added onto delay by the LFO</li>
+ * <li>feedback: how much of delayed signal should be fed back into the effect</li>
+ * <li>dry: how much of the uneffected input should be included in the output</li>
+ * <li>wet: how much of the effected signal should be included in the output</li>
+ * </ul>
+ * <p>
+ * A more thorough description can be found on wikipedia:
+ * http://en.wikipedia.org/wiki/Flanging
+ * <p>
+ * Author: Damien Di Fede
+ */
+
 public class Flanger extends UGen
 {
 	/**
@@ -19,12 +43,12 @@ public class Flanger extends UGen
 	public UGenInput	rate;
 
 	/**
-	 * How many milliseconds the LFO modulates the delay by at the maximum.
+	 * How many milliseconds the LFO increases the delay by at the maximum.
 	 */
 	public UGenInput	depth;
 
 	/**
-	 * How much of output is fed back into the effect.
+	 * How much of the flanged signal is fed back into the effect.
 	 */
 	public UGenInput	feedback;
 
@@ -56,6 +80,22 @@ public class Flanger extends UGen
 	// 1 / sampleRate, which is used to calculate stepSize
 	private float		oneOverSampleRate;
 
+	/**
+	 * Construct a Flanger by specifying all initial values.
+	 * 
+	 * @param delayLength
+	 *            the minimum delay applied to incoming samples (in milliseconds)
+	 * @param lfoRate
+	 *            the frequency of the the LFO
+	 * @param delayDepth
+	 *            the maximum amount added to the delay by the LFO (in milliseconds)
+	 * @param feedbackAmplitude 
+	 * 			  the amount of the flanged signal fed back into the effect
+	 * @param dryAmplitude
+	 * 			  the amount of incoming signal added to the output
+	 * @param wetAmplitude
+	 * 			  the amount of the flanged signal added to the output
+	 */
 	public Flanger(float delayLength, float lfoRate, float delayDepth,
 			float feedbackAmplitude, float dryAmplitude, float wetAmplitude)
 	{
