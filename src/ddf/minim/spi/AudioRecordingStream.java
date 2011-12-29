@@ -103,6 +103,14 @@ public interface AudioRecordingStream extends AudioStream
 	 * @return the length of the source, in milliseconds
 	 */
 	int getMillisecondLength();
+	
+	/**
+	 * Returns how many sample frames are in this recording. Infinite sources,
+	 * such as internet radio streams, should return -1.
+	 * 
+	 * @return the length of the source, in sample frames
+	 */
+	long getSampleFrameLength();
 
 	/**
 	 * Returns meta data about the recording, such as duration, name, ID3 tags
@@ -111,4 +119,5 @@ public interface AudioRecordingStream extends AudioStream
 	 * @return the MetaData of the recording
 	 */
 	AudioMetaData getMetaData();
+
 }

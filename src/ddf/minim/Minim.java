@@ -413,6 +413,70 @@ public class Minim
 	{
 		return mimp.getAudioRecordingStream( filename, bufferSize, inMemory );
 	}
+	
+	/**
+	 * Loads the requested file into a MultiChannelBuffer.
+	 * 
+	 * @param filename 
+	 * 			the file to load
+	 * @param outBuffer
+	 * 			the MultiChannelBuffer to fill with the files audio samples
+	 * 
+	 * @return	the sample rate of audio samples in outBuffer, or 0 if the load failed.
+	 */
+	public float loadFileIntoBuffer( String filename, MultiChannelBuffer outBuffer )
+	{
+		final int readBufferSize = 4096;
+		float     sampleRate = 0;
+		AudioRecordingStream  stream = loadFileStream( filename, readBufferSize, false );
+		if ( stream != null )
+		{
+			//stream.open();
+			stream.play();
+			sampleRate = stream.getFormat().getSampleRate();
+			final int channelCount = stream.getFormat().getChannels();
+			// for reading the file in, in chunks.
+			MultiChannelBuffer readBuffer = new MultiChannelBuffer( channelCount, readBufferSize );
+			// make sure the out buffer is the correct size and type.
+			outBuffer.setChannelCount( channelCount );
+			// how many samples to read total
+			final long totalSampleCount = stream.getSampleFrameLength();
+			outBuffer.setBufferSize( (int)totalSampleCount );
+			
+			// now read in chunks.
+			long totalSamplesRead = 0;
+			while( totalSamplesRead < totalSampleCount )
+			{
+				// is the remainder smaller than our buffer?
+				if ( totalSampleCount - totalSamplesRead < readBufferSize )
+				{
+					readBuffer.setBufferSize( (int)(totalSampleCount - totalSamplesRead) );
+				}
+				
+				stream.read( readBuffer );
+				
+				// copy data from one buffer to the other.
+				for(int i = 0; i < channelCount; ++i)
+				{
+					// a faster way to do this would be nice.
+					for(int s = 0; s < readBuffer.getBufferSize(); ++s)
+					{
+						outBuffer.setSample( i, (int)totalSamplesRead+s, readBuffer.getSample( i, s ) );
+					}
+				}
+				
+				totalSamplesRead += readBuffer.getBufferSize();
+			}
+			
+			stream.close();
+		}
+	    else
+	    {
+	        debug("Unable to load an AudioRecordingStream for " + filename);
+	    }
+
+		return sampleRate;
+	}
 
 	/**
 	 * Creates an {@link AudioRecorder} that will use <code>source</code> as its

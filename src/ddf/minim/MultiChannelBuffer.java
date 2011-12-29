@@ -13,6 +13,18 @@ public class MultiChannelBuffer
 		this.bufferSize = bufferSize;
 	}
 	
+	/**
+	 * Copy the data in other to this MultiChannelBuffer.
+	 * 
+	 * @param other
+	 * 			the buffer to copy
+	 */
+	public void set( MultiChannelBuffer other )
+	{
+		bufferSize = other.bufferSize;
+		channels   = other.channels.clone();
+	}
+	
 	public int getBufferSize()
 	{
 		return bufferSize;

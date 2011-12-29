@@ -4,16 +4,21 @@ import processing.opengl.*;
   * This sketch is a more involved use of AudioSamples to create a simple drum machine. Click on the buttons to 
   * toggle them on and off. The buttons that are on will trigger samples when the beat marker passes over their 
   * column. You can change the tempo by clicking in the BPM box and dragging the mouse up and down.
+  * <p>
+  * We achieve the timing by using AudioOutput's playNote method and a cleverly written Instrument.
   */
 
 
 import controlP5.*;
 import ddf.minim.*;
+import ddf.minim.ugens.*;
 
-Minim minim;
-AudioSample kick;
-AudioSample snare;
-AudioSample hat;
+Minim       minim;
+AudioOutput out;
+
+Sampler     kick;
+Sampler     snare;
+Sampler     hat;
 
 ControlP5 gui;
 boolean[] hatRow = new boolean[16];
@@ -21,22 +26,52 @@ boolean[] snrRow = new boolean[16];
 boolean[] kikRow = new boolean[16];
 
 public int bpm;
-int tempo; // how long a sixteenth note is in milliseconds
-int clock; // the timer for moving from note to note
+
 int beat; // which beat we're on
-boolean beatTriggered; // only trigger each beat once
+
+// here's an Instrument implementation that we use 
+// to trigger Samplers every sixteenth note. 
+// Notice how we get away with using only one instance
+// of this class to have endless beat making by 
+// having the class schedule itself to be played
+// at the end of its noteOff method. 
+class Tick implements Instrument
+{
+  void noteOn( float dur )
+  {
+    if ( hatRow[beat] ) hat.trigger();
+    if ( snrRow[beat] ) snare.trigger();
+    if ( kikRow[beat] ) kick.trigger();
+  }
+  
+  void noteOff()
+  {
+    // next beat
+    beat = (beat+1)%16;
+    // set the new tempo
+    out.setTempo( bpm );
+    // play this again right now, with a sixteenth note duration
+    out.playNote( 0, 0.25f, this );
+  }
+}
 
 void setup()
 {
   size(395, 200, OPENGL);
   minim = new Minim(this);
-  // load BD.wav from the data folder, with a 512 sample buffer
-  int bsize = 2048;
-  kick = minim.loadSample("BD.wav", bsize);
-  // load SD.wav from the data folder
-  snare = minim.loadSample("SD.wav", bsize);
-  // load CHH.wav from the data folder
-  hat = minim.loadSample("CHH.wav", bsize);
+  out   = minim.getLineOut();
+  
+  // load all of our samples, using 4 voices for each.
+  // this will help ensure we have enough voices to handle even
+  // very fast tempos.
+  kick  = new Sampler( "BD.wav", 4, minim );
+  snare = new Sampler( "SD.wav", 4, minim );
+  hat   = new Sampler( "CHH.wav", 4, minim );
+  
+  // patch samplers to the output
+  kick.patch( out );
+  snare.patch( out );
+  hat.patch( out );
   
   gui = new ControlP5(this);
   gui.setColorForeground(color(128, 200));
@@ -58,10 +93,11 @@ void setup()
   }
   gui.addNumberbox("bpm", 120, 10, 5, 20, 15);
   bpm = 120;
-  tempo = 125;
-  clock = millis();
   beat = 0;
-  beatTriggered = false;
+  
+  // start the sequencer
+  out.setTempo( bpm );
+  out.playNote( 0, 0.25f, new Tick() );
   
   textFont(createFont("Arial", 16));
 }
@@ -71,21 +107,6 @@ void draw()
   background(0);
   fill(255);
   //text(frameRate, width - 60, 20);
-  
-  if ( millis() - clock >= tempo )
-  {
-    clock = millis();
-    beat = (beat+1) % 16;
-    beatTriggered = false;
-  }
-  
-  if ( !beatTriggered )
-  {
-    if ( hatRow[beat] ) hat.trigger();
-    if ( snrRow[beat] ) snare.trigger();
-    if ( kikRow[beat] ) kick.trigger();
-    beatTriggered = true;
-  }
   
   stroke(128);
   if ( beat % 4 == 0 )
@@ -97,18 +118,8 @@ void draw()
     fill(0, 200, 0);
   }
     
-  
   // beat marker    
   rect(10+beat*24, 35, 14, 9);
-  
-  // use the mix buffer do draw the waveforms.
-  // because these are MONO files, we could have used the left or right buffers and got the same data
-  for (int i = 0; i < kick.mix.size()-1; i++)
-  {
-    line(i, 65 - hat.mix.get(i)*30, i+1, 65 - hat.mix.get(i+1)*30);
-    line(i, 115 - snare.mix.get(i)*30, i+1, 115 - snare.mix.get(i+1)*30);
-    line(i, 165 - kick.mix.get(i)*30, i+1, 165 - kick.mix.get(i+1)*30);
-  }
   
   gui.draw();
 }
@@ -128,19 +139,11 @@ public void controlEvent(ControlEvent e)
   {
     kikRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
   }
-  else if ( e.controller().name() == "bpm" )
-  {
-    float bps = (float)bpm/60.0f;
-    tempo = int(1000 / (bps * 4)); 
-  }
 }
 
 void stop()
 {
-  // close the AudioSamples before we exit
-  kick.close();
-  snare.close();
-  hat.close();
+  out.close();
   minim.stop();
   
   super.stop();

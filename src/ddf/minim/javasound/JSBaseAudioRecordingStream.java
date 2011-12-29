@@ -500,6 +500,11 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         // iothread.interrupt();
         // }
     }
+    
+    public long getSampleFrameLength()
+    {
+    	return ais.getFrameLength();
+    }
 
     public Control[] getControls()
     {
