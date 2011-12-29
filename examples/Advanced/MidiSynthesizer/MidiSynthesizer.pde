@@ -224,7 +224,7 @@ class Blip
   }
 }
 
-void exit()
+void stop()
 {
   // close our output and stop minim.
   out.close();
@@ -234,6 +234,6 @@ void exit()
   synth.close();
   
   // call Processing's exit method.
-  super.exit();
+  super.stop();
 }
   
