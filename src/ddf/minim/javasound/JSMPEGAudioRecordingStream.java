@@ -18,97 +18,23 @@
 
 package ddf.minim.javasound;
 
-import java.io.IOException;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.SourceDataLine;
 
-import javazoom.spi.mpeg.sampled.convert.DecodedMpegAudioInputStream;
-
-import org.tritonus.share.sampled.AudioUtils;
-
 import ddf.minim.AudioMetaData;
-
 
 class JSMPEGAudioRecordingStream extends JSBaseAudioRecordingStream
 {
-	private AudioMetaData		meta;
-	// private AudioInputStream	encAis;
-
-	JSMPEGAudioRecordingStream(JSMinim sys, AudioMetaData mdata, AudioInputStream encStream,
-	                  			AudioInputStream decStream, SourceDataLine sdl, int bufferSize)
+	JSMPEGAudioRecordingStream(JSMinim sys, AudioMetaData metaData,
+			AudioInputStream encStream, AudioInputStream decStream,
+			SourceDataLine sdl, int bufferSize)
 	{
-		super(sys, decStream, sdl, bufferSize, mdata.length());
-		meta = mdata;
-		// encAis = encStream;
+		super( sys, metaData, decStream, sdl, bufferSize, metaData.length() );
 	}
 
-	public AudioMetaData getMetaData()
+	synchronized protected void rewind()
 	{
-		return meta;
+		super.rewind();
+		ais = system.getAudioInputStream( format, ais );
 	}
-
-	public int getMillisecondLength()
-	{
-		return meta.length();
-	}
-	
-	protected int skip(int millis)
-	{
-		system.debug("Skipping forward by " + millis + " milliseconds.");
-		long toSkip = AudioUtils.millis2BytesFrameAligned(millis, format);
-		byte[] skipBytes = new byte[(int)toSkip];
-		long totalSkipped = 0;
-		try
-		{
-			// it's only able to read about 2 seconds at a time
-			// so we've got to loop until we've skipped the requested amount
-			while (totalSkipped < toSkip)
-			{
-				int read;
-				synchronized ( ais )
-				{
-          // we don't use skip here because it doesn't work with our decoder
-					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
-				}
-				if (read == -1)
-				{
-					// EOF!
-					break;
-				}
-				totalSkipped += read;
-			}
-		}
-		catch (IOException e)
-		{
-			system.error("Unable to skip due to read error: " + e.getMessage());
-		}
-		system.debug("Total actually skipped was " + totalSkipped
-				+ ", which is " + AudioUtils.bytes2Millis(totalSkipped, format)
-				+ " milliseconds.");
-		return (int)totalSkipped;
-	}
-	
-	protected void rewind()
-	{
-		// close and reload
-	  // because marking the thing such that you can play the
-    // entire file without the mark being invalidated,
-    // essentially means you are loading the file into memory
-    // as it is played. which can mean out-of-memory for large files.
-		synchronized ( ais )
-		{
-			try
-			{
-				ais.close();
-			}
-			catch (IOException e)
-			{
-				system.error("JSMPEGAudioRecordingStream::rewind - Error closing the stream before reload: "	+ e.getMessage());
-			}
-			AudioInputStream encIn = system.getAudioInputStream(meta.fileName());
-			ais = (DecodedMpegAudioInputStream)system.getAudioInputStream(format, encIn);
-		}
-	}
-
 }

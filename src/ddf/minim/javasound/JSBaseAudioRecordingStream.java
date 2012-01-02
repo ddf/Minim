@@ -29,6 +29,7 @@ import org.tritonus.share.sampled.AudioUtils;
 
 import ddf.minim.AudioEffect;
 import ddf.minim.AudioListener;
+import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
 import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioRecordingStream;
@@ -39,6 +40,8 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
     private Thread             iothread;
     private AudioListener      listener;
     private AudioEffect        effect;
+    
+    private AudioMetaData	meta;
 
     // reading stuff
     private boolean            play;
@@ -49,7 +52,12 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
     // loop end is in bytes
     private int                loopEnd;
     protected AudioInputStream ais;
+    
+    // byte array we use in readBytes
     private byte[]             rawBytes;
+    // byte array we use in skip
+    private byte[]			   skipBytes;
+    
     // whether or not we should read from the file
     // this is different from whether we should play or not.
     // this will always be true, unless we've got
@@ -83,14 +91,24 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
     protected JSMinim          system;
 
-    JSBaseAudioRecordingStream(JSMinim sys, AudioInputStream stream,
-            SourceDataLine sdl, int bufferSize, int msLen)
+    JSBaseAudioRecordingStream(JSMinim sys, AudioMetaData metaData, 
+    		AudioInputStream stream, SourceDataLine sdl, int inBufferSize, int msLen)
     {
+    	system = sys;
+    	meta   = metaData;
         format = sdl.getFormat();
-        this.bufferSize = bufferSize;
+        bufferSize = inBufferSize;
+        
+        // allocate reading data
         buffer = new FloatSampleBuffer( format.getChannels(), bufferSize, format.getSampleRate() );
-        system = sys;
-        system.debug( "FloatSampleBuffer has " + buffer.getSampleCount() + " samples." );
+        system.debug( "JSBaseAudioRecordingStream :: FloatSampleBuffer has " + buffer.getSampleCount() + " samples." );
+        
+        rawBytes = new byte[buffer.getByteArrayBufferSize( format )];
+        system.debug( "JSBaseAudioRecordingStream :: rawBytes has length " + rawBytes.length );
+        
+        skipBytes = new byte[ (int)AudioUtils.millis2BytesFrameAligned( 10000, format ) ];
+        system.debug( "JSBaseAudioRecordingStream :: skipBytes has length " + skipBytes.length );
+        
         finished = false;
         line = sdl;
 
@@ -100,13 +118,23 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         numLoops = 0;
         loopBegin = 0;
         loopEnd = (int)AudioUtils.millis2BytesFrameAligned( msLen, format );
-        rawBytes = new byte[buffer.getByteArrayBufferSize( format )];
+        
         silence = new float[bufferSize];
         iothread = null;
         totalBytesRead = 0;
         bytesWritten = 0;
         shouldRead = true;
     }
+    
+	public AudioMetaData getMetaData()
+	{
+		return meta;
+	}
+
+	public int getMillisecondLength()
+	{
+		return meta.length();
+	}
 
     public void run()
     {
@@ -398,8 +426,8 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
     public void open()
     {
-        iothread = new Thread( this );
         finished = false;
+        iothread = new Thread( this );
         iothread.start();
     }
 
@@ -521,10 +549,80 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         this.listener = listener;
     }
 
-    protected abstract void rewind();
+    synchronized protected void rewind()
+	{
+		// close and reload
+		// because marking the thing such that you can play the
+		// entire file without the mark being invalidated,
+		// essentially means you are loading the file into memory
+		// as it is played. which can mean out-of-memory for large files.
+		try
+		{
+			ais.close();
+		}
+		catch ( IOException e )
+		{
+			system.error( "JSPCMAudioRecordingStream::rewind - Error closing the stream before reload: "
+					+ e.getMessage() );
+		}
+		ais = system.getAudioInputStream( meta.fileName() );
+	}
 
-    // skip forward millis
-    protected abstract int skip(int millis);
+    protected int skip(int millis)
+	{
+		long toSkip = AudioUtils.millis2BytesFrameAligned(millis, format);
+		
+		if ( toSkip <= 0 ) 
+		{
+			if ( toSkip < 0 )
+			{
+				system.error( "JSBaseAudioRecordingStream.skip :: Tried to skip negative milleseconds!" );
+			}
+			return 0;
+		}
+		
+		system.debug("Skipping forward by " + millis + " milliseconds, which is " + toSkip + " bytes.");
+		
+		long totalSkipped = 0;
+		try
+		{
+			while (toSkip > 0)
+			{
+				long read;
+				synchronized ( ais )
+				{
+					// we don't use skip here because it sometimes has problems where
+					// it's "unable to skip an integer number of frames",
+					// which sometimes means it doesn't skip at all and other times
+					// means that you wind up with noise because it lands at half
+					// a sample off from where it should be. 
+					// read seems to be rock solid.
+					int myBytesToRead = skipBytes.length;
+					if(toSkip < myBytesToRead)
+					{
+						myBytesToRead = (int)toSkip;
+					}
+					read = ais.read(skipBytes, 0, myBytesToRead);
+				}
+				if (read == -1)
+				{
+					// EOF!
+					system.debug( "JSBaseAudioRecordingStream.skip :: EOF reached!" );
+					break;
+				}
+				toSkip 	     -= read;
+				totalSkipped += read;
+			}
+		}
+		catch (IOException e)
+		{
+			system.error("Unable to skip due to read error: " + e.getMessage());
+		}
+		system.debug("Total actually skipped was " + totalSkipped + ", which is "
+					+ AudioUtils.bytes2Millis(totalSkipped, ais.getFormat())
+					+ " milliseconds.");
+		return (int)totalSkipped;
+	}
 
     // TODO: this implementation of float[] read is way temporary
     public float[] read()

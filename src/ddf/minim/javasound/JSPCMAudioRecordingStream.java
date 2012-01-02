@@ -18,94 +18,17 @@
 
 package ddf.minim.javasound;
 
-import java.io.IOException;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.SourceDataLine;
-
-import org.tritonus.share.sampled.AudioUtils;
 
 import ddf.minim.AudioMetaData;
 
 class JSPCMAudioRecordingStream extends JSBaseAudioRecordingStream
 {
-	private AudioMetaData	meta;
 
-	JSPCMAudioRecordingStream(JSMinim sys, AudioMetaData mdata, AudioInputStream stream,
-			SourceDataLine sdl, int bufferSize)
+	JSPCMAudioRecordingStream(JSMinim sys, AudioMetaData metaData,
+			AudioInputStream stream, SourceDataLine sdl, int bufferSize)
 	{
-		super(sys, stream, sdl, bufferSize, mdata.length());
-		meta = mdata;
+		super( sys, metaData, stream, sdl, bufferSize, metaData.length() );
 	}
-
-	public AudioMetaData getMetaData()
-	{
-		return meta;
-	}
-
-	public int getMillisecondLength()
-	{
-		return meta.length();
-	}
-	
-	protected void rewind()
-	{
-    // close and reload
-    // because marking the thing such that you can play the
-    // entire file without the mark being invalidated,
-    // essentially means you are loading the file into memory
-    // as it is played. which can mean out-of-memory for large files.
-    synchronized( ais )
-    {
-  		try
-  		{
-        ais.close();
-  		}
-  		catch (IOException e)
-  		{
-  		  system.error("JSPCMAudioRecordingStream::rewind - Error closing the stream before reload: " + e.getMessage());
-  		}
-      ais = system.getAudioInputStream(meta.fileName());
-    }
-	}
-	
-	protected int skip(int millis)
-	{
-		long toSkip = AudioUtils.millis2BytesFrameAligned(millis, format);
-		system.debug("Skipping forward by " + millis + " milliseconds, which is " + toSkip + " bytes.");
-		byte[] skipBytes = new byte[(int)toSkip];
-		long totalSkipped = 0;
-		try
-		{
-			while (totalSkipped < toSkip)
-			{
-				long read;
-				synchronized ( ais )
-				{
-          // we don't use skip here because it sometimes has problems where
-          // it's "unable to skip an integer number of frames",
-          // which sometimes means it doesn't skip at all and other times
-          // means that you wind up with noise because it lands at half
-          // a sample off from where it should be. 
-          // read seems to be rock solid.
-					read = ais.read(skipBytes, 0, (int)(toSkip - totalSkipped));
-				}
-				if (read == -1)
-				{
-					// EOF!
-					break;
-				}
-				totalSkipped += read;
-			}
-		}
-		catch (IOException e)
-		{
-			system.error("Unable to skip due to read error: " + e.getMessage());
-		}
-		system.debug("Total actually skipped was " + totalSkipped + ", which is "
-					+ AudioUtils.bytes2Millis(totalSkipped, ais.getFormat())
-					+ " milliseconds.");
-		return (int)totalSkipped;
-	}
-
 }
