@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>proDOC : : how to describe your fields and methods</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #FFFFFF;
+}
+A:link {
+	color: #000000;
+	text-decoration: none
+}
+A:visited {
+	color: #000000;
+	text-decoration: none
+}											
+A:active {
+	color: #999900; 
+	text-decoration: none
+}
+A:hover {
+	color: #999900;
+	text-decoration: none;
+}
+-->
+</style>
+<link href="stylesheet.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<center>
+<table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="75" height="100" valign="top" class="header"><img src="images/prodoc.gif" width="127" height="40">
+        <img src="images/index.gif" width="91" height="50" border="0" usemap="#MapMap"></td>
+    <td width="450" class="descList">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">&nbsp;</td>
+    <td class="methodName">How to describe your fields and methods </td>
+  </tr>
+  <tr>
+    <td valign=top>&nbsp;</td>
+    <td valign=top class="descList"> Like classes you have to comment you fields and methods for the documentation. Except the @nosupperclasses tag you can use the same tags like in the class comments. There are some standard javadoc tags, that are also used by proDOC. The first is the @ param tag to specify the parameters of methods, the second one is the @return tag to specify, what a method returns. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">method comment</td>
+    <td valign=top class="descList"><pre class="codeexample">/**<br> * Use this method to add a child to an element. <br> * @param element Element, to add as child<br> * @example HtmlElement<br> * @related HtmlElement<br> * @related addAttribute ( )<br> * @related countAllChildren ( )<br> * @related getAttribute ( )<br> * @related getAttributes ( )<br> * @related getChildren ( )<br> * @related getDepth ( )<br> * @related getSpecificElements ( )<br> * @related hasAttribute ( )<br> * @related hasAttributes ( )<br> * @related hasChildren ( )<br> * @related kindOfElement<br> * @related printElementTree ( )<br> * @related toString ( )<br> * @related type ( ) <br> */<br><br> public void addChild (Element element) {<br>   children.add(element);<br> }
+ <br> /**
+  * Adds an Element to the Children of the Element at the given position<br>  * @param element Element, to add as child<br>  * @param position int, position to where to insert the element.<br>  */
+ <br> public void addChild (Element element, int position) {<br>   children.add(position, element);<br> }</pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">Methods with the same name but different parameter signatures, are documented in one page. You have to make sure that such methods stand in a row. Only the first method has to be completly commented. For all following you only have to insert the parameter descriptions. <br>
+      <br>
+      If you provide your own template files you have to include four files for the generation of the method and field doc files. Here is an example for the first: </td>
+  </tr><tr>
+    <td valign=top class="mainText">member.htm</td>
+    <td valign=top class="descList"><pre class="codeexample">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;@title&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; 
+ charset=iso-8859-1&quot;&gt;<br>&lt;link href=&quot;stylesheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt; <br>&lt;center&gt;<br>&lt;table width=&quot;600&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;<br>  &lt;tr&gt;<br>    &lt;td height=&quot;100&quot; valign=&quot;top&quot; class=&quot;header&quot;&gt;
+      &lt;span class=&quot;libName&quot;&gt;@libname&lt;/span&gt;&lt;br&gt;<br>      &lt;a href=&quot;index.htm&quot;&gt;index&lt;/a&gt;&lt;/td&gt;<br>    &lt;td width=&quot;450&quot; class=&quot;descList&quot;&gt;&amp;nbsp;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=&quot;top&quot; class=&quot;mainTextName&quot;&gt;Name&lt;/td&gt;<br>    &lt;td class=&quot;methodName&quot;&gt;@name&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Examples&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;&lt;pre&gt;@example&lt;/pre&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Description&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;@description&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Syntax&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;&lt;pre&gt;@syntax&lt;/pre&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  @parameters<br>  @return<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Usage&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;@usage&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Related&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;@related&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td&gt;&lt;img src=&quot;video/images/1pix.gif&quot; width=&quot;1&quot; height=&quot;200&quot;&gt;&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;&amp;nbsp;&lt;/td&gt;<br>  &lt;/tr&gt;<br>&lt;/table&gt;<br>&lt;/center&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br></pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">The tags you have to include are nearly the same like in the classtemplate. The member template has no @fields and @methods tag but needs to include the @return tag for inserting the return section of a method. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">memberparameters.htm</td>
+    <td valign=top class="descList"><pre class="codeexample">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;Untitled Document&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br> &lt;table&gt;<br>   &lt;!--startCell--&gt;<br>     &lt;tr&gt;<br>       &lt;td class=&quot;mainText&quot;&gt;Parameters&lt;/td&gt;<br>       &lt;td valign=top class=&quot;descList&quot;&gt;<br>         &lt;table border=0 cellspacing=0 cellpadding=0&gt;<br>           @parameter<br>         &lt;/table&gt;<br>	   &lt;/td&gt;<br>	 &lt;/tr&gt;<br>   &lt;!--endCell--&gt;<br> &lt;/table&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">memberparameters is the template that is inserted in the @parameters section of the member template. You can build a complete html file for better designing and mark the block with the html comments startcell and endcell linke shown above. Notice the @parameter tag including a further template file named memberparameter.htm. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">memberparameter.htm</td>
+    <td valign=top class="descList"><pre class="codeexample">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;Untitled Document&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>  &lt;table width=550 border=0 cellspacing=0 cellpadding=0&gt;<br>    &lt;!--startCell--&gt;<br>      &lt;tr&gt;<br>        &lt;td width=&quot;70&quot; valign=top&gt;@name&lt;/td&gt;<br>        &lt;td width=&quot;20&quot;&gt;&amp;nbsp;&lt;/td&gt;<br>        &lt;td valign=top&gt;@description&lt;/td&gt;<br>	  &lt;/tr&gt;<br>    &lt;!--endCell--&gt;<br>  &lt;/table&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">memberparameter.htm is the template for the parameterlist. it needs two tags, @name for the name of the parameter and @description its description. The last template is memberreturn, for inserting information of the return of a method. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">memberreturn.htm</td>
+    <td valign=top class="descList"><pre class="codeexample">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;Untitled Document&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br> &lt;table&gt;<br>   &lt;!--startCell--&gt;<br>     &lt;tr&gt;<br>       &lt;td valign=top class=&quot;mainText&quot;&gt;Returns&lt;/td&gt;<br>       &lt;td class=&quot;descList&quot;&gt;@return&lt;/td&gt;<br>     &lt;/tr&gt;<br>   &lt;!--endCell--&gt;<br> &lt;/table&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">&nbsp;</td>
+  </tr>
+</table>
+<br>
+<br>
+<br>
+<br>
+</center>
+<map name="MapMap">
+  <area shape="rect" coords="3,13,88,34" href="index.html">
+</map>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>proDOC : : how to describe your classes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #FFFFFF;
+}
+A:link {
+	color: #000000;
+	text-decoration: none
+}
+A:visited {
+	color: #000000;
+	text-decoration: none
+}											
+A:active {
+	color: #999900; 
+	text-decoration: none
+}
+A:hover {
+	color: #999900;
+	text-decoration: none;
+}
+-->
+</style>
+<link href="stylesheet.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<center>
+<table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="75" height="100" valign="top" class="header"><img src="images/prodoc.gif" width="127" height="40">
+        <img src="images/index.gif" width="91" height="50" border="0" usemap="#MapMap"></td>
+    <td width="450" class="descList">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">&nbsp;</td>
+    <td class="methodName">How to describe your classes </td>
+  </tr>
+  <tr>
+    <td valign=top>&nbsp;</td>
+    <td valign=top class="descList"> To describe you class, you first have to comment it by adding a comment section in front of the class. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">class comment</td>
+    <td valign=top class="descList"><pre class="codeexample">package proxml;
+<br>import java.util.*;<br>import java.io.*;<br>import java.net.URL;<br>import java.net.URLConnection;
+<br>/**<br> * proXML is a reduced interface for writing and reading XML.<br> * @example proxml.pde<br> * @usage Application<br> * @related PCData<br> * @related addChild ( )<br> */
+<br>public class XMLElement extends BasicElement{<br>...
+    </pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">You have to add a description in the comment like shown in the example above. The @usage tag is needed to specify the usage of the class. You can optionally add an @example tag to insert the code of an example file from the examples folder and @related tags to point to corresponding document parts.<br>
+      <br>
+      proDOC is looking for superclasses of you class to insert their methods and fields, if you do not want that you can add a @nosuperclasses tag. proDOC is only scanning public classes, if there is class that should not be included in the documentation you can set an @invisible tag.<br>
+      <br>
+      If you provide your own template files you have to include three files for the generation of the class doc files. Here is the first: </td>
+  </tr><tr>
+    <td valign=top class="mainText">class.htm</td>
+    <td valign=top class="descList"><pre class="codeexample">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;@title&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot;&gt;<br>&lt;link href=&quot;stylesheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt; <br>&lt;center&gt;<br>&lt;table width=&quot;600&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;<br>  &lt;tr&gt;<br>    &lt;td class=&quot;header&quot;&gt;<br>	  &lt;span class=&quot;libName&quot;&gt;@libname&lt;/span&gt;<br>	  &lt;a href=&quot;index.htm&quot;&gt;index&lt;/a&gt;&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=&quot;top&quot; class=&quot;mainTextName&quot;&gt;Name&lt;/td&gt;<br>    &lt;td class=&quot;methodName&quot;&gt;@name&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Examples&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;&lt;pre&gt;@example&lt;/pre&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Description&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;@description&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Constructors&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;&lt;pre&gt;@syntax&lt;/pre&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  @parameters<br>  @fields<br>  @methods<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Usage&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;@usage&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Related&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;@related&lt;/td&gt;<br>  &lt;/tr&gt;<br>&lt;/table&gt;<br>&lt;/center&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">For your own templates you have to make sure, that it includes several tags. In the example file above, taken from the the proDOC standard template you can see them. The first one is the @title tag, working identical like in the index template. Now comes the optional @libname tag for inserting the name of the library. You also have to include the @name tag as placeholder for the class name, the @example tag to insert code examples and @description for the description of the class. For the the syntax of the constructors you have to include the @syntax tag. <br>
+      <br>
+      There are three more complex tags named @parameters, @fields and @methods. They are placeholders for further template files, which will be explained later. <br>
+      <br>
+      The last two required tags are @usage to specify if the described class works for web, applicaion or both web and application and @related to insert links to point to coressponding parts of the documentation. <br>
+      <br>
+      Lets come back to the @parameters, @fields and @methods tags, they stand for sections, that have to be multiple included . @fields and @methods mark the position where the field and method descriptions have to be inserted and @parameters is the placeholder for the explanation of the different constructor parameters. The htmlcode for this sections is placed in different template files. For your own template files you have to make sure that these parts fit together when they are merged by proDOC and that it is possible to repeat them. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">classmembers.htm</td>
+    <td valign=top class="descList"><pre class="codeexample">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;Untitled Document&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br> &lt;table&gt;<br>   &lt;!--startCell--&gt;<br>     &lt;tr&gt;<br>       &lt;td class=&quot;mainText&quot;&gt;@kind&lt;/td&gt;<br>       &lt;td valign=top class=&quot;descList&quot;&gt;<br>         &lt;table border=0 cellspacing=0 cellpadding=0&gt;<br>           @member<br>         &lt;/table&gt;<br>	   &lt;/td&gt;<br>	 &lt;/tr&gt;<br>   &lt;!--endCell--&gt;<br> &lt;/table&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">classmembers is the template that is inserted in the @members section of the class template. You can build a complete html file for better designing and mark the block with the html comments startcell and endcell linke shown above. Notice the @members tag including a further template file named classmember.htm. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">classmember.htm</td>
+    <td valign=top class="descList"><pre class="codeexample">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;Untitled Document&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>  &lt;table width=550 border=0 cellspacing=0 cellpadding=0&gt;<br>    &lt;!--startCell--&gt;<br>      &lt;tr&gt;<br>        &lt;td width=&quot;120&quot; valign=top&gt;&lt;a href=&quot;@link&quot;&gt;@name&lt;/a&gt;&lt;/td&gt;<br>        &lt;td width=&quot;20&quot;&gt;&amp;nbsp;&lt;/td&gt;<br>        &lt;td valign=top&gt;@description&lt;/td&gt;<br>	  &lt;/tr&gt;<br>    &lt;!--endCell--&gt;<br>  &lt;/table&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre></td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">&nbsp;</td>
+  </tr>
+</table>
+<br>
+<br>
+<br>
+<br>
+</center>
+<map name="MapMap">
+  <area shape="rect" coords="3,13,88,34" href="index.html">
+</map>
+</body>
+</html>

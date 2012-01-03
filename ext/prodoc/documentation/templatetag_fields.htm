@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>proDOC : : template tags : : @fields</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #FFFFFF;
+}
+A:link {
+	color: #000000;
+	text-decoration: none
+}
+A:visited {
+	color: #000000;
+	text-decoration: none
+}											
+A:active {
+	color: #999900; 
+	text-decoration: none
+}
+A:hover {
+	color: #999900;
+	text-decoration: none;
+}
+-->
+</style>
+<link href="stylesheet.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<center>
+<table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="75" height="100" valign="top" class="header"><img src="images/prodoc.gif" width="127" height="40"><br>
+        <img src="images/index.gif" width="91" height="50" border="0" usemap="#MapMap"></td>
+    <td width="450" class="descList">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top" class="mainTextName">Name</td>
+    <td class="methodName">@fields</td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">Example</td>
+    <td valign=top class="descList"><pre>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;<br>&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;title&gt;@title&lt;/title&gt;<br>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot;&gt;<br>&lt;link href=&quot;stylesheet.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;<br>&lt;/head&gt;<br>&lt;body&gt; <br>&lt;center&gt;<br>&lt;table width=&quot;600&quot; border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;<br>  &lt;tr&gt;<br>    &lt;td class=&quot;header&quot;&gt;<br>	  &lt;span class=&quot;libName&quot;&gt;@libname&lt;/span&gt;<br>	  &lt;a href=&quot;index.htm&quot;&gt;index&lt;/a&gt;&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=&quot;top&quot; class=&quot;mainTextName&quot;&gt;Name&lt;/td&gt;<br>    &lt;td class=&quot;methodName&quot;&gt;@name&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Examples&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;&lt;pre&gt;@example&lt;/pre&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Description&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;@description&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Constructors&lt;/td&gt;<br>    &lt;td valign=top class=&quot;descList&quot;&gt;&lt;pre&gt;@syntax&lt;/pre&gt;&lt;/td&gt;<br>  &lt;/tr&gt;<br>  @parameters<br>  @fields<br>  @methods<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Usage&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;@usage&lt;/td&gt;<br>  &lt;/tr&gt;<br>  &lt;tr&gt;<br>    &lt;td valign=top class=&quot;mainText&quot;&gt;Related&lt;/td&gt;<br>    &lt;td class=&quot;descList&quot;&gt;@related&lt;/td&gt;<br>  &lt;/tr&gt;<br>&lt;/table&gt;<br>&lt;/center&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre></td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">Description</td>
+    <td valign=top class="descList">When you build your own template files you have to insert the @fields tag into the class.htm template, so that proDOC knows where to put the links and descriptions for the fields of the class. </td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">Usage</td>
+    <td valign=top class="descList">required</td>
+  </tr>
+  <tr>
+    <td valign=top class="mainText">Used by </td>
+    <td valign=top class="descList">      class.htm</td>
+  </tr>
+  <tr>
+    <td><img src="video/images/1pix.gif" width="1" height="25"></td>
+    <td class="descList">&nbsp;</td>
+  </tr>
+</table>
+<br>
+<br>
+<br>
+<br>
+</center>
+<map name="MapMap">
+  <area shape="rect" coords="3,13,88,34" href="index.html">
+</map>
+</body>
+</html>

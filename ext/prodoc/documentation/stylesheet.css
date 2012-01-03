@@ -1,0 +1,117 @@
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	background-color: #FFFFFF;
+}
+A:link {
+	color: #cc4400;
+	text-decoration: none
+}
+A:visited {
+	color: #cc4400;
+	text-decoration: none
+}											
+A:active {
+	color: #000000; 
+	text-decoration: none
+}
+A:hover {
+	color: #000000;
+	text-decoration: none;
+}
+.mainText {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 11px;
+	vertical-align: top;
+	text-align: right;
+	padding-right: 20px;
+}
+.linkList {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 11px;
+	vertical-align: top;
+	font-style: normal;
+	color: #000000;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: solid;
+	border-left-color: #cc4400;
+	padding-left: 20px;
+}
+.descList {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 11px;
+	vertical-align: top;
+	font-style: normal;
+	color: #000000;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: solid;
+	border-left-color: #cc4400;
+	padding-left: 20px;
+	padding-bottom: 30px;
+}
+.libName {
+	font-size: 36px;
+}
+.header {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	color: #cc4400;
+	text-align: right;
+	padding: 20px;
+	width: 126px;
+}
+.methodName {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 18px;
+	vertical-align: top;
+	font-style: normal;
+	color: #cc4400;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: solid;
+	border-left-color: #cc4400;
+	padding-left: 20px;
+	padding-bottom: 30px;
+}
+.mainTextName {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 11px;
+	vertical-align: top;
+	padding-right: 20px;
+	text-align: right;
+	padding-top: 4px;
+}
+.colored {
+	color: #cc4400;
+}
+.indextext {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 11px;
+	vertical-align: top;
+	text-align: left;
+	padding-right: 20px;
+	padding-left: 38px;
+}
+.indexheader {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	color: #cc4400;
+	text-align: left;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+.codeexample {
+	font-size: 11px;
+	color: #000000;
+	font-weight: normal;
+}

@@ -4,7 +4,7 @@
       <include name="*.jar"/>
     </fileset>
   	<fileset dir="ext">
-  	  <include name="*.jar"/>
+  		<include name="prodoc/prodoc.jar"/>
   	</fileset>
   </path>
 	
@@ -25,8 +25,14 @@
   </target>
 
   <target name="doc">
-    <javadoc sourcepath="src" destdir="doc">
+	<javadoc sourcepath="src" destdir="javadoc">
       <classpath refid="deps.path"/>
+    </javadoc>
+  	
+    <javadoc access="public" packagenames="ddf.minim" sourcepath="src">
+    	<classpath refid="deps.path"/>
+        <doclet name="prodoc.StartDoclet" path="ext/prodoc/prodoc.jar">
+        </doclet>
     </javadoc>
   </target>
 

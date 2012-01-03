@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>packagehtml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body>
+	Minim is an audio library that uses the
+	<a href="http://java.sun.com/products/java-media/sound/doc-sampled.html">
+		JavaSound API
+	</a>, a bit of <a href="http://www.tritonus.org">Tritonus</a>, and Javazoom's
+	<a href="http://www.javazoom.net/mp3spi/mp3spi.html">MP3SPI</a> to
+	provide an easy to use audio library for people developing in the
+	Processing environment. The philosophy behind the API is to make
+	integrating audio into your sketches as simple as possible while still
+	providing a reasonable amount of flexibility for more advanced users.
+	There are no callbacks and you do not ever need to directly manipulate
+	sample arrays, all of the dirty work is handled for you. The download
+	comes in two flavors: (1) just the jar files needed to use Minim and
+	(2) a full distribution that includes the javadocs, examples, and
+	source code. Minim is licensed under the
+	<a href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html">GNU
+		Lesser General Public License</a> (LGPL), a copy of which is included with
+	both distributions. Users of Minim 1.1 should peruse the
+	<a href="http://code.compartmental.net/minim/javadoc/">Javadocs</a> to
+	see what's changed (hint: not much has changed, but there are a couple
+	of nice new things).
+
+	<p>
+	
+	<strong>Download:</strong>
+	<a
+		href="http://code.compartmental.net/minim/distro/minim-2.0.2-full.zip">Minim
+		2.0.2 full distro</a> |
+	<a
+		href="http://code.compartmental.net/minim/distro/minim-2.0.2-lib.zip">Minim
+		2.0.2 library only</a>
+
+	<h1>Minim 2.1.0 Beta</h1>
+	
+	The next version of Minim is currently available as a Beta build.
+	The big new feature is a music programming framework built around the
+	concept of a unit generator (UGen). This framework makes it possible to
+	intuitively create synthesis chains and schedule notes to be played
+	with these chains. You can read about the framework beginning in the
+	Minim Manual at the
+	<a
+		href="http://code.compartmental.net/tools/minim/manual-music-programming-intro/">Music
+		Programming Intro</a> section. You can also peruse the Javadocs for the
+	Beta build online at
+	<a href="http://code.compartmental.net/minim-beta/javadoc/">http://code.compartmental.net/minim-beta/javadoc/</a>.
+	The package ddf.minim.ugens contains all of the new music programming
+	classes.
+
+	<p>
+	
+	<strong>Download:</strong>
+	<a
+		href="http://code.compartmental.net/minim/distro/minim-2.1.0-BETA.zip">Minim
+		2.1.0 BETA</a> (new UGen Framework)
+
+	<h1>Installation</h1>
+	
+	To install either distribution, unzip the file into the
+	<strong>libraries</strong> folder in your sketchbook. Create this
+	directory if it doesn't exist. The zip should extract a directory named
+	<strong>minim</strong>. You will then need to remove the version of
+	Minim that is included with Processing.
+	<p>
+	<strong>On OSX:</strong> Find your Processing.app and right click,
+	choose "Show Package Contents". Then dig down to
+	Contents/Resources/Java/modes/java/libraries and delete the minim
+	folder in there.
+	<p>
+	<strong>On Windows:</strong> From the directory that contains
+	Processing.exe, dig down to modes/java/libraries and delete the minim
+	folder there. Finally,
+	<strong>restart Processing</strong>. Here are some of the features of
+	Minim:
+	<ul>
+		<li>AudioPlayer: Mono and Stereo playback of WAV, AIFF, AU, SND,
+			and MP3 files.</li>
+		<li>AudioMetaData: An object filled with metadata about a file,
+			such as ID3 tags.</li>
+		<li>AudioRecorder: Mono and Stereo audio recording either
+			buffered or direct to disk.</li>
+		<li>AudioInput: Mono and Stereo input monitoring.</li>
+		<li>AudioOutput: Mono and Stereo sound synthesis.</li>
+		<li>AudioSignal: A simple interface for writing your own sound
+			synthesis classes.</li>
+		<li>Comes with all the standard waveforms, a pink noise generator
+			and a white noise generator. Additionally, you can extend the
+			Oscillator class for easy implementation of your own periodic
+			waveform.</li>
+		<li>AudioEffect: A simple interface for writing your own audio
+			effects.</li>
+		<li>Comes with low pass, high pass, band pass, and notch filters.
+			Additionally, you can extend the IIRFilter class for easy
+			implementation of your own IIR filters.</li>
+		<li>Easy to attach signals and effects to AudioInputs and
+			AudioOutputs. All the mixing and processing is taken care of for you.</li>
+		<li>Provides an FFT class for doing spectrum analysis.</li>
+		<li>Provides a BeatDetect class for doing beat detection.</li>
+	</ul>
+	<p>
+	Planned Features:
+	<ul>
+		<li>More AudioEffects like reverb, delay, phasing, ring
+			modulation, and bit crushing.</li>
+		<li>Better filters using frequency domain filtering techniques.</li>
+	</ul>
+	<p>
+	To start using Minim, you can take a look at the
+	<a href="http://code.compartmental.net/tools/minim/quickstart">Quickstart
+		Guide</a> or dive right into the
+	<a href="http://code.compartmental.net/minim/javadoc">Javadocs</a>. If
+	you have any questions about using the library you can
+	<a href="https://forum.processing.org/core-library-questions">post
+		on the Processing forum</a> or
+	<a href="https://forum.processing.org/user/ddifede">send me a
+		private message</a> there. If you find bugs, please report them on the
+	<a href="https://github.com/ddf/Minim/issues">Github issues page</a>.
+	<p>
+	If you'd like to contribute to the development of Minim, simply
+	<a href="http://github.com/ddf/Minim">fork the project on Github</a>
+	and send pull requests when you've got code you'd like us to consider
+	for inclusion in the library. Enjoy!
+	<br/>
+	@libname Minim
+</body>
+</html>
