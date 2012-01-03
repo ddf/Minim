@@ -2,6 +2,8 @@ bin/
 doc/
 javadoc/
 documentation/
+examples/Playable/
+examples/Recordable/
 dist/
 *.swp
 .DS_Store
