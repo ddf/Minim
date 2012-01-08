@@ -2,6 +2,7 @@ package ddf.minim.ugens;
 
 import java.util.Arrays;
 
+
 /**
  * The Delay UGen is used to create delayed repetitions of the input audio.
  * One can control the delay time and amplification of the repetition.
@@ -19,22 +20,19 @@ public class Delay extends UGen
 	 */
 	public UGenInput delTime;
 	/**
-	 * delAmp is the strength of each repetition compared to the previous.
+	 * delAmp is the strength of each repetition compared to the previous. 
+	 * often labeled as feedback on delay units.
 	 */
 	public UGenInput delAmp;
 
-	// current delay time
-	private float delayTime;
 	// maximum delay time
 	private float maxDelayTime;
-	// current feedback factor
-	private float amplitudeFactor;
 	// the delay buffer based on maximum delay time
 	private double[] delayBuffer;
-	// the bufferSize stored for convenience
-	private int bufferSize;
-	// the index of the input and output of the buffer
-	private int iBufferIn, iBufferOut;
+	// how many sample frames does the delay buffer hold
+	private int	     delayBufferFrames;
+	// the index where we pull sound out of the delay buffer
+	private int iBufferOut;
 	// flag to include continual feedback.
 	private boolean feedBackOn;
 	// flag to pass the audio straight to the output.
@@ -130,26 +128,20 @@ public class Delay extends UGen
 		super();
 		// jam3: These can't be instantiated until the uGenInputs ArrayList
 		//       in the super UGen has been constructed
-		audio = new UGenInput( InputType.AUDIO );
+		audio = addAudio();
 		
 		// time members
-		delTime = new UGenInput( InputType.CONTROL );
-		delTime.setLastValue( maxDelayTime );
 		this.maxDelayTime = maxDelayTime;
-		delayTime = maxDelayTime;
+		delTime = addControl( maxDelayTime );
 		
 		// amplitude member
-		delAmp = new UGenInput( InputType.CONTROL );
-		delAmp.setLastValue( amplitudeFactor );
-		this.amplitudeFactor = amplitudeFactor;
+		delAmp = addControl( amplitudeFactor );
 
 		// flags
 		this.feedBackOn = feedBackOn;
 		this.passAudioOn = passAudioOn;
 
-		iBufferIn = 0;
 		iBufferOut = 0;
-		bufferSize = 0;
 	}
 
 	/**
@@ -160,25 +152,18 @@ public class Delay extends UGen
 	 */
 	protected void sampleRateChanged()
 	{
-		delayBuffer = new double [ (int)( maxDelayTime*sampleRate() ) ];
-		Arrays.fill( delayBuffer, 0.0 );
-		bufferSizeChanged();
+		delayBufferFrames = (int)( maxDelayTime*sampleRate() );
+		delayBuffer = new double [ delayBufferFrames*audio.channelCount() ];
+		iBufferOut = 0;
 	}
 	
-	// Recalculate the new bufferSize and make sure to clear out old data.
-	private void bufferSizeChanged()
+	public void setAudioChannelCount( int numberOfChannels )
 	{
-		int oldBufferSize = bufferSize;
-		int newBufferSize = (int)( delayTime * sampleRate() );
-		if ( newBufferSize > 0 )
-		{
-			if ( newBufferSize < oldBufferSize )
-			{
-				Arrays.fill( delayBuffer, newBufferSize, (int)( maxDelayTime*sampleRate() ), 0.0 );
-			}
-			bufferSize = newBufferSize;
-			iBufferOut = ( iBufferIn + 1 )%bufferSize;
-		}
+		super.setAudioChannelCount( numberOfChannels );
+		
+		delayBufferFrames = (int)( maxDelayTime*sampleRate() );
+		delayBuffer = new double [ delayBufferFrames*audio.channelCount() ];
+		iBufferOut = 0;
 	}
 	
     /**
@@ -189,64 +174,61 @@ public class Delay extends UGen
      */
 	public void setDelTime( float delayTime )
 	{
-		this.delayTime = delayTime;
 		delTime.setLastValue( delayTime );
-		bufferSizeChanged();
 	}
 	
 	/**
 	 * changes the feedback amplification of the echos.
 	 * @param delayAmplitude
 	 * 		This should normally be between 0 and 1 for decreasing feedback.
-	 * 		Phase inverted feedback can be generated with negative numbers, but each echa will be the inverse
-	 * 		of the one before it.
+	 * 		Phase inverted feedback can be generated with negative numbers, but each echo 
+	 * 		will be the inverse of the one before it.
 	 */
 	public void setDelAmp( float delayAmplitude )
 	{
-	    amplitudeFactor = delayAmplitude;
 		delAmp.setLastValue( delayAmplitude );
 	}
 
 	@Override
 	protected void uGenerate(float[] channels) 
-	{
-		// mono-ize the signal
-		float tmpIn = 0;
-		for( int i = 0; i < channels.length; i++ )
+	{	
+		if ( delayBuffer == null || delayBuffer.length == 0 )
 		{
-			tmpIn += audio.getLastValues()[ i ]/channels.length;
+			Arrays.fill( channels, 0 );
+			return;
 		}
 		
-		// pull sound out of the buffer
-		float tmpOut = amplitudeFactor*(float)delayBuffer[ iBufferOut ];
+		// how many samples do we delay the input
+		int delay = (int)(delTime.getLastValue()*sampleRate());
 		
-		// put sound into the buffer
-		delayBuffer[ iBufferIn ] = tmpIn;
-		if ( feedBackOn ) 
+		for( int i = 0; i < channels.length; ++i )
 		{
-			delayBuffer[ iBufferIn ] +=tmpOut; 
+			float in  = audio.getLastValues()[i];
+			
+			// pull sound out of the delay buffer
+			int outSample = iBufferOut*channels.length + i;
+			float out = delAmp.getLastValue()*(float)delayBuffer[ outSample ];
+			// eat it
+			delayBuffer[ outSample ] = 0;
+			
+			// put sound into the buffer
+			int inFrame  = (iBufferOut+delay)%delayBufferFrames;
+			int inSample = ( inFrame*channels.length + i);
+			delayBuffer[ inSample ] = in;
+			
+			if ( feedBackOn )
+			{
+				delayBuffer[ inSample ] += out;
+			}
+			
+			if ( passAudioOn )
+			{
+				out += in;
+			}
+			
+			channels[i] = out;
 		}
 		
-		// update the buffer indexes
-		delayTime = delTime.getLastValue();
-		bufferSizeChanged();
-
-		iBufferIn = ( iBufferIn + 1 )%bufferSize;
-		iBufferOut = ( iBufferOut + 1 )%bufferSize;
-		
-		// update the feedbackFactor
-		amplitudeFactor = delAmp.getLastValue();
-			    
-		// pass the audio if necessary
-		if ( passAudioOn )
-		{
-			tmpOut += tmpIn;
-		}
-		
-		// put the delay signal out on all channels
-		for( int i = 0; i < channels.length; i++ )
-		{
-			channels[ i ] = tmpOut;
-		}
+		iBufferOut = (iBufferOut + 1) % delayBufferFrames;
 	} 
 }
