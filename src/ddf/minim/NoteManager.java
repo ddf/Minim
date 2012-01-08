@@ -2,14 +2,13 @@ package ddf.minim;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import ddf.minim.ugens.Instrument;
 
 public class NoteManager
 {
 	// we use this do our timing, basically
-	private AudioOutput out;
+	private float sampleRate;
 	private float tempo;
 	private float noteOffset;
 	private float durationFactor;
@@ -63,9 +62,9 @@ public class NoteManager
 		}
 	}
 	
-	NoteManager(AudioOutput parent)
+	public NoteManager( float sampleRate )
 	{
-		out = parent;
+		this.sampleRate = sampleRate;
 		events = new HashMap<Integer, ArrayList<NoteEvent>>();
 		tempo = 60f;
 		noteOffset = 0.0f;
@@ -76,9 +75,9 @@ public class NoteManager
 	
 	// events are always specified as happening some period of time from now.
 	// but we store them as taking place at a specific time, rather than a relative time.
-	synchronized void addEvent(float startTime, float duration, Instrument instrument)
+	public synchronized void addEvent(float startTime, float duration, Instrument instrument)
 	{
-		int on = now + (int)(out.sampleRate() * ( startTime + noteOffset ) * 60f/tempo);
+		int on = now + (int)(sampleRate * ( startTime + noteOffset ) * 60f/tempo);
 		Integer onAt = new Integer( on );
 		
 		float actualDuration = duration * durationFactor * 60f/tempo;
@@ -95,7 +94,7 @@ public class NoteManager
 			events.put(onAt, eventsAtOn);
 		}
 		
-		Integer offAt = new Integer( on + (int)(out.sampleRate() * actualDuration) );
+		Integer offAt = new Integer( on + (int)(sampleRate * actualDuration) );
 		
 		if ( events.containsKey(offAt) )
 		{

@@ -97,7 +97,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 		super( synthesizer );
 		synth = synthesizer;
 		signals = new SignalChain();
-		noteManager = new NoteManager( this );
+		noteManager = new NoteManager( getFormat().getSampleRate() );
 		bus = new Summer();
 		// configure it
 		bus.setSampleRate( getFormat().getSampleRate() );
