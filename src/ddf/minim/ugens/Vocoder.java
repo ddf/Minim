@@ -1,5 +1,6 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
 import ddf.minim.analysis.FFT;
 
 public class Vocoder extends UGen

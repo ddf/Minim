@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 /**
  * Provides a UGen which generates a Waveform at a specified frequency.
  * @author Damien Di Fede, Anderson Mills

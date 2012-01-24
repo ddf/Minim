@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 
 /**
  * Abs is a UGen that outputs the absolue value of its input.

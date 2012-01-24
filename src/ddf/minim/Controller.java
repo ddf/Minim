@@ -50,6 +50,7 @@ import javax.sound.sampled.FloatControl;
  * are trying to manipulate is not available.
  * 
  * @author Damien Di Fede
+ * @invisible
  * 
  */
 public class Controller
@@ -94,6 +95,8 @@ public class Controller
    * 
    * @param cntrls
    *          an array of Controls that this Controller will manipulate
+   *          
+   * @invisible
    */
   public Controller(Control[] cntrls)
   {

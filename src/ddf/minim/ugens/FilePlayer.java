@@ -5,6 +5,7 @@ import java.util.Arrays;
 import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
 import ddf.minim.Playable;
+import ddf.minim.UGen;
 import ddf.minim.spi.AudioRecordingStream;
 
 /**

@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 /**
  * Gain is another way of expressing an increase or decrease in the volume of something.
  * It is represented in decibels (dB), which is a logorithmic scale. A gain of 0 dB means 

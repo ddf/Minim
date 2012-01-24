@@ -34,7 +34,8 @@ import java.util.Vector;
  * effects while processing is taking place.
  * 
  * @author Damien Di Fede
- *
+ * @invisible
+ * 
  */
 
 public class EffectsChain implements AudioEffect

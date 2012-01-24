@@ -29,6 +29,7 @@ import javax.sound.sampled.AudioFormat;
  * (mono or stereo), and audio format. 
  * 
  * @author Damien Di Fede
+ * @invisible
  *
  */
 public interface Recordable

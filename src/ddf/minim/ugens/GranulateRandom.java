@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 
 /**
  * GranulateRandom is granular synthesis of the incoming audio.

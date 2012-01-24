@@ -36,6 +36,7 @@ import java.util.Vector;
  * the chain during signal generation.
  * 
  * @author Damien Di Fede
+ * @invisible
  * 
  */
 

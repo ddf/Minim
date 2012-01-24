@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 //An envelope follower implementation I found on the internets: http://www.musicdsp.org/showone.php?id=97
 public class EnvelopeFollower extends UGen
 { 

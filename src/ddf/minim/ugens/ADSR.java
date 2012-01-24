@@ -1,6 +1,7 @@
 package ddf.minim.ugens;
 
 import ddf.minim.AudioOutput;
+import ddf.minim.UGen;
 
 /**
  * A UGen that plays input audio through a standard ADSR

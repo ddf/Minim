@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import ddf.minim.Minim;
 import ddf.minim.MultiChannelBuffer;
+import ddf.minim.UGen;
 
 /**
  * <code>Sampler</code> is the UGen replacement for <code>AudioSample</code> and is

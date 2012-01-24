@@ -44,7 +44,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	// the note manager for this output
 	private NoteManager	noteManager;
 	// the Bus for UGens used by this output
-	public final Summer	bus;
+	Summer bus;
 
 	private class SampleGenerator implements AudioSignal
 	{
@@ -89,13 +89,15 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	 * <code>DataLine</code>, then calls to <code>Controller</code>'s methods
 	 * will result in a <code>NullPointerException</code>.
 	 * 
-	 * @param synthesizer
-	 *            the <code>AudioSynthesizer</code> to subscribe to
+	 * @param out
+	 *            the <code>AudioOut</code> that does most of our work
+	 *            
+	 * @invisible
 	 */
-	public AudioOutput(AudioOut synthesizer)
+	public AudioOutput(AudioOut out)
 	{
-		super( synthesizer );
-		synth = synthesizer;
+		super( out );
+		synth = out;
 		signals = new SignalChain();
 		noteManager = new NoteManager( getFormat().getSampleRate() );
 		bus = new Summer();
@@ -106,59 +108,70 @@ public class AudioOutput extends AudioSource implements Polyphonic
 		synth.setAudioSignal( new SampleGenerator() );
 	}
 
+	/** @deprecated */
 	public void addSignal(AudioSignal signal)
 	{
 		signals.add( signal );
 	}
 
+	/** @deprecated */
 	public AudioSignal getSignal(int i)
 	{
 		// get i+1 because the bus is signal 0.
 		return signals.get( i );
 	}
 
+	/** @deprecated */
 	public void removeSignal(AudioSignal signal)
 	{
 		signals.remove( signal );
 	}
 
+	/** @deprecated */
 	public AudioSignal removeSignal(int i)
 	{
 		// remove i+1 because the bus is 1
 		return signals.remove( i );
 	}
 
+	/** @deprecated */
 	public void clearSignals()
 	{
 		signals.clear();
 	}
 
+	/** @deprecated */
 	public void disableSignal(int i)
 	{
 		// disable i+1 because the bus is 0
 		signals.disable( i );
 	}
 
+	/** @deprecated */
 	public void disableSignal(AudioSignal signal)
 	{
 		signals.disable( signal );
 	}
 
+	/** @deprecated */
 	public void enableSignal(int i)
 	{
 		signals.enable( i );
 	}
 
+	/** @deprecated */
 	public void enableSignal(AudioSignal signal)
 	{
 		signals.enable( signal );
 	}
 
+	/** @deprecated */
 	public boolean isEnabled(AudioSignal signal)
 	{
 		return signals.isEnabled( signal );
 	}
 
+	/** @deprecated */
 	public boolean isSounding()
 	{
 		for ( int i = 1; i < signals.size(); i++ )
@@ -171,6 +184,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 		return false;
 	}
 
+	/** @deprecated */
 	public void noSound()
 	{
 		for ( int i = 1; i < signals.size(); i++ )
@@ -179,11 +193,13 @@ public class AudioOutput extends AudioSource implements Polyphonic
 		}
 	}
 
+	/** @deprecated */
 	public int signalCount()
 	{
 		return signals.size();
 	}
 
+	/** @deprecated */
 	public void sound()
 	{
 		for ( int i = 1; i < signals.size(); i++ )
@@ -192,6 +208,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 		}
 	}
 
+	/** @deprecated */
 	public boolean hasSignal(AudioSignal signal)
 	{
 		return signals.contains( signal );

@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 /**
  * Balance is for controlling the left/right channel balance of a stereo signal.
  * This is different from Pan because rather than moving the signal around it

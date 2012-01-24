@@ -1,10 +1,8 @@
-package ddf.minim.ugens;
+package ddf.minim;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import ddf.minim.AudioOutput;
-import ddf.minim.Minim;
 
 /**
  * The UGen class is an abstract class which is intended to be the basis for all
@@ -45,6 +43,7 @@ public abstract class UGen
 	 * This enum is used to specify the InputType of the UGenInput
 	 * 
 	 * @author Anderson Mills
+	 * @nosuperclasses
 	 */
 	// jam3: enum is automatically static so it can't be in the nested class
 	public enum InputType

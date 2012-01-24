@@ -30,7 +30,7 @@ package ddf.minim;
  * receiving samples you call {@link Recordable#removeListener(AudioListener)}.
  * 
  * @author Damien Di Fede
- *
+ * @invisible
  */
 public interface AudioListener
 {

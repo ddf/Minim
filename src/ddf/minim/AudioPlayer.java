@@ -52,6 +52,8 @@ public class AudioPlayer extends AudioSource implements Playable
 	 * 
 	 * @param recording
 	 *           the <code>AudioRecording</code> to play
+	 *           
+	 * @invisible
 	 */
 	public AudioPlayer(AudioRecordingStream recording, AudioOut out)
 	{
@@ -62,52 +64,115 @@ public class AudioPlayer extends AudioSource implements Playable
 		output.setAudioStream(recording);
 	}
 
+   /**
+    * Starts playback from the current position. 
+    * If this was previously set to loop, looping will be disabled.
+    * 
+    */
 	public void play()
 	{
 		recording.play();
 	}
 
+   /**
+    * Starts playback some number of milliseconds into the file. 
+    * If this was previously set to loop, looping will be disabled.
+    * 
+    * @param millis 
+    * 			int: how many milliseconds from the beginning of the file to begin playback from 
+    */
 	public void play(int millis)
 	{
 		cue(millis);
 		play();
 	}
 
+	/**
+	 * Pauses playback.
+	 */
 	public void pause()
 	{
 		recording.pause();
 	}
 
+   /**
+    * Rewinds to the beginning. This <i>does not</i> stop playback. 
+    */
 	public void rewind()
 	{
 		cue(0);
 	}
 
+   /**
+    * Set the <code>AudioPlayer</code> to loop. 
+    * If it is already playing, the position
+    * <i>will not</i> be reset to the beginning. 
+    * If it is not playing, it will start playing. 
+    * To loop indefinitely, use <code>loop()</code>.
+    * 
+    * @param num
+    *          int: the number of times to loop
+    */
+	public void loop(int num)
+	{
+		recording.loop(num);
+	}
+	
+   /**
+    * Sets the <code>AudioPlayer</code> to loop. 
+    * If it is already playing, the position
+    * <i>will not</i> be reset to the beginning. 
+    * If it is not playing, it will start playing. 
+    */
 	public void loop()
 	{
 		recording.loop(Minim.LOOP_CONTINUOUSLY);
 	}
 
-	public void loop(int n)
-	{
-		recording.loop(n);
-	}
-
+   /**
+    * Returns the number of loops left to do. 
+    * 
+    * @return int: the number of loops left
+    */
 	public int loopCount()
 	{
 		return recording.getLoopCount();
 	}
 
+   /**
+    * Returns the length of the sound in milliseconds. If for any reason the 
+    * length could not be determined, this will return -1. However, an unknown 
+    * length should not impact playback.
+    * 
+    * @return int: the length of the sound in milliseconds
+    */
 	public int length()
 	{
 		return recording.getMillisecondLength();
 	}
 
+   /**
+    * Returns the current position of the "playhead" in milliseconds
+    * (ie how much of the sound has already been played)
+    * 
+    * @return int: the current position of the "playhead" in milliseconds
+    */
 	public int position()
 	{
 		return recording.getMillisecondPosition();
 	}
 
+   /**
+    * Sets the position to <code>millis</code> milliseconds from
+    * the beginning. This will not change the playstate. If an error
+    * occurs while trying to cue, the position will not change. 
+    * If you try to cue to a negative position or to a position 
+    * that is greater than <code>length()</code>, the amount will be clamped 
+    * to zero or <code>length()</code>.
+    * 
+    * @param millis 
+    * 			int: the millisecond position to place the "playhead"
+    */
 	public void cue(int millis)
 	{
 		if (millis < 0)
@@ -121,6 +186,16 @@ public class AudioPlayer extends AudioSource implements Playable
 		recording.setMillisecondPosition(millis);
 	}
 
+	  /**
+	   * Skips <code>millis</code> milliseconds from the current position. 
+	   * <code>millis</code> can be negative, which will make this skip backwards. 
+	   * If the skip amount would result in a negative position or a position that is greater than 
+	   * <code>length()</code>, the new position will be clamped to zero or 
+	   * <code>length()</code>.
+	   * 
+	   * @param millis 
+	   * 			int: how many milliseconds to skip, sign indicates direction
+	   */
 	public void skip(int millis)
 	{
 		int pos = position() + millis;
@@ -136,11 +211,22 @@ public class AudioPlayer extends AudioSource implements Playable
 		recording.setMillisecondPosition(pos);
 	}
 
+   /**
+    * Returns true if the <code>AudioPlayer</code> is currently playing 
+    * and has more than one loop left to play.
+    * 
+    * @return true if this is looping, false if not
+    */
 	public boolean isLooping()
 	{
 		return recording.getLoopCount() != 0;
 	}
 
+   /**
+    * Indicates if the <code>AudioPlayer</code> is currently playing.
+    * 
+    * @return true if this is currently playing, false if not
+    */
 	public boolean isPlaying()
 	{
 		return recording.isPlaying();
@@ -156,12 +242,23 @@ public class AudioPlayer extends AudioSource implements Playable
 		return recording.getMetaData();
 	}
 
+   /**
+    * Sets the loop points used when looping.
+    * 
+    * @param start 
+    * 		int: the start of the loop in milliseconds
+    * @param stop 
+    * 		int: the end of the loop in milliseconds
+    */
 	public void setLoopPoints(int start, int stop)
 	{
 		recording.setLoopPoints(start, stop);
 
 	}
 	
+	/**
+	 * Release the resources associated with playing this file.
+	 */
 	public void close()
 	{
 		recording.close();

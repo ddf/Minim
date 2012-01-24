@@ -3,6 +3,7 @@ package ddf.minim.ugens;
 import java.util.Arrays;
 
 import ddf.minim.Minim;
+import ddf.minim.UGen;
 
 /**
  * A UGen that starts at a value

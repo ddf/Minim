@@ -5,6 +5,12 @@ import java.util.HashMap;
 
 import ddf.minim.ugens.Instrument;
 
+/**
+ * 
+ * @author ddf
+ * @invisible
+ */
+
 public class NoteManager
 {
 	// we use this do our timing, basically

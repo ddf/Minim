@@ -1,6 +1,7 @@
 package ddf.minim.ugens;
 
 import ddf.minim.Minim;
+import ddf.minim.UGen;
 
 /**
  * BitCrush is an effect that reduces the fidelity of the incoming signal.

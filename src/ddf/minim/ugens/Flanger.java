@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 /**
  * A Flanger is a specialized kind of delay that uses an LFO (low frequency
  * oscillator) to vary the amount of delay applied to each sample. This causes a

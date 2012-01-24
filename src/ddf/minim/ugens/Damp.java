@@ -2,6 +2,7 @@ package ddf.minim.ugens;
 
 import ddf.minim.AudioOutput;
 import ddf.minim.Minim;
+import ddf.minim.UGen;
 
 /**
  * A UGen that starts at an amplitude value

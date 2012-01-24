@@ -24,6 +24,7 @@ package ddf.minim;
  * {@link AudioOutput}.
  * 
  * @author Damien Di Fede
+ * @invisible
  * 
  */
 

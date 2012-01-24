@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 
 /**
  * A UGen which chops the incoming audio into steady grains

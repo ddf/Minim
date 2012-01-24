@@ -25,6 +25,7 @@ package ddf.minim;
  * <code>Effectable</code> without having to remove them from the object.
  * 
  * @author Damien Di Fede
+ * @invisible
  * 
  */
 public interface Effectable

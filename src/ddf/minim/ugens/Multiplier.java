@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 /**
  * Multiplier is a UGen that will simply multiply the incoming audio signal by either a fixed value 
  * or by whatever its amplitude input is currently generating.

@@ -23,6 +23,7 @@ package ddf.minim;
  * or CD player. Implementing classes are usually playing an audio file.
  *  
  * @author Damien Di Fede
+ * @invisible
  *
  */
 public interface Playable

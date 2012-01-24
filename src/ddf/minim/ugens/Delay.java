@@ -2,6 +2,8 @@ package ddf.minim.ugens;
 
 import java.util.Arrays;
 
+import ddf.minim.UGen;
+
 
 /**
  * The Delay UGen is used to create delayed repetitions of the input audio.

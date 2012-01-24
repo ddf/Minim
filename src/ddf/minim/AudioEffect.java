@@ -29,6 +29,7 @@ package ddf.minim;
  * anything that is {@link Effectable}, such as an {@link AudioOutput}.
  * 
  * @author Damien Di Fede
+ * @invisible
  * 
  */
 

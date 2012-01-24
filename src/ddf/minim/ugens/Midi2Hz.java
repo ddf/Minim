@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 /**
  * Midi2Hz is a UGen that will convert a MIDI note number to a frequency in Hertz. This is useful if you 
  * want to drive the frequency input of an Oscil with something that generates MIDI notes.

@@ -1,4 +1,7 @@
 package ddf.minim.ugens;
+
+import ddf.minim.UGen;
+
 /**
  * A UGen which simply returns the reciprocal value of it's input.
  * @author nodog

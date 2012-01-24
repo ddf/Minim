@@ -33,6 +33,7 @@ import javax.sound.sampled.AudioFormat;
  * removed while it is in the midst transmitting.
  *  
  * @author Damien Di Fede
+ * @invisible
  *
  */
 

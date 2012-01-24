@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
+import ddf.minim.UGen;
 
 /**
  * A Summer allows you to sum the outputs of multiple UGens to be sent further down the chain.

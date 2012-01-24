@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 public class TickRate extends UGen 
 {
 	private UGen audio;

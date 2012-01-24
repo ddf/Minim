@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 
 /** A UGen for panning a mono signal in a stereo field
  * <p>

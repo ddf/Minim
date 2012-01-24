@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 //Moog 24 dB/oct resonant lowpass VCF
 //References: CSound source code, Stilson/Smith CCRMA paper.
 //Modified by paul.kellett@maxim.abel.co.uk July 2000

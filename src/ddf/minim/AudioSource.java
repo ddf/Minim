@@ -17,11 +17,9 @@ import ddf.minim.spi.AudioOut;
  * <code>AudioOutput</code>s, and <code>AudioPlayer</code>s.
  * 
  * @author Damien Di Fede
+ * @invisible
  * 
  */
-
-// TODO: add a way for the user to pull the audio without having to 
-// have it playback, for people that want to just analyze files.
 public class AudioSource extends Controller implements Effectable, Recordable
 {
   private AudioOut stream;
@@ -62,6 +60,8 @@ public class AudioSource extends Controller implements Effectable, Recordable
    * 
    * @param istream
    *          the <code>AudioStream</code> to subscribe to and wrap
+   *          
+   * @invisible
    */
   public AudioSource(AudioOut istream)
   {
@@ -99,76 +99,91 @@ public class AudioSource extends Controller implements Effectable, Recordable
     stream.close();
   }
 
+  /** @deprecated */
   public void addEffect(AudioEffect effect)
   {
     effects.add(effect);
   }
 
+  /** @deprecated */
   public void clearEffects()
   {
     effects.clear();
   }
 
+  /** @deprecated */
   public void disableEffect(int i)
   {
     effects.disable(i);
   }
 
+  /** @deprecated */
   public void disableEffect(AudioEffect effect)
   {
     effects.disable(effect);
   }
 
+  /** @deprecated */
   public int effectCount()
   {
     return effects.size();
   }
 
+  /** @deprecated */
   public void effects()
   {
     effects.enableAll();
   }
 
+  /** @deprecated */
   public boolean hasEffect(AudioEffect e)
   {
     return effects.contains(e);
   }
 
+  /** @deprecated */
   public void enableEffect(int i)
   {
     effects.enable(i);
   }
 
+  /** @deprecated */
   public void enableEffect(AudioEffect effect)
   {
     effects.enable(effect);
   }
 
+  /** @deprecated */
   public AudioEffect getEffect(int i)
   {
     return effects.get(i);
   }
 
+  /** @deprecated */
   public boolean isEffected()
   {
     return effects.hasEnabled();
   }
 
+  /** @deprecated */
   public boolean isEnabled(AudioEffect effect)
   {
     return effects.isEnabled(effect);
   }
 
+  /** @deprecated */
   public void noEffects()
   {
     effects.disableAll();
   }
 
+  /** @deprecated */
   public void removeEffect(AudioEffect effect)
   {
     effects.remove(effect);
   }
 
+  /** @deprecated */
   public AudioEffect removeEffect(int i)
   {
     return effects.remove(i);

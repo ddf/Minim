@@ -1,5 +1,7 @@
 package ddf.minim.ugens;
 
+import ddf.minim.UGen;
+
 /**
  * The Bypass UGen allows you to wrap another UGen and then insert that UGen into your
  * signal chain using Bypass in its place. You can then dynamically route the 

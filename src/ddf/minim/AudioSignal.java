@@ -29,7 +29,7 @@ package ddf.minim;
  * you're feeling crazy like that).
  * 
  * @author Damien Di Fede
- * 
+ * @invisible
  */
 public interface AudioSignal
 {

@@ -1,7 +1,7 @@
 package ddf.minim;
 
-import ddf.minim.ugens.UGen;
 
+/** @invisible */
 public class UGenSignal implements AudioSignal
 {
 	private UGen generator;
