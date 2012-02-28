@@ -5,10 +5,10 @@ import java.util.Arrays;
 
 
 /**
- * The UGen class is an abstract class which is intended to be the basis for all
+ * The UGen class is an abstract class which provides the basis for all
  * UGens in Minim. UGen is short for Unit Generator, which is simply something
- * either generates a sample value, or transforms the sample value produced by
- * another UGen. Because everything is a UGen, there is a common interface for
+ * that either generates a sample value, or transforms the sample value produced by
+ * another UGen. Since everything is a UGen, there is a common interface for
  * patching things together. For instance, you might have a line of code that
  * looks like this:
  * 
@@ -19,28 +19,35 @@ import java.util.Arrays;
  * You can read this code left to right. It says that the output of an Oscil
  * should be sent through a filter (perhaps a LowPass) and the output of the
  * filter should be sent through an ADSR envelope, which should then be sent to
- * an AudioOutput. It's incredibly clear what you signal path is and you can
- * state it concisely.
+ * an AudioOutput. It's incredibly clear what the signal path is and it can 
+ * be stated concisely.
  * <p>
  * UGens might also have UGenInputs. Oscil, for example, has a UGenInput called
  * <code>frequency</code>. UGenInputs can be patched to, just like UGens, which
  * means you might have a line of code like this:
  * 
- * line.patch( osc.frequency )
+ * <pre>
+ * line.patch( osc.frequency );
+ * </pre>
  * 
  * This says that a Line UGen should control the value of the Oscil's frequency.
  * You may have created a Line that changes it's value from 440 to 880 over 2
- * seconds. The audible result, when you activate() the Line, is that the Oscil
- * will sweep upwards in frequency and then hold there until you activate the
+ * seconds. The audible result, when you call <code>activate()</code> on the Line, 
+ * is that the Oscil will sweep upwards in frequency and then hold there until you activate the
  * Line again. All of this control happens on a sample-by-sample basis, which
  * means (hopefully) no clicks and pops.
+ * 
+ * @example Basics/SynthesizeSound
  * 
  * @author Damien Di Fede, Anderson Mills
  */
 public abstract class UGen
 {
 	/**
-	 * This enum is used to specify the InputType of the UGenInput
+	 * This enum is used to specify the InputType of the UGenInput.
+	 * An AUDIO UGenInput will have a last values array that conforms
+	 * to the channel count of the UGen that owns it, whereas a CONTROL 
+	 * UGenInput will always have only one channel.
 	 * 
 	 * @author Anderson Mills
 	 * @nosuperclasses
@@ -70,9 +77,19 @@ public abstract class UGen
 	private int						m_currentTick;
 
 	/**
-	 * This inner class, UGenInput, is used to connect the output of other UGens
-	 * to this UGen
+	 * A UGenInput represents parameter of the UGen that can be 
+	 * controlled by other UGens by patching to it. When not patched,
+	 * a UGenInput produces a constant value, which can be changed at 
+	 * any time by calling setLastValue.
+	 * <p>
+	 * A UGenInput will have an InputType of either AUDIO or CONTROL.
+	 * An AUDIO input will always have the same number of channels 
+	 * as the owning UGen, in other words the length of the array 
+	 * returned by getLastValues will have a length equal to 
+	 * channel count. A CONTROL input will always have one channel 
+	 * and its value can be conveniently queried by calling getLastValue().
 	 * 
+	 * @example Basics/PatchingAnInput
 	 * @author Anderson Mills
 	 */
 	public final class UGenInput
@@ -82,29 +99,20 @@ public abstract class UGen
 		private float[]		m_lastValues;
 
 		/**
-		 * This constructor generates an AUDIO input.
-		 */
-		public UGenInput()
-		{
-			this( InputType.AUDIO );
-		}
-
-		/**
-		 * This constructor generates a UGenInput of the specified type.
+		 * Create a UGenInput with a particular type.
 		 * 
-		 * @param it
+		 * @param type the InputType of this UGenInput
 		 */
-		public UGenInput(InputType it)
+		public UGenInput(InputType type)
 		{
-			m_inputType = it;
+			m_inputType = type;
 			m_allInputs.add( this );
 			// assume one channel. good for controls and mono audio.
 			m_lastValues = new float[1];
 		}
 		
 		/**
-		 * This constructor generates a UGenInput of the specified type
-		 * with an initial value.
+		 * Create a UGenInput of the specified type with an initial value.
 		 * 
 		 * @param type 	the InputType of this UGenInput
 		 * @param value the initial value used for all last values
@@ -119,8 +127,11 @@ public abstract class UGen
 
 		/**
 		 * Set the number of channels this input should generate.
+		 * This will be called by the owning UGen if this input 
+		 * is an AUDIO input.
 		 * 
 		 * @param numberOfChannels
+		 *  		float: how many channels this input should generate
 		 */
 		public void setChannelCount(int numberOfChannels)
 		{
@@ -141,7 +152,7 @@ public abstract class UGen
 		}
 		
 		/**
-		 * Get the number of channels this input will generate.
+		 * @return int: how many channels this input generates 
 		 */
 		public int channelCount()
 		{
@@ -149,9 +160,7 @@ public abstract class UGen
 		}
 
 		/**
-		 * returns the InputType of this UGenInput
-		 * 
-		 * @return
+		 * @return InputType: either AUDIO or CONTROL
 		 */
 		public InputType getInputType()
 		{
@@ -159,9 +168,11 @@ public abstract class UGen
 		}
 
 		/**
-		 * returns the outer UGen of which this is an input.
+		 * The outer UGen is the UGen that owns this input.
+		 * For instance, calling this on the frequency UGenInput
+		 * member of an Oscil will return the Oscil.
 		 * 
-		 * @return
+		 * @return the UGen that owns this UGenInput
 		 */
 		public UGen getOuterUGen()
 		{
@@ -169,9 +180,12 @@ public abstract class UGen
 		}
 
 		/**
-		 * returns the UGen which is giving values to this input.
+		 * The incoming UGen is the UGen that is patched to 
+		 * this UGenInput. When this input is ticked, it 
+		 * will tick the incoming UGen and store the result
+		 * in its last values.
 		 * 
-		 * @return
+		 * @return the UGen that is patched to this UGenInput
 		 */
 		public UGen getIncomingUGen()
 		{
@@ -179,9 +193,11 @@ public abstract class UGen
 		}
 
 		/**
-		 * set the UGen which is giving values to this input
+		 * This method is called when a UGen is patched to this input.
+		 * Typically you will not call this method directly, instead 
+		 * using UGen's patch method instead.
 		 * 
-		 * @param in
+		 * @param in the UGen being patched to this input
 		 */
 		public void setIncomingUGen(UGen in)
 		{
@@ -193,9 +209,7 @@ public abstract class UGen
 		}
 
 		/**
-		 * returns true if this input has an m_incoming UGen
-		 * 
-		 * @return
+		 * @return true if a UGen is patched to this UGenInput
 		 */
 		public boolean isPatched()
 		{
@@ -203,7 +217,7 @@ public abstract class UGen
 		}
 
 		/**
-		 * @return the last values generated by this input
+		 * @return float[]: the last values generated by this input
 		 */
 		public float[] getLastValues()
 		{
@@ -212,9 +226,11 @@ public abstract class UGen
 
 		/**
 		 * Returns the first value in the array of last values. This is meant to
-		 * make code that gets values from control inputs easier to read.
+		 * make code that gets values from CONTROL inputs easier to read.
+		 * 
+		 * @return float: the last value generated by this input
 		 */
-		// TODO (ddf) change these two to getValue and setValue.
+		// TODO (ddf) change these two to getValue and setValue?
 		public float getLastValue()
 		{
 			return m_lastValues[0];
@@ -232,7 +248,7 @@ public abstract class UGen
 		 * </pre>
 		 * 
 		 * @param value
-		 *            the value to set all last values to
+		 *            float: the value to set all last values to
 		 */
 		public void setLastValue(float value)
 		{
@@ -253,9 +269,7 @@ public abstract class UGen
 		}
 
 		/**
-		 * return the m_inputType as a string (for debugging)
-		 * 
-		 * @return
+		 * @return the InputType as a string (for debugging)
 		 */
 		public String getInputTypeAsString()
 		{
@@ -273,7 +287,7 @@ public abstract class UGen
 		}
 
 		/**
-		 * print information about this UGenInput (for debugging)
+		 * Print information about this UGenInput (for debugging)
 		 */
 		public void printInput()
 		{
@@ -307,7 +321,7 @@ public abstract class UGen
 	 * @return connectToUGen is returned so that you can chain patch calls. For
 	 *         example:
 	 * 
-	 *         <pre>
+	 * <pre>
 	 * sine.patch( gain ).patch( out );
 	 * </pre>
 	 */
@@ -342,6 +356,22 @@ public abstract class UGen
 
 		return connectToInput.getOuterUGen();
 	}
+	
+	/**
+	 * Patch the output of this UGen to the provided AudioOuput. Doing so will
+	 * immediately result in this UGen and all UGens patched into it to begin
+	 * generating audio.
+	 * 
+	 * @param output
+	 *            The AudioOutput you want to connect this UGen to.
+	 */
+	public final void patch(AudioOutput output)
+	{
+		Minim.debug( "Patching " + this + " to the output " + output + "." );
+		setSampleRate( output.sampleRate() );
+		setAudioChannelCount( output.getFormat().getChannels() );
+		patch( output.bus );
+	}
 
 	/**
 	 * If you want to do something other than the default behavior when your
@@ -370,22 +400,6 @@ public abstract class UGen
 		{
 			System.err.println( "Trying to connect to UGen with no default input." );
 		}
-	}
-
-	/**
-	 * Patch the output of this UGen to the provided AudioOuput. Doing so will
-	 * immediately result in this UGen and all UGens patched into it to begin
-	 * generating audio.
-	 * 
-	 * @param output
-	 *            The AudioOutput you want to connect this UGen to.
-	 */
-	public final void patch(AudioOutput output)
-	{
-		Minim.debug( "Patching " + this + " to the output " + output + "." );
-		setSampleRate( output.sampleRate() );
-		setAudioChannelCount( output.getFormat().getChannels() );
-		patch( output.bus );
 	}
 
 	/**

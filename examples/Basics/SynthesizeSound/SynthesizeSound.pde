@@ -1,7 +1,8 @@
 /**
-  * This sketch demonstrates how to create synthesized sound with Minim using an <code>AudioOutput</code> and an
-  * <code>Oscil</code>. An <code>Oscil</code> is a <code>UGen</code> object, one of many different types included 
-  * with Minim. For many more examples of <code>UGens</code> included with Minim have a look in the Synthesis 
+  * This sketch demonstrates how to create synthesized sound with Minim 
+  * using an AudioOutput and an Oscil. An Oscil is a UGen object, 
+  * one of many different types included with Minim. For many more examples 
+  * of UGens included with Minim, have a look in the Synthesis 
   * folder of the Minim examples.
   */
 

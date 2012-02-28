@@ -50,8 +50,8 @@ public class Bypass<T extends UGen> extends UGen
 	 */
 	public Bypass( T ugen )
 	{
-		mUGen = ugen;
-		audio = new UGenInput();
+		mUGen 	= ugen;
+		audio 	= addAudio();
 		mActive = false;
 	}
 	
