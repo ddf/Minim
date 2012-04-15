@@ -23,11 +23,11 @@ void setup()
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
   
-  // create a square wave Oscil, set to 440 Hz, at 1.0 amplitude
+  // create a triangle wave Oscil, set to 440 Hz, at 1.0 amplitude
   // in this case, the amplitude we construct the Oscil with 
   // doesn't matter because we will be patching something to
   // its amplitude input.
-  wave = new Oscil( 440, 1.0f, Waves.SQUARE );
+  wave = new Oscil( 440, 1.0f, Waves.TRIANGLE );
  
   // create a sine wave Oscil for modulating the amplitude of wave
   mod  = new Oscil( 2, 0.4f, Waves.SINE );
@@ -50,14 +50,4 @@ void draw()
     line( i, 50 + out.left.get(i)*50, i+1, 50 + out.left.get(i+1)*50 );
     line( i, 150 + out.right.get(i)*50, i+1, 150 + out.right.get(i+1)*50 );
   }
-}
-
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  out.close();
-  minim.stop();
-
-  super.stop();
 }

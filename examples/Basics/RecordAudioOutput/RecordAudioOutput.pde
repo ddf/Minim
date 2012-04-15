@@ -91,12 +91,3 @@ void keyReleased()
     println("Done saving.");
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  out.close();
-  minim.stop();
-  
-  super.stop();
-}

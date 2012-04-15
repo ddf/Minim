@@ -41,14 +41,3 @@ void draw()
     line( x1, 150 + player.right.get(i)*50, x2, 150 + player.right.get(i+1)*50 );
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  player.close();
-  
-  // always stop Minim before exiting
-  minim.stop();
-  
-  super.stop();
-}

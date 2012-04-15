@@ -40,13 +40,3 @@ void draw()
     line( i, 150 + in.right.get(i)*50, i+1, 150 + in.right.get(i+1)*50 );
   }
 }
-
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  in.close();
-  minim.stop();
-  
-  super.stop();
-}

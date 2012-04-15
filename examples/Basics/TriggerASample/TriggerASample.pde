@@ -77,13 +77,3 @@ void keyPressed()
   if ( key == 'k' ) kick.trigger();
 }
 
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  kick.close();
-  snare.close();
-  minim.stop();
-
-  super.stop();
-}
-

@@ -53,12 +53,3 @@ void draw()
     line( i, height, i, height - fft.getBand(i)*8 );
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you finish with them
-  jingle.close();
-  minim.stop();
-  
-  super.stop();
-}

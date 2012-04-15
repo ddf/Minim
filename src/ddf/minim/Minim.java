@@ -18,6 +18,10 @@
 
 package ddf.minim;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Mixer;
@@ -74,6 +78,15 @@ public class Minim
 	private static boolean				DEBUG				= false;
 
 	private MinimServiceProvider		mimp				= null;
+	
+	// we keep track of all the resources we are asked to create
+	// so that when shutting down the library, users can simply call stop(),
+	// and don't have to call close() on all of the things they've created.
+	// in the event that they *do* call close() on resource we've created,
+	// it will be removed from this list.
+	private ArrayList<AudioSource> 		sources				= new ArrayList<AudioSource>();
+	// and unfortunately we have to track stream separately
+	private ArrayList<AudioStream>		streams				= new ArrayList<AudioStream>();
 
 	/**
 	 * Creates an instance of Minim that will use the JavaSound implementation.
@@ -104,6 +117,37 @@ public class Minim
 	public Minim( Object fileSystem )
 	{
 		this( new JSMinim(fileSystem) );
+		
+		// see if we're dealing with Processing and register for a dispose call if we are
+		Class<?> superClass = fileSystem.getClass().getSuperclass();
+		if( superClass.getName() == "processing.core.PApplet" )
+		{
+			try
+			{
+				Method registerDispose = superClass.getMethod( "registerDispose", Object.class );
+				registerDispose.invoke( fileSystem, this );
+			}
+			catch ( SecurityException e )
+			{
+				e.printStackTrace();
+			}
+			catch ( NoSuchMethodException e )
+			{
+				e.printStackTrace();
+			}
+			catch ( IllegalArgumentException e )
+			{
+				e.printStackTrace();
+			}
+			catch ( IllegalAccessException e )
+			{
+				e.printStackTrace();
+			}
+			catch ( InvocationTargetException e )
+			{
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -183,18 +227,55 @@ public class Minim
 			mimp.debugOff();
 		}
 	}
+	
+	/**
+	 * Library callback used by Processing when a sketch is being shutdown. 
+	 * It is not necessary to call this directly. It simply calls stop().
+	 */
+	public void dispose()
+	{
+		stop();
+	}
 
 	/**
-	 * Stops Minim.
-	 * 
-	 * A call to this method should be placed inside of the stop() function of
-	 * your sketch. We expect that implemenations of the Minim interface made
-	 * need to do some cleanup, so this is how we tell them it's time.
+	 * Stops Minim and releases all audio resources.
+	 * <p>
+	 * If using Minim outside of Processing, you must call this to 
+	 * release all of the audio resources that Minim has generated.
+	 * It will call close() on all of them for you.
 	 * 
 	 */
 	public void stop()
 	{
+		debug( "Stopping Minim..." );
+		
+		// close all sources and release them
+		for( AudioSource s : sources )
+		{
+			// null the parent so the AudioSource doesn't try to call removeSource
+			s.parent = null;
+			s.close();
+		}
+		sources.clear();
+		
+		for( AudioStream s : streams )
+		{
+			s.close();
+		}
+		
+		// stop the implementation
 		mimp.stop();
+	}
+	
+	void addSource( AudioSource s )
+	{
+		sources.add( s );
+		s.parent = this;
+	}
+	
+	void removeSource( AudioSource s )
+	{
+		sources.remove( s );
 	}
 
 	/**
@@ -255,10 +336,11 @@ public class Minim
 	 * @param bufferSize
 	 *            the output buffer size to use
 	 */
-	public AudioSample createSample(float[] samples, AudioFormat format,
-			int bufferSize)
+	public AudioSample createSample( float[] samples, AudioFormat format, int bufferSize )
 	{
-		return mimp.getAudioSample( samples, format, bufferSize );
+		AudioSample sample = mimp.getAudioSample( samples, format, bufferSize );
+		addSource( sample );
+		return sample;
 	}
 
 	/**
@@ -272,8 +354,7 @@ public class Minim
 	 * @param format
 	 *            the format the sample should be played back with
 	 */
-	public AudioSample createSample(float[] left, float[] right,
-			AudioFormat format)
+	public AudioSample createSample( float[] left, float[] right, AudioFormat format )
 	{
 		return createSample( left, right, format, 1024 );
 	}
@@ -291,10 +372,11 @@ public class Minim
 	 * @param bufferSize
 	 *            the output buffer size desired
 	 */
-	public AudioSample createSample(float[] left, float[] right,
-			AudioFormat format, int bufferSize)
+	public AudioSample createSample(float[] left, float[] right, AudioFormat format, int bufferSize)
 	{
-		return mimp.getAudioSample( left, right, format, bufferSize );
+		AudioSample sample = mimp.getAudioSample( left, right, format, bufferSize );
+		addSource( sample );
+		return sample;
 	}
 
 	/**
@@ -323,7 +405,9 @@ public class Minim
 	 */
 	public AudioSample loadSample(String filename, int bufferSize)
 	{
-		return mimp.getAudioSample( filename, bufferSize );
+		AudioSample sample = mimp.getAudioSample( filename, bufferSize );
+		addSource( sample );
+		return sample;
 	}
 
 	/**
@@ -377,26 +461,40 @@ public class Minim
 	 */
 	public AudioPlayer loadFile(String filename, int bufferSize)
 	{
-		AudioRecordingStream rec = mimp.getAudioRecordingStream( filename,
-				bufferSize, false );
+		AudioPlayer player 			= null;
+		AudioRecordingStream rec 	= mimp.getAudioRecordingStream( filename, bufferSize, false );
 		if ( rec != null )
 		{
-			AudioFormat format = rec.getFormat();
-			AudioOut out = mimp.getAudioOutput( format.getChannels(),
-					bufferSize, format.getSampleRate(),
-					format.getSampleSizeInBits() );
+			AudioFormat format 	= rec.getFormat();
+			AudioOut out 		= mimp.getAudioOutput( format.getChannels(),
+													   bufferSize, 
+													   format.getSampleRate(),
+													   format.getSampleSizeInBits() );
+			
 			if ( out != null )
 			{
-				return new AudioPlayer( rec, out );
+				player = new AudioPlayer( rec, out );
+			}
+			else
+			{
+				rec.close();
 			}
 		}
-
-		error( "Couldn't load the file " + filename );
-		return null;
+		
+		if ( player != null )
+		{
+			addSource( player );
+		}
+		else
+		{
+			error( "Couldn't load the file " + filename );
+		}
+		
+		return player;
 	}
 
 	/**
-	 * Creates and AudioRecordingStream that you can use to read from the file
+	 * Creates an AudioRecordingStream that you can use to read from the file
 	 * yourself, rather than wrapping it in an AudioPlayer that does the work
 	 * for you.
 	 * 
@@ -411,7 +509,9 @@ public class Minim
 	 */
 	public AudioRecordingStream loadFileStream(String filename, int bufferSize, boolean inMemory)
 	{
-		return mimp.getAudioRecordingStream( filename, bufferSize, inMemory );
+		AudioRecordingStream stream = mimp.getAudioRecordingStream( filename, bufferSize, inMemory );
+		streams.add( stream );
+		return stream;
 	}
 	
 	/**
@@ -426,9 +526,9 @@ public class Minim
 	 */
 	public float loadFileIntoBuffer( String filename, MultiChannelBuffer outBuffer )
 	{
-		final int readBufferSize = 4096;
-		float     sampleRate = 0;
-		AudioRecordingStream  stream = loadFileStream( filename, readBufferSize, false );
+		final int readBufferSize 		= 4096;
+		float     sampleRate 			= 0;
+		AudioRecordingStream  stream 	= mimp.getAudioRecordingStream( filename, readBufferSize, false );
 		if ( stream != null )
 		{
 			//stream.open();
@@ -596,20 +696,31 @@ public class Minim
 	 */
 	public AudioInput getLineIn(int type, int bufferSize, float sampleRate, int bitDepth)
 	{
-		AudioStream stream = mimp.getAudioInput( type, bufferSize, sampleRate,
-				bitDepth );
+		AudioInput  input  = null;
+		AudioStream stream = mimp.getAudioInput( type, bufferSize, sampleRate, bitDepth );
 		if ( stream != null )
 		{
-			AudioOut out = mimp.getAudioOutput( type, bufferSize, sampleRate,
-					bitDepth );
+			AudioOut out = mimp.getAudioOutput( type, bufferSize, sampleRate, bitDepth );
 			if ( out != null )
 			{
-				return new AudioInput( stream, out );
+				input = new AudioInput( stream, out );
+			}
+			else
+			{
+				stream.close();
 			}
 		}
-
-		error( "Minim.getLineIn: attempt failed, could not secure an AudioInput." );
-		return null;
+		
+		if ( input != null )
+		{
+			addSource( input );
+		}
+		else
+		{
+			error( "Minim.getLineIn: attempt failed, could not secure an AudioInput." );
+		}
+		
+		return input;
 	}
 
 	/**
@@ -629,7 +740,9 @@ public class Minim
 	 */
 	public AudioStream getInputStream(int type, int bufferSize, float sampleRate, int bitDepth)
 	{
-		return mimp.getAudioInput( type, bufferSize, sampleRate, bitDepth );
+		AudioStream stream = mimp.getAudioInput( type, bufferSize, sampleRate, bitDepth );
+		streams.add( stream );
+		return stream;
 	}
 
 	/**
@@ -715,11 +828,12 @@ public class Minim
 	 */
 	public AudioOutput getLineOut(int type, int bufferSize, float sampleRate, int bitDepth)
 	{
-		AudioOut out = mimp.getAudioOutput( type, bufferSize, sampleRate,
-				bitDepth );
+		AudioOut out = mimp.getAudioOutput( type, bufferSize, sampleRate, bitDepth );
 		if ( out != null )
 		{
-			return new AudioOutput( out );
+			AudioOutput output = new AudioOutput( out );
+			addSource( output );
+			return output;
 		}
 
 		error( "Minim.getLineOut: attempt failed, could not secure a LineOut." );
