@@ -52,13 +52,3 @@ void mouseMoved()
   ntf.setBandWidth(bandWidth);
   ntf.printCoeff();
 }
-
-void stop()
-{
-  // always close Minim audio classes when you finish with them
-  groove.close();
-  // always stop Minim before exiting
-  minim.stop();
-
-  super.stop();
-}

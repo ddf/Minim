@@ -66,12 +66,3 @@ void mouseReleased()
   rewind.mouseReleased();
   ffwd.mouseReleased();
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  song.close();
-  minim.stop();
-  
-  super.stop();
-}

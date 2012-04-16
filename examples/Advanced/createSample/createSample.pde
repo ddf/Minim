@@ -76,11 +76,3 @@ void keyPressed()
   }
 }
 
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  wave.close();
-  minim.stop();
-  
-  super.stop();
-}

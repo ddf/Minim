@@ -39,13 +39,3 @@ void draw()
   eRadius *= 0.95;
   if ( eRadius < 20 ) eRadius = 20;
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are finished with them
-  song.close();
-  // always stop Minim before exiting
-  minim.stop();
-  
-  super.stop();
-}

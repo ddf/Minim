@@ -114,13 +114,3 @@ void draw()
     }
   }
 }
- 
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  out.close();
-  // always stop Minim before exiting
-  minim.stop();
- 
-  super.stop();
-}

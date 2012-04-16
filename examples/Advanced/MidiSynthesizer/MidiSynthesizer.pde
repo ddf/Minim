@@ -223,17 +223,3 @@ class Blip
     rect( width/2, position, size, 10 );
   }
 }
-
-void stop()
-{
-  // close our output and stop minim.
-  out.close();
-  minim.stop();
-  
-  // close the JavaSound Synthesizer
-  synth.close();
-  
-  // call Processing's exit method.
-  super.stop();
-}
-  

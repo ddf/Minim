@@ -94,16 +94,3 @@ public void controlEvent(ControlEvent theEvent)
     out.addSignal(sine);
   }
 }
-
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  if ( out != null )
-  {
-    out.close();
-  }
-  minim.stop();
-  
-  super.stop();
-}

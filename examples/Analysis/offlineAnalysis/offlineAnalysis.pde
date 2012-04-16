@@ -169,9 +169,3 @@ void draw()
   camera( 200, 100, -200 + cameraPos, 75, 50, cameraPos, 0, -1, 0 );
 }
 
-void stop()
-{
-  minim.stop();
-  
-  super.stop();
-}

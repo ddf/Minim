@@ -47,13 +47,3 @@ void draw()
     line(x1, 3*height/4 - groove.right.get(i)*50, x2, 3*height/4 - groove.right.get(i+1)*50);
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you finish with them
-  groove.close();
-  // always stop Minim before exiting
-  minim.stop();
-
-  super.stop();
-}

@@ -66,12 +66,3 @@ void keyReleased()
     if ( key == 's' ) out.pan().shift(-1, 1, 2000000);
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are finished with them
-  out.close();
-  minim.stop();
-  
-  super.stop();
-}

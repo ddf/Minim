@@ -89,18 +89,3 @@ void draw()
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
 }
-
-// called when the user exits the application
-void stop()
-{
-  // we close our output
-  out.close();
-  // we must also close our file player so the underlying stream can be closed properly
-  filePlayer.close();
-  // and finally we tell Minim we are stopping
-  minim.stop();
-  
-  super.stop();
-}
-
-

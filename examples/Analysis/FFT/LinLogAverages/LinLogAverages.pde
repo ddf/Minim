@@ -82,13 +82,3 @@ void draw()
     rect(i*w, height, i*w + w, height - fftLog.getAvg(i)*spectrumScale);
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  jingle.close();
-  // always stop Minim before exiting
-  minim.stop();
-  
-  super.stop();
-}

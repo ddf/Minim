@@ -44,14 +44,3 @@ void mouseMoved()
   lpf.setFreq(cutoff);
 }
 
-void stop()
-{
-  // always close Minim audio classes when you finish with them
-  groove.close();
-  // always stop Minim before exiting
-  minim.stop();
-
-  super.stop();
-}
-
-

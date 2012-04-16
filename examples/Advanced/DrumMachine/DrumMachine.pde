@@ -140,11 +140,3 @@ public void controlEvent(ControlEvent e)
     kikRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
   }
 }
-
-void stop()
-{
-  out.close();
-  minim.stop();
-  
-  super.stop();
-}

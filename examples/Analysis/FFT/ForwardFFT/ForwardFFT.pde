@@ -70,12 +70,3 @@ void keyReleased()
     windowName = "None";
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you finish with them
-  jingle.close();
-  minim.stop();
-  
-  super.stop();
-}

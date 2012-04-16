@@ -134,12 +134,3 @@ public void controlEvent(ControlEvent theEvent)
     cbf.setType((int)theEvent.controller().value());
   }
 }
-
-void stop()
-{
-  // always closes Minim audio classes when you are finished with them
-  groove.close();
-  // always stop Minim before exiting
-  minim.stop();
-  super.stop();
-}

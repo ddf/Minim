@@ -56,13 +56,3 @@ void mouseMoved()
   // prints the new values of the coefficients in the console
   bpf.printCoeff();
 }
-
-void stop()
-{
-  // always close Minim audio classes when you finish with them
-  groove.close();
-  // always stop Minim before exiting
-  minim.stop();
-  
-  super.stop();
-}

@@ -83,16 +83,3 @@ public void controlEvent(ControlEvent theEvent)
   in = minim.getLineIn(Minim.STEREO);
   
 }
-
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  if ( in != null )
-  {
-    in.close();
-  }
-  minim.stop();
-  
-  super.stop();
-}

@@ -35,12 +35,3 @@ void draw()
     text("Control " + (i+1) + " is a " + controls[i].toString() + ".", 5, 15 + i*15);
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are finished with them
-  out.close();
-  minim.stop();
-  
-  super.stop();
-}

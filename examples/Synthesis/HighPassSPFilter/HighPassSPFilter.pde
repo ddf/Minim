@@ -46,12 +46,3 @@ void mouseMoved()
   hpf.setFreq(cutoff);
 }
 
-void stop()
-{
-  // close the AudioPlayer before quitting
-  groove.close();
-  // always stop Minim before exiting
-  minim.stop();
-  
-  super.stop();
-}

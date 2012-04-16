@@ -56,12 +56,3 @@ void draw()
     text("This output doesn't have a balance control.", 5, 15);
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are finished with them
-  out.close();
-  minim.stop();
-  
-  super.stop();
-}

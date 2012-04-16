@@ -24,11 +24,3 @@ void draw()
   background(0);
 }
 
-void stop()
-{
-  // always close Minim audio classes when you are finished with them
-  out.close();
-  minim.stop();
-  
-  super.stop();
-}

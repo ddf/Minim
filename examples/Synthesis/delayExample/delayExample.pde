@@ -84,14 +84,3 @@ void mouseMoved()
   float feedbackFactor = map( mouseY, 0, height, 0.0, 0.99 );
   myDelay1.setDelAmp( feedbackFactor );
 }
-
-// stop is run when the user presses stop
-void stop()
-{
-  // close the AudioOutput
-  out.close();
-  // stop the minim object
-  minim.stop();
-  // stop the processing object
-  super.stop();
-}

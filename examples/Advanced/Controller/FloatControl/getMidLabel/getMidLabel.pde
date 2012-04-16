@@ -37,12 +37,3 @@ void draw()
     text("There is no pan control for this output.", 5, 15);
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are finished with them
-  out.close();
-  minim.stop();
-  
-  super.stop();
-}

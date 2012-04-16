@@ -44,12 +44,3 @@ void draw()
     rect(i*w, height, i*w + w, height - fft.getAvg(i)*5);
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you finish with them
-  jingle.close();
-  minim.stop();
-  
-  super.stop();
-}

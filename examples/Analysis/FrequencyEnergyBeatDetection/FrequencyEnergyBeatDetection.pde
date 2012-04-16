@@ -64,13 +64,3 @@ void draw()
   snareSize = constrain(snareSize * 0.95, 16, 32);
   hatSize = constrain(hatSize * 0.95, 16, 32);
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are finished with them
-  song.close();
-  // always stop Minim before exiting
-  minim.stop();
-  // this closes the sketch
-  super.stop();
-}

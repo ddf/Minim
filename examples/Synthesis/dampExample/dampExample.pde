@@ -86,14 +86,3 @@ void draw()
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
 }
-
-// stop is run when the user presses stop
-void stop()
-{
-  // close the AudioOutput
-  out.close();
-  // stop the minim object
-  minim.stop();
-  // stop the processing object
-  super.stop();
-}

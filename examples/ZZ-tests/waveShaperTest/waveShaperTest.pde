@@ -61,12 +61,3 @@ void mouseReleased()
   myTest.noteOff();
  // myOtherTest.noteOff();
 }
-
-void stop()
-{
-  out.close();
-  minim.stop();
-
-  super.stop();
-}
-

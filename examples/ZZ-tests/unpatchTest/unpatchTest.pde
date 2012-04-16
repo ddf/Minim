@@ -50,11 +50,3 @@ void keyPressed()
   recorder.save();
 }
 
-void stop()
-{
-  out.close();
-  minim.stop();
-
-  super.stop();
-}
-

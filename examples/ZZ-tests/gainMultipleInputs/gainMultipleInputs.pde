@@ -43,12 +43,3 @@ void mouseReleased()
 {
   myWobble.noteOff();
 }
-
-void stop()
-{
-  out.close();
-  minim.stop();
-
-  super.stop();
-}
-

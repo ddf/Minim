@@ -90,16 +90,3 @@ void keyReleased()
     player.play();
   }
 }
-
-void stop()
-{
-  // always close Minim audio classes when you are done with them
-  in.close();
-  if ( player != null )
-  {
-    player.close();
-  }
-  minim.stop();
-  
-  super.stop();
-}

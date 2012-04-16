@@ -76,13 +76,3 @@ void mouseReleased()
   redAmount = 0.0;
 }
 
-// stop is run when the user presses stop
-void stop()
-{
-  // close the AudioOutput
-  out.close();
-  // stop the minim object
-  minim.stop();
-  // stop the processing object
-  super.stop();
-}
