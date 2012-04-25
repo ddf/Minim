@@ -7,11 +7,17 @@
   */
 
 import ddf.minim.*;
+import ddf.minim.ugens.*;
 
 Minim minim;
+
+// for recording
 AudioInput in;
 AudioRecorder recorder;
-AudioPlayer player;
+
+// for playing back
+AudioOutput out;
+FilePlayer player;
 
 void setup()
 {
@@ -27,6 +33,9 @@ void setup()
   // then, when save() is called, the contents of the buffer will actually be written to a file
   // the file will be located in the sketch's data folder.
   recorder = minim.createRecorder(in, "myrecording.wav", true);
+  
+  // get an output we can playback the recording on
+  out = minim.getLineOut( Minim.STEREO );
   
   textFont(createFont("Arial", 12));
 }
@@ -80,13 +89,15 @@ void keyReleased()
     // in the case of streamed recording, 
     // it will not freeze as the data is already in the file and all that is being done
     // is closing the file.
-    // save returns the recorded audio in an AudioRecording, 
-    // which we can then play with an AudioPlayer
+    // save returns the recorded audio in an AudioRecordingStream, 
+    // which we can then play with a FilePlayer
     if ( player != null )
     {
+        player.unpatch( out );
         player.close();
     }
-    player = recorder.save();
+    player = new FilePlayer( recorder.save() );
+    player.patch( out );
     player.play();
   }
 }
