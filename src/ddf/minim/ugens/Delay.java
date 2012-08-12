@@ -202,20 +202,20 @@ public class Delay extends UGen
 		
 		// how many samples do we delay the input
 		int delay = (int)(delTime.getLastValue()*sampleRate());
-		
-		for( int i = 0; i < channels.length; ++i )
+		int channelCount = getAudioChannelCount();
+		for( int i = 0; i < channelCount; ++i )
 		{
 			float in  = audio.getLastValues()[i];
 			
 			// pull sound out of the delay buffer
-			int outSample = iBufferOut*channels.length + i;
+			int outSample = iBufferOut*channelCount + i;
 			float out = delAmp.getLastValue()*(float)delayBuffer[ outSample ];
 			// eat it
 			delayBuffer[ outSample ] = 0;
 			
 			// put sound into the buffer
 			int inFrame  = (iBufferOut+delay)%delayBufferFrames;
-			int inSample = ( inFrame*channels.length + i);
+			int inSample = ( inFrame*channelCount + i);
 			delayBuffer[ inSample ] = in;
 			
 			if ( feedBackOn )

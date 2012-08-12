@@ -38,15 +38,15 @@ void setup()
   minim = new Minim(this);
   gui = new ControlP5(this);
   
-  ScrollList mixers = gui.addScrollList("Mixers", 10, 10, 475, 280);
+  DropdownList mixers = gui.addDropdownList("Mixers", 10, 10, 475, 280);
   mixers.setLabel("Choose A Mixer");
   
   mixerInfo = AudioSystem.getMixerInfo();
   
   for(int i = 0; i < mixerInfo.length; i++)
   {
-    controlP5.Button b = mixers.addItem("item"+i, i);
-    b.setLabel(mixerInfo[i].getName());
+    ListBoxItem b = mixers.addItem("item"+i, i);
+    b.setText(mixerInfo[i].getName());
   } 
   
   sine = new SineWave(220, 0.3, 44100);

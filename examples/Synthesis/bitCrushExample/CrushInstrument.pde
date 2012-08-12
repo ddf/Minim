@@ -13,7 +13,7 @@ class CrushInstrument implements Instrument
     sineOsc = new Oscil(frequency, amplitude, Waves.SINE);
     
     // BitCrush takes the bit resolution for an argument
-    bitCrush = new BitCrush(bitRes);
+    bitCrush = new BitCrush(bitRes, output.sampleRate());
     
     sineOsc.patch(bitCrush);
   }

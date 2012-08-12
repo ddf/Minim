@@ -313,7 +313,7 @@ public abstract class UGen
 	/**
 	 * Connect the output of this UGen to the first input of connectToUGen.
 	 * Doing so will chain these two UGens together, causing them to generate
-	 * sound at the same time when the end of chain is patched to an
+	 * sound at the same time when the end of the chain is patched to an
 	 * AudioOutput.
 	 * 
 	 * @param connectToUGen
@@ -463,12 +463,6 @@ public abstract class UGen
 	 */
 	public final void tick(float[] channels)
 	{
-		// FIXME: we should be able to handle an arbitrary number of channels
-		if ( channels.length > 2 )
-		{
-			throw new IllegalArgumentException( "UGen cannot currently handle more than 2 channels of audio!" );
-		}
-
 		if ( m_nOutputs > 0 )
 		{
 			// only tick once per sampleframe when multiple outputs
@@ -485,30 +479,16 @@ public abstract class UGen
 			// and then uGenerate for this UGen
 			uGenerate( channels );
 
-			// TODO: this is not sufficient, need to be able to handle more than 2 channels
-			// need to keep the last values generated so we have something to
-			// hand multiple outputs
-			if ( channels.length == 1 )
+			for( int i = 0; i < channels.length && i < m_lastValues.length; ++i )
 			{
-				m_lastValues[0] = channels[0];
-				m_lastValues[1] = channels[0];
-			}
-			else if ( channels.length == 2 )
-			{
-				System.arraycopy( channels, 0, m_lastValues, 0, channels.length );
+				m_lastValues[i] = channels[i];
 			}
 		}
 		else
 		{
-			// just fill channels with our cached m_lastValues
-			if ( channels.length == 1 )
+			for( int i = 0; i < channels.length && i < m_lastValues.length; ++i )
 			{
-				channels[0] = m_lastValues[0] * 0.5f;
-				channels[0] += m_lastValues[1] * 0.5f;
-			}
-			else if ( channels.length == 2 )
-			{
-				System.arraycopy( m_lastValues, 0, channels, 0, 2 );
+				channels[i] = m_lastValues[i];
 			}
 		}
 	}
@@ -613,7 +593,21 @@ public abstract class UGen
 				input.setChannelCount( numberOfChannels );
 			}
 		}
+		
+		if ( m_lastValues.length != numberOfChannels )
+		{
+			m_lastValues = new float[numberOfChannels];
+			channelCountChanged();
+		}
 	}
+	
+	/**
+	 * 
+	 * @return the number of channels this UGen has been configured to generate.
+	 */
+	public int getAudioChannelCount() { return m_lastValues.length; }
+	
+	protected void channelCountChanged() {}
 
 	/**
 	 * Prints all inputs connected to this UGen (for debugging)

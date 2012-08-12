@@ -18,8 +18,8 @@ Minim minim;
 Summer sum;
 // the bit crush effect we'll apply to our beat
 BitCrush bitCrush;
-// the line that controls the bit resolution of the bit crush
-Line bitResLine;
+// the line that controls the bit rate of the bit crush
+Line bitRateLine;
 
 AudioOutput out;
 
@@ -34,14 +34,14 @@ void setup()
   
   // make our summer and bit crush ugens
   sum = new Summer();
-  bitCrush = new BitCrush(16.f);
+  bitCrush = new BitCrush(16.f, out.sampleRate());
   
   // we're going to do 4 measures of 120 bpm, so that's 8 seconds.
-  // we'll just ramp from 16 bit to 1 bit sound.
-  bitResLine = new Line(8.f, 16.f, 1.f);
+  // we'll just ramp from half the sample rate to 100  Hz  
+  bitRateLine = new Line(8.f, out.sampleRate()*0.25f, 100 );
  
   // connect the line to the bit crush resolution
-  bitResLine.patch( bitCrush.bitRes );
+  bitRateLine.patch( bitCrush.bitRate );
   
   // set up our signal chain
   sum.patch( bitCrush ).patch( out );
@@ -79,7 +79,7 @@ void setup()
   }
   
   // activate the line and unpause the output!
-  bitResLine.activate();
+  bitRateLine.activate();
   out.resumeNotes();
 }
 

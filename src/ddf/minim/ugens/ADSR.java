@@ -215,7 +215,7 @@ public class ADSR extends UGen
 		// before the envelope, just output the beforeAmplitude*audio
 		if (!isTurnedOn)
 		{
-			for(int i = 0; i < channels.length; i++)
+			for(int i = 0; i < getAudioChannelCount(); i++)
 			{
 				channels[i] = beforeAmplitude*audio.getLastValues()[i];
 			}
@@ -223,7 +223,7 @@ public class ADSR extends UGen
 		// after the envelope, just output the afterAmplitude*audio
 		else if (timeFromOff > releaseTime)
 		{
-			for(int i = 0; i < channels.length; i++)
+			for(int i = 0; i < getAudioChannelCount(); i++)
 			{
 				channels[i] = afterAmplitude*audio.getLastValues()[i];
 			}	
@@ -278,7 +278,7 @@ public class ADSR extends UGen
 				timeFromOff += timeStepSize;
 			}
 			// finally multiply the input audio to generate the output
-			for(int i = 0; i < channels.length; i++)
+			for(int i = 0; i < getAudioChannelCount(); i++)
 			{
 				channels[i] = amplitude*audio.getLastValues()[i];
 			}		

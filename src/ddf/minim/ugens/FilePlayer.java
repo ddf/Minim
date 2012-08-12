@@ -159,15 +159,15 @@ public class FilePlayer extends UGen implements Playable
 		if ( mFileStream.isPlaying() )
 		{
 			float[] samples = mFileStream.read();
-			// hopefully normal case
-			if ( samples.length == channels.length )
-			{
-				System.arraycopy(samples, 0, channels, 0, channels.length);
-			}
 			// special case: mono expands out to all channels.
-			else if ( samples.length == 1 )
+			if ( samples.length == 1 )
 			{
 				Arrays.fill(  channels, samples[0] );
+			}
+			// we have more than one channel, don't try to fill larger channel requests
+			if ( samples.length <= channels.length )
+			{
+				System.arraycopy(samples, 0, channels, 0, samples.length);
 			}
 			// special case: we are stereo, output is mono.
 			else if ( channels.length == 1 && samples.length == 2 )

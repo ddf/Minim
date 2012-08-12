@@ -59,7 +59,7 @@ public class Multiplier extends UGen
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
-		for(int i = 0; i < channels.length; i++)
+		for(int i = 0; i < getAudioChannelCount(); i++)
 		{
 			channels[i] = amplitude.getLastValue() * audio.getLastValues()[i];
 		}

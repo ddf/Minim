@@ -11,7 +11,7 @@ class CrushingInstrument implements Instrument
   {
     out = output;
     sineOsc = new Oscil(frequency, amplitude, Waves.SINE);
-    bitCrush = new BitCrush(hiBitRes);
+    bitCrush = new BitCrush(hiBitRes, output.sampleRate());
     crushLine = new Line(9.0, hiBitRes, loBitRes);
     
     // our Line will control the resolution of the bit crush

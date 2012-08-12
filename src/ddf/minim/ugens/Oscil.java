@@ -183,6 +183,17 @@ public class Oscil extends UGen
 	}
 	
 	/**
+	 * Changes the Waveform used by this Oscil.
+	 * 
+	 * @param theWaveform 
+	 * 			the new Waveform to use
+	 */
+	public void setWaveform( Waveform theWaveform )
+	{
+		wave = theWaveform;
+	}
+	
+	/**
 	 * Resets the time-step used by the oscillator to be equal to the 
 	 * current phase value.  You will typically use this when starting a 
 	 * new note with an Oscil that you have already used so that the 

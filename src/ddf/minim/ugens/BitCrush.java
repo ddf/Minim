@@ -37,24 +37,32 @@ public class BitCrush extends UGen
 	 */
 	public UGenInput bitRes;
 	
-	private float nLevels;
-	private float halfNLevels;
+	/**
+     * Control the bit rate with another UGen by patching to bitRate.
+     * Values that make sense for this start at 1 and go up to whatever the
+     * sample rate of your AudioOutput are (typically 44100)
+     */
+    public UGenInput bitRate;
+	
+	float[] sampledFrame;
+	int    	sampleCounter;
 	
 	/**
-	 * Construct a BitCrush with a bit resolution of 1.
+	 * Construct a BitCrush with a bit resolution of 1 and a bit rate of 44100.
 	 *
 	 */
 	public BitCrush()
 	{
-		this( 1.0f );
+		this( 1.0f, 44100 );
 	}
 	
 	/**
-	 * Construct a BitCrush with the specified bit resolution.
+	 * Construct a BitCrush with the specified bit resolution and bit rate.
 	 * 
 	 * @param localBitRes typically you'll want this in the range [1,16]
+	 * @param localBitRate this must be in the range [1,outputSampleRate] 
 	 */
-	public BitCrush(float localBitRes)
+	public BitCrush( float localBitRes, float localBitRate )
 	{
 		super();
 		// jam3: These can't be instantiated until the uGenInputs ArrayList
@@ -62,10 +70,19 @@ public class BitCrush extends UGen
 		//audio = new UGenInput(InputType.AUDIO);
 		audio = new UGenInput(InputType.AUDIO);
 		bitRes = new UGenInput(InputType.CONTROL);
-    bitRes.setLastValue(localBitRes);
-		nLevels = (float)Math.floor(Math.pow(2.0, localBitRes));
-		halfNLevels = nLevels/2.0f;
-		Minim.debug("bitCrush initializing to " + nLevels + " levels.");
+		bitRes.setLastValue(localBitRes);
+		bitRate = new UGenInput(InputType.CONTROL);
+		bitRate.setLastValue( localBitRate );
+		
+		sampledFrame = new float[ getAudioChannelCount() ];
+	}
+	
+	protected void channelCountChanged()
+	{
+		sampledFrame  = new float[ getAudioChannelCount() ];
+		sampleCounter = 0;
+		
+		//System.out.println( "BitCrush now has " + getAudioChannelCount() + " channels." );
 	}
 	
 	/**
@@ -79,16 +96,25 @@ public class BitCrush extends UGen
 	}
 
 	@Override
-	protected void uGenerate(float[] channels) 
+	protected void uGenerate(float[] out) 
 	{
-    float[] lastValues = audio.getLastValues();
-		for(int i = 0; i < channels.length; i++)
+		if ( sampleCounter <= 0 )
 		{
-			float res = bitRes.getLastValue();
-		  nLevels = (float)( (int)(res*res) );
-			halfNLevels = nLevels * 0.5f;
-      float floored = (float)Math.floor( halfNLevels*lastValues[i] ); 
-			channels[i] = floored / halfNLevels;
+			if ( audio.getLastValues().length != getAudioChannelCount() )
+			{
+				Minim.error( "BitCrush audio has " + audio.getLastValues().length + " channels and sampledFrame has " + getAudioChannelCount()  );
+			}
+			System.arraycopy( audio.getLastValues(), 0, sampledFrame, 0, getAudioChannelCount() );
+			sampleCounter = (int)(sampleRate() / Math.max(bitRate.getLastValue(),1));
 		}
+		
+	    final int res       = 1 << (int)bitRes.getLastValue();
+	    for( int i = 0; i < out.length; ++i )
+	    {
+	        int       samp      = (int)(res * sampledFrame[i]);
+	        out[i]              = (float)samp/res;
+	    }
+	    
+	    --sampleCounter;
 	} 
 }
