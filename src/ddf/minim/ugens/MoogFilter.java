@@ -58,14 +58,14 @@ public class MoogFilter extends UGen
 		frequency.setLastValue( frequencyInHz );
 		resonance.setLastValue( constrain( normalizedResonance, 0.f, 1.f ) );
 		
-		coeff = new float[getAudioChannelCount()][5];
+		coeff = new float[channelCount()][5];
 	}
 
 	public void channelCountChanged()
 	{
-		if ( coeff == null || coeff.length != getAudioChannelCount() )
+		if ( coeff == null || coeff.length != channelCount() )
 		{
-			coeff = new float[getAudioChannelCount()][5];
+			coeff = new float[channelCount()][5];
 		}
 	}
 
@@ -83,7 +83,7 @@ public class MoogFilter extends UGen
 
 		float[] input = audio.getLastValues();
 
-		for ( int i = 0; i < getAudioChannelCount(); ++i )
+		for ( int i = 0; i < channelCount(); ++i )
 		{
 			// Filter (in [-1.0...+1.0])
 			float[] b = coeff[i];

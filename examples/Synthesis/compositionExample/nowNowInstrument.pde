@@ -50,7 +50,7 @@ class NowNowInstrument implements Instrument
     bpFilt2 = new BandPass( cf2, bw2, out.sampleRate() );
     multiplyLo = new Multiplier( 2*( 1 - high ) );
     multiplyHi = new Multiplier( 2*high);
-    crush = new BitCrush( bitRes );
+    crush = new BitCrush( bitRes, out.sampleRate() );
     sum = new Summer();
     
     // patch everything togethe up to the final output

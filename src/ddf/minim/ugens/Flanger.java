@@ -148,9 +148,8 @@ public class Flanger extends UGen
 		}
 	}
 
-	public void setAudioChannelCount(int numberOfChannels)
+	protected void channelCountChanged()
 	{
-		super.setAudioChannelCount( numberOfChannels );
 		resetBuffer();
 	}
 

@@ -97,7 +97,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
     }
     
 	  // make sure we have enough filter buffers 
-	  if ( in == null || in.length < channels.length )
+	  if ( in == null || in.length < channels.length || (in[0].length < a.length && in[0].length < b.length) )
 	  {
 		  initArrays(channels.length);
 	  }
@@ -125,7 +125,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 
   public final synchronized void process(float[] signal)
   {
-    audio.setChannelCount(1);
+    setChannelCount( 1 );
     float[] tmp = new float[1];
     for (int i = 0; i < signal.length; i++)
     {
@@ -137,7 +137,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
 
   public final synchronized void process(float[] sigLeft, float[] sigRight)
   {
-    audio.setChannelCount(2);
+    setChannelCount( 2 );
     float[] tmp = new float[2];
     for (int i = 0; i < sigLeft.length; i++)
     {

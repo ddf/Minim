@@ -78,7 +78,7 @@ void setup()
   gui = new ControlP5(this);
   gui.addSlider("cutoffFreq", 200, 21000, cutoffFreq, width/6, 300, 10, 100);
   gui.addSlider("ripplePercent", 0, 20, ripplePercent, 2*width/6, 300, 10, 100);
-  Radio r = gui.addRadio("poles", 4*width/6, 300);
+  RadioButton r = gui.addRadio("poles", 4*width/6, 300);
   r.setId(1);
   r.add("two", 0);
   r.add("four", 1);

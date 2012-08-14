@@ -147,7 +147,7 @@ public abstract class UGen
 			// make sure our incoming UGen knows about this
 			if ( m_inputType == InputType.AUDIO && m_incoming != null )
 			{
-				m_incoming.setAudioChannelCount( numberOfChannels );
+				m_incoming.setChannelCount( numberOfChannels );
 			}
 		}
 		
@@ -204,7 +204,7 @@ public abstract class UGen
 			m_incoming = in;
 			if ( m_incoming != null && m_inputType == InputType.AUDIO )
 			{
-				m_incoming.setAudioChannelCount( m_lastValues.length );
+				m_incoming.setChannelCount( m_lastValues.length );
 			}
 		}
 
@@ -300,14 +300,10 @@ public abstract class UGen
 	 */
 	public UGen()
 	{
-		m_allInputs = new ArrayList<UGenInput>();
-		// TODO How to set length of last values appropriately?
-		// jam3: Using "2" here is wrong. Could make ArrayList and set size with
-		// tick?
-		// ddf: the c++ version now has a decent solution for this
-		m_lastValues = new float[2];
-		m_nOutputs = 0;
-		m_currentTick = 0;
+		m_allInputs 	= new ArrayList<UGenInput>();
+		m_lastValues 	= new float[0];
+		m_nOutputs 		= 0;
+		m_currentTick 	= 0;
 	}
 
 	/**
@@ -369,7 +365,7 @@ public abstract class UGen
 	{
 		Minim.debug( "Patching " + this + " to the output " + output + "." );
 		setSampleRate( output.sampleRate() );
-		setAudioChannelCount( output.getFormat().getChannels() );
+		setChannelCount( output.getFormat().getChannels() );
 		patch( output.bus );
 	}
 
@@ -583,7 +579,7 @@ public abstract class UGen
 	 *            how many channels of audio you will be generating with this
 	 *            UGen
 	 */
-	public void setAudioChannelCount(int numberOfChannels)
+	public void setChannelCount(int numberOfChannels)
 	{
 		for ( int i = 0; i < m_allInputs.size(); ++i )
 		{
@@ -605,8 +601,14 @@ public abstract class UGen
 	 * 
 	 * @return the number of channels this UGen has been configured to generate.
 	 */
-	public int getAudioChannelCount() { return m_lastValues.length; }
+	public int channelCount() { return m_lastValues.length; }
 	
+	/**
+	 * This method is only called when setChannelCount results in the channel count
+	 * of this UGen actually changing. Override this function in
+	 * sub-classes of UGen if you need to reconfigure things
+	 * when the channel count changes.
+	 */
 	protected void channelCountChanged() {}
 
 	/**

@@ -43,7 +43,7 @@ public class TickRate extends UGen
 	protected void addInput( UGen in )
 	{
 		audio = in;
-		audio.setAudioChannelCount(currentSample.length);
+		audio.setChannelCount(currentSample.length);
 	}
 	
 	@Override
@@ -65,22 +65,17 @@ public class TickRate extends UGen
 	}
 	
 	@Override
-	public void setAudioChannelCount( int numberOfChannels )
-	{
-		if ( currentSample.length != numberOfChannels )
+	protected void channelCountChanged()
+	{		
+		currentSample = new float[channelCount()];
+		nextSample = new float[channelCount()];
+	
+		if ( audio != null )
 		{
-			super.setAudioChannelCount(numberOfChannels); 
-			
-			currentSample = new float[numberOfChannels];
-			nextSample = new float[numberOfChannels];
-		
-			if ( audio != null )
-			{
-				audio.setAudioChannelCount(numberOfChannels);
-				audio.tick(currentSample);
-				audio.tick(nextSample);
-				sampleCount = 0;
-			}
+			audio.setChannelCount(channelCount());
+			audio.tick(currentSample);
+			audio.tick(nextSample);
+			sampleCount = 0;
 		}
 	}
 	

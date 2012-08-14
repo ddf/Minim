@@ -126,16 +126,16 @@ void draw()
 
 public void controlEvent(ControlEvent e)
 {
-  //println(e.controller().label() + ": " + e.controller().value());
-  if ( e.controller().label() == "hat" )
+  println(e.getController().getLabel() + ": " + e.controller().value());
+  if ( e.controller().getLabel() == "hat" )
   {
     hatRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
   }
-  else if ( e.controller().label() == "snr" )
+  else if ( e.controller().getLabel() == "snr" )
   {
     snrRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
   }
-  else if ( e.controller().label() == "kik" )
+  else if ( e.controller().getLabel() == "kik" )
   {
     kikRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
   }

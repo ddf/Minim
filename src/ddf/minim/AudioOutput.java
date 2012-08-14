@@ -103,7 +103,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 		bus = new Summer();
 		// configure it
 		bus.setSampleRate( getFormat().getSampleRate() );
-		bus.setAudioChannelCount( getFormat().getChannels() );
+		bus.setChannelCount( getFormat().getChannels() );
 
 		synth.setAudioSignal( new SampleGenerator() );
 	}

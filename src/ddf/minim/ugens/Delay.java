@@ -153,16 +153,17 @@ public class Delay extends UGen
 	 * speed of the sound in the buffer, I'm okay with this.
 	 */
 	protected void sampleRateChanged()
-	{
-		delayBufferFrames = (int)( maxDelayTime*sampleRate() );
-		delayBuffer = new double [ delayBufferFrames*audio.channelCount() ];
-		iBufferOut = 0;
+	{	
+		allocateDelayBuffer();
 	}
 	
-	public void setAudioChannelCount( int numberOfChannels )
+	protected void channelCountChanged()
 	{
-		super.setAudioChannelCount( numberOfChannels );
-		
+		allocateDelayBuffer();
+	}
+	
+	void allocateDelayBuffer()
+	{
 		delayBufferFrames = (int)( maxDelayTime*sampleRate() );
 		delayBuffer = new double [ delayBufferFrames*audio.channelCount() ];
 		iBufferOut = 0;
@@ -202,7 +203,7 @@ public class Delay extends UGen
 		
 		// how many samples do we delay the input
 		int delay = (int)(delTime.getLastValue()*sampleRate());
-		int channelCount = getAudioChannelCount();
+		int channelCount = channelCount();
 		for( int i = 0; i < channelCount; ++i )
 		{
 			float in  = audio.getLastValues()[i];

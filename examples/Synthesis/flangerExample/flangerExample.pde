@@ -49,7 +49,7 @@ void setup()
   noize = new Noise( Noise.Tint.WHITE );
   
   flange = new Flanger( 1,     // delay length in milliseconds ( clamped to [0,100] )
-                        0.1f,   // lfo rate in Hz ( clamped at low end to 0.001 )
+                        0.2f,   // lfo rate in Hz ( clamped at low end to 0.001 )
                         1,     // delay depth in milliseconds ( minimum of 0 )
                         0.5f,   // amount of feedback ( clamped to [0,1] )
                         0.5f,   // amount of dry signal ( clamped to [0,1] )
@@ -83,8 +83,8 @@ void draw()
 
 void mouseMoved()
 {
-  flange.delay.setLastValue( map( mouseX, 0,      width, 1, 5 ) );
-  flange.depth.setLastValue( map( mouseY, height, 0,     1, 5 ) );
+  flange.delay.setLastValue( map( mouseX, 0,      width, 0.01, 5 ) );
+  flange.depth.setLastValue( map( mouseY, height, 0,     1.00, 5 ) );
 }
 
 

@@ -74,12 +74,12 @@ public class BitCrush extends UGen
 		bitRate = new UGenInput(InputType.CONTROL);
 		bitRate.setLastValue( localBitRate );
 		
-		sampledFrame = new float[ getAudioChannelCount() ];
+		sampledFrame = new float[ channelCount() ];
 	}
 	
 	protected void channelCountChanged()
 	{
-		sampledFrame  = new float[ getAudioChannelCount() ];
+		sampledFrame  = new float[ channelCount() ];
 		sampleCounter = 0;
 		
 		//System.out.println( "BitCrush now has " + getAudioChannelCount() + " channels." );
@@ -100,11 +100,11 @@ public class BitCrush extends UGen
 	{
 		if ( sampleCounter <= 0 )
 		{
-			if ( audio.getLastValues().length != getAudioChannelCount() )
+			if ( audio.getLastValues().length != channelCount() )
 			{
-				Minim.error( "BitCrush audio has " + audio.getLastValues().length + " channels and sampledFrame has " + getAudioChannelCount()  );
+				Minim.error( "BitCrush audio has " + audio.getLastValues().length + " channels and sampledFrame has " + channelCount()  );
 			}
-			System.arraycopy( audio.getLastValues(), 0, sampledFrame, 0, getAudioChannelCount() );
+			System.arraycopy( audio.getLastValues(), 0, sampledFrame, 0, channelCount() );
 			sampleCounter = (int)(sampleRate() / Math.max(bitRate.getLastValue(),1));
 		}
 		

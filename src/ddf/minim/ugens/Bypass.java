@@ -86,13 +86,13 @@ public class Bypass<T extends UGen> extends UGen
 		}
 	}
 	
-	public void setAudioChannelCount( int channelCount )
+	public void setChannelCount( int channelCount )
 	{
 	  // this will set our audio input properly
-	  super.setAudioChannelCount(channelCount);
+	  super.setChannelCount(channelCount);
 	  
 	  // but we also need to let our wrapped UGen know
-	  mUGen.setAudioChannelCount(channelCount);
+	  mUGen.setChannelCount(channelCount);
 	}
 	
 	/**
