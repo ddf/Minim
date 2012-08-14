@@ -307,15 +307,16 @@ public abstract class UGen
 	}
 
 	/**
-	 * Connect the output of this UGen to the first input of connectToUGen.
-	 * Doing so will chain these two UGens together, causing them to generate
-	 * sound at the same time when the end of the chain is patched to an
-	 * AudioOutput.
+	 * Patching a UGen to another UGen, UGenInput, or AudioOutput will 
+	 * cause the signal from that UGen to pass through the object it
+	 * is patched to. 
+	 * 
+	 * @example Basics/PatchingAnInput
 	 * 
 	 * @param connectToUGen
-	 *            The UGen to connect to.
-	 * @return connectToUGen is returned so that you can chain patch calls. For
-	 *         example:
+	 *            The UGen to patch to.
+	 * @return When patching to a UGen or UGenInput, the UGen being patched to is returned 
+	 * 		   so that you can chain patch calls. For example:
 	 * 
 	 * <pre>
 	 * sine.patch( gain ).patch( out );
@@ -336,10 +337,11 @@ public abstract class UGen
 	}
 
 	/**
-	 * Connect the output of this UGen to a specific input of connecToUGen.
+	 * Connect the output of this UGen to a specific UGenInput of a UGen.
 	 * 
 	 * @param connectToInput
-	 * @return cennectToInput.getOuterUGen()
+	 * 			The UGenInput to patch to.
+	 * @return the UGen that owns connectToInput
 	 */
 	public final UGen patch(UGenInput connectToInput)
 	{
@@ -358,15 +360,15 @@ public abstract class UGen
 	 * immediately result in this UGen and all UGens patched into it to begin
 	 * generating audio.
 	 * 
-	 * @param output
+	 * @param audioOutput
 	 *            The AudioOutput you want to connect this UGen to.
 	 */
-	public final void patch(AudioOutput output)
+	public final void patch(AudioOutput audioOutput)
 	{
-		Minim.debug( "Patching " + this + " to the output " + output + "." );
-		setSampleRate( output.sampleRate() );
-		setChannelCount( output.getFormat().getChannels() );
-		patch( output.bus );
+		Minim.debug( "Patching " + this + " to the output " + audioOutput + "." );
+		setSampleRate( audioOutput.sampleRate() );
+		setChannelCount( audioOutput.getFormat().getChannels() );
+		patch( audioOutput.bus );
 	}
 
 	/**
@@ -399,28 +401,29 @@ public abstract class UGen
 	}
 
 	/**
-	 * Unpatch the output of this output from the provided AudioOutput. This
-	 * causes this UGen and all UGens patched into it to stop generation audio
-	 * if AudioOutput is not potched somewhere else in this chain.
+	 * Unpatch this UGen from an AudioOutput or other UGen.
+	 * This causes this UGen and all UGens patched into it to stop generating audio
+	 * if they are not patched to an AudioOuput somewhere else in the chain.
 	 * 
-	 * @param output
+	 * @param audioOutput
 	 *            The AudioOutput this UGen should be disconnected from.
 	 */
-	public final void unpatch(AudioOutput output)
+	public final void unpatch( AudioOutput audioOutput )
 	{
-		Minim.debug( "Unpatching " + this + " from the output " + output + "." );
-		unpatch( output.bus );
-		// setSampleRate(output.sampleRate());
+		Minim.debug( "Unpatching " + this + " from the output " + audioOutput + "." );
+		unpatch( audioOutput.bus );
 	}
 
 	/**
 	 * Remove this UGen as the input to the connectToUGen.
 	 * 
-	 * @param connectToUGen
+	 * @param fromUGen
+	 * 			The UGen to unpatch from.
+	 * 
 	 */
-	public final void unpatch(UGen connectToUGen)
+	public final void unpatch( UGen fromUGen )
 	{
-		connectToUGen.removeInput( this );
+		fromUGen.removeInput( this );
 		// TODO m_nOutputs needs to be updated as the converse of patch above.
 		m_nOutputs -= 1;
 		Minim.debug( "m_nOutputs = " + m_nOutputs );
@@ -598,8 +601,7 @@ public abstract class UGen
 	}
 	
 	/**
-	 * 
-	 * @return the number of channels this UGen has been configured to generate.
+	 * Returns the number of channels this UGen has been configured to generate.
 	 */
 	public int channelCount() { return m_lastValues.length; }
 	
