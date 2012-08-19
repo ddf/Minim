@@ -164,36 +164,38 @@ public class Minim
 		mimp.start();
 	}
 
-	/**
+	/** @invisible
+	 * 
 	 * Used internally to report error messages. These error messages will
 	 * appear in the console area of the PDE if you are running a sketch from
 	 * the PDE, otherwise they will appear in the Java Console.
 	 * 
-	 * @param s
+	 * @param message
 	 *            the error message to report
 	 */
-	public static void error(String s)
+	public static void error(String message)
 	{
 		System.out.println( "=== Minim Error ===" );
-		System.out.println( "=== " + s );
+		System.out.println( "=== " + message );
 		System.out.println();
 	}
 
-	/**
+	/** @invisible
+	 * 
 	 * Displays a debug message, but only if {@link #debugOn()} has been called.
 	 * The message will be displayed in the console area of the PDE, if you are
 	 * running your sketch from the PDE. Otherwise, it will be displayed in the
 	 * Java Console.
 	 * 
-	 * @param s
+	 * @param message
 	 *            the message to display
 	 * @see #debugOn()
 	 */
-	public static void debug(String s)
+	public static void debug(String message)
 	{
 		if ( DEBUG )
 		{
-			String[] lines = s.split( "\n" );
+			String[] lines = message.split( "\n" );
 			System.out.println( "=== Minim Debug ===" );
 			for ( int i = 0; i < lines.length; i++ )
 			{
@@ -231,6 +233,8 @@ public class Minim
 	/**
 	 * Library callback used by Processing when a sketch is being shutdown. 
 	 * It is not necessary to call this directly. It simply calls stop().
+	 * 
+	 * @invisible
 	 */
 	public void dispose()
 	{
