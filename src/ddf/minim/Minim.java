@@ -519,12 +519,17 @@ public class Minim
 	}
 	
 	/**
-	 * Loads the requested file into a MultiChannelBuffer.
+	 * Loads the requested file into a MultiChannelBuffer. The buffer's channel count
+	 * and buffer size will be adjusted to match the file.
+	 * 
+	 * @shortdesc Loads the requested file into a MultiChannelBuffer.
+	 * 
+	 * @example Advanced/loadFileIntoBuffer
 	 * 
 	 * @param filename 
 	 * 			the file to load
 	 * @param outBuffer
-	 * 			the MultiChannelBuffer to fill with the files audio samples
+	 * 			the MultiChannelBuffer to fill with the file's audio samples
 	 * 
 	 * @return	the sample rate of audio samples in outBuffer, or 0 if the load failed.
 	 */

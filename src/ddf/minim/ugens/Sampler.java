@@ -89,6 +89,43 @@ public class Sampler extends UGen
 		sampleData = new MultiChannelBuffer(1,1);
 		sampleDataSampleRate = system.loadFileIntoBuffer( filename, sampleData );
 		
+		createInputs();
+	}
+	
+	/**
+	 * Create a Sampler that will use the audio in the provided MultiChannelBuffer
+	 * for its sample. It will make a copy of the data, so modifying the provided
+	 * buffer after the fact will not change the audio in this Sampler.
+	 * The original sample rate of the audio data must be provided
+	 * so that the default playback rate of the Sampler can be set properly.
+	 * Additionally, you must specify how many voices the Sampler should use,
+	 * which will determine how many times the sound can overlap with itself
+	 * when triggered. 
+	 * 
+	 * @param sampleData
+	 * 		 	MultiChannelBuffer: the sample data this Sampler will use to generate sound
+	 * @param sampleRate
+	 * 			float: the sample rate of the sampleData
+	 * @param maxVoices
+	 * 			int: the maximum number of voices for this Sampler
+	 */
+	public Sampler( MultiChannelBuffer sampleData, float sampleRate, int maxVoices )
+	{
+		triggers = new Trigger[maxVoices];
+		for( int i = 0; i < maxVoices; ++i )
+		{
+			triggers[i] = new Trigger();
+		}
+		
+		this.sampleData      = new MultiChannelBuffer( sampleData.getChannelCount(), sampleData.getBufferSize() );
+		this.sampleData.set(  sampleData );
+		sampleDataSampleRate = sampleRate;
+		
+		createInputs();
+	}
+	
+	private void createInputs()
+	{
 		begin 			= addControl(0);
 		end   			= addControl(sampleData.getBufferSize()-1);
 		attack 			= addControl();
