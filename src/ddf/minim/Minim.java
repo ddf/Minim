@@ -704,12 +704,22 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioInput}, to which you can attach {@link AudioEffect
-	 * AudioEffects}.
+	 * An AudioInput is used when you want to monitor the active audio input 
+	 * of the computer. On a laptop, for instance, this will typically be 
+	 * the built-in microphone. On a desktop it might be the line-in
+	 * port on the soundcard. The default values are for a stereo input
+	 * with a 1024 sample buffer (ie the size of left, right, and mix 
+	 * buffers), sample rate of 44100 and bit depth of 16. Generally
+	 * speaking, you will not want to specify these things, but it's
+	 * there if you need it.
 	 * 
-	 * @return an STEREO <code>AudioInput</code> with a 1024 sample buffer, a
-	 *         sample rate of 44100 and a bit depth of 16
+	 * @shortdesc get an AudioInput that reads from the active audio input of the soundcard
+	 * 
+	 * @return an AudioInput that reads from the active audio input of the soundcard
+	 *         
 	 * @see #getLineIn(int, int, float, int)
+	 * @related AudioInput
+	 * @example Basics/MonitorInput
 	 */
 	public AudioInput getLineIn()
 	{
@@ -717,8 +727,7 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioInput}, to which you can attach {@link AudioEffect
-	 * AudioEffects}.
+	 * Gets either a MONO or STEREO {@link AudioInput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
@@ -732,14 +741,13 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioInput}, to which you can attach {@link AudioEffect
-	 * AudioEffects}.
+	 * Gets an {@link AudioInput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
 	 * @param bufferSize
-	 *            how long you want the <code>AudioInput</code>'s sample buffer
-	 *            to be
+	 *            int: how long you want the <code>AudioInput</code>'s sample buffer
+	 *            to be (ie the size of left, right, and mix buffers)
 	 * @return an <code>AudioInput</code> with the requested attributes, a
 	 *         sample rate of 44100 and a bit depth of 16
 	 * @see #getLineIn(int, int, float, int)
@@ -750,16 +758,15 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioInput}, to which you can attach {@link AudioEffect
-	 * AudioEffects}.
+	 * Gets an {@link AudioInput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
 	 * @param bufferSize
-	 *            how long you want the <code>AudioInput</code>'s sample buffer
-	 *            to be
+	 *            int: how long you want the <code>AudioInput</code>'s sample buffer
+	 *            to be (ie the size of left, right, and mix buffers)
 	 * @param sampleRate
-	 *            the desired sample rate in Hertz (typically 44100)
+	 *            float: the desired sample rate in Hertz (typically 44100)
 	 * @return an <code>AudioInput</code> with the requested attributes and a
 	 *         bit depth of 16
 	 * @see #getLineIn(int, int, float, int)
@@ -770,18 +777,17 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioInput}, to which you can attach {@link AudioEffect
-	 * AudioEffects}.
+	 * Gets an {@link AudioInput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
 	 * @param bufferSize
-	 *            how long you want the <code>AudioInput</code>'s sample buffer
-	 *            to be
+	 *            int: how long you want the <code>AudioInput</code>'s sample buffer
+	 *            to be (ie the size of left, right, and mix buffers)
 	 * @param sampleRate
-	 *            the desired sample rate in Hertz (typically 44100)
+	 *            float: the desired sample rate in Hertz (typically 44100)
 	 * @param bitDepth
-	 *            the desired bit depth (typically 16)
+	 *            int: the desired bit depth (typically 16)
 	 * @return an <code>AudioInput</code> with the requested attributes
 	 */
 	public AudioInput getLineIn(int type, int bufferSize, float sampleRate, int bitDepth)
@@ -820,12 +826,12 @@ public class Minim
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
 	 * @param bufferSize
-	 *            how long you want the <code>AudioInput</code>'s sample buffer
-	 *            to be
+	 *            int: how long you want the AudioStream's interal 
+	 *            buffer to be.
 	 * @param sampleRate
-	 *            the desired sample rate in Hertz (typically 44100)
+	 *            float: the desired sample rate in Hertz (typically 44100)
 	 * @param bitDepth
-	 *            the desired bit depth (typically 16)
+	 *            int: the desired bit depth (typically 16)
 	 * @return an AudioStream that reads from the input source of the soundcard.
 	 */
 	public AudioStream getInputStream(int type, int bufferSize, float sampleRate, int bitDepth)
@@ -836,12 +842,26 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioOutput}, to which you can attach {@link AudioSignal
-	 * AudioSignals} and {@link AudioEffect AudioEffects}.
+	 * An AudioOutput is used to generate sound in real-time and output it to
+	 * the soundcard. Usually, the sound generated by an AudioOutput will be
+	 * heard through the speakers or headphones attached to a computer. The
+	 * default parameters for an AudioOutput are STEREO sound, a 1024 sample
+	 * buffer (ie the size of the left, right, and mix buffers), a sample 
+	 * rate of 44100, and a bit depth of 16. To actually generate sound
+	 * with an AudioOutput you need to patch at least one sound generating
+	 * UGen to it, such as an Oscil.
+	 * <p> 
+	 * Using setOutputMixer you can also create AudioOutputs that 
+	 * send sound to specific output channels of a soundcard.
 	 * 
-	 * @return a STEREO <code>AudioOutput</code> with a 1024 sample buffer, a
-	 *         sample rate of 44100 and a bit depth of 16
+	 * @example Basics/SynthesizeSound
+	 * 
+	 * @shortdesc get an AudioOutput that can be used to generate audio
+	 * 
+	 * @return an AudioOutput that can be used to generate audio
 	 * @see #getLineOut(int, int, float, int)
+	 * @related AudioOutput
+	 * @related UGen
 	 */
 	public AudioOutput getLineOut()
 	{
@@ -849,8 +869,7 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioOutput}, to which you can attach {@link AudioSignal
-	 * AudioSignals} and {@link AudioEffect AudioEffects}.
+	 * Gets an {@link AudioOutput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
@@ -864,14 +883,13 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioOutput}, to which you can attach {@link AudioSignal
-	 * AudioSignals} and {@link AudioEffect AudioEffects}.
+	 * Gets an {@link AudioOutput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
 	 * @param bufferSize
-	 *            how long you want the <code>AudioOutput</code>'s sample buffer
-	 *            to be
+	 *            int: how long you want the AudioOutput's sample buffer
+	 *            to be (ie the size of the left, right, and mix buffers)
 	 * @return an <code>AudioOutput</code> with the requested attributes, a
 	 *         sample rate of 44100 and a bit depth of 16
 	 * @see #getLineOut(int, int, float, int)
@@ -882,16 +900,15 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioOutput}, to which you can attach {@link AudioSignal
-	 * AudioSignals} and {@link AudioEffect AudioEffects}.
+	 * Gets an {@link AudioOutput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
 	 * @param bufferSize
-	 *            how long you want the <code>AudioOutput</code>'s sample buffer
-	 *            to be
+	 *            int: how long you want the AudioOutput's sample buffer
+	 *            to be (ie the size of the left, right, and mix buffers)
 	 * @param sampleRate
-	 *            the desired sample rate in Hertz (typically 44100)
+	 *            float: the desired sample rate in Hertz (typically 44100)
 	 * @return an <code>AudioOutput</code> with the requested attributes and a
 	 *         bit depth of 16
 	 * @see #getLineOut(int, int, float, int)
@@ -902,18 +919,17 @@ public class Minim
 	}
 
 	/**
-	 * Gets an {@link AudioOutput}, to which you can attach {@link AudioSignal
-	 * AudioSignals} and {@link AudioEffect AudioEffects}.
+	 * Gets an {@link AudioOutput}.
 	 * 
 	 * @param type
 	 *            Minim.MONO or Minim.STEREO
 	 * @param bufferSize
-	 *            how long you want the <code>AudioOutput</code>'s sample buffer
-	 *            to be
+	 *            int: how long you want the AudioOutput's sample buffer
+	 *            to be (ie the size of the left, right, and mix buffers)
 	 * @param sampleRate
-	 *            the desired sample rate in Hertz (typically 44100)
+	 *            float: the desired sample rate in Hertz (typically 44100)
 	 * @param bitDepth
-	 *            the desired bit depth (typically 16)
+	 *            int: the desired bit depth (typically 16)
 	 * @return an <code>AudioOutput</code> with the requested attributes
 	 */
 	public AudioOutput getLineOut(int type, int bufferSize, float sampleRate, int bitDepth)

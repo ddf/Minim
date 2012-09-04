@@ -9,7 +9,7 @@
 import ddf.minim.*;
 import ddf.minim.ugens.*;
 
-Minim minim;
+Minim       minim;
 AudioOutput out;
 Oscil       wave;
 
