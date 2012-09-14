@@ -23,7 +23,7 @@ void setup()
   minim = new Minim(this);
   
   // specify that we want the audio buffers of the AudioPlayer
-  // to be 1024 samples long becaus our FFT needs to have 
+  // to be 1024 samples long because our FFT needs to have 
   // a power-of-two buffer size and this is a good size.
   jingle = minim.loadFile("jingle.mp3", 1024);
   

@@ -41,18 +41,20 @@ void setup()
   //filt = new LowPassSP(400, out.sampleRate());
   //filt = new LowPassFS(400, out.sampleRate());
   filt = new BandPass(400, 100, out.sampleRate());
-  //filt = new HighPassSP(400, out.sampleRate());  // really annoying!
+  //filt = new HighPassSP(400, out.sampleRate());
   //filt = new NotchFilter(400, 100, out.sampleRate());
 
-  // create a summer, then add a constant to an oscillating value using it
-  Summer sum = new Summer();
-  cutoff = new Constant(1000);
+  // create an Oscil we will use to modulate 
+  // the cutoff frequency of the filter.
+  // by using an amplitude of 800 and an
+  // offset of 1000, the cutoff frequency 
+  // will sweep between 200 and 1800 Hertz.
   cutOsc = new Oscil(1, 800, Waves.SINE);
-  cutoff.patch(sum);
-  cutOsc.patch(sum);  
+  // offset the center value of the Oscil by 1000
+  cutOsc.offset.setLastValue( 1000 );
 
-  // patch that sum to the cutoff frequency of the filter
-  sum.patch(filt.cutoff);
+  // patch the oscil to the cutoff frequency of the filter
+  cutOsc.patch(filt.cutoff);
   
   // patch the sawtooth oscil through the filter and then to the output
   osc.patch(filt).patch(out);

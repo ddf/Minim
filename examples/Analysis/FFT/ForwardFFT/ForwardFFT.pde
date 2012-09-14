@@ -17,7 +17,6 @@ String windowName;
 void setup()
 {
   size(512, 200, P3D);
-  textMode(SCREEN);
   
   minim = new Minim(this);
   

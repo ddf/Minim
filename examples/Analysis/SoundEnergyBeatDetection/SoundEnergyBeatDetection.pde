@@ -24,7 +24,7 @@ void setup()
   // a beat detection object song SOUND_ENERGY mode with a sensitivity of 10 milliseconds
   beat = new BeatDetect();
   
-  ellipseMode(CENTER_RADIUS);
+  ellipseMode(RADIUS);
   eRadius = 20;
 }
 

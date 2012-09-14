@@ -145,8 +145,8 @@ public class Minim
 		{
 			try
 			{
-				Method registerDispose = superClass.getMethod( "registerDispose", Object.class );
-				registerDispose.invoke( fileSystemHandler, this );
+				Method registerDispose = superClass.getMethod( "registerMethod", String.class, Object.class );
+				registerDispose.invoke( fileSystemHandler, "dispose", this );
 			}
 			catch ( SecurityException e )
 			{

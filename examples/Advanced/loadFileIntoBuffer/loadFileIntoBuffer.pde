@@ -23,7 +23,7 @@ void setup()
   minim  = new Minim(this);
   output = minim.getLineOut();
   
-  // construct a new MultiChannelBuffer with 2 channels and 1024 sample frames
+  // construct a new MultiChannelBuffer with 2 channels and 1024 sample frames.
   // in our particular case, it doesn't really matter what we choose for these
   // two values because loadFileIntoBuffer will reconfigure the buffer 
   // to match the channel count and length of the file.

@@ -23,48 +23,50 @@ import ddf.minim.AudioListener;
 import ddf.minim.AudioSignal;
 
 /**
- * An <code>AudioSythesizer</code> is an <code>AudioStream</code> that
- * generates sound, rather than reading sound. It uses the attached
- * <code>AudioSignal</code> and <code>AudioEffect</code> to generate a
- * signal.
+ * An <code>AudioSythesizer</code> is an <code>AudioStream</code> that generates
+ * sound, rather than reading sound. It uses the attached
+ * <code>AudioSignal</code> and <code>AudioEffect</code> to generate a signal.
  * 
  * @author Damien Di Fede
  * 
  */
 public interface AudioOut extends AudioResource
 {
-  /**
-   * @return the size of the buffer used by this output.
-   */
-  int bufferSize();
-  
-  /**
-   * Sets the AudioSignal that this output will use to generate sound.
-   * 
-   * @param signal
-   *          the AudioSignal used to generate sound
-   */
-  // TODO (ddf) this needs to go away at some point
-  void setAudioSignal(AudioSignal signal);
-  
-  /**
-   * Sets the AudioStream that this output will use to generate sound.
-   * @param stream
-   */
-  void setAudioStream(AudioStream stream);
+	/**
+	 * @return the size of the buffer used by this output.
+	 */
+	int bufferSize();
 
-  /**
-   * Sets the AudioEffect to apply to the signal.
-   * 
-   * @param effect
-   *          the AudioEffect to apply to the signal
-   */
-  // TODO (ddf) this needs to go away at some point
-  void setAudioEffect(AudioEffect effect);
-  
-  /**
-   * Sets the AudioListener that will have sound broadcasted to it as the output generates.
-   * @param listen
-   */
-  void setAudioListener(AudioListener listen);
+	/**
+	 * Sets the AudioSignal that this output will use to generate sound.
+	 * 
+	 * @param signal
+	 *            the AudioSignal used to generate sound
+	 */
+	// TODO (ddf) this needs to go away at some point
+	void setAudioSignal(AudioSignal signal);
+
+	/**
+	 * Sets the AudioStream that this output will use to generate sound.
+	 * 
+	 * @param stream
+	 */
+	void setAudioStream(AudioStream stream);
+
+	/**
+	 * Sets the AudioEffect to apply to the signal.
+	 * 
+	 * @param effect
+	 *            the AudioEffect to apply to the signal
+	 */
+	// TODO (ddf) this needs to go away at some point
+	void setAudioEffect(AudioEffect effect);
+
+	/**
+	 * Sets the AudioListener that will have sound broadcasted to it as the
+	 * output generates.
+	 * 
+	 * @param listen
+	 */
+	void setAudioListener(AudioListener listen);
 }
