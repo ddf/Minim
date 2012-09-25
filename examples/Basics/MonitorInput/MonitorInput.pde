@@ -6,7 +6,9 @@
   * its feasible that the user may have the actual audio output of the computer 
   * as the active audio input, or something else entirely.
   * <p>
-  * When you run your sketch as an applet you will need to sign it in order to get an input. 
+  * When you run your sketch as an applet you will need to sign it in order to get an input.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/ 
   */
 
 import ddf.minim.*;

@@ -26,12 +26,9 @@ import ddf.minim.spi.SampleRecorder;
  * An <code>AudioRecorder</code> can be used to record audio that is being
  * played by a <code>Recordable</code> object. An <code>AudioRecorder</code>
  * need not necessarily record to disk, but the recorders you receive from
- * {@link Minim#createRecorder(Recordable, String, boolean)} will do so. If
- * you'd like to save a file somewhere other than the sketches root folder, you
- * can constructor an <code>AudioRecorder</code> directly, using an absolute
- * path for the filename (such as "C:\My Documents\Music\song.wav"). You can
- * also create a recorder that uses your own implementation of
- * {@link SampleRecorder} (like if you wanted to implement an mp3 encoder).
+ * Minim's createRecorder method will do so.
+ * 
+ * @example Advanced/RecordAndPlayback
  * 
  * @author Damien Di Fede
  * 
@@ -42,9 +39,12 @@ public class AudioRecorder
   private Recordable source;
   private SampleRecorder recorder;
 
-  /**
+  /** @invisible 
+   * 
    * Constructs an <code>AudioRecorder</code> that will use
    * <code>recorder</code> to record <code>recordSource</code>.
+   * You might use this if you want to implement your own SampleRecorder
+   * that can encode to file types not available in Minim.
    * 
    * @param recordSource
    *          the <code>Recordable</code> object to record
@@ -60,8 +60,10 @@ public class AudioRecorder
 
   /**
    * Begins recording audio from the current record source. If recording was
-   * previously halted, and {@link #save()} was not called, samples will be
+   * previously halted, and the save method was not called, samples will be
    * appended to the end of the material recorded so far.
+   * 
+   * @shortdesc Begins recording audio from the current record source.
    * 
    */
   public void beginRecord()
@@ -89,19 +91,21 @@ public class AudioRecorder
   }
 
   /**
-   * Requests the current <code>SampleRecorder</code> to save. This will only
-   * work if you have called {@link #endRecord()}. If this was created with a
-   * buffered recorder, then calling {@link #beginRecord()} after saving will
+   * Requests that the recorder saves. This will only
+   * work if you have called the endRecord method. If this was created with a
+   * buffered recorder, then calling the beginRecord method after saving will
    * not overwrite the file on the disk, unless this method is subsequently
    * called. However, if this was created with an unbuffered recorder, it is
-   * likely that a call to {@link #beginRecord()} will create the file again,
+   * likely that a call to the beginRecord method will create the file again,
    * overwriting the file that had previously been saved. An
-   * <code>AudioRecording</code> will be returned if the
+   * <code>AudioRecordingStream</code> will be returned if the
    * <code>SampleRecorder</code> used to record the audio saved to a file
    * (this will always be the case if you use <code>createRecorder</code> or
    * the first constructor for <code>AudioRecorder</code>).
    * 
-   * @return the audio that was recorded as an <code>AudioPlayer</code>
+   * @shortdesc Requests that the recorder saves.
+   * 
+   * @return the audio that was recorded as an <code>AudioRecordingStream</code>
    */
   // TODO: this should return whatever our "file handle" interface winds up being.
   public AudioRecordingStream save()
@@ -111,13 +115,15 @@ public class AudioRecorder
 
   /**
    * Sets the record source for this recorder. The record source can be set at
-   * any time, though in practice it is probably a good idea to mute the old
+   * any time, but if you are in the middle of recording it is a good idea to mute the old
    * record source, then add the new record source, also muted, and then unmute
    * the new record source. Otherwise, you'll probably wind up with a pop in the
    * recording.
    * 
+   * @shortdesc Sets the record source for this recorder.
+   * 
    * @param recordSource
-   *          the new record source
+   *          an AudioSample, AudioPlayer, AudioInput, or AudioOutput
    */
   public void setRecordSource(Recordable recordSource)
   {
@@ -126,7 +132,7 @@ public class AudioRecorder
     source.addListener(recorder);
   }
 
-  /**
+  /** @invisible 
    * Sets the <code>SampleRecorder</code> for this recorder. Similar caveats
    * apply as with {@link #setRecordSource(Recordable)}. This calls
    * <code>endRecord</code> and <code>save</code> on the current

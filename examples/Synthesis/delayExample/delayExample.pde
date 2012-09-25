@@ -1,8 +1,11 @@
-/* delayExample
-   is an example of using the Delay UGen in a continuous sound example.
-   author: Anderson Mills
-   Anderson Mills's work was supported by numediart (www.numediart.org)
-*/
+/* delayExample<br/>
+ * is an example of using the Delay UGen in a continuous sound example.
+ * <p>
+ * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+ * <p>
+ * author: Anderson Mills<br/>
+ * Anderson Mills's work was supported by numediart (www.numediart.org)
+ */
 
 // import everything necessary to make sound.
 import ddf.minim.*;

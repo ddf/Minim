@@ -3,6 +3,8 @@
   * To use this sketch you need to have something plugged into the line-in on your computer, or else be working on a
   * laptop with an active built-in microphone. Press 'r' to toggle recording on and off and the press 's' to save to disk. 
   * The recorded file will be placed in the sketch folder of the sketch.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

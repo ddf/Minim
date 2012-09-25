@@ -12,7 +12,8 @@
  * changing the frequency band at index 20. So in our case <b>f = 20/512 = 0.0390625</b>
  * Our sampling rate is 44100 Hz, a value passed in the Sine constructor,
  * so the frequency in Hz that is being added to the spectrum is <b>44100 * 0.0390625 = 1722.65625 Hz</b>
- *
+ * <p>
+ * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
  */
 
 import ddf.minim.analysis.*;

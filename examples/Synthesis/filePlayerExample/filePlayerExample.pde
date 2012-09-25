@@ -4,6 +4,8 @@
   same methods that AudioPlayer does for controlling the file playback: play(), loop(), cue(int position), etc.
   <p>
   Press any key to pause and unpause playback!
+  <p>
+  For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   <p>  
   author: Damien Di Fede
 */

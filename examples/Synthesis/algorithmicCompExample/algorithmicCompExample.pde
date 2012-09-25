@@ -1,10 +1,12 @@
-/* algorithmicCompExample
+/* algorithmicCompExample<br/>
    is an example of algorithmic composition.  It uses a class to construct
    sentences.  The syllables of the words are played by an Instrument.
    This is intended to sound like a conversation between two robots, where
-   The voice of each robot is inspired by the teacher from the Peanuts cartoons. 
-    
-   authour: Anderson Mills
+   the voice of each robot is inspired by the teacher from the Peanuts cartoons. 
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
+   authour: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

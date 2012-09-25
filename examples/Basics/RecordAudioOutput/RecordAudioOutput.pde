@@ -2,6 +2,8 @@
   * This sketch demonstrates how to use an <code>AudioRecorder</code> to record audio to disk. 
   * Press 'r' to toggle recording on and off and the press 's' to save to disk. 
   * The recorded file will be placed in the sketch folder of the sketch.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

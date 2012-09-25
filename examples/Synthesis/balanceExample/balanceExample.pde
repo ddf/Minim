@@ -1,11 +1,13 @@
-/* balanceExample
+/* balanceExample<br/>
    is an example of using the Balance UGen inside an instrument.
    It is important to note that Balance works specifically on stereo signals.
    It is *not* the same as Pan, which takes a mono signal and places it in a stereo field.
    Balance works by simply attenuating either the left or right channel of a stereo signal
    based on what the balance is set to. Negative balance values will attenuate the left channel
    and positive balance values attentuate the right channel.
-   
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
    author: Damien Di Fede
 */
 

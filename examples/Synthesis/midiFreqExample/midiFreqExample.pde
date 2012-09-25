@@ -1,8 +1,10 @@
-/* midiFreqExample
+/* midiFreqExample<br/>
    is an example of using the midi2Freq UGen to get a "musical note"
    rise instead of a linear slide.
-
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
+   author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

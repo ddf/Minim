@@ -9,7 +9,9 @@
     For more info about what can be done with JavaSound midi synthesis, see 
     <a href="http://docs.oracle.com/javase/6/docs/api/javax/sound/midi/MidiChannel.html">javax.sound.midi.MidiChannel</a> and 
     <a href="http://docs.oracle.com/javase/6/docs/api/javax/sound/midi/Synthesizer.html">javax.sound.midi.Synthesizer</a>
-   
+    <p>
+    For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+    <p>
     Author: Damien Di Fede  
   */
   

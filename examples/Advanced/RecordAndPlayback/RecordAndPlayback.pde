@@ -1,9 +1,13 @@
 /**
-  * This sketch demonstrates how to an <code>AudioRecorder</code> to record audio to disk and then immediately 
-  * play it back by creating a new <code>AudioPlayer</code> for the <code>AudioRecording</code> returned by <code>save</code>. 
-  * To use this sketch you need to have something plugged into the line-in on your computer. Press 'r' to toggle 
-  * recording on and off and the press 's' to save to disk. The recorded file will be placed in the data folder of 
-  * the sketch.
+  * This sketch demonstrates how to use an AudioRecorder to record audio to disk
+  * and then immediately play it back by creating a new FilePlayer using the AudioRecordingStream
+  * returned by the save method.
+  * <p> 
+  * To use this sketch you need to have something plugged into the line-in on your computer.<br/>
+  * Press 'r' to toggle recording on and off and the press 's' to save to disk.<br/>
+  * The recorded file will be placed in the main folder of the sketch.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;
@@ -22,7 +26,7 @@ FilePlayer player;
 void setup()
 {
   size(512, 200, P3D);
-  textMode(SCREEN);  
+
   minim = new Minim(this);
   
   // get a stereo line-in: sample buffer length of 2048
@@ -31,7 +35,7 @@ void setup()
   // create an AudioRecorder that will record from in to the filename specified, using buffered recording
   // buffered recording means that all captured audio will be written into a sample buffer
   // then, when save() is called, the contents of the buffer will actually be written to a file
-  // the file will be located in the sketch's data folder.
+  // the file will be located in the sketch's main folder.
   recorder = minim.createRecorder(in, "myrecording.wav", true);
   
   // get an output we can playback the recording on

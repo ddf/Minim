@@ -2,6 +2,8 @@
   * This sketch demonstrates how to use the BandPass effect.<br />
   * Move the mouse left and right to change the frequency of the pass band.<br />
   * Move the mouse up and down to change the band width of the pass band.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

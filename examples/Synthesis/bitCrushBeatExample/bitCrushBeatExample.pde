@@ -1,9 +1,11 @@
 /* bitCrushBeatExample
-
+   <p>
    this is an example of how to use BitCrush. the kick and snare instruments are both
    patched through a Summer, which patches to a single BitCrush UGen. We then change 
    the bit resolution over time to slowly crush the beat.
-   
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
    author: Damien Di Fede
 */
 

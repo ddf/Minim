@@ -2,6 +2,8 @@
  * This sketch demonstrates very simply how you might use the inverse FFT to modify an audio signal.
  * Press 'f' to perform the forward FFT, then press 's' to scale the large frequency band.
  * Now press 'd' to take the inverse FFT. You will see that the wave form has a smaller amplitude.<br />
+ * <p>
+ * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
  */
 
 import ddf.minim.analysis.*;

@@ -9,7 +9,9 @@
   * </ul>
   *
   * Moving the mouse across the sketch will highlight a band in each spectrum and display what the center 
-  * frequency of that band is. 
+  * frequency of that band is.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/ 
   */
 
 import ddf.minim.analysis.*;

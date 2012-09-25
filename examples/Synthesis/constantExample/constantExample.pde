@@ -1,11 +1,13 @@
-/* constantExample
+/* constantExample<br/>
    is an example of using a Constant UGen to control the frequency of an Oscil.
    You can patch a Constant UGen into any input of any other UGen, which gives you
    an easy way of interactively controlling that input. In this case, you move 
    the mouse left and right to change the frequency of the oscillator. You'll hear the 
    frequency "stair step" because we don't smoothly change the value, we simply set it
    every frame.
-   
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
    author: Damien Di Fede
 */
 

@@ -1,8 +1,10 @@
-/* waveformExample
+/* waveformExample<br/>
    is an example of how to construct different waveforms 
    for different tones from an oscillator.
-   
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>   
+   author: Anderson Mills<br/>
    Anderson Mills's work is supported by numediart (www.numediart.org).
 */
 

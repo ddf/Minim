@@ -19,7 +19,8 @@ package ddf.minim;
 
 import javax.sound.sampled.AudioFormat;
 
-/**
+/** @invisible
+ * 
  * A <code>Recordable</code> object is one that can provide a program with 
  * floating point samples of the audio passing through it. It does this using 
  * <code>AudioListener</code>s. You add listeners to the <code>Recordable</code> and 
@@ -29,7 +30,6 @@ import javax.sound.sampled.AudioFormat;
  * (mono or stereo), and audio format. 
  * 
  * @author Damien Di Fede
- * @invisible
  *
  */
 public interface Recordable
@@ -72,9 +72,9 @@ public interface Recordable
   int bufferSize();
   
   /**
-   * Returns the sample rate of this recordable audio.
+   * Returns the sample rate of the audio.
    * 
-   * @return the sample rate of this recordable audio
+   * @return the sample rate of the audio
    */
   float sampleRate();
 }

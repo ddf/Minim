@@ -1,11 +1,13 @@
-/* granulateRandomExample
+/* granulateRandomExample<br/>
    is an example of using the GranulateRandom UGen inside an instrument.
    The GranulateRandom UGen is basically an amplitude modulation of the
    incoming audio, which turns on for a random amount of time and then off
    again for a random amount of time.  If one uses several of these concurrently
    it produces the "grain cloud" typical of granular synthesis.
-
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
+   author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

@@ -1,7 +1,9 @@
 /**
   * This sketch demonstrates how to use the notch, or band reject, filter that comes with Minim.<br />
   * Move mouse left and right change the center frequency of the band to reject, <br />
-  * move it up and down to change the band width of the reject band. 
+  * move it up and down to change the band width of the reject band.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/ 
   */
 
 import ddf.minim.*;

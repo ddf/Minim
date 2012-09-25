@@ -1,6 +1,8 @@
 /**
   * This sketch demonstrates how to use a HighPassSP filter.<br />
   * Move the mouse to the right to increase the cutoff frequency and to the left to decrease it.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

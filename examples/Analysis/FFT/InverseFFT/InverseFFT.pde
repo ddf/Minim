@@ -14,6 +14,8 @@
   * <p>
   * Press 'f' to take the forward FFT, and 'd' to take the inverse.
   *
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.analysis.*;

@@ -1,9 +1,11 @@
 /* frequencyModulation
-<p>
-  A simple example for doing FM using two Oscils.
-<p>  
-  Author: Damien Di Fede
-*/
+   <p>
+   A simple example for doing FM using two Oscils.
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>  
+   Author: Damien Di Fede
+ */
 
 // import everything necessary to make sound.
 import ddf.minim.*;

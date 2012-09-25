@@ -67,6 +67,8 @@ public abstract class AudioSample extends AudioSource
 	 * have created an AudioSample from an mp3 file and want to get at some of
 	 * the most common ID3 tags.
 	 * 
+	 * @shortdesc Get the AudioMetaData for this sample.
+	 * 
 	 * @return the AudioMetaData for the sample.
 	 * 
 	 * @related AudioMetaData

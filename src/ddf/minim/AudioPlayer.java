@@ -22,17 +22,17 @@ import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecordingStream;
 
 /**
- * An <code>AudioPlayer</code> is used for playing an
- * <code>AudioRecording</code>. Strictly speaking, you don't need an
- * <code>AudioPlayer</code> to play an <code>AudioRecording</code>, because
- * the recording is itself <code>Playable</code>. However, an
- * <code>AudioPlayer</code> does you the favor of providing
- * <code>AudioBuffer</code>s that are sync'd with the recording's output as
- * well as providing direct control over the <code>DataLine</code> being used
- * to transmit the recording to the system. You can get an
- * <code>AudioPlayer</code> by calling {@link Minim#loadFile(String)}, but
- * you can also construct one yourself if you've written your own implementation
- * of <code>AudioRecording</code>.
+ * An AudioPlayer provides a self-contained way of playing a 
+ * sound file by streaming it from disk (or the internet). It
+ * provides methods playing and looping the file, as well 
+ * as methods for setting the position in the file and 
+ * looping a section of the file. You can obtain an 
+ * AudioPlayer by using the loadFile method of the Minim 
+ * class.
+ * 
+ * @example Basics/PlayAFile
+ * 
+ * @related Minim
  * 
  * @author Damien Di Fede
  */

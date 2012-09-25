@@ -1,9 +1,11 @@
 /* multipleOutputsExample
-
+   <p>
    this is an example of how a single UGen can be patched to multiple things
    in order to control them simultaneously.
-   
-   author: Damien Di Fede, Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>   
+   author: Damien Di Fede, Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org) 
 */
 

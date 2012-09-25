@@ -1,11 +1,13 @@
-/* noiseExample
-is a example of how to use noise in an instrument.
-It is shows the different types of noise using a slightly
-interesting bouncing cyan bar.  This is also an example of how
-to connect the visual aspects of Processing and Minim.
-
-author:Anderson Mills
-Anderson Mills's work was supported by numediart (www.numediart.org).
+/* noiseExample<br/>
+   is a example of how to use noise in an instrument.
+   It is shows the different types of noise using a slightly
+   interesting bouncing cyan bar.  This is also an example of how
+   to connect the visual aspects of Processing and Minim.
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
+   author:Anderson Mills<br/>
+   Anderson Mills's work was supported by numediart (www.numediart.org).
 */
 
 // import everything necessary to make sound.

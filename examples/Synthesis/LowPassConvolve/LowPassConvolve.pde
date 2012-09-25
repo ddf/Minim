@@ -8,6 +8,8 @@
   * beginning of the output array, which results in a output signal without pops.
   * <p>
   * This sketch is not interactive.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

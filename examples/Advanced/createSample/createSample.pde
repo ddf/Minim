@@ -6,6 +6,8 @@
   * See the loadSample example for more information about <code>AudioSample</code>s.
   * <p>
   * Press 't' to trigger the sample.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

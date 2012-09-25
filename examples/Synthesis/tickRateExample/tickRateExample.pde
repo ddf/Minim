@@ -3,11 +3,13 @@
   A TickRate will tick the UGen patched to it at a rate relative to the normal tick rate. So a TickRate with a value of 1 
   will simply pass the audio. A TickRate with a value of 2 will tick the incoming twice as fast as normal. If the value 
   of TickRate is ever set to 0 or lower, it will simply generate silence and not tick its incoming UGen at all. This is 
-  because there isn't a way to tell a UGen to tick backwards.<br/>
-  <br/>
+  because there isn't a way to tell a UGen to tick backwards.
+  <p>
   Slide the mouse left and right in the window to control the playback rate of the loop.<br/>
-  Hold 'i' to make TickRate interpolate between actual sample values (this will remove the "crunch" when at rates less than 1).</br>
-  </br>
+  Hold 'i' to make TickRate interpolate between actual sample values (this will remove the "crunch" when at rates less than 1).
+  <p>
+  For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  <p>
   author: Damien Di Fede
 */
 

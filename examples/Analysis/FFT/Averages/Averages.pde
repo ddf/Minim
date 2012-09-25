@@ -1,11 +1,13 @@
 /**
   * This sketch demonstrates the difference between linearly spaced averages and
   * logarithmically spaced averages.
-  *
-  * From top to bottom:
-  * - The full spectrum.
-  * - The spectrum grouped into 30 linearly spaced averages.
+  * <p>
+  * From top to bottom:<br/>
+  * - The full spectrum.<br/>
+  * - The spectrum grouped into 30 linearly spaced averages.<br/>
   * - The spectrum grouped logarithmically into 10 octaves, each split into 3 bands.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
  
 import ddf.minim.analysis.*;

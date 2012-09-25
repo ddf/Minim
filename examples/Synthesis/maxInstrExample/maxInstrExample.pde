@@ -1,10 +1,12 @@
-/* maxInstrExample
+/* maxInstrExample<br/>
    is an example of using the Oscil UGen to find out how many single oscillator
    instruments can run synchronously on one's system.  If you press a key while it is playing,
    it will write the audio so far to a WAV file.  The WAV file doesn't have any problems, but
    given enough oscillator instruments, one's system will.
-
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/   
+   <p>
+   author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

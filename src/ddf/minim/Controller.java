@@ -55,34 +55,40 @@ import javax.sound.sampled.FloatControl;
  */
 public class Controller
 {
-  /**
+  /** @invisible
    * The volume control type.
    */
+  @Deprecated
   public static FloatControl.Type VOLUME = FloatControl.Type.VOLUME;
 
-  /**
+  /** @invisible
    * The gain control type.
    */
+  @Deprecated
   public static FloatControl.Type GAIN = FloatControl.Type.MASTER_GAIN;
 
-  /**
+  /** @invisible
    * The balance control type.
    */
+  @Deprecated
   public static FloatControl.Type BALANCE = FloatControl.Type.BALANCE;
 
-  /**
+  /** @invisible
    * The pan control type.
    */
+  @Deprecated
   public static FloatControl.Type PAN = FloatControl.Type.PAN;
 
-  /**
+  /** @invisible
    * The sample rate control type.
    */
+  @Deprecated
   public static FloatControl.Type SAMPLE_RATE = FloatControl.Type.SAMPLE_RATE;
 
-  /**
+  /** @invisible
    * The mute control type.
    */
+  @Deprecated
   public static BooleanControl.Type MUTE = BooleanControl.Type.MUTE;
   
   private Control[] controls;
@@ -199,7 +205,8 @@ public class Controller
     }
   }
 
-  /**
+  /** @invisible
+   * 
    * Returns whether or not the particular control type is supported by the Line
    * being controlled.
    * 
@@ -212,6 +219,7 @@ public class Controller
    * 
    * @return true if the control is available
    */
+  @Deprecated
   public boolean hasControl(Control.Type type)
   {
     for(int i = 0; i < controls.length; i++)
@@ -224,7 +232,8 @@ public class Controller
     return false;
   }
 
-  /**
+  /** @invisible
+   * 
    * Returns an array of all the available <code>Control</code>s for the
    * <code>DataLine</code> being controlled. You can use this if you want to
    * access the controls directly, rather than using the convenience methods
@@ -232,11 +241,13 @@ public class Controller
    * 
    * @return an array of all available controls
    */
+  @Deprecated
   public Control[] getControls()
   {
     return controls;
   }
   
+  @Deprecated
   public Control getControl(Control.Type type)
   {
     for(int i = 0; i < controls.length; i++)
@@ -249,7 +260,7 @@ public class Controller
     return null;
   }
 
-  /**
+  /** @invisible
    * Gets the volume control for the <code>Line</code>, if it exists. You
    * should check for the availability of a volume control by using
    * {@link #hasControl(javax.sound.sampled.Control.Type)} before calling this
@@ -257,12 +268,13 @@ public class Controller
    * 
    * @return the volume control
    */
+  @Deprecated
   public FloatControl volume()
   {
     return (FloatControl)getControl(VOLUME);
   }
 
-  /**
+  /** @invisible
    * Gets the gain control for the <code>Line</code>, if it exists. You
    * should check for the availability of a gain control by using
    * {@link #hasControl(javax.sound.sampled.Control.Type)} before calling this
@@ -270,12 +282,13 @@ public class Controller
    * 
    * @return the gain control
    */
+  @Deprecated
   public FloatControl gain()
   {
     return (FloatControl) getControl(GAIN);
   }
 
-  /**
+  /** @invisible
    * Gets the balance control for the <code>Line</code>, if it exists. You
    * should check for the availability of a balance control by using
    * {@link #hasControl(javax.sound.sampled.Control.Type)} before calling this
@@ -283,12 +296,13 @@ public class Controller
    * 
    * @return the balance control
    */
+  @Deprecated
   public FloatControl balance()
   {
     return (FloatControl) getControl(BALANCE);
   }
 
-  /**
+  /** @invisible
    * Gets the pan control for the <code>Line</code>, if it exists. You should
    * check for the availability of a pan control by using
    * {@link #hasControl(javax.sound.sampled.Control.Type)} before calling this
@@ -296,13 +310,14 @@ public class Controller
    * 
    * @return the pan control
    */
+  @Deprecated
   public FloatControl pan()
   {
     return (FloatControl) getControl(PAN);
   }
 
   /**
-   * Mutes the line.
+   * Mutes the sound.
    * 
    */
   public void mute()
@@ -311,7 +326,7 @@ public class Controller
   }
 
   /**
-   * Unmutes the line.
+   * Unmutes the sound.
    * 
    */
   public void unmute()
@@ -320,7 +335,7 @@ public class Controller
   }
 
   /**
-   * Returns true if the line is muted.
+   * Returns true if the sound is muted.
    * 
    * @return the current mute state
    */

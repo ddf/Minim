@@ -1,10 +1,12 @@
-/* defaultInstrumentExample
+/* defaultInstrumentExample<br/>
    is an example of using the extremely simple default
    instrument built into Minim.  The following is intended
    to be pretty much the minimum necessary to use the default
    instrument.  It is written in the "script style" of Processing.
-   
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>   
+   author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

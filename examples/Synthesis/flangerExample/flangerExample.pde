@@ -1,5 +1,5 @@
 /* flangerExample
-   
+   <p>
    A Flanger is a specialized kind of delay that uses an LFO (low frequency oscillator) 
    to vary the amount of delay applied to each sample. This causes a sweeping frequency 
    kind of sound as the signal reinforces or cancels itself in various ways. In particular
@@ -18,6 +18,8 @@
    </ul>
    <p>
    A more thorough description can be found on wikipedia: http://en.wikipedia.org/wiki/Flanging
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
    <p>
    Author: Damien Di Fede
 */

@@ -1,9 +1,12 @@
-/* pitchNameExample
+/* pitchNameExample<br/>
    is an example of using the pitch names for notes instead
    of the frequency in Hertz or the midi note number.  This is
    achieved in the pitchNameInstrument using the ofPitch() and
    asHz() methods of the Frequency class.
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>   
+   author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

@@ -8,6 +8,8 @@
   * <p>
   * For more complex examples of using <code>playNote</code> check out algorithmicCompExample and compositionExample
   * in the Synthesis folder.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

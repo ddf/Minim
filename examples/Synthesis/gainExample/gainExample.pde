@@ -10,6 +10,8 @@
   Move the mouse left and right to change the gain of the looping audio file. All the way left is -6 dB, all the way 
   right is +6 dB.
   <p>
+  For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  <p>
   author: Damien Di Fede
 */
 

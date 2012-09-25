@@ -22,18 +22,20 @@ package ddf.minim;
  * AudioMetaData provides information commonly found in ID3 tags. 
  * However, other audio formats, such as Ogg, can contain
  * similar information. So rather than refer to this information
- * as ID3Tags or similar, I simply call it metadata. This base 
+ * as ID3Tags or similar, we simply call it metadata. This base 
  * class returns the empty string or -1 from all methods and
  * derived classes are expected to simply override the methods
  * that they have information for. This is a little less brittle
  * than using an interface because later on new properties can 
  * be added without breaking existing code.
+ * 
+ * @example Basics/GetMetaData
  */
 
 public abstract class AudioMetaData
 {
 	/**
-	 * @return the length of the recording in milliseconds.
+	 * The length of the recording in milliseconds.
 	 */
 	public int length()
 	{
@@ -42,7 +44,7 @@ public abstract class AudioMetaData
 	
 	/**
 	 * 
-	 * @return how many sample frames are in this recording
+	 * How many sample frames are in this recording.
 	 */
 	public int sampleFrameCount()
 	{
@@ -50,7 +52,7 @@ public abstract class AudioMetaData
 	}
 	
 	/**
-	 * @return the name of the file / URL of the recording.
+	 * The name of the file / URL of the recording.
 	 */
 	public String fileName()
 	{
@@ -58,7 +60,7 @@ public abstract class AudioMetaData
 	}
 	
 	/**
-	 * @return the title of the recording
+	 * The title of the recording.
 	 */
 	public String title()
 	{
@@ -66,63 +68,96 @@ public abstract class AudioMetaData
 	}
 	
 	/**
-	 * @return the author or the recording
+	 * The author or the recording.
 	 */
 	public String author()
 	{
 		return "";
 	}
 	
+	/**
+	 * The album the recording came from.
+	 */
 	public String album()
 	{
 		return "";
 	}
 	
+	/**
+	 * The date the recording was made.
+	 */
 	public String date()
 	{
 		return "";
 	}
 	
+	/**
+	 * The comment field in the file.
+	 */
 	public String comment()
 	{
 		return "";
 	}
 	
+	/**
+	 * The track number of the recording.
+	 */
 	public int track()
 	{
 		return -1;
 	}
 	
+	/**
+	 * The genre of the recording.
+	 */
 	public String genre()
 	{
 		return "";
 	}
 	
+	/**
+	 * The copyright of the recording.
+	 */
 	public String copyright()
 	{
 		return "";
 	}
 	
+	/**
+	 * The disc number of the recording.
+	 */
 	public String disc()
 	{
 		return "";
 	}
 	
+	/**
+	 * The composer of the recording.
+	 */
 	public String composer()
 	{
 		return "";
 	}
 	
+	/**
+	 * The orchestra that performed the recording.
+	 */
 	public String orchestra()
 	{
 		return "";
 	}
 	
+	/** 
+	 * The publisher of the recording.
+	 */
 	public String publisher()
 	{
 		return "";
 	}
 	
+	/**
+	 * The software the recording was encoded with.
+	 */
 	public String encoded()
 	{
 		return "";

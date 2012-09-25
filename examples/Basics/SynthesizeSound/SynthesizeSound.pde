@@ -4,6 +4,8 @@
   * one of many different types included with Minim. For many more examples 
   * of UGens included with Minim, have a look in the Synthesis 
   * folder of the Minim examples.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

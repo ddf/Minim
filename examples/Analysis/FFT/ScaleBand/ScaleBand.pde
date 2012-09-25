@@ -6,6 +6,8 @@
  * You might wonder how we knew which band to scale. You should read 
  * <a href="http://code.compartmental.net/2007/03/21/fft-averages/">this blog post</a> about calculating 
  * FFT averages for the answer to that question.
+ * <p>
+ * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
  */
 
 import ddf.minim.analysis.*;

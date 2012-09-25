@@ -1,6 +1,8 @@
 /**
   * This sketch demonstrates how to use one of the low pass filters that comes with Minim. <br />
   * Move the mouse right to increase the cutoff frequency, move it to the left to descrease it.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

@@ -1,6 +1,8 @@
-/* oscilPhaseExample
+/* oscilPhaseExample<br/>
    is an example of controlling the phase of an Oscil UGen inside an instrument.
-
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
    author: Damien Di Fede
 */
 

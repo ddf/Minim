@@ -6,6 +6,8 @@ import processing.opengl.*;
   * column. You can change the tempo by clicking in the BPM box and dragging the mouse up and down.
   * <p>
   * We achieve the timing by using AudioOutput's playNote method and a cleverly written Instrument.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 

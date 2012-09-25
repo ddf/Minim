@@ -1,11 +1,13 @@
-/* instrCommunicationExample
+/* instrCommunicationExample<br/>
    is an example of two instruments communicating with each other.
    In this case, a FollowInstrument continually makes a tone.  By passing
    the name of this object to the LeaderInstrument, the LeaderInstrument can
    call one of the FollowInstrument's method.  In this case it calls the method
    that changes the frequency of the tone the Follow Instrument is playing. 
-
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
+   author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

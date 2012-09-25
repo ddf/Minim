@@ -47,6 +47,8 @@
  *     <td>4</td>
  *   </tr>
  * </table> 
+ * <p>
+ * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
  */
 
 import controlP5.*;

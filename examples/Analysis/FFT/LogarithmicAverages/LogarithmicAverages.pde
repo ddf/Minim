@@ -3,6 +3,8 @@
   * Logarithmically spaced averages (i.e. averages that are grouped by octave) are requested 
   * by specifying the band width of the smallest octave and how many bands to split each 
   * octave into. The result is averages that more closely map to how humans perceive sound.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.analysis.*;

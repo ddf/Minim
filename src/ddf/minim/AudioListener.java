@@ -26,19 +26,19 @@ package ddf.minim;
  * implement this interface if you want to receive samples in a callback fashion, 
  * rather than using an object's <code>AudioBuffer</code>s to access them. You 
  * add an <code>AudioListener</code> to a <code>Recordable</code> by calling 
- * {@link Recordable#addListener(AudioListener)}. When you want to stop 
- * receiving samples you call {@link Recordable#removeListener(AudioListener)}.
+ * the addListener method. When you want to stop receiving samples you call the
+ * removeListener method.
  * 
  * @author Damien Di Fede
- * @invisible
  */
 public interface AudioListener
 {
   /**
-   * Called by the <code>Recordable</code> object this is attached to 
+   * Called by the audio object this AudioListener is attached to 
    * when that object has new samples.
    * 
-   * @param samp a buffer of samples from a MONO sound stream
+   * @param samp 
+   * 	a float[] buffer of samples from a MONO sound stream
    */
   void samples(float[] samp);
   
@@ -46,8 +46,10 @@ public interface AudioListener
    * Called by the <code>Recordable</code> object this is attached to
    * when that object has new samples.
    * 
-   * @param sampL the left channel of a STEREO sound stream
-   * @param sampR the right channel of a STEREO sound stream
+   * @param sampL 
+   * 	a float[] buffer containing the left channel of a STEREO sound stream
+   * @param sampR 
+   * 	a float[] buffer containing the right channel of a STEREO sound stream
    */
   void samples(float[] sampL, float[] sampR);
   

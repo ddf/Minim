@@ -36,20 +36,20 @@ public class AudioSource extends Controller implements Effectable, Recordable
 
 	/**
 	 * The buffer containing the left channel samples. If this is a mono
-	 * <code>AudioSource</code>, it contains the single channel of audio.
+	 * sound, it contains the single channel of audio.
 	 */
 	public final AudioBuffer	left;
 
 	/**
 	 * The buffer containing the right channel samples. If this is a mono
-	 * <code>AudioSource</code>, <code>right</code> contains the same samples as
+	 * sound, <code>right</code> contains the same samples as
 	 * <code>left</code>.
 	 */
 	public final AudioBuffer	right;
 
 	/**
 	 * The buffer containing the mix of the left and right channels. If this is
-	 * a mono <code>AudioSource</code>, <code>mix</code> contains the same
+	 * a mono sound, <code>mix</code> contains the same
 	 * samples as <code>left</code>.
 	 */
 	public final AudioBuffer	mix;
@@ -96,7 +96,7 @@ public class AudioSource extends Controller implements Effectable, Recordable
 	}
 
 	/**
-	 * Closes the <code>AudioStream</code> this was constructed with.
+	 * Closes this source, making it unavailable.
 	 * 
 	 */
 	public void close()
@@ -203,31 +203,70 @@ public class AudioSource extends Controller implements Effectable, Recordable
 		return effects.remove( i );
 	}
 
-	public void addListener(AudioListener listener)
+	/**
+	 * Add an AudioListener to this sound generating object,
+	 * which will have its samples method called every time
+	 * this object generates a new buffer of samples.
+	 * 
+	 * @shortdesc Add an AudioListener to this sound generating object.
+	 * 
+	 * @param the AudioListener that will listen to this
+	 * 
+	 * @related AudioListener
+	 */
+	public void addListener( AudioListener listener )
 	{
 		splitter.addListener( listener );
 	}
 
+	/**
+	 * The internal buffer size of this sound object.
+	 * The left, right, and mix AudioBuffers of this object 
+	 * will be this large, and sample buffers passed to
+	 * AudioListeners added to this object will be this large.
+	 * 
+	 * @shortdesc The internal buffer size of this sound object.
+	 */
 	public int bufferSize()
 	{
 		return stream.bufferSize();
 	}
 
+	/**
+	 * An AudioFormat describing this sound object.
+	 */
 	public AudioFormat getFormat()
 	{
 		return stream.getFormat();
 	}
 
-	public void removeListener(AudioListener listener)
+	/**
+	 * Removes an AudioListener that was previously 
+	 * added to this sound object.
+	 * 
+	 * @related AudioListener
+	 */
+	public void removeListener( AudioListener listener )
 	{
 		splitter.removeListener( listener );
 	}
 
+	/**
+	 * The type is an int describing the number of channels
+	 * this sound object has.
+	 * 
+	 * @return Minim.MONO if this is mono, Minim.STEREO if this is stereo
+	 */
 	public int type()
 	{
 		return stream.getFormat().getChannels();
 	}
 
+    /**
+     * Returns the sample rate of this sound object.
+     * 
+     * @return the sample rate of this sound object.
+     */
 	public float sampleRate()
 	{
 		return stream.getFormat().getSampleRate();

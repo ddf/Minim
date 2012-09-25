@@ -2,6 +2,8 @@
  * This sketch demonstrates very simply how you might use the inverse FFT to modify an audio signal.<br />
  * Press 's' to set frequency band corresponding to 600 Hz in the FFT to 300.<br />
  * Now press 'd' to take the inverse FFT. You will see a wave form appear in the top of the sketch.
+ * <p>
+ * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
  */
 
 import ddf.minim.analysis.*;

@@ -15,7 +15,9 @@
     For more info about what can be done with the JavaSound Sequencer and Sequence classes, see:
     <a href="http://docs.oracle.com/javase/6/docs/api/javax/sound/midi/Sequence.html">javax.sound.midi.Sequence</a> and 
     <a href="http://docs.oracle.com/javase/6/docs/api/javax/sound/midi/Sequencer.html">javax.sound.midi.Sequencer</a>
-   
+    <p>
+    For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+    <p>
     Author: Damien Di Fede  
   */
   

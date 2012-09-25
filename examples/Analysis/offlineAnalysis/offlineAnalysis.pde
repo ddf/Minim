@@ -3,7 +3,10 @@
   * The first method, which uses an AudioSample, is what you see running.<br>
   * The second method, which uses an AudioRecordingStream and is only available in Minim Beta 2.1.0 and beyond,<br>
   * can be viewed by looking at the offlineAnalysis.pde file.
-  **/
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  *
+  */
 
 import ddf.minim.*;
 import ddf.minim.analysis.*;

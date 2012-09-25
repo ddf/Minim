@@ -4,6 +4,8 @@
   * It also allows you to turn windowing on and off, 
   * but you will see there is not much difference in the spectrum.<br />
   * Press 'w' to turn on windowing, press 'e' to turn it off.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.analysis.*;

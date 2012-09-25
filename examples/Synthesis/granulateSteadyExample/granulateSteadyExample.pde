@@ -1,8 +1,11 @@
-/* granulateSteadyExample
+/* granulateSteadyExample<br/>
    is an example of using the Granulate Steady UGen inside an instrument.
    The steady granulation is used first to create rhythms, and then is used
    to create tones, effectively like a duty cycle amplitude modulation.
-   author: Anderson Mills
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
+   author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
 */
 

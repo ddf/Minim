@@ -1,6 +1,8 @@
 /**
   * This sketch demonstrates how to use the averaging abilities of the FFT. <br />
   * 128 linearly spaced averages are requested and then those are drawn as rectangles.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.analysis.*;

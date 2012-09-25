@@ -19,6 +19,8 @@
   * Moving the mouse across the sketch will highlight a band in each spectrum and display what the center 
   * frequency of that band is. The averaged bands are drawn so that they line up with full spectrum bands they 
   * are averages of. In this way, you can clearly see how logarithmic averages differ from linear averages.
+  * <p>
+  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.analysis.*;

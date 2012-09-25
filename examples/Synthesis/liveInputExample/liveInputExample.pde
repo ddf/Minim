@@ -1,6 +1,8 @@
-/* liveInputExample
+/* liveInputExample<br/>
    is an example of using the LiveInput UGen to patch the input from your computer (usually microphone) to the output.
-   
+   <p>
+   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   <p>
    author: Damien Di Fede
 */
 
