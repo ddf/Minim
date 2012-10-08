@@ -22,7 +22,9 @@ void setup()
   // sketch folder. you can also pass an absolute path, or a URL.
   player = minim.loadFile("marcus_kellis_theme.mp3");
   
-  // play the file
+  // play the file from start to finish.
+  // if you want to play the file again, 
+  // you need to call rewind() first.
   player.play();
 }
 

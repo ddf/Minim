@@ -166,7 +166,8 @@ public class Controller
     }
   }
 
-  /**
+  /** @invisible
+   * 
    * Prints the available controls and their ranges to the console. Not all
    * lines have all of the controls available on them so this is a way to find
    * out what is available.
@@ -319,6 +320,8 @@ public class Controller
   /**
    * Mutes the sound.
    * 
+   * @related unmute ( )
+   * @realted isMuted ( )
    */
   public void mute()
   {
@@ -328,6 +331,8 @@ public class Controller
   /**
    * Unmutes the sound.
    * 
+   * @related mute ( )
+   * @related isMuted ( )
    */
   public void unmute()
   {
@@ -338,6 +343,9 @@ public class Controller
    * Returns true if the sound is muted.
    * 
    * @return the current mute state
+   * 
+   * @related mute ( )
+   * @related unmute ( )
    */
   public boolean isMuted()
   {
@@ -408,7 +416,12 @@ public class Controller
    * returns 0. Note that the volume is not the same thing as the
    * <code>level()</code> of an AudioBuffer!
    * 
+   * @shortdesc Returns the current volume.
+   * 
    * @return the current volume or zero if a volume control is unavailable
+   * 
+   * @related setVolume ( )
+   * @related shiftVolume ( )
    */
   public float getVolume()
   {
@@ -416,27 +429,34 @@ public class Controller
   }
 
   /**
-   * Sets the volume to <code>v</code>. If a volume control is not available,
+   * Sets the volume. If a volume control is not available,
    * this does nothing.
    * 
-   * @param v
-   *          the new value for the volume
+   * @shortdesc Sets the volume.
+   * 
+   * @param value
+   *          float: the new value for the volume, usually in the range [0,1].
+   *          
+   * @related getVolume ( )
+   * @related shiftVolume ( )
    */
-  public void setVolume(float v)
+  public void setVolume(float value)
   {
-    setValue(VOLUME, v);
+    setValue(VOLUME, value);
   }
 
   /**
-   * Shifts the value of the volume from <code>from</code> to <code>to</code>
-   * in the space of <code>millis</code> milliseconds.
+   * Transitions the volume from one value to another.
    * 
    * @param from
-   *          the starting volume
+   *          float: the starting volume
    * @param to
-   *          the ending volume
+   *          float: the ending volume
    * @param millis
-   *          the length of the transition
+   *          int: the length of the transition in milliseconds
+   *          
+   * @related getVolume ( )
+   * @related setVolume ( )
    */
   public void shiftVolume(float from, float to, int millis)
   {
@@ -451,9 +471,21 @@ public class Controller
   /**
    * Returns the current gain. If a gain control is not available, this returns
    * 0. Note that the gain is not the same thing as the <code>level()</code>
-   * of an AudioBuffer!
+   * of an AudioBuffer! Gain describes the current volume of the sound in 
+   * decibels, which is a logarithmic, rather than linear, scale. A gain 
+   * of 0dB means the sound is not being amplified or attenuated. Negative
+   * gain values will reduce the volume of the sound, and positive values 
+   * will increase it. 
+   * <p>
+   * See: <a href="http://wikipedia.org/wiki/Decibel">http://wikipedia.org/wiki/Decibel</a>
    * 
-   * @return the current gain or zero if a gain control is unavailable
+   * @shortdesc Returns the current gain.
+   * 
+   * @return float: the current gain or zero if a gain control is unavailable.
+   * the gain is expressed in decibels.
+   * 
+   * @related setGain ( )
+   * @related shiftGain ( ) 
    */
   public float getGain()
   {
@@ -461,27 +493,34 @@ public class Controller
   }
 
   /**
-   * Sets the gain to <code>v</code>. If a gain control is not available,
+   * Sets the gain. If a gain control is not available,
    * this does nothing.
    * 
-   * @param v
-   *          the new value for the gain
+   * @shortdesc Sets the gain.
+   * 
+   * @param value
+   *          float: the new value for the gain, expressed in decibels.
+   *          
+   * @related getGain ( )
+   * @related shiftGain ( )
    */
-  public void setGain(float v)
+  public void setGain(float value)
   {
-    setValue(GAIN, v);
+    setValue(GAIN, value);
   }
 
   /**
-   * Shifts the value of the gain from <code>from</code> to <code>to</code>
-   * in the space of <code>millis</code>
+   * Transitions the gain from one value to another.
    * 
    * @param from
-   *          the starting volume
+   *          float: the starting gain
    * @param to
-   *          the ending volume
+   *          float: the ending gain
    * @param millis
-   *          the length of the transition
+   *          int: the length of the transition in milliseconds
+   *          
+   * @related getGain ( )
+   * @related setGain ( )
    */
   public void shiftGain(float from, float to, int millis)
   {
@@ -494,10 +533,18 @@ public class Controller
   }
 
   /**
-   * Returns the current balance of the line. This will be in the range [-1, 1].
+   * Returns the current balance. This will be in the range [-1, 1].
+   * Usually balance will only be available for stereo audio sources, 
+   * because it describes how much attenuation should be applied to 
+   * the left and right channels.
    * If a balance control is not available, this will do nothing.
    * 
-   * @return the current balance or zero if a balance control is unavailable
+   * @shortdesc Returns the current balance.
+   * 
+   * @return float: the current balance or zero if a balance control is unavailable
+   * 
+   * @related setBalance ( )
+   * @related shiftBalance ( )
    */
   public float getBalance()
   {
@@ -505,28 +552,35 @@ public class Controller
   }
 
   /**
-   * Sets the balance of the line to <code>v</code>. The provided value
-   * should be in the range [-1, 1]. If a balance control is not available, this
-   * will do nothing.
+   * Sets the balance. 
+   * The value should be in the range [-1, 1]. 
+   * If a balance control is not available, this will do nothing.
    * 
-   * @param v
-   *          the new value for the balance
+   * @shortdesc Sets the balance.
+   * 
+   * @param value
+   *          float: the new value for the balance
+   *          
+   * @related getBalance ( )
+   * @related shiftBalance ( )
    */
-  public void setBalance(float v)
+  public void setBalance(float value)
   {
-    setValue(BALANCE, v);
+    setValue(BALANCE, value);
   }
 
   /**
-   * Shifts the value of the balance from <code>from</code> to <code>to</code>
-   * in the space of <code>millis</code> milliseconds.
+   * Transitions the balance from one value to another.
    * 
    * @param from
-   *          the starting volume
+   *          float: the starting balance
    * @param to
-   *          the ending volume
+   *          float: the ending balance
    * @param millis
-   *          the length of the transition
+   *          int: the length of the transition in milliseconds
+   *          
+   * @related getBalance ( )
+   * @related setBalance ( )
    */
   public void shiftBalance(float from, float to, int millis)
   {
@@ -539,10 +593,18 @@ public class Controller
   }
 
   /**
-   * Returns the current pan value. This will be in the range [-1, 1]. If the
-   * pan control is not available
+   * Returns the current pan.
+   * Usually pan will be only be available on mono audio sources because 
+   * it describes a mono signal's position in a stereo field.
+   * This will be in the range [-1, 1], where -1 will place the sound 
+   * only in the left speaker and 1 will place the sound only in the right speaker.
    * 
-   * @return the current pan or zero if a pan control is unavailable
+   * @shortdesc Returns the current pan.
+   * 
+   * @return float: the current pan or zero if a pan control is unavailable
+   * 
+   * @related setPan ( )
+   * @related shiftPan ( )
    */
   public float getPan()
   {
@@ -550,27 +612,35 @@ public class Controller
   }
 
   /**
-   * Sets the pan of the line to <code>v</code>. The provided value should be
-   * in the range [-1, 1].
+   * Sets the pan. 
+   * The provided value should be in the range [-1, 1].
+   * If a pan control is not present, this does nothing.
    * 
-   * @param v
-   *          the new value for the pan
+   * @shortdesc Sets the pan. 
+   * 
+   * @param value
+   *          float: the new value for the pan
+   *          
+   * @related getPan ( )  
+   * @related shiftPan ( )    
    */
-  public void setPan(float v)
+  public void setPan(float value)
   {
-    setValue(PAN, v);
+    setValue(PAN, value);
   }
 
   /**
-   * Shifts the value of the pan from <code>from</code> to <code>to</code>
-   * in the space of <code>millis</code> milliseconds.
+   * Transitions the pan from one value to another.
    * 
    * @param from
-   *          the starting pan
+   *          float: the starting pan
    * @param to
-   *          the ending pan
+   *          float: the ending pan
    * @param millis
-   *          the length of the transition
+   *          int: the length of the transition in milliseconds
+   *         
+   * @related getPan ( )
+   * @related setPan ( )
    */
   public void shiftPan(float from, float to, int millis)
   {

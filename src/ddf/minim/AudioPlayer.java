@@ -24,7 +24,7 @@ import ddf.minim.spi.AudioRecordingStream;
 /**
  * An AudioPlayer provides a self-contained way of playing a 
  * sound file by streaming it from disk (or the internet). It
- * provides methods playing and looping the file, as well 
+ * provides methods for playing and looping the file, as well 
  * as methods for setting the position in the file and 
  * looping a section of the file. You can obtain an 
  * AudioPlayer by using the loadFile method of the Minim 
@@ -68,6 +68,8 @@ public class AudioPlayer extends AudioSource implements Playable
     * Starts playback from the current position. 
     * If this was previously set to loop, looping will be disabled.
     * 
+    * @shortdesc Starts playback from the current position.
+    * 
     */
 	public void play()
 	{
@@ -77,6 +79,8 @@ public class AudioPlayer extends AudioSource implements Playable
    /**
     * Starts playback some number of milliseconds into the file. 
     * If this was previously set to loop, looping will be disabled.
+    * 
+    * @shortdesc Starts playback some number of milliseconds into the file.
     * 
     * @param millis 
     * 			int: how many milliseconds from the beginning of the file to begin playback from 
@@ -104,11 +108,13 @@ public class AudioPlayer extends AudioSource implements Playable
 	}
 
    /**
-    * Set the <code>AudioPlayer</code> to loop. 
+    * Set the <code>AudioPlayer</code> to loop some number of times.
     * If it is already playing, the position
     * <i>will not</i> be reset to the beginning. 
     * If it is not playing, it will start playing. 
     * To loop indefinitely, use <code>loop()</code>.
+    * 
+    * @shortdesc Set the <code>AudioPlayer</code> to loop some number of times.
     * 
     * @param num
     *          int: the number of times to loop
@@ -119,10 +125,12 @@ public class AudioPlayer extends AudioSource implements Playable
 	}
 	
    /**
-    * Sets the <code>AudioPlayer</code> to loop. 
+    * Sets the <code>AudioPlayer</code> to loop indefinitely. 
     * If it is already playing, the position
     * <i>will not</i> be reset to the beginning. 
-    * If it is not playing, it will start playing. 
+    * If it is not playing, it will start playing.
+    * 
+    * @shortdesc Sets the <code>AudioPlayer</code> to loop indefinitely.
     */
 	public void loop()
 	{
@@ -144,6 +152,8 @@ public class AudioPlayer extends AudioSource implements Playable
     * length could not be determined, this will return -1. However, an unknown 
     * length should not impact playback.
     * 
+    * @shortdesc Returns the length of the sound in milliseconds.
+    * 
     * @return int: the length of the sound in milliseconds
     */
 	public int length()
@@ -153,7 +163,7 @@ public class AudioPlayer extends AudioSource implements Playable
 
    /**
     * Returns the current position of the "playhead" in milliseconds
-    * (ie how much of the sound has already been played)
+    * (ie how much of the sound has already been played).
     * 
     * @return int: the current position of the "playhead" in milliseconds
     */
@@ -164,11 +174,14 @@ public class AudioPlayer extends AudioSource implements Playable
 
    /**
     * Sets the position to <code>millis</code> milliseconds from
-    * the beginning. This will not change the playstate. If an error
+    * the beginning. This will not change the play state. If an error
     * occurs while trying to cue, the position will not change. 
     * If you try to cue to a negative position or to a position 
     * that is greater than <code>length()</code>, the amount will be clamped 
     * to zero or <code>length()</code>.
+    * 
+    * @shortdesc Sets the position to <code>millis</code> milliseconds from
+    * the beginning.
     * 
     * @param millis 
     * 			int: the millisecond position to place the "playhead"
@@ -193,6 +206,8 @@ public class AudioPlayer extends AudioSource implements Playable
 	   * <code>length()</code>, the new position will be clamped to zero or 
 	   * <code>length()</code>.
 	   * 
+	   * @shortdesc Skips <code>millis</code> milliseconds from the current position.
+	   * 
 	   * @param millis 
 	   * 			int: how many milliseconds to skip, sign indicates direction
 	   */
@@ -200,14 +215,14 @@ public class AudioPlayer extends AudioSource implements Playable
 	{
 		int pos = position() + millis;
 		if (pos < 0)
-    {
+		{
 			pos = 0;
-    }
+		}
 		else if (pos > length())
-    {
+		{
 			pos = length();
-    }
-    Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
+		}
+		Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
 		recording.setMillisecondPosition(pos);
 	}
 
@@ -258,6 +273,12 @@ public class AudioPlayer extends AudioSource implements Playable
 	
 	/**
 	 * Release the resources associated with playing this file.
+	 * All AudioPlayers returned by Minim's loadFile method 
+	 * will be closed by Minim when it's stop method is called. 
+	 * If you are using Processing, Minim's stop method will be 
+	 * called automatically when your application exits.
+	 * 
+	 * @shortdesc Release the resources associated with playing this file.
 	 */
 	public void close()
 	{
