@@ -1,8 +1,9 @@
 /**
-  * This sketch demonstrates how to get a channel of audio from an AudioSample and then manipulate it to change the AudioSample after it
-  * has been loaded. 
+  * This sketch demonstrates how to get a channel of audio from an AudioSample 
+  * and then manipulate it to change the AudioSample after it has been loaded. 
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

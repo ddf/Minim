@@ -79,9 +79,11 @@ public abstract class AudioSample extends AudioSource
 	 * Gets the samples for the requested channel number as a float array. Use
 	 * either AudioSample.LEFT or AudioSample.RIGHT.
 	 * 
+	 * @example Advanced/AudioSampleGetChannel
+	 * 
 	 * @param channelNumber
 	 *            the channel you want the samples for
-	 * 
+	 *            
 	 * @return float[]: the samples in the specified channel
 	 */
 	public abstract float[] getChannel(int channelNumber);

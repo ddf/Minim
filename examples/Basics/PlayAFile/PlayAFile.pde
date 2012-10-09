@@ -2,7 +2,8 @@
   * This sketch demonstrates how to play a file with Minim using an AudioPlayer. <br />
   * It's also a good example of how to draw the waveform of the audio.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

@@ -35,22 +35,34 @@ public class AudioSource extends Controller implements Effectable, Recordable
 	private EffectsChain		effects;
 
 	/**
-	 * The buffer containing the left channel samples. If this is a mono
+	 * The AudioBuffer containing the left channel samples. If this is a mono
 	 * sound, it contains the single channel of audio.
+	 * 
+	 * @example Basics/PlayAFile
+	 * 
+	 * @related AudioBuffer
 	 */
 	public final AudioBuffer	left;
 
 	/**
-	 * The buffer containing the right channel samples. If this is a mono
+	 * The AudioBuffer containing the right channel samples. If this is a mono
 	 * sound, <code>right</code> contains the same samples as
 	 * <code>left</code>.
+	 * 
+	 * @example Basics/PlayAFile
+	 * 
+	 * @related AudioBuffer
 	 */
 	public final AudioBuffer	right;
 
 	/**
-	 * The buffer containing the mix of the left and right channels. If this is
+	 * The AudioBuffer containing the mix of the left and right channels. If this is
 	 * a mono sound, <code>mix</code> contains the same
 	 * samples as <code>left</code>.
+	 * 
+	 * @example Basics/PlayAFile
+	 * 
+	 * @related AudioBuffer
 	 */
 	public final AudioBuffer	mix;
 
@@ -210,7 +222,10 @@ public class AudioSource extends Controller implements Effectable, Recordable
 	 * 
 	 * @shortdesc Add an AudioListener to this sound generating object.
 	 * 
-	 * @param the AudioListener that will listen to this
+	 * @example Advanced/AddAndRemoveAudioListener
+	 * 
+	 * @param listener
+	 * 		the AudioListener that will listen to this
 	 * 
 	 * @related AudioListener
 	 */
@@ -226,6 +241,10 @@ public class AudioSource extends Controller implements Effectable, Recordable
 	 * AudioListeners added to this object will be this large.
 	 * 
 	 * @shortdesc The internal buffer size of this sound object.
+	 * 
+	 * @example Basics/PlayAFile
+	 * 
+	 * @return int: the internal buffer size of this sound object, in sample frames.
 	 */
 	public int bufferSize()
 	{
@@ -233,7 +252,17 @@ public class AudioSource extends Controller implements Effectable, Recordable
 	}
 
 	/**
-	 * An AudioFormat describing this sound object.
+	 * Returns an AudioFormat object that describes the audio properties 
+	 * of this sound generating object. This is often useful information 
+	 * when doing sound analysis or some synthesis, but typically you
+	 * will not need to know about the specific format. 
+	 * 
+	 * @shortdesc Returns AudioFormat object that describes the audio properties 
+	 * of this sound generating object.
+	 * 
+	 * @example Advanced/GetAudioFormat
+	 * 
+	 * @return an AudioFormat describing this sound object.
 	 */
 	public AudioFormat getFormat()
 	{
@@ -243,6 +272,11 @@ public class AudioSource extends Controller implements Effectable, Recordable
 	/**
 	 * Removes an AudioListener that was previously 
 	 * added to this sound object.
+	 * 
+	 * @example Advanced/AddAndRemoveAudioListener
+	 * 
+	 * @param listener
+	 * 		the AudioListener that should stop listening to this
 	 * 
 	 * @related AudioListener
 	 */

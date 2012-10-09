@@ -165,6 +165,8 @@ public class AudioPlayer extends AudioSource implements Playable
     * Returns the current position of the "playhead" in milliseconds
     * (ie how much of the sound has already been played).
     * 
+    * @example Advanced/CueAnAudioPlayer
+    * 
     * @return int: the current position of the "playhead" in milliseconds
     */
 	public int position()
@@ -183,8 +185,12 @@ public class AudioPlayer extends AudioSource implements Playable
     * @shortdesc Sets the position to <code>millis</code> milliseconds from
     * the beginning.
     * 
+    * @example Advanced/CueAnAudioPlayer
+    * 
     * @param millis 
     * 			int: the millisecond position to place the "playhead"
+    * 
+    * @related length ( )
     */
 	public void cue(int millis)
 	{

@@ -39,12 +39,16 @@ public interface Recordable
    * or creates a new buffer of samples. If the listener has already 
    * been added, it will not be added again.
    * 
+   * @example Advanced/AddAndRemoveAudioListener
+   * 
    * @param listener the listener to add
    */
   void addListener(AudioListener listener);
   
   /**
    * Removes the listener from the list of listeners.
+   * 
+   * @example Advanced/AddAndRemoveAudioListener
    * 
    * @param listener the listener to remove
    */

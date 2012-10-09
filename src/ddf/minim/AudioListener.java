@@ -29,6 +29,8 @@ package ddf.minim;
  * the addListener method. When you want to stop receiving samples you call the
  * removeListener method.
  * 
+ * @example Advanced/AddAndRemoveAudioListener
+ * 
  * @author Damien Di Fede
  */
 public interface AudioListener
@@ -36,6 +38,8 @@ public interface AudioListener
   /**
    * Called by the audio object this AudioListener is attached to 
    * when that object has new samples.
+   * 
+   * @example Advanced/AddAndRemoveAudioListener
    * 
    * @param samp 
    * 	a float[] buffer of samples from a MONO sound stream

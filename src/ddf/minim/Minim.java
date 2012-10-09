@@ -356,7 +356,7 @@ public class Minim
 	 *            
 	 * @return an AudioSample that can be triggered to make sound
 	 * 
-	 * @example Advanced/createSample
+	 * @example Advanced/CreateAudioSample
 	 * 
 	 * @related AudioSample
 	 */
