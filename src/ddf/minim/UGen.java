@@ -91,6 +91,7 @@ public abstract class UGen
 	 * 
 	 * @example Basics/PatchingAnInput
 	 * @author Anderson Mills
+	 * 
 	 */
 	public final class UGenInput
 	{

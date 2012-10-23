@@ -25,15 +25,45 @@ import ddf.minim.ugens.Instrument;
 import ddf.minim.ugens.Summer;
 
 /**
- * An <code>AudioOutput</code> is used to generate audio with
- * <code>AudioSignal</code>s. Well, strictly speaking, the
- * <code>AudioSynthesizer</code> it is constructed with generates the signals
- * and <code>AudioOutput</code> merely delegates to the synth when signals are
- * added. You can get an <code>AudioOutput</code> from <code>Minim</code> by
- * calling one of the <code>getLineOut</code> methods.
+ * An AudioOutput is a connection to the output of a computer's sound card. 
+ * Typically the computer speakers are connected to this. 
+ * You can use an AudioOutput to do real-time sound synthesis by patching 
+ * UGens to an output object. You can get an AudioOutput object from Minim 
+ * using one of five methods:
+ * <p>
+ * <pre>
+ * AudioOutput getLineOut()
+ * 
+ * // specifiy either Minim.MONO or Minim.STEREO for type
+ * AudioOutput getLineOut(int type)
+ * 
+ * // bufferSize is the size of the left, right,
+ * // and mix buffers of the output you get back
+ * AudioOutput getLineOut(int type, int bufferSize)
+ * 
+ * // sampleRate is a request for an output of a certain sample rate
+ * AudioOutput getLineOut(int type, int bufferSize, float sampleRate)
+ * 
+ * // bitDepth is a request for an output with a certain bit depth
+ * AudioInput getLineOut(int type, int bufferSize, float sampleRate, int bitDepth)
+ * </pre>
+ * <p>
+ * In the event that an output doesn't exist with the requested parameters, 
+ * Minim will spit out an error and return null. 
+ * In general, you will want to use one of the first two methods listed above.
+ * <p>
+ * In addition to directly patching UGens to the output, you can also schedule 
+ * "notes" to be played by the output at some time in the future. This can 
+ * be very powerful when writing algorithmic music and sound. See the playNote
+ * method for more information.
  * 
  * @author Damien Di Fede
+ * @related Minim
+ * @related UGen
+ * @related playNote ( )
  * 
+ * @example Basics/SynthesizeSound
+ * @example Basics/SequenceSound
  */
 public class AudioOutput extends AudioSource implements Polyphonic
 {
@@ -83,11 +113,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	}
 
 	/**
-	 * Constructs an <code>AudioOutput</code> that will subscribe its buffers to
-	 * <code>synthesizer</code> and be able to control the <code>DataLine</code>
-	 * the synthesizer uses for output. If the synth does not have an associated
-	 * <code>DataLine</code>, then calls to <code>Controller</code>'s methods
-	 * will result in a <code>NullPointerException</code>.
+	 * Constructs an <code>AudioOutput</code> that will use <code>out</code> 
+	 * to generate sound.
 	 * 
 	 * @param out
 	 *            the <code>AudioOut</code> that does most of our work
@@ -215,74 +242,281 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	}
 
 	/**
-	 * Play a note startTime seconds from now, for the given duration, using the
-	 * given instrument.
+	 * playNote is a method of scheduling a "note" to be played at 
+	 * some time in the future (or immediately), where a "note" is 
+	 * an instance of a class that implements the Instrument interface.
+	 * The Instrument interface requires you to implement a noteOn method 
+	 * that accepts a float duration value and is called when that 
+	 * Instrument should begin making sound, and a noteOff method 
+	 * that is called when that Instrument should stop making sound.
+	 * <p>
+	 * Versions of playNote that do not have an Instrument argument
+	 * will create an instance of a default Instrument that plays a
+	 * sine tone based on the parameters passed in.
+	 * <p>
+	 * To facilitate writing algorithmic music, the start time and 
+	 * duration of a note is expressed in <em>beats</em> and not in seconds. 
+	 * By default, the tempo of an AudioOutput will be 60 BPM (beats per minute), 
+	 * which means that beats are equivalent to seconds. If you want to think 
+	 * in seconds when writing your note playing code, then simply don't change 
+	 * the tempo of the output.
+	 * <p>
+	 * Another thing to keep in mind is that the AudioOutput processes its 
+	 * note queue in its own Thread, so if you are going to queue up a lot of 
+	 * notes at once you will want to use the pauseNotes method before queuing
+	 * them. If you don't, the timing will be slightly off because the "now" that
+	 * the start time of each note is an offset from will change from note to note.
+	 * Once all of your notes have been added, you call resumeNotes to allow 
+	 * the AudioOutput to process notes again.
+	 * 
+	 * @related setTempo ( )
+	 * @related setNoteOffset ( )
+	 * @related setDurationFactor ( )
+	 * @related pauseNotes ( )
+	 * @related resumeNotes ( )
+	 * 
+	 * @example Basics/SequenceSound
+	 *  
+	 * @shortdesc Schedule a "note" to played by the output. 
 	 * 
 	 * @param startTime
+	 * 			float: when the note should begin playing, in beats
 	 * @param duration
+	 * 			float: how long the note should be, in beats
 	 * @param instrument
+	 * 			the Instrument that will play the note
 	 */
 	public void playNote(float startTime, float duration, Instrument instrument)
 	{
 		noteManager.addEvent( startTime, duration, instrument );
 	}
 
+	/**
+	 * Schedule a "note" to played by the output that uses the default Instrument.
+	 * 
+	 * @see #playNote(float, float, Instrument)
+	 * 
+	 * @param startTime
+	 * 		float: when the note should begin playing, in beats
+	 * @param duration
+	 * 		float: how long the note should be, in beats
+	 * @param hz
+	 * 		float: the frequency, in Hertz, of the note to be played
+	 */
 	public void playNote(float startTime, float duration, float hz)
 	{
 		noteManager.addEvent( startTime, duration, new DefaultInstrument( hz, this ) );
 	}
 
+	/**
+	 * Schedule a "note" to played by the output that uses the default Instrument.
+	 * 
+	 * @see #playNote(float, float, Instrument)
+	 * 
+	 * @param startTime
+	 * 		float: when the note should begin playing, in beats
+	 * @param duration
+	 * 		float: how long the note should be, in beats
+	 * @param pitchName
+	 * 		String: the pitch name of the note to be played (e.g. "A4" or "Bb3")
+	 */
 	public void playNote(float startTime, float duration, String pitchName)
 	{
 		noteManager.addEvent( startTime, duration, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
 	}
 
+	/**
+	 * Schedule a "note" to played by the output that uses the default Instrument and has a duration of 1 beat.
+	 * 
+	 * @see #playNote(float, float, Instrument)
+	 * 
+	 * @param startTime
+	 * 		float: when the note should begin playing, in beats
+	 * @param hz
+	 * 		float: the frequency, in Hertz, of the note to be played
+	 */
 	public void playNote(float startTime, float hz)
 	{
-		noteManager
-				.addEvent( startTime, 1.0f, new DefaultInstrument( hz, this ) );
+		noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( hz, this ) );
 	}
 
+	/**
+	 * Schedule a "note" to played by the output that uses the default Instrument and has a duration of 1 beat.
+	 * 
+	 * @see #playNote(float, float, Instrument)
+	 * 
+	 * @param startTime
+	 * 		float: when the note should begin playing, in beats
+	 * @param pitchName
+	 * 		String: the pitch name of the note to be played (e.g. "A4" or "Bb3")
+	 */
 	public void playNote(float startTime, String pitchName)
 	{
 		noteManager.addEvent( startTime, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
 	}
 
+	/**
+	 * Schedule a "note" to played by the output that uses the default Instrument, has a duration of 1 beat,
+	 * and is played immediately.
+	 * 
+	 * @see #playNote(float, float, Instrument)
+	 * 
+	 * @param hz
+	 * 		float: the frequency, in Hertz, of the note to be played
+	 */
 	public void playNote(float hz)
 	{
 		noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( hz, this ) );
 	}
-
+	
+	/**
+	 * Schedule a "note" to played by the output that uses the default Instrument,
+	 * has a duration of 1 beat, and is played immediately.
+	 * 
+	 * @see #playNote(float, float, Instrument)
+	 * 
+	 * @param pitchName
+	 * 		String: the pitch name of the note to be played (e.g. "A4" or "Bb3")
+	 */	
 	public void playNote(String pitchName)
 	{
 		noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( pitchName ).asHz(), this ) );
 	}
 
+	/**
+	 * Schedule a "note" to played by the output that uses the default Instrument,
+	 * has a duration of 1 beat, is played immediately, and has a pitch of "A4".
+	 * This is good to use if you just want to generate some test tones.
+	 * 
+	 * @see #playNote(float, float, Instrument)
+	 */
 	public void playNote()
 	{
 		noteManager.addEvent( 0.0f, 1.0f, new DefaultInstrument( Frequency.ofPitch( "" ).asHz(), this ) );
 	}
 
+	/**
+	 * The tempo of an AudioOutput controls how it will interpret the start time and duration 
+	 * arguments of playNote methods. By default the tempo of an AudioOutput is 60 BPM (beats per minute),
+	 * which means that one beat lasts one second. Setting the tempo to 120 BPM means that one beat lasts 
+	 * half of a second. When the tempo is changed, it will only effect playNote calls made 
+	 * <em>after</em> the change. 
+	 * 
+	 * @shortdesc Set the tempo of the AudioOutput to change the meaning of start times and durations for notes.
+	 * 
+	 * @param tempo
+	 * 		float: the new tempo for the AudioOutput, in BPM (beats per minute)
+	 * 
+	 * @related getTempo ( )
+	 */
 	public void setTempo(float tempo)
 	{
 		noteManager.setTempo( tempo );
 	}
+	
+	/**
+	 * Return the current tempo of the AudioOuput. 
+	 * Tempo is expressed in BPM (beats per minute).
+	 * 
+	 * @return float: the current tempo
+	 * 
+	 * @related setTempo ( )
+	 */
+	public float getTempo()
+	{
+		return noteManager.getTempo();
+	}
 
+	/**
+	 * When writing out musical scores in code, it is often nice to think about 
+	 * music in sections, where all of the playNote calls have start times relative to
+	 * the beginning of the section. The setNoteOffset method facilitates this by
+	 * letting you set a time from which all start times passed to playNote calls 
+	 * will add on to. So, if you set the note offset to 16, that means all playNote 
+	 * start times will be relative to the 16th beat from "now".
+	 * <p>
+	 * By default, note offset is 0.
+	 * 
+	 * @shortdesc Sets the amount of time added to all start times passed to playNote calls.
+	 * 
+	 * @param noteOffset
+	 * 			float: the amount of time added to all start times passed to playNote calls.
+	 * 
+	 * @related getNoteOffset ( )
+	 */
 	public void setNoteOffset(float noteOffset)
 	{
 		noteManager.setNoteOffset( noteOffset );
 	}
+	
+	/**
+	 * Return the current value of the note offset for this output.
+	 * 
+	 * @return float: the current note offset
+	 * 
+	 * @related setNoteOffset ( )
+	 */
+	public float getNoteOffset()
+	{
+		return noteManager.getNoteOffset();
+	}
 
+	/**
+	 * The duration factor of an AudioOutput defines how durations passed to playNote calls 
+	 * are scaled before being queued. If your duration factor is 0.5 and you queue a note 
+	 * with a duration of 2, the actual duration will become 1. This might be useful if 
+	 * you want to queue a string of notes first with long durations and then very short durations.
+	 * <p>
+	 * By default the duration factor is 1.
+	 * 
+	 * @shortdesc Sets a factor that will scale durations passed to subsequent playNote calls.
+	 * 
+	 * @param durationFactor
+	 * 			float: the duration factor
+	 * 
+	 * @related getDurationFactor ( )
+	 */
 	public void setDurationFactor(float durationFactor)
 	{
 		noteManager.setDurationFactor( durationFactor );
 	}
+	
+	/**
+	 * Return the current value of the duration factor for this output.
+	 * 
+	 * @return float: the current duration factor
+	 * 
+	 * @related setDurationFactor ( )
+	 */
+	public float getDurationFactor()
+	{
+		return noteManager.getDurationFactor();
+	}
 
+	/**
+	 * An AudioOutput processes its note queue in its own Thread, 
+	 * so if you are going to queue up a lot of notes at once 
+	 * you will want to use the pauseNotes method before queuing
+	 * them. If you don't, the timing will be slightly off because the "now" that
+	 * the start time of each note is an offset from will change from note to note.
+	 * Once all of your notes have been added, you call resumeNotes to allow 
+	 * the AudioOutput to process notes again.
+	 * 
+	 * @shortdesc pause note processing
+	 * 
+	 * @related resumeNotes ( )
+	 */
 	public void pauseNotes()
 	{
 		noteManager.pause();
 	}
 
+	/**
+	 * resume note processing
+	 * 
+	 * @see 	#pauseNotes()
+	 * @related pauseNotes ( )
+	 */
 	public void resumeNotes()
 	{
 		noteManager.resume();

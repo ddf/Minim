@@ -121,14 +121,29 @@ public class NoteManager
 		this.tempo = tempo;
 	}
 	
+	public float getTempo()
+	{
+		return tempo;
+	}
+	
 	public void setNoteOffset(float noteOffset)
 	{
 		this.noteOffset = noteOffset;
 	}
 	
+	public float getNoteOffset()
+	{
+		return noteOffset;
+	}
+	
 	public void setDurationFactor(float durationFactor)
 	{
 		this.durationFactor = durationFactor;
+	}
+	
+	public float getDurationFactor()
+	{
+		return durationFactor;
 	}
 	
 	public void pause()
