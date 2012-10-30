@@ -48,14 +48,18 @@ public interface AudioBuffer
    *          the index of the sample you want to get
    *          
    * @return the <code>i<sup>th</sup></code> sample
+   * 
+   * @example Basics/DrawWaveformAndLevel
    */
   float get(int i);
   
   /**
    * Gets the current level of the buffer. It is calculated as the
-   * root-mean-squared of all the samples in the buffer.
+   * root-mean-square of all the samples in the buffer.
    * 
    * @return the RMS amplitude of the buffer
+   * 
+   * @example Basics/DrawWaveformAndLevel
    */
   float level();
   

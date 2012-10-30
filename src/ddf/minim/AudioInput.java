@@ -22,12 +22,39 @@ import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioStream;
 
 /**
- * An <code>AudioInput</code> provides no extra functionality over what 
- * {@link AudioSource} does, it exists simply for the sake of having a class named 
- * for input from the system. You can obtain an <code>AudioInput</code> by calling 
- * one of the <code>getLineIn</code> methods of <code>Minim</code>. The audio that 
- * the input receives will depend on the current record source of the computer 
- * (such as the line-in or microphone).
+ * An AudioInput is a connection to the current record source of the computer. 
+ * How the record source for a computer is set will depend on the soundcard and OS, 
+ * but typically a user can open a control panel and set the source from there. 
+ * Unfortunately, there is no way to set the record source from Java. 
+ * This is particularly problematic on the Mac because the input will always wind 
+ * up being connected to the Mic-In, even if the user has set the input differently 
+ * using their audio control panel. 
+ * <p>
+ * You can obtain an AudioInput from Minim by using one of the getLineIn methods:
+ * <pre>
+ * // get the default STEREO input
+ * AudioInput getLineIn()
+ * 
+ * // specifiy either Minim.MONO or Minim.STEREO for type
+ * AudioInput getLineIn(int type)
+ * 
+ * // bufferSize is the size of the left, right,
+ * // and mix buffers of the input you get back
+ * AudioInput getLineIn(int type, int bufferSize)
+ * 
+ * // sampleRate is a request for an input of a certain sample rate
+ * AudioInput getLineIn(int type, int bufferSize, float sampleRate)
+ * 
+ * // bitDepth is a request for an input with a certain bit depth
+ * AudioInput getLineIn(int type, int bufferSize, float sampleRate, int bitDepth)
+ * </pre>
+ * In the event that an input doesn't exist with the requested parameters, 
+ * Minim will spit out an error and return null. In general, 
+ * you will want to use the first two methods listed above.
+ * 
+ * @example Basics/MonitorInput
+ * 
+ * @related Minim
  * 
  * @author Damien Di Fede
  *
@@ -35,7 +62,8 @@ import ddf.minim.spi.AudioStream;
 public class AudioInput extends AudioSource
 {  
   
-  /**
+  /** @invisible
+   * 
    * Constructs an <code>AudioInput</code> that subscribes to <code>stream</code> and 
    * can control the <code>DataLine</code> that <code>stream</code> is reading from.
    * 
@@ -50,6 +78,12 @@ public class AudioInput extends AudioSource
     disableMonitoring();
   }
   
+  /**
+   * When monitoring is enabled, you will be able to hear 
+   * the audio that is coming through the input. 
+   * 
+   * @example Basics/MonitorInput
+   */
   public void enableMonitoring()
   {
     // make sure we don't make sound
@@ -63,6 +97,20 @@ public class AudioInput extends AudioSource
     }	  
   }
   
+  /**
+   * 
+   * When monitoring is disabled, you will not hear 
+   * the audio that is coming through the input, 
+   * but you will still be able to access the samples
+   * in the left, right, and mix buffers. This is 
+   * default state of an AudioInput and is what 
+   * you will want if your input is microphone 
+   * and your output is speakers. Otherwise: feedback.
+   * 
+   * @shortdesc When monitoring is disabled, you will not hear 
+   * the audio that is coming through the input.
+   * 
+   */
   public void disableMonitoring()
   {
     // make sure we don't make sound

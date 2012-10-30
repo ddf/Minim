@@ -1,9 +1,9 @@
 /**
   * This sketch demonstrates how to monitor the currently active audio input 
-  * of the computer using an <code>AudioInput</code>. What you will actually 
+  * of the computer using an AudioInput. What you will actually 
   * be monitoring depends on the current settings of the machine the sketch is running on. 
   * Typically, you will be monitoring the built-in microphone, but if running on a desktop
-  * its feasible that the user may have the actual audio output of the computer 
+  * it's feasible that the user may have the actual audio output of the computer 
   * as the active audio input, or something else entirely.
   * <p>
   * When you run your sketch as an applet you will need to sign it in order to get an input.
