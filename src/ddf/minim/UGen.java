@@ -37,6 +37,8 @@ import java.util.Arrays;
  * Line again. All of this control happens on a sample-by-sample basis, which
  * means (hopefully) no clicks and pops.
  * 
+ * For a list of all UGens included with Minim, see the <a href="index_ugens.html">UGens package doc</a>.
+ * 
  * @example Basics/SynthesizeSound
  * 
  * @author Damien Di Fede, Anderson Mills
@@ -146,7 +148,7 @@ public abstract class UGen
 			}
 			
 			// make sure our incoming UGen knows about this
-			if ( m_inputType == InputType.AUDIO && m_incoming != null )
+			if ( m_incoming != null )
 			{
 				m_incoming.setChannelCount( numberOfChannels );
 			}
@@ -208,7 +210,7 @@ public abstract class UGen
 		public void setIncomingUGen(UGen in)
 		{
 			m_incoming = in;
-			if ( m_incoming != null && m_inputType == InputType.AUDIO )
+			if ( m_incoming != null )
 			{
 				m_incoming.setChannelCount( m_lastValues.length );
 			}

@@ -269,6 +269,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	 * Once all of your notes have been added, you call resumeNotes to allow 
 	 * the AudioOutput to process notes again.
 	 * 
+	 * @related Instrument
 	 * @related setTempo ( )
 	 * @related setNoteOffset ( )
 	 * @related setDurationFactor ( )

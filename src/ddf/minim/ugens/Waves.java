@@ -8,7 +8,7 @@ package ddf.minim.ugens;
 public class Waves 
 {
 	/**
-	 * standard size for a Wavetabel from Waves
+	 * standard size for a Wavetable from Waves
 	 */
 	private static int tableSize = 8192;
 	private static int tSby2 = tableSize/2;

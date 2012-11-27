@@ -29,7 +29,7 @@
       <classpath refid="deps.path"/>
     </javadoc>
   	
-    <javadoc access="public" packagenames="ddf.minim" sourcepath="src">
+    <javadoc access="public" packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis" sourcepath="src">
     	<classpath refid="deps.path"/>
         <doclet name="prodoc.StartDoclet" path="ext/prodoc/prodoc.jar">
         </doclet>

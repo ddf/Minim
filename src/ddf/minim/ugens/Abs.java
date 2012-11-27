@@ -4,9 +4,10 @@ import ddf.minim.UGen;
 
 
 /**
- * Abs is a UGen that outputs the absolue value of its input.
+ * Abs is a UGen that outputs the absolute value of its input.
  * 
  * @author Damien Di Fede
+ * @related UGen
  *
  */
 public class Abs extends UGen 
