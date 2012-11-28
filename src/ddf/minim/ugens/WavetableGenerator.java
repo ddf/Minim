@@ -2,16 +2,24 @@ package ddf.minim.ugens;
 
 
 /**
- * WavetableGenerator is a helper class for generating Wavetables. The method names are likely to 
- * change in a future release to be a bit more descriptive.
+ * WavetableGenerator is a helper class for generating Wavetables.
+ * The method names come from <a href="http://www.cara.gsu.edu/courses/Csound_Users_Seminar/csound/3.46/CsGens.html">CSound</a>. 
+ * Generally speaking, it will often be easier to use the static methods in the Waves class, but the methods 
+ * in this class provide more flexibility.
+ * 
+ * @related Wavetable
+ * @related Waves
  *  
  * @author Mark Godfrey <mark.godfrey@gatech.edu>
  */
 
-public abstract class WavetableGenerator
+public class WavetableGenerator
 {
+	// private constructor so it doesn't show up in documentation
+	// and so that instances of this class cannot be created.
+	private WavetableGenerator() {}
 
-  /**
+  /** 
    * Generate a piecewise linear waveform given an array of sample values and the distances 
    * between them. The <code>dist</code> array should contain one value less than the <code>val</code>
    * array. The values in the <code>dist</code> array should also add up to <code>size</code>. For instance, a 
@@ -24,11 +32,21 @@ public abstract class WavetableGenerator
    * <p>
    * If you wanted to generate a triangle wavetable with 4096 samples, you'd do this:
    * <p>
-   * <code>Wavetable table = WavetableGenerator.gen7( 4069, new float[] { 0.0, 1.0, 0.0, -1.0, 0.0 }, new int[] { 1024, 1024, 1024, 1024 } );</code> 
+   * <code>Wavetable table = WavetableGenerator.gen7( 4069, new float[] { 0.0, 1.0, 0.0, -1.0, 0.0 }, new int[] { 1024, 1024, 1024, 1024 } );</code>
    * 
-   * @param size the size of the Wavetable that you want generate
-   * @param val the sample values used as control points for generating the waveform
-   * @param dist the sample distances between control points in val
+   * @shortdesc Generate a piecewise linear waveform given an array of sample values and the distances 
+   * between them.
+   * 
+   * @param size 
+   * 			int: the size of the Wavetable that you want generate
+   * @param val 
+   * 			float[]: the sample values used as control points for generating the waveform
+   * @param dist 
+   * 			int[]: the sample distances between control points in val
+   * 
+   * @returns a Wavetable
+   * 
+   * @related Wavetable
    */
 	public static Wavetable gen7(int size, float[] val, int[] dist)
 	{
@@ -75,8 +93,9 @@ public abstract class WavetableGenerator
 	}
 
 	/**
+	 * 
 	 * Generates a Wavetable from a list of partials with matching amplitudes and phases. Partial, here, refers 
-	 * to a particular sine wave in the harmonic series (see: http://en.wikipedia.org/wiki/Harmonic_series_%28music%29#Harmonic_vs._partial). 
+	 * to a particular sine wave in the harmonic series (see: <a href="http://en.wikipedia.org/wiki/Harmonic_series_%28music%29#Harmonic_vs._partial">Harmonic vs. partial</a>). 
 	 * If you want to generate a single sine wave, suitable for playing a single tone of a particular frequency 
 	 * in an Oscil, you could use this code:
 	 * <p>
@@ -92,15 +111,25 @@ public abstract class WavetableGenerator
 	 * contains the octave and using that in an Oscil will be less computationally expensive than creating two Oscils 
 	 * and setting their frequencies an octave apart.
 	 * 
-	 * @param size how many samples the Wavetable should contain 
-	 * @param partial a list of partials to generate
-	 * @param amp the amplitude of each partial
-	 * @param phase the phase of each partial
+	 * @shortdesc Generates a Wavetable from a list of partials with matching amplitudes and phases.
+	 * 
+	 * @param size 
+	 * 			int: how many samples the Wavetable should contain 
+	 * @param partial 
+	 * 			float[]: a list of partials to generate
+	 * @param amp 
+	 * 			float[]: the amplitude of each partial
+	 * @param phase 
+	 * 			float[]: the phase of each partial
+	 * 
+	 * @returns a Wavetable
+	 * 
+	 * @related Wavetable
 	 * 
 	 */
 	// generates waveform from lists of partials
 	// phases are between 0 and 1
-	public static Wavetable gen9(int size, float[] partial, float[] amp,	float[] phase)
+	public static Wavetable gen9(int size, float[] partial, float[] amp, float[] phase)
 	{
 
 		if (partial.length != amp.length 
@@ -128,6 +157,7 @@ public abstract class WavetableGenerator
 	}
 
 	/**
+	 * 
 	 * Generate a Wavetable given a list of amplitudes for successive partials (harmonics). These two method 
 	 * calls are equivalent:
 	 * <p>
@@ -135,9 +165,18 @@ public abstract class WavetableGenerator
 	 * <p>
 	 * <code>Wavetable table = WavetableGenerator.gen10(4096, new float[] { 1, 0.5, 0.2 });</code>
 	 * 
-	 * @param size the number of samples the Wavetable should contain
-	 * @param amp the amplitude of each successive partial, beginning with partial 1.
+	 * @shortdesc Generate a Wavetable given a list of amplitudes for successive partials (harmonics).
+	 * 
+	 * @param size 
+	 * 			int: the number of samples the Wavetable should contain
+	 * @param amp 
+	 * 			float[]: the amplitude of each successive partial, beginning with partial 1.
+	 * 
+	 * @returns a Wavetable
+	 * 
 	 * @see #gen9
+	 * @related gen9 ( )
+	 * @related Wavetable
 	 */
 	public static Wavetable gen10(int size, float[] amp)
 	{

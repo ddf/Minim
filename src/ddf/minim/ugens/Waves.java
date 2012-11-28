@@ -3,10 +3,17 @@ package ddf.minim.ugens;
 /**
  * A library of waveforms.
  * 
- *  @author Nicolas Brix, Anderson Mills
+ * @related Wavetable
+ * @related WavetableGenerator
+ * 
+ * @author Nicolas Brix, Anderson Mills
  */
 public class Waves 
 {
+	// private constructor so it doesn't show up in documentation
+	// and so that people can't make instances of this class, which is all static methods
+	private Waves(){}
+	
 	/**
 	 * standard size for a Wavetable from Waves
 	 */
