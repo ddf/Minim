@@ -13,9 +13,54 @@ import ddf.minim.*;
 import ddf.minim.ugens.*;
 
 // create all of the variables that will need to be accessed in
-// more than one methods (setup(), draw(), stop()).
+// more than one method (setup(), draw()).
 Minim minim;
 AudioOutput out;
+
+// Every instrument must implement the Instrument interface so 
+// playNote() can call the instrument's methods.
+class ToneInstrument implements Instrument
+{
+  // create all variables that must be used throughout the class
+  Oscil toneOsc;
+  ADSR adsr;
+  AudioOutput out;
+  
+  // constructors for this intsrument
+  ToneInstrument( String note, float amplitude, Waveform wave, AudioOutput output )
+  {
+    // equate class variables to constructor variables as necessary
+    out = output;
+    
+    // make any calculations necessary for the new UGen objects
+    // this turns a note name into a frequency
+    float frequency = Frequency.ofPitch( note ).asHz();
+    
+    // create new instances of any UGen objects as necessary
+    toneOsc = new Oscil( frequency, amplitude, wave );
+    adsr = new ADSR( 1.0, 0.04, 0.01, 1.0, 0.1 );
+ 
+    // patch everything together up to the final output
+    toneOsc.patch( adsr );
+  }
+  
+  // every instrument must have a noteOn( float ) method
+  void noteOn( float dur )
+  {
+    // turn on the adsr
+    adsr.noteOn();
+    // patch the adsr into the output
+    adsr.patch( out );
+  }
+  
+  void noteOff()
+  {
+    // turn off the note in the adsr
+    adsr.noteOff();
+    // but don't unpatch until the release is through
+    adsr.unpatchAfterRelease( out );
+  }
+}
 
 // setup is run once at the beginning
 void setup()
@@ -41,7 +86,7 @@ void setup()
   out.pauseNotes();
 
   // specify the waveform for this group of notes
-  Waveform disWave = Waves.saw( 4 );
+  Waveform disWave = Waves.sawh( 4 );
   // add these notes with disWave
   out.playNote( 0.0, 1.0, new ToneInstrument( "E4 ", vol, disWave, out ) );
   out.playNote( 1.0, 1.0, new ToneInstrument( "E4 ", vol, disWave, out ) );
@@ -54,7 +99,7 @@ void setup()
   out.playNote( 6.0, 2.0, new ToneInstrument( "E4 ", vol, disWave, out ) );
 
   // specify the waveform for this group of notes
-  disWave = Waves.triangle( 9 );
+  disWave = Waves.triangleh( 9 );
   // add these notes with disWave
   out.playNote( 8.0, 1.0, new ToneInstrument( "B4 ", vol, disWave, out ) );
   out.playNote( 9.0, 1.0, new ToneInstrument( "B4 ", vol, disWave, out ) );
@@ -145,7 +190,7 @@ void draw()
     float x1  =  map( i, 0, out.bufferSize(), 0, width );
     float x2  =  map( i+1, 0, out.bufferSize(), 0, width );
     // draw a line from one buffer position to the next for both channels
-    line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
-    line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
+    line( x1, 50 - out.left.get(i)*50, x2, 50 - out.left.get(i+1)*50);
+    line( x1, 150 - out.right.get(i)*50, x2, 150 - out.right.get(i+1)*50);
   }  
 }

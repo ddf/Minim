@@ -74,7 +74,7 @@ public class WavetableGenerator
 
 		// waveform[0] = val[0];
 		int i = 0;
-		for (int j = 1; j < val.length; j++)
+		for (int j = 1; j < val.length && i < waveform.length; j++)
 		{
 			waveform[i] = val[j - 1];
 			float m = (val[j] - val[j - 1]) / (float)(dist[j - 1]);

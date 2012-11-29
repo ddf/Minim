@@ -77,14 +77,22 @@ public class Wavetable implements Waveform
 	}
 	
 	/**
-	 * <code>at</code> is expected to be in the range [0,1]. This will sample the waveform 
-	 * using this value and interpolate between actual sample values as needed.
+	 * Sample the Wavetable using a value in the range [0,1]. 
+	 * For instance, if the Wavetable has 1024 values in its 
+	 * float array, then calling value(0.5) will return the 
+	 * 512th value in the array. If the result is that it needs 
+	 * say the 456.65th value, this will interpolate between 
+	 * the surrounding values.
 	 * 
-	 * @param at a value in the range [0, 1]
-	 * @return this Wavetable sampled at the requested interval
+	 * @shortdesc Sample the Wavetable using a value in the range [0,1].
+	 * 
+	 * @param at 
+	 * 		float: a value in the range [0, 1]
+	 * 
+	 * @return float: this Wavetable sampled at the requested interval
 	 */
 	public float value(float at)
-	{
+	{	
 		float whichSample = lengthForValue * at;
 		
 		// linearly interpolate between the two samples we want.
@@ -103,7 +111,7 @@ public class Wavetable implements Waveform
 
 		// This was here for testing.  
 		// Causes non-interpolation, but adds max # of oscillators
-		//return get(lowSamp);
+		// return get(lowSamp);
 	}
 
 	/**
@@ -132,6 +140,7 @@ public class Wavetable implements Waveform
 	 * <p>
 	 * <code>getWaveform().length</code>
 	 * 
+	 * @return int: the length of the underlying float array 
 	 */
 	public int size()
 	{
@@ -191,7 +200,9 @@ public class Wavetable implements Waveform
 	 * Flip the values in the table around a particular value. For example, if you flip around 2, values 
 	 * greater than 2 will become less than two by the same amount and values less than 2 will become greater 
 	 * than 2 by the same amount. 3 -> 1, 0 -> 4, etc.
+	 * 
 	 * @param in
+	 * 		float: the value to flip the table around
 	 */
 	public void flip(float in)
 	{
@@ -206,7 +217,10 @@ public class Wavetable implements Waveform
 
 	/**
 	 * Adds gaussian noise to the waveform scaled by <code>sigma</code>.
+	 * 
 	 * @param sigma
+	 * 			float: the amount to scale the random values by, in effect how 
+	 * 			"loud" the added noise will be.
 	 */
 	public void addNoise(float sigma)
 	{
@@ -230,8 +244,10 @@ public class Wavetable implements Waveform
 	}
 
 	/**
-	 * Smooths out the values in the table by using a moving average window.
-	 * @param windowLength how many samples large the window should be
+	 * Smooth out the values in the table by using a moving average window.
+	 * 
+	 * @param windowLength 
+	 * 			int: how many samples large the window should be
 	 */
 	public void smooth(int windowLength)
 	{
@@ -247,6 +263,57 @@ public class Wavetable implements Waveform
 			}
 			waveform[i] = avg;
 		}
+	}
+	
+	/**
+	 * Warping works by choosing a point in the waveform, 
+	 * the warpPoint, and then specifying where it should move to,
+	 * the warpTarget. Both values should be normalized 
+	 * (i.e. in the range [0,1]). What will happen is that 
+	 * the waveform data in front of and behind the warpPoint 
+	 * will be squashed or stretch to fill the space defined 
+	 * by where the warpTarget is. For instance, if you took 
+	 * Waves.SQUARE and called warp( 0.5, 0.2 ), you would wind 
+	 * up with a square wave with a 20 percent duty cycle, the 
+	 * same as using Waves.square( 0.2 ). This is because the 
+	 * crossover point of a square wave is halfway through and 
+	 * warping it such that the crossover is moved to 20% 
+	 * through the waveform is equivalent to changing the duty cycle.
+	 * Or course, much more interesting things happen when warping 
+	 * a more complex waveform, such as one returned by the 
+	 * Waves.randomNHarms method, especially if it is warped more 
+	 * than once.
+	 * 
+	 * @shortdesc Warping works by choosing a point in the waveform, 
+	 * the warpPoint, and then specifying where it should move to,
+	 * the warpTarget.
+	 * 
+	 * @param warpPoint
+	 * 			float: the point in the wave for to be moved, expressed 
+	 * 					as a normalized value.
+	 * @param warpTarget
+	 * 			float: the point in the wave to move the warpPoint to, 
+	 * 					expressed as a normalized value.
+	 */
+	public void warp( float warpPoint, float warpTarget )
+	{
+		float[] newWave = new float[waveform.length];
+		for( int s = 0; s < newWave.length; ++s )
+		{
+			float lookup = (float)s / newWave.length;
+			if ( lookup <= warpTarget )
+			{
+				// normalize look up to [0,warpTarget], expand to [0,warpPoint]
+				lookup = (lookup/warpTarget) * warpPoint;
+			}
+			else
+			{
+				// map (warpTarget,1] to (warpPoint,1]
+				lookup = warpPoint + (1 - (1-lookup)/(1-warpTarget))*(1-warpPoint);
+			}
+			newWave[s] = value(lookup);
+		}
+		waveform = newWave;
 	}
 
 }

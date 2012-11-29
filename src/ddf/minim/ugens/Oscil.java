@@ -211,10 +211,24 @@ public class Oscil extends UGen
 	 * 
 	 * @param theWaveform
 	 *            the new Waveform to use
+	 *            
+	 * @related Waveform
 	 */
 	public void setWaveform(Waveform theWaveform)
 	{
 		wave = theWaveform;
+	}
+	
+	/**
+	 * Returns the Waveform currently being used by this Oscil.
+	 * 
+	 * @return a Waveform
+	 * 
+	 * @related Waveform
+	 */
+	public Waveform getWaveform()
+	{
+		return wave;
 	}
 
 	/**
