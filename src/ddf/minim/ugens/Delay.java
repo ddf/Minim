@@ -9,6 +9,9 @@ import ddf.minim.UGen;
  * The Delay UGen is used to create delayed repetitions of the input audio.
  * One can control the delay time and amplification of the repetition.
  * One can also choose whether the repetition is fed back and/or the input is passed through.
+ * 
+ * @example Synthesis/delayExample
+ * 
  * @author J Anderson Mills III
  */
 public class Delay extends UGen
@@ -42,18 +45,8 @@ public class Delay extends UGen
 	
 	// constructors
 	/**
-	 * Constructor for Delay.
-	 * @param maxDelayTime
-	 * 		is the maximum delay time for any one echo.  This defaults to 0.25s. 
-	 * @param amplitudeFactor
-	 *      is the amplification factor for feedback and should generally be from 0 to 1.
-	 *		This defaults to 0.5.
-	 * @param feedBackOn
-	 * 		is a boolean flag specifying if the repetition continue to feed back.
-	 *		The default value is false.
-	 * @param passAudioOn
-	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
-	 *		This defaults to true.
+	 * Constructs a Delay. Maximum delay time will be 0.25 seconds,
+	 * amplitude will be 0.5, and feedback will be off.
 	 */
 	public Delay()
 	{
@@ -61,18 +54,10 @@ public class Delay extends UGen
 	}
 	
 	/**
-	 * Constructor for Delay.
+	 * Constructs a Delay. Amplitude will be 0.5 and feedback will be off. 
+	 * 
 	 * @param maxDelayTime
-	 * 		is the maximum delay time for any one echo. 
-	 * @param amplitudeFactor
-	 * 	 	is the amplification factor for feedback and should generally be from 0 to 1.
-	 *		This defaults to 0.5.
-	 * @param feedBackOn
-	 * 		is a boolean flag specifying if the repetition continue to feed back.
-	 *		The default value is false.
-	 * @param passAudio
-	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
-	 *		This defaults to true.
+	 * 		is the maximum delay time for any one echo and the default echo time.
 	 */
 	public Delay( float maxDelayTime )
 	{
@@ -80,17 +65,12 @@ public class Delay extends UGen
 	}
 	
 	/**
-	 * Constructor for Delay.
+	 * Constructs a Delay. Feedback will be off. 
+	 * 
 	 * @param maxDelayTime
 	 * 		is the maximum delay time for any one echo and the default echo time. 
 	 * @param amplitudeFactor
 	 *      is the amplification factor for feedback and should generally be from 0 to 1.
-	 * @param feedBackOn
-	 * 		is a boolean flag specifying if the repetition continue to feed back.
-	 *		The default value is false.
-	 * @param passAudioOn
-	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
-	 *		This defaults to true.
 	 */
 	public Delay( float maxDelayTime, float amplitudeFactor )	
 	{	
@@ -98,16 +78,14 @@ public class Delay extends UGen
 	}
 	
 	/**
-	 * Constructor for Delay.
+	 * Constructs a Delay.  
+	 * 
 	 * @param maxDelayTime
 	 * 		is the maximum delay time for any one echo and the default echo time. 
 	 * @param amplitudeFactor
 	 *      is the amplification factor for feedback and should generally be from 0 to 1.
 	 * @param feedBackOn
 	 * 		is a boolean flag specifying if the repetition continue to feed back.
-	 * @param passAudioOn
-	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
-	 *		This defaults to true.
 	 */
 	public Delay( float maxDelayTime, float amplitudeFactor, boolean feedBackOn )	
 	{	
@@ -115,7 +93,8 @@ public class Delay extends UGen
 	}	
 	
 	/**
-	 * Constructor for Delay.
+	 * Constructs a Delay.
+	 * 
 	 * @param maxDelayTime
 	 * 		is the maximum delay time for any one echo and the default echo time. 
 	 * @param amplitudeFactor
@@ -146,7 +125,7 @@ public class Delay extends UGen
 		iBufferOut = 0;
 	}
 
-	/**
+	/*
 	 * When the sample rate is changed the buffer needs to be resized.
 	 * Currently this causes the allocation of a completely new buffer, but 
 	 * since a change in sampleRate will result in a change in the playback
@@ -170,8 +149,9 @@ public class Delay extends UGen
 	}
 	
     /**
-     * changes the time in between the echos to the value specified.
-     * @param delTime
+     * Changes the time in between the echos to the value specified.
+     * 
+     * @param delayTime
      * 		It can be up to the maxDelayTime specified.
      * 		The lowest it can be is 1/sampleRate.	
      */
@@ -181,7 +161,8 @@ public class Delay extends UGen
 	}
 	
 	/**
-	 * changes the feedback amplification of the echos.
+	 * Changes the feedback amplification of the echos.
+	 * 
 	 * @param delayAmplitude
 	 * 		This should normally be between 0 and 1 for decreasing feedback.
 	 * 		Phase inverted feedback can be generated with negative numbers, but each echo 

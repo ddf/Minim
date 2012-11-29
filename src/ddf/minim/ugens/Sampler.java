@@ -74,9 +74,13 @@ public class Sampler extends UGen
 	/**
 	 * Create a new Sampler for triggering the provided file.
 	 * 
-	 * @param filename the file to load
-	 * @param the maximum number of voices for this Sampler
-	 * @param system the instance of Minim to use for loading the file
+	 * @param filename 
+	 * 			String: the file to load
+	 * @param maxVoices
+	 * 			int: the maximum number of voices for this Sampler
+	 * @param system 
+	 * 			Minim: the instance of Minim to use for loading the file
+	 *
 	 */
 	public Sampler( String filename, int maxVoices, Minim system )
 	{

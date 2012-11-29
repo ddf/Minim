@@ -44,7 +44,7 @@ public class WavetableGenerator
    * @param dist 
    * 			int[]: the sample distances between control points in val
    * 
-   * @returns a Wavetable
+   * @return a Wavetable
    * 
    * @related Wavetable
    */
@@ -122,7 +122,7 @@ public class WavetableGenerator
 	 * @param phase 
 	 * 			float[]: the phase of each partial
 	 * 
-	 * @returns a Wavetable
+	 * @return a Wavetable
 	 * 
 	 * @related Wavetable
 	 * 
@@ -172,7 +172,7 @@ public class WavetableGenerator
 	 * @param amp 
 	 * 			float[]: the amplitude of each successive partial, beginning with partial 1.
 	 * 
-	 * @returns a Wavetable
+	 * @return a Wavetable
 	 * 
 	 * @see #gen9
 	 * @related gen9 ( )

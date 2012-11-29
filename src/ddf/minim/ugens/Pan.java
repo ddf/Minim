@@ -24,9 +24,9 @@ public class Pan extends UGen
 	/**
 	 * Construct a Pan UGen with a particular balance and width.
 	 * 
-	 * @param fBalance
-	 *            a value of 0 means to pan dead center, -1 hard left, and 1
-	 *            hard right.
+	 * @param panValue
+	 *            float: a value of 0 means to pan dead center, 
+	 *            -1 hard left, and 1 hard right.
 	 */
 	public Pan(float panValue)
 	{

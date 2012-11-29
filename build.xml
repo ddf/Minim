@@ -26,7 +26,15 @@
 
   <target name="doc">
 	<javadoc sourcepath="src" destdir="javadoc">
-      <classpath refid="deps.path"/>
+		<classpath refid="deps.path"/>
+		<!-- ignore all the prodoc tags -->
+	  	<tag name="example" enabled="false"/>
+		<tag name="related" enabled="false"/>
+		<tag name="invisible" enabled="false"/>
+		<tag name="shortdesc" enabled="false"/>
+		<tag name="nosuperclasses" enabled="false"/>
+		<tag name="libname" enabled="false"/>
+		<tag name="indexname" enabled="false"/>
     </javadoc>
   	
     <javadoc access="public" packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis" sourcepath="src">

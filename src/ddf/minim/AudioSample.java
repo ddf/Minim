@@ -48,16 +48,7 @@ public abstract class AudioSample extends AudioSource
 	static public final int	LEFT	= 1;
 	static public final int	RIGHT	= 2;
 
-	/**
-	 * @invisible
-	 * 
-	 *            Constructs an AudioSample object that gets its audio from
-	 *            stream.
-	 * 
-	 * @param stream
-	 *            the stream that will provide the audio
-	 */
-	public AudioSample(AudioOut output)
+	protected AudioSample(AudioOut output)
 	{
 		super( output );
 	}

@@ -310,7 +310,7 @@ public abstract class UGen
 	/**
 	 * Constructor for a UGen.
 	 */
-	public UGen()
+	protected UGen()
 	{
 		m_allInputs 	= new ArrayList<UGenInput>();
 		m_lastValues 	= new float[0];

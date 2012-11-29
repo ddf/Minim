@@ -111,11 +111,11 @@ public class GranulateSteady extends UGen
 	
 	/**
 	 * Immediately sets all public class members concerning time to new values. 
-	 * @param grainLengthMin
+	 * @param grainLength
 	 * 			grain length of each grain 
-	 * @param spaceLengthMin
+	 * @param spaceLength
 	 *			space between each grain
-	 * @param fadeLengthMin
+	 * @param fadeLength
 	 * 			length of the linear fade in and fade out of the grain envelope
 	 */
 	public void setAllTimeParameters( float grainLength, float spaceLength, float fadeLength )

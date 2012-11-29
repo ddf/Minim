@@ -414,8 +414,11 @@ public abstract class FourierTransform
   
   /**
    * Returns the bandwidth of the requested average band. Using this information 
-   * and the return value of {@link getAverageBandWidth} you can determine the 
+   * and the return value of getAverageCenterFrequency you can determine the 
    * lower and upper frequency of any average band.
+   * 
+   * @see #getAverageCenterFrequency(int)
+   * @related getAverageCenterFrequency ( )
    */
   public float getAverageBandWidth( int averageIndex )
   {

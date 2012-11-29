@@ -321,7 +321,7 @@ public class Controller
    * Mutes the sound.
    * 
    * @related unmute ( )
-   * @realted isMuted ( )
+   * @related isMuted ( )
    */
   public void mute()
   {

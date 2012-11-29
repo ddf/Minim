@@ -49,7 +49,8 @@ public class Multiplier extends UGen
 	
 	/**
 	 * Set the fixed value of this Multiplier.
-	 * @param gainVal
+	 * 
+	 * @param multValue
 	 */
 	public void setValue( float multValue )
 	{
