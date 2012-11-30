@@ -39,6 +39,7 @@ void draw()
 {
   background(0);
   stroke(255);
+  strokeWeight(1);
   
   // draw the waveform of the output
   for(int i = 0; i < out.bufferSize() - 1; i++)
@@ -49,6 +50,7 @@ void draw()
 
   // draw the waveform we are using in the oscillator
   stroke( 128, 0, 0 );
+  strokeWeight(4);
   for( int i = 0; i < width-1; ++i )
   {
     point( i, height/2 - (height*0.49) * wave.getWaveform().value( (float)i / width ) );
@@ -70,11 +72,11 @@ void keyPressed()
     case '3':
       wave.setWaveform( Waves.SAW );
       break;
-   
+    
     case '4':
       wave.setWaveform( Waves.SQUARE );
       break;
-    
+      
     case '5':
       wave.setWaveform( Waves.QUARTERPULSE );
       break;

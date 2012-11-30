@@ -3,13 +3,39 @@ package ddf.minim.ugens;
 import ddf.minim.UGen;
 import ddf.minim.analysis.FFT;
 
+/**
+ * Vocoder is a UGen that performs very basic <a href="http://en.wikipedia.org/wiki/Vocoder">vocoding</a>.
+ * It works by analyzing the audio input and the modulator input with FFTs and then multiplying 
+ * the audio input's spectrum by the modulator's spectrum. 
+ * 
+ * @example Synthesis/vocoderExample
+ * 
+ * @author Damien Di Fede
+ *
+ */
 public class Vocoder extends UGen
 {
-
-	// the audio you want processed by the vocoder
+	/**
+	 * The audio you want processed by the Vocoder.
+	 * If you are going for the classic robot vocals sound,
+	 * you would patch the synth to this input, typically
+	 * something with a lot of high frequency content, like Waves.SAW.
+	 * 
+	 * @shortdesc The audio you want processed by the Vocoder.
+	 * 
+	 * @related Vocoder
+	 */
 	public UGenInput	audio;
 
-	// the signal that will be used to transform the audio input
+	/**
+	 * The signal that will be used to transform the audio input.
+	 * If you are going for the classic robot vocals sound,
+	 * you would patch the vocals to this input.
+	 * 
+	 * @shortdesc The signal that will be used to transform the audio input.
+	 * 
+	 * @related Vocoder
+	 */
 	public UGenInput	modulator;
 
 	// the window size we use for analysis
@@ -40,6 +66,30 @@ public class Vocoder extends UGen
 	// used to analyze the modulator input
 	private FFT			m_modulatorFFT;
 
+	/**
+	 * Constructs a Vocoder.
+	 * 
+	 * @param windowSize
+	 * 			int: the number of sample frames to use for 
+	 * 				 each FFT analysis. Smaller window sizes 
+	 * 				 will have better performance, but lower
+	 * 				 sound quality. the window size must also 
+	 * 				 be a power of two, which is a requirement 
+	 * 				 for using an FFT.
+	 * 
+	 * @param windowCount
+	 * 			int: the number of overlapping windows to use. 
+	 * 				 this must be at least 1 with larger values
+	 * 				 causing the analysis windows to overlap 
+	 * 				 with each other to a greater degree.
+	 * 				 For instance, with a windowSize of 1024 and 
+	 * 				 a windowCount of 2, a 1024 sample frame FFT 
+	 * 				 will be calculated every 512 sample frames. 
+	 * 				 With 3 windows, every 341 samples, and so forth.
+	 * 				 More windows generally equates to better quality.
+	 * 
+	 *  @related Vocoder
+	 */
 	public Vocoder(int windowSize, int windowCount)
 	{
 		audio = new UGenInput( InputType.AUDIO );
@@ -68,7 +118,9 @@ public class Vocoder extends UGen
 	protected void sampleRateChanged()
 	{
 		m_audioFFT = new FFT( m_windowSize, sampleRate() );
+		m_audioFFT.window( FFT.HAMMING );
 		m_modulatorFFT = new FFT( m_windowSize, sampleRate() );
+		m_modulatorFFT.window( FFT.HAMMING );
 	}
 
 	private void analyze(FFT fft, float[] src)

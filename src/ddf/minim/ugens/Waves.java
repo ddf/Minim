@@ -59,6 +59,7 @@ public class Waves
 															tableSize,
 															new float[] { 0,-1, 1, 0 }, 
 															new int[] { tSby2, 0, tableSize - tSby2	} );
+	
 	/**
 	 * A perfect phasor wave going from 0 to 1.
 	 * 
