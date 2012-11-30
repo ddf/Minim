@@ -1,14 +1,22 @@
 /**
-  This is an example of how to use a TickRate UGen to control the tick rate of another UGen, in this case a FilePlayer. <br/>
-  A TickRate will tick the UGen patched to it at a rate relative to the normal tick rate. So a TickRate with a value of 1 
-  will simply pass the audio. A TickRate with a value of 2 will tick the incoming twice as fast as normal. If the value 
-  of TickRate is ever set to 0 or lower, it will simply generate silence and not tick its incoming UGen at all. This is 
-  because there isn't a way to tell a UGen to tick backwards.
+  This is an example of how to use a TickRate UGen to control 
+  the tick rate of another UGen, in this case a FilePlayer. <br/>
+  A TickRate will tick the UGen patched to it at a rate relative 
+  to the normal tick rate. So a TickRate with a value of 1 
+  will simply pass the audio. A TickRate with a value of 2 
+  will tick the incoming UGen twice as fast as normal. 
+  If the value of TickRate is ever set to 0 or lower, 
+  it will simply generate silence and not tick its incoming UGen at all. 
+  This is because there isn't a way to tell a UGen to tick backwards.
   <p>
-  Slide the mouse left and right in the window to control the playback rate of the loop.<br/>
-  Hold 'i' to make TickRate interpolate between actual sample values (this will remove the "crunch" when at rates less than 1).
+  Slide the mouse left and right in the window 
+  to control the playback rate of the loop.
+  <br/>
+  Hold 'i' to make TickRate interpolate between actual sample values 
+  (this will remove the "crunch" when at rates less than 1).
   <p>
-  For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  For more information about Minim and additional features, 
+  visit http://code.compartmental.net/minim/
   <p>
   author: Damien Di Fede
 */
@@ -30,7 +38,7 @@ String fileName = "again_loop.aif";
 void setup()
 {
   // setup the size of the app
-  size(640, 240);
+  size(640, 200);
   
   // create our Minim object for loading audio
   minim = new Minim(this);
@@ -98,8 +106,8 @@ void draw()
     float x1  =  map( i, 0, out.bufferSize(), 0, width );
     float x2  =  map( i+1, 0, out.bufferSize(), 0, width );
     // draw a line from one buffer position to the next for both channels
-    line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
-    line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
+    line( x1, 50  - out.left.get(i)*50,  x2, 50  - out.left.get(i+1)*50);
+    line( x1, 150 - out.right.get(i)*50, x2, 150 - out.right.get(i+1)*50);
   }  
 }
 
