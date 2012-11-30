@@ -3,13 +3,16 @@ body {
 	margin-top: 0px;
 	margin-right: 0px;
 	margin-bottom: 0px;
-	background-color: #FFFFFF;
+	background-color: #EFEFEF;
 }
 pre {  
-	FONT-FAMILY: "Courier New", Courier, mono; 
+	FONT-FAMILY: "Consolas", "Courier New", Courier, mono; 
 	FONT-SIZE: 11px; 
 	LINE-HEIGHT: normal; 
-	COLOR: #000000
+	COLOR: #222;
+	background-color: #DEDEDE;
+	padding: 5px;
+	margin-top: -2px;
 }
 A:link {
 	color: #999999;
