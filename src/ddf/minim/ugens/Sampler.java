@@ -7,10 +7,19 @@ import ddf.minim.MultiChannelBuffer;
 import ddf.minim.UGen;
 
 /**
- * <code>Sampler</code> is the UGen replacement for <code>AudioSample</code> and is
- * the preferred method of triggering short audio files. You should
+ * <code>Sampler</code> is the UGen version of <code>AudioSample</code> and is
+ * the preferred method of triggering short audio files. You should find
  * <code>Sampler</code> much more flexible than <code>AudioSample</code> and hopefully 
- * also slightly more performant.
+ * also slightly more performant. 
+ * <p>
+ * Sampler provides several inputs that allow you to control the properties
+ * of a triggered sample. When you call the trigger method, the values of these 
+ * inputs are "snapshoted" and used to configure the new instance of the sample
+ * that will play. So changing the values do not effect already playing samples,
+ * except for <code>amplitude</code>, which controls the volume of the Sampler 
+ * as a whole.
+ * 
+ * @example Advanced/DrumMachine
  * 
  * @author Damien Di Fede
  * 

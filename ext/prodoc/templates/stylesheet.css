@@ -119,8 +119,23 @@ A:hover {
 	text-align: left;
 	width: 400px;
 	padding-top: 20px;
+}
+
+.indexnavigation {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	color: #999999;
+	text-align: left;
+	font-weight: normal;
 	padding-bottom: 20px;
 }
+
+.border-left {
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #999999;
+}
+
 .code_style {
 	font-size: 8px;
 }

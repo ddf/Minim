@@ -12,6 +12,8 @@ import ddf.minim.UGen;
  * down the chain. Unlike most UGen effects, you can patch more than one UGen to
  * a Summer.
  * 
+ * @example Synthesis/summerExample
+ * 
  * @author Damien Di Fede
  * 
  */

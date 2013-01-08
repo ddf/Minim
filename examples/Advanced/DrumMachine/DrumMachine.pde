@@ -1,9 +1,10 @@
 import processing.opengl.*;
 
 /**
-  * This sketch is a more involved use of AudioSamples to create a simple drum machine. Click on the buttons to 
-  * toggle them on and off. The buttons that are on will trigger samples when the beat marker passes over their 
-  * column. You can change the tempo by clicking in the BPM box and dragging the mouse up and down.
+  * This sketch is a more involved use of AudioSamples to create a simple drum machine. 
+  * Click on the buttons to toggle them on and off. The buttons that are on will trigger 
+  * samples when the beat marker passes over their column. You can change the tempo by 
+  * clicking in the BPM box and dragging the mouse up and down.
   * <p>
   * We achieve the timing by using AudioOutput's playNote method and a cleverly written Instrument.
   * <p>

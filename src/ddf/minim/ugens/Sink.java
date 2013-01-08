@@ -6,6 +6,10 @@ package ddf.minim.ugens;
  * it simply ticks them and only generates silence. This is useful if you have a UGen that 
  * needs to be ticked but that shouldn't be generating audio, such as an EnvelopeFollower.
  * 
+ * @example Synthesis/envelopeFollowerExample
+ * 
+ * @related Summer
+ * 
  * @author Damien Di Fede
  *
  */
