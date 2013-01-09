@@ -1,9 +1,43 @@
 package ddf.minim.ugens;
 
+import java.util.Arrays;
+
 import ddf.minim.UGen;
 
 /**
- * Provides a UGen which generates a Waveform at a specified frequency.
+ * An Oscil is a UGen that generates audio by oscillating over a Waveform 
+ * at a particular frequency. For instance, if you were to create this Oscil:
+ * <p>
+ * <pre>Oscil testTone = new Oscil( 440, 1, Waves.SINE );</pre>
+ * When patched to an AudioOuput, it would generate a continuous sine wave tone 
+ * at 440 Hz and would sound like a test tone. 
+ * This frequency also happens to be the same as the pitch played 
+ * by the lead oboist in a orchestra when they tune up at the beginning of a concert.
+ * <p>
+ * However, rather than give Oscil a fixed, or limited, set of sounds it 
+ * can generate, instead it simply oscillates over a generic Waveform object. 
+ * Waveform is simply an <em>interface</em> that declares a value method, which 
+ * is used by Oscil to determine what value it should output at any given moment 
+ * in time. Generally, you will use predefined Waveforms from the Waves class, 
+ * or generated Waveforms using the WavetableGenerator class. However, there's 
+ * no particular reason you couldn't define your own classes that implement 
+ * the Waveform interface.
+ * <p>
+ * Another abstraction the Oscil UGen makes use of is the Frequency class. 
+ * This class allows you to define a frequency in terms of pitch, midi note, 
+ * or hertz. This is often quite useful when writing musical scores with code.
+ * For instance, we could use the Frequency class when creating an Oscil that 
+ * will sound the same as the example above:
+ * <p>
+ * <pre>Oscil testTone = new Oscil( Frequency.ofPitch("A4"), 1, Waves.SINE );</pre>
+ * 
+ * @example Basics/SynthesizeSound
+ * 
+ * @related UGen
+ * @related Waveform
+ * @related Waves
+ * @related WavetableGenerator
+ * @related Frequency
  * 
  * @author Damien Di Fede, Anderson Mills
  * 
@@ -28,8 +62,8 @@ public class Oscil extends UGen
 	public UGenInput	phase;
 
 	/**
-	 * Patch to this to control the DC offset of the Oscil. Useful when using an
-	 * Oscil as a modulator.
+	 * Patch to this to control the DC offset of the Oscil with another UGen. 
+	 * This is useful when using an Oscil as a modulator.
 	 */
 	public UGenInput	offset;
 
@@ -51,11 +85,13 @@ public class Oscil extends UGen
 	 * Constructs an Oscil UGen given frequency in Hz, amplitude, and a waveform
 	 * 
 	 * @param frequencyInHertz
-	 *            the frequency this should oscillate at
+	 *            float: the frequency this Oscil should oscillate at
 	 * @param amplitude
-	 *            the base amplitude
+	 *            float: the amplitude of this Oscil.
 	 * @param waveform
-	 *            the waveform we will oscillate over
+	 *            Waveform: the waveform this Oscil will oscillate over
+	 *            
+	 * @related Waveform
 	 */
 	public Oscil(float frequencyInHertz, float amplitude, Waveform waveform)
 	{
@@ -67,9 +103,9 @@ public class Oscil extends UGen
 	 * oscillator uses a sine wave.
 	 * 
 	 * @param frequencyInHertz
-	 *            the frequency this should oscillate at
+	 *            float: the frequency this Oscil should oscillate at
 	 * @param amplitude
-	 *            the amplitude
+	 *            float: the amplitude of this Oscil.
 	 */
 	public Oscil(float frequencyInHertz, float amplitude)
 	{
@@ -81,9 +117,9 @@ public class Oscil extends UGen
 	 * uses a sine wave.
 	 * 
 	 * @param frequency
-	 *            the frequency this should oscillate at
+	 *            Frequency: the frequency this Oscil should oscillate at.
 	 * @param amplitude
-	 *            the amplitude
+	 *            float: the amplitude of this Oscil.
 	 */
 	// shortcut for building a sine wave
 	public Oscil(Frequency frequency, float amplitude)
@@ -95,11 +131,11 @@ public class Oscil extends UGen
 	 * Constructs an Oscil UGen given a Frequency, amplitude, and a waveform
 	 * 
 	 * @param frequency
-	 *            Frequency: the frequency that this Oscil should oscillate at.
+	 *            Frequency: the frequency this Oscil should oscillate at.
 	 * @param amplitude
 	 *            float: the amplitude of this Oscil.
 	 * @param waveform
-	 *            Waveform: the Waveform to oscillate over.
+	 *            Waveform: the waveform this Oscil will oscillate over
 	 * 
 	 * @related Frequency
 	 * @related Waveform
@@ -268,10 +304,7 @@ public class Oscil extends UGen
 		// calculate the sample value
 		float sample = outAmp * wave.value( tmpStep ) + offset.getLastValue();
 
-		for ( int i = 0; i < channels.length; i++ )
-		{
-			channels[i] = sample;
-		}
+		Arrays.fill( channels, sample );
 
 		// update our step size.
 		// this will check to make sure the frequency has changed.

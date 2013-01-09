@@ -8,7 +8,8 @@ import processing.opengl.*;
   * <p>
   * We achieve the timing by using AudioOutput's playNote method and a cleverly written Instrument.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
 
 

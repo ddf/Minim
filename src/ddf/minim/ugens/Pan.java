@@ -3,8 +3,19 @@ package ddf.minim.ugens;
 import ddf.minim.UGen;
 
 /**
- * A UGen for panning a mono signal in a stereo field
- * <p>
+ * A UGen for panning a mono signal in a stereo field.
+ * Because of the generally accepted meaning of pan,
+ * this UGen strictly enforces the channel count of its 
+ * input and output. Anything patched to the audio input 
+ * of Pan will be configured to generate mono audio, and when 
+ * Pan is patched to any other UGen, it will throw an 
+ * exception if that UGen tries to set Pan's channel count 
+ * to anything other than 2.
+ * 
+ * @example Synthesis/panExample
+ * 
+ * @related UGen
+ * @related Balance
  * 
  * @author nb, ddf
  */
@@ -12,7 +23,12 @@ import ddf.minim.UGen;
 public class Pan extends UGen
 {
 	/**
-	 * UGens patched to pan should generate values between -1 and +1.
+	 * UGens patched to this input should generate values between -1 and +1.
+	 * 
+	 * @example Synthesis/panExample
+	 * 
+	 * @related Pan
+	 * @related setPan ( )
 	 */
 	public UGenInput		pan;
 
@@ -22,7 +38,7 @@ public class Pan extends UGen
 	static private float	PIOVER2	= (float)Math.PI / 2.f;
 
 	/**
-	 * Construct a Pan UGen with a particular balance and width.
+	 * Construct a Pan UGen with a specific starting pan value.
 	 * 
 	 * @param panValue
 	 *            float: a value of 0 means to pan dead center, 
@@ -31,15 +47,19 @@ public class Pan extends UGen
 	public Pan(float panValue)
 	{
 		super();
-		pan = new UGenInput( InputType.CONTROL );
-		pan.setLastValue( panValue );
+		pan = addControl( panValue );
 	}
 
 	/**
 	 * Set the pan value of this Pan. Values passed to this method should be
-	 * between -1 and +1.
+	 * between -1 and +1. This is equivalent to calling the setLastValue method 
+	 * on the pan input directly.
 	 * 
 	 * @param panValue
+	 * 			the new value for the pan input
+	 * 
+	 * @related Pan
+	 * @related pan
 	 */
 	public void setPan(float panValue)
 	{
@@ -73,6 +93,11 @@ public class Pan extends UGen
 		}
 	}
 
+	/**
+	 * Pan overrides setChannelCount to ensure that it can 
+	 * never be set to output more or fewer than 2 channels.
+	 */
+	@Override
 	public void setChannelCount(int numberOfChannels)
 	{
 		if ( numberOfChannels == 2 )

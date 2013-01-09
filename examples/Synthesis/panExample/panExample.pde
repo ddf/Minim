@@ -1,7 +1,17 @@
 /* panExample<br/>
-   is an example of using the Pan UGen inside an instrument.
+   is an example of using the Pan UGen inside an Instrument.
+   The Instrument is designed to play a single tone that is panned 
+   back and forth across the stereo field based on the value of a 
+   low frequency oscillator (LFO). An LFO is simply an Oscil that 
+   has a frequency that is usually well below audible range.
    <p>
-   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   This sketch uses the Instrument to play two notes, one which 
+   slowly pans back and forth across the entire stereo field (-1, 1)
+   and one which more quickly pans back and forth between a 
+   smaller range.
+   <p>
+   For more information about Minim and additional features, 
+   visit http://code.compartmental.net/minim/
    <p>
    author: Damien Di Fede
 */
@@ -15,6 +25,53 @@ import ddf.minim.ugens.*;
 Minim minim;
 AudioOutput out;
 
+// define a PanInstrument that implements the Instrument interface
+// so that we can use instances of it with playNote
+class PanInstrument implements Instrument
+{
+  // create all variables that must be used throughout the class
+  Oscil sineOsc, LFO;
+  Pan pan;
+  
+  // constructors for this intsrument
+  PanInstrument( float oscFrequency, float oscAmplitude, float lfoFrequency, float lfoAmplitude )
+  {    
+    // create new instances of any UGen objects as necessary
+    sineOsc = new Oscil( oscFrequency, oscAmplitude, Waves.SINE );
+    
+    // the arguments to the Pan UGen are for the balance and width.
+    // balance ranges from -1 to 1, which basically are hard-left and 
+    // hard-right, respectively.
+    // we create our pan with 0 because we will drive the value of 
+    // the balance using Pan's balance UGenInput.
+    pan = new Pan(0);
+    
+    // LFO stands for low frequency oscillator. we will use this to control
+    // the balance input of the Pan Ugen.
+    LFO = new Oscil( lfoFrequency, lfoAmplitude, Waves.SINE );
+        
+    // patch everything together up to the final output
+    sineOsc.patch( pan );
+    LFO.patch( pan.pan );
+  }
+  
+  // every instrument must have a noteOn( float ) method
+  void noteOn( float dur )
+  {
+    // and patch to the output
+    pan.patch( out );
+  }
+  
+  // every instrument must have a noteOff() method
+  void noteOff()
+  {
+    // and unpatch the output 
+    // this causes the entire instrument to stop calculating sampleframes
+    // which is good when the instrument is no longer generating sound.
+    pan.unpatch( out );
+  }
+}
+
 // setup is run once at the beginning
 void setup()
 {
@@ -27,11 +84,14 @@ void setup()
   out = minim.getLineOut( Minim.STEREO, 1024 );
   
   // initialize the myNote object as a PanInstrument
-  PanInstrument myNote = new PanInstrument( 587.3f, 0.5, 0.5, 1.0, out );
+  PanInstrument myNote = new PanInstrument( 587.3f, 0.5, 0.5, 1.0 );
+  
   // play a note with the myNote object
   out.playNote( 0.5, 2.6, myNote );
+  
   // give a new note value to myNote
-  myNote = new PanInstrument( 415.3f, 0.5, 3.0, 0.5, out );
+  myNote = new PanInstrument( 415.3f, 0.5, 3.0, 0.5 );
+  
   // play another note with the myNote object
   out.playNote(3.5, 2.6, myNote );
 }

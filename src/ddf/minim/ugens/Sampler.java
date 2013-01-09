@@ -7,19 +7,25 @@ import ddf.minim.MultiChannelBuffer;
 import ddf.minim.UGen;
 
 /**
- * <code>Sampler</code> is the UGen version of <code>AudioSample</code> and is
- * the preferred method of triggering short audio files. You should find
- * <code>Sampler</code> much more flexible than <code>AudioSample</code> and hopefully 
- * also slightly more performant. 
+ * Sampler is the UGen version of AudioSample and is
+ * the preferred method of triggering short audio files. 
+ * You will also find Sampler much more flexible,
+ * since it provides ways to trigger only part of a sample, and 
+ * to trigger a sample at different playback rates. Also, unlike AudioSample,
+ * a Sampler lets you specify how many voices (i.e. simultaneous 
+ * playbacks of the sample) should have.
  * <p>
  * Sampler provides several inputs that allow you to control the properties
  * of a triggered sample. When you call the trigger method, the values of these 
- * inputs are "snapshoted" and used to configure the new instance of the sample
- * that will play. So changing the values do not effect already playing samples,
+ * inputs are "snapshotted" and used to configure the new voice that will play 
+ * the sample. So, changing the values does not effect already playing voices,
  * except for <code>amplitude</code>, which controls the volume of the Sampler 
  * as a whole.
  * 
  * @example Advanced/DrumMachine
+ * 
+ * @related AudioSample
+ * @related UGen
  * 
  * @author Damien Di Fede
  * 
@@ -28,29 +34,29 @@ import ddf.minim.UGen;
 public class Sampler extends UGen
 {
 	/**
-	 * The sample number in our source sample we should 
-	 * start at when triggering this Sampler.
+	 * The sample number in the source sample 
+	 * the voice will start at when triggering this Sampler.
 	 */
 	public UGenInput begin;
 	
 	/**
-	 * The sample number in our source sample we should 
-	 * end at when triggering this Sampler.
+	 * The sample number in the source sample 
+	 * the voice will end at when triggering this Sampler.
 	 */
 	public UGenInput end;
 	
 	/**
 	 * The attack time, in seconds, when triggering 
 	 * this Sampler. Attack time is used to ramp up 
-	 * the amplitude of the sample. By default it 
-	 * is 0.01 seconds (10 milliseconds).
+	 * the amplitude of the voice. By default it 
+	 * is 0 seconds.
 	 */
 	public UGenInput attack;
 	
 	/**
 	 * The amplitude of this Sampler. This acts as an
 	 * overall volume control. So changing the amplitude
-	 * will effect all currently active triggers.
+	 * will effect all currently active voices.
 	 */
 	public UGenInput amplitude;
 	
@@ -60,7 +66,7 @@ public class Sampler extends UGen
 	public UGenInput rate;
 	
 	/**
-	 * Whether triggered samples should loop or not.
+	 * Whether triggered voices should loop or not.
 	 */
 	public boolean looping;
 	
@@ -121,6 +127,8 @@ public class Sampler extends UGen
 	 * 			float: the sample rate of the sampleData
 	 * @param maxVoices
 	 * 			int: the maximum number of voices for this Sampler
+	 * 
+	 * @related MultiChannelBuffer
 	 */
 	public Sampler( MultiChannelBuffer sampleData, float sampleRate, int maxVoices )
 	{
@@ -147,7 +155,13 @@ public class Sampler extends UGen
 	}
 	
 	/**
-	 * Trigger this Sampler.
+	 * Trigger this Sampler. If all of the Sampler's voices 
+	 * are currently in use, it will use the least recently 
+	 * triggered voice, which means whatever that voice is 
+	 * currently playing will get cut off. For this reason,
+	 * choose the number of voices you want carefully.
+	 * 
+	 * @shortdesc Trigger this Sampler.
 	 */
 	public void trigger()
 	{
@@ -156,7 +170,7 @@ public class Sampler extends UGen
 	}
 	
 	/**
-	 * Stop all active triggers. In other words,
+	 * Stop all active voices. In other words,
 	 * immediately silence this Sampler.
 	 */
 	public void stop()
@@ -171,8 +185,12 @@ public class Sampler extends UGen
 	 * Sets the sample data used by this Sampler by <em>copying</em> the 
 	 * contents of the provided MultiChannelBuffer into the internal buffer.
 	 * 
-	 * @param newSampleData the new sample data for this Sampler
-	 * @param sampleRate the sample rate of the sample data
+	 * @param newSampleData 
+	 * 				MultiChannelBuffer: the new sample data for this Sampler
+	 * @param sampleRate 
+	 * 				float: the sample rate of the sample data
+	 * 
+	 * @related MultiChannelBuffer
 	 */
 	public void setSample( MultiChannelBuffer newSampleData, float sampleRate )
 	{
@@ -227,8 +245,8 @@ public class Sampler extends UGen
 		// start this Trigger playing with the current settings of the Sampler
 		void activate()
 		{
-			beginSample  = begin.getLastValue();
-			endSample    = end.getLastValue();
+			beginSample  = (int)Math.min( begin.getLastValue(), sampleData.getBufferSize()-2);
+			endSample    = (int)Math.min( end.getLastValue(), sampleData.getBufferSize()-1 );
 			playbackRate = rate.getLastValue();
 			attackLength = (int)Math.max( sampleRate() * attack.getLastValue(), 1.f );
 			attackAmp    = 0;
@@ -278,5 +296,5 @@ public class Sampler extends UGen
 				attackAmp += attackAmpStep;
 			}
 		}
-	};
+	}
 }
