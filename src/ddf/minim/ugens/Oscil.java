@@ -47,23 +47,39 @@ public class Oscil extends UGen
 	/**
 	 * Patch to this to control the amplitude of the oscillator with another
 	 * UGen.
+	 * 
+	 * @example Synthesis/oscilEnvExample
+	 * 
+	 * @related Oscil
 	 */
 	public UGenInput	amplitude;
 
 	/**
 	 * Patch to this to control the frequency of the oscillator with another
 	 * UGen.
+	 * 
+	 * @example Synthesis/frequencyModulation
+	 * 
+	 * @related Oscil
 	 */
 	public UGenInput	frequency;
 
 	/**
 	 * Patch to this to control the phase of the oscillator with another UGen.
+	 * 
+	 * @example Synthesis/oscilPhaseExample
+	 * 
+	 * @related Oscil
 	 */
 	public UGenInput	phase;
 
 	/**
 	 * Patch to this to control the DC offset of the Oscil with another UGen. 
 	 * This is useful when using an Oscil as a modulator.
+	 * 
+	 * @example Synthesis/frequencyModulation
+	 * 
+	 * @related Oscil
 	 */
 	public UGenInput	offset;
 
@@ -82,7 +98,7 @@ public class Oscil extends UGen
 
 	// constructors
 	/**
-	 * Constructs an Oscil UGen given frequency in Hz, amplitude, and a waveform
+	 * Constructs an Oscil UGen, given frequency in Hz, amplitude, and a waveform
 	 * 
 	 * @param frequencyInHertz
 	 *            float: the frequency this Oscil should oscillate at
@@ -189,8 +205,16 @@ public class Oscil extends UGen
 	 * controlling frequency continuously over time you will usually want to use
 	 * the frequency input.
 	 * 
+	 * @shortdesc Sets the frequency of this Oscil.
+	 * 
 	 * @param hz
 	 *            the frequency, in Hertz, to set this Oscil to
+	 *            
+	 * @example Basics/SynthesizeSound
+	 * 
+	 * @related frequency
+	 * @related Frequency
+	 * @related Oscil
 	 */
 	public void setFrequency(float hz)
 	{
@@ -204,10 +228,16 @@ public class Oscil extends UGen
 	 * controlling frequency continuously over time you will usually want to use
 	 * the frequency input.
 	 * 
+	 * @shortdesc Sets the frequency of this Oscil.
+	 * 
 	 * @param newFreq
 	 *            the Frequency to set this Oscil to
 	 *            
+	 * @example Basics/SynthesizeSound          
+	 *            
+	 * @related frequency
 	 * @related Frequency
+	 * @related Oscil
 	 */
 	public void setFrequency(Frequency newFreq)
 	{
@@ -221,8 +251,15 @@ public class Oscil extends UGen
 	 * controlling amplitude continuously over time you will usually want to use
 	 * the amplitude input.
 	 * 
+	 * @shortdesc Sets the amplitude of this Oscil.
+	 * 
 	 * @param newAmp
 	 *            amplitude to set this Oscil to
+	 *            
+	 * @example Basics/SynthesizeSound
+	 * 
+	 * @related amplitude
+	 * @related Oscil
 	 */
 	public void setAmplitude(float newAmp)
 	{
@@ -235,7 +272,12 @@ public class Oscil extends UGen
 	 * still makes sense to set the phase to greater than 1 or even to a
 	 * negative number.
 	 * 
+	 * @shortdesc Set the amount that the phase will be offset by.
+	 * 
 	 * @param newPhase
+	 * 
+	 * @related phase
+	 * @related Oscil
 	 */
 	public void setPhase(float newPhase)
 	{
@@ -248,7 +290,10 @@ public class Oscil extends UGen
 	 * @param theWaveform
 	 *            the new Waveform to use
 	 *            
+	 * @example Basics/SynthesizeSound            
+	 *            
 	 * @related Waveform
+	 * @related Oscil
 	 */
 	public void setWaveform(Waveform theWaveform)
 	{
@@ -260,7 +305,10 @@ public class Oscil extends UGen
 	 * 
 	 * @return a Waveform
 	 * 
+	 * @example Basics/SynthesizeSound
+	 * 
 	 * @related Waveform
+	 * @related Oscil
 	 */
 	public Waveform getWaveform()
 	{
@@ -268,12 +316,19 @@ public class Oscil extends UGen
 	}
 
 	/**
-	 * Resets the time-step used by the oscillator to be equal to the current
-	 * phase value. You will typically use this when starting a new note with an
+	 * Resets the time-step used by the Oscil to be equal to the current
+	 * phase input value. You will typically use this when starting a new note with an
 	 * Oscil that you have already used so that the waveform will begin sounding
 	 * at the beginning of its period, which will typically be a zero-crossing.
 	 * In other words, use this to prevent clicks when starting Oscils that have
 	 * been used before.
+	 * 
+	 * @shortdesc Resets the time-step used by the Oscil to be equal to the current
+	 * phase input value.
+	 * 
+	 * @example Synthesis/oscilPhaseExample
+	 * 
+	 * @related Oscil
 	 */
 	public void reset()
 	{

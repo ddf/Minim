@@ -57,6 +57,20 @@ void draw()
   }
 }
 
+void mouseMoved()
+{
+  // usually when setting the amplitude and frequency of an Oscil
+  // you will want to patch something to the amplitude and frequency inputs
+  // but this is a quick and easy way to turn the screen into
+  // an x-y control for them.
+  
+  float amp = map( mouseY, 0, height, 1, 0 );
+  wave.setAmplitude( amp );
+  
+  float freq = map( mouseX, 0, width, 110, 880 );
+  wave.setFrequency( freq );
+}
+
 void keyPressed()
 { 
   switch( key )

@@ -1,8 +1,9 @@
 /* frequencyModulation
    <p>
-   A simple example for doing FM using two Oscils.
+   A simple example for doing FM (frequency modulation) using two Oscils.
    <p>
-   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   For more information about Minim and additional features, 
+   visit http://code.compartmental.net/minim/
    <p>  
    Author: Damien Di Fede
  */
@@ -72,6 +73,6 @@ void mouseMoved()
   float modulateAmount = map( mouseY, 0, height, 220, 1 );
   float modulateFrequency = map( mouseX, 0, width, 0.1, 100 );
   
-  fm.frequency.setLastValue( modulateFrequency );
-  fm.amplitude.setLastValue( modulateAmount );
+  fm.setFrequency( modulateFrequency );
+  fm.setAmplitude( modulateAmount );
 }

@@ -1,7 +1,8 @@
 /* oscilPhaseExample<br/>
-   is an example of controlling the phase of an Oscil UGen inside an instrument.
+   is an example of controlling the phase of an Oscil UGen inside an Instrument.
    <p>
-   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   For more information about Minim and additional features, 
+   visit http://code.compartmental.net/minim/
    <p>
    author: Damien Di Fede
 */
@@ -15,10 +16,51 @@ import ddf.minim.ugens.*;
 Minim minim;
 AudioOutput out;
 
+// Every instrument must implement the Instrument interface so 
+// playNote() can call the instrument's methods.
+class ToneInstrument implements Instrument
+{
+  // create all variables that must be used throughout the class
+  Oscil sineOsc;
+  // we use the Line to control the phase of sineOsc
+  Line sinePhase;
+  // the phase we should sweep to over the duration of the note
+  float phaseTarget;
+  
+  // constructors for this intsrument
+  ToneInstrument( float frequency, float amplitude, float target )
+  {    
+    // create new instances of any UGen objects as necessary
+    sineOsc   = new Oscil( frequency, amplitude, Waves.SINE );
+    sinePhase = new Line(); 
+    phaseTarget = target;
+    
+    // connect the LFO to the phase of sineOsc
+    sinePhase.patch( sineOsc.phase );
+  }
+  
+  // every instrument must have a noteOn( float ) method
+  void noteOn( float dur )
+  {
+    // reset sineOsc so we don't get a click when starting the note
+    sineOsc.reset();
+    // sweep the sine's phase from 0 to 1
+    sinePhase.activate( dur, 0, phaseTarget );
+    // and patch to the output
+    sineOsc.patch( out );
+  }
+  
+  // every instrument must have a noteOff() method
+  void noteOff()
+  {
+    sineOsc.unpatch( out );
+  }
+}
+
 // we reuse this instrument to demonstrate 
 // how you can resetPhase on an Oscil to
-// start notes at a zero crossing, regardless
-// of where it left off
+// start notes at a zero crossing, 
+// regardless of where it left off
 ToneInstrument sine440;
 
 // setup is run once at the beginning
@@ -31,26 +73,30 @@ void setup()
   minim = new Minim( this );
   out = minim.getLineOut( Minim.MONO, 1024 );
 
-  // initialize our steady tone. we pass in 0 for the 
-  // frequency of the phase LFO because we don't want 
-  // the phase of this instrument to sweep
-  sine440 = new ToneInstrument( 440.f, 0.25, 0.f, out );
+  // initialize our steady tone. 
+  // we pass in 0 for the phase target 
+  // because we don't want the phase of this instrument to sweep
+  sine440 = new ToneInstrument( 440.f, 0.25, 0 );
   
   // pause time when adding a bunch of notes at once
   out.pauseNotes();
   
-  // we'll add four sets of two tones, sweeping the phase of
-  // one of the tones each time.
-  float toneDur = 2.f;
+  // we'll add four sets of two tones, 
+  // sweeping the phase of one of the tones each time
+  // each time we sweep the phase of the second tone 
+  // to 0.5 over the duration of the note. 
+  // what ends up happening is that the second 
+  // tone cancels out the first as the phase becomes 
+  // exactly inverted, causing it to sound like 
+  // a single tone fading away to silence
+  float noteTime = 0;
   for(int i = 0; i < 4; i++)
   {
-    // play a note with the myNote object
-    out.playNote( i * toneDur * 1.5, 2.f, sine440 );
-    // play a note with an instrument whose phase will sweep
-    // we sweep just a bit faster each time
-    // notice how slow the LFO needs to be to actually hear the beating increase as
-    // this oscil slowly goes more out of phase with sine440.
-    out.playNote( i * toneDur * 1.5, 2.f, new ToneInstrument(440.f, 0.25f, 0.00001f + i * 0.00001f, out) );
+    float toneDur = 2.0f + i;
+    out.playNote( noteTime, toneDur, sine440 );
+    out.playNote( noteTime, toneDur, new ToneInstrument(440.f, 0.25f, 0.5f) );
+    
+    noteTime += toneDur + 1.0f;
   }
   
   // resume time after a bunch of notes are added at once
