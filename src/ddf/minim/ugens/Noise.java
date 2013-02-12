@@ -4,24 +4,36 @@ import ddf.minim.UGen;
 
 
 /**
- * Provides a UGen which generates noise.
+ * A UGen that can generate White, Pink, or Red/Brown noise.
+ * 
+ * @example Synthesis/noiseExample
+ * 
  * @author Anderson Mills, Damien Di Fede
  *
+ * @related UGen
  */
 public class Noise extends UGen 
 {
 	/**
-	 * enumeration used to specify the tint of the noise
+	 * The enumeration used to specify the tint of the noise.
+	 * 
+	 * @example Synthesis/noiseExample
+	 * 
+	 * @nosuperclasses
 	 */
 	public enum Tint { WHITE, PINK, RED, BROWN };
 	
 	/**
 	 * Patch to this to control the amplitude of the noise with another UGen.
+	 * 
+	 * @related Noise
 	 */
 	public UGenInput amplitude;
 	
 	/**
-	 * Patch to this to offset the value of the noise by a fixed value. 
+	 * Patch to this to offset the value of the noise by a fixed value.
+	 * 
+	 *  @related Noise
 	 */
 	public UGenInput offset;
 
@@ -37,7 +49,8 @@ public class Noise extends UGen
 	private float brownAmpCorr = 6.2f;
 
 	/**
-	 * Constructor for white noise with an amplitude of 1.0.
+	 * Constructor for white noise. 
+	 * By default, the amplitude will be 1 and the tint will be WHITE.
 	 */
 	public Noise()
 	{
@@ -45,7 +58,9 @@ public class Noise extends UGen
 	}
 	/**
 	 * Constructor for white noise of the specified amplitude.
+	 * 
 	 * @param amplitude
+	 * 			float: the amplitude of the noise 
 	 */
 	public Noise( float amplitude )
 	{
@@ -53,8 +68,10 @@ public class Noise extends UGen
 	}
 	/**
 	 * Constructor for noise of the specified tint with an amplitude of 1.0.
+	 * 
 	 * @param noiseType
-	 * 		specifies the tint of the noise: WHITE, PINK, RED, BROWN
+	 * 		Noise.Tint: specifies the tint of the noise 
+	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
 	 */
 	public Noise( Tint noiseType )
 	{
@@ -62,26 +79,31 @@ public class Noise extends UGen
 	}
 	/**
 	 * Constructor for noise of a specific tint with a specified amplitude.
-	 * @param amplitudeValue
+	 * 
+	 * @param amplitude
+	 * 			float: the amplitude of the noise
 	 * @param noiseType
-	 * 		specifies the tint of the noise: WHITE, PINK, RED, BROWN
+	 * 		Noise.Tint: specifies the tint of the noise 
+	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
 	 */
-	public Noise(float amplitudeValue, Tint noiseType)
+	public Noise(float amplitude, Tint noiseType)
 	{
-		this(amplitudeValue, 0.f, noiseType);
+		this(amplitude, 0.f, noiseType);
 	}
 	/**
 	 * Constructor for noise of a specific tint with a specified amplitude and offset.
-	 * @param amplitudeValue 
-	 * @param offsetValue
+	 * @param amplitude
+	 * 			float: the amplitude of the noise 
+	 * @param offset
+	 * 			float: the value that should be added to the noise to offset the "center"
 	 * @param noiseType
+	 * 		Noise.Tint: specifies the tint of the noise 
+	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
 	 */
-	public Noise(float amplitudeValue, float offsetValue, Tint noiseType)
+	public Noise(float amplitude, float offset, Tint noiseType)
 	{
-		amplitude = new UGenInput(InputType.CONTROL);
-		amplitude.setLastValue(amplitudeValue);
-		offset = new UGenInput(InputType.CONTROL);
-		offset.setLastValue(offsetValue);
+		this.amplitude = addControl(amplitude);
+		this.offset = addControl(offset);
 		lastOutput = 0f;
 		tint = noiseType;
 		if ( tint == Tint.PINK )
@@ -90,6 +112,15 @@ public class Noise extends UGen
 		}
 	}
 	
+	/**
+	 * Set the Noise.Tint to use.
+	 * 
+	 * @param noiseType
+	 * 		Noise.Tint: specifies the tint of the noise 
+	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
+	 * 			
+	 * @related Noise
+	 */
 	public void setTint( Tint noiseType )
 	{
 	    if ( tint != noiseType )
@@ -102,6 +133,14 @@ public class Noise extends UGen
 	    }
 	}
 	
+	/**
+	 * Returns the current Noise.Tint in use
+	 * 
+	 * @return Noise.Tint: the current tint of the noise 
+	 * 		   (Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
+	 * 
+	 * @related Noise
+	 */
 	public final Tint getTint()
 	{
 	    return tint;
