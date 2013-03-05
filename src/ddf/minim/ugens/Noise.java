@@ -11,15 +11,18 @@ import ddf.minim.UGen;
  * @author Anderson Mills, Damien Di Fede
  *
  * @related UGen
+ * @related Noise.Tint
  */
 public class Noise extends UGen 
 {
 	/**
-	 * The enumeration used to specify the tint of the noise.
+	 * An enumeration used to specify the tint of a Noise UGen.
 	 * 
-	 * @example Synthesis/noiseExample
+	 * @example Synthesis/noiseTintExample
 	 * 
 	 * @nosuperclasses
+	 * 
+	 * @related Noise
 	 */
 	public enum Tint { WHITE, PINK, RED, BROWN };
 	
@@ -71,7 +74,7 @@ public class Noise extends UGen
 	 * 
 	 * @param noiseType
 	 * 		Noise.Tint: specifies the tint of the noise 
-	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
+	 * 		(Noise.Tint.WHITE, Noise.Tint.PINK, Noise.Tint.RED, Noise.Tint.BROWN)
 	 */
 	public Noise( Tint noiseType )
 	{
@@ -84,7 +87,7 @@ public class Noise extends UGen
 	 * 			float: the amplitude of the noise
 	 * @param noiseType
 	 * 		Noise.Tint: specifies the tint of the noise 
-	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
+	 * 		(Noise.Tint.WHITE, Noise.Tint.PINK, Noise.Tint.RED, Noise.Tint.BROWN)
 	 */
 	public Noise(float amplitude, Tint noiseType)
 	{
@@ -98,7 +101,7 @@ public class Noise extends UGen
 	 * 			float: the value that should be added to the noise to offset the "center"
 	 * @param noiseType
 	 * 		Noise.Tint: specifies the tint of the noise 
-	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
+	 * 		(Noise.Tint.WHITE, Noise.Tint.PINK, Noise.Tint.RED, Noise.Tint.BROWN)
 	 */
 	public Noise(float amplitude, float offset, Tint noiseType)
 	{
@@ -117,9 +120,10 @@ public class Noise extends UGen
 	 * 
 	 * @param noiseType
 	 * 		Noise.Tint: specifies the tint of the noise 
-	 * 		(Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
+	 * 		(Noise.Tint.WHITE, Noise.Tint.PINK, Noise.Tint.RED, Noise.Tint.BROWN)
 	 * 			
 	 * @related Noise
+	 * @related Noise.Tint
 	 */
 	public void setTint( Tint noiseType )
 	{
@@ -137,9 +141,10 @@ public class Noise extends UGen
 	 * Returns the current Noise.Tint in use
 	 * 
 	 * @return Noise.Tint: the current tint of the noise 
-	 * 		   (Noise.WHITE, Noise.PINK, Noise.RED, Noise.BROWN)
+	 * 		   (Noise.Tint.WHITE, Noise.Tint.PINK, Noise.Tint.RED, Noise.Tint.BROWN)
 	 * 
 	 * @related Noise
+	 * @related Noise.Tint
 	 */
 	public final Tint getTint()
 	{
