@@ -3,10 +3,15 @@ package ddf.minim.ugens;
 import ddf.minim.UGen;
 
 /**
- * Multiplier is a UGen that will simply multiply the incoming audio signal by either a fixed value 
- * or by whatever its amplitude input is currently generating.
+ * Multiplier is a UGen that will simply multiply the incoming signal by whatever 
+ * its amplitude input is currently generating, which could be constant if 
+ * nothing is patched to it.
+ * 
+ * @example Synthesis/multiplierExample
  * 
  * @author Damien Di Fede
+ * 
+ * @related UGen
  *
  */
 
@@ -33,10 +38,12 @@ public class Multiplier extends UGen
 	}
 	
 	/**
-	 * Construct a Multiplier with the fixed value of multValue.
-	 * @param multValue
+	 * Construct a Multiplier with a fixed value.
+	 * 
+	 * @param value
+	 * 			float: the amplitude for the Multiplier
 	 */
-	public Multiplier( float multValue )
+	public Multiplier( float value )
 	{
 		super();
 		// jam3: These can't be instantiated until the uGenInputs ArrayList
@@ -44,17 +51,22 @@ public class Multiplier extends UGen
 		//audio = new UGenInput(InputType.AUDIO);
 		audio = new UGenInput(InputType.AUDIO);
 		amplitude = new UGenInput(InputType.CONTROL);
-		amplitude.setLastValue(multValue);
+		amplitude.setLastValue( value );
 	}
 	
 	/**
-	 * Set the fixed value of this Multiplier.
+	 * Set the amplitude of this Multiplier.
 	 * 
-	 * @param multValue
+	 * @param value
+	 * 			float: the new amplitude for the Multiplier
+	 * 
+	 * @example Synthesis/multiplierExample
+	 * 
+	 * @related UGen
 	 */
-	public void setValue( float multValue )
+	public void setValue( float value )
 	{
-		amplitude.setLastValue( multValue );
+		amplitude.setLastValue( value );
 	}
 
 	@Override
