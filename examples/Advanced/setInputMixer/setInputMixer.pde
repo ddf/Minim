@@ -35,15 +35,15 @@ void setup()
   minim = new Minim(this);
   gui = new ControlP5(this);
   
-  ScrollList mixers = gui.addScrollList("Mixers", 10, 10, 475, 280);
+  DropdownList mixers = gui.addDropdownList("Mixers", 10, 10, 475, 280);
   mixers.setLabel("Choose A Mixer");
   
   mixerInfo = AudioSystem.getMixerInfo();
   
   for(int i = 0; i < mixerInfo.length; i++)
   {
-    controlP5.Button b = mixers.addItem("item"+i, i);
-    b.setLabel(mixerInfo[i].getName());
+    ListBoxItem b = mixers.addItem("item"+i, i);
+    b.setText(mixerInfo[i].getName());
   } 
   
 }
@@ -68,9 +68,8 @@ void draw()
 
 public void controlEvent(ControlEvent theEvent) 
 {
-  int mixerIndex = (int)theEvent.controller().value();
+  int mixerIndex = (int)theEvent.getGroup().value();
   
-  println("User chose " + theEvent.controller().label());
   println("Using mixer info " + mixerInfo[mixerIndex].getName());
   
   Mixer mixer = AudioSystem.getMixer(mixerInfo[mixerIndex]);

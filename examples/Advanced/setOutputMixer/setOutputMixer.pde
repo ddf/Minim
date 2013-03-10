@@ -75,9 +75,8 @@ void draw()
 
 public void controlEvent(ControlEvent theEvent) 
 {
-  int mixerIndex = (int)theEvent.controller().value();
+  int mixerIndex = (int)theEvent.getGroup().value();
   
-  println("User chose " + theEvent.controller().label());
   println("Using mixer info " + mixerInfo[mixerIndex].getName());
   
   Mixer mixer = AudioSystem.getMixer(mixerInfo[mixerIndex]);
