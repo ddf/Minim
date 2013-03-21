@@ -64,14 +64,9 @@ class MP3MetaData extends BasicMetaData
 		return getTag("comment");
 	}
 	
-	public int track()
+	public String track()
 	{
-		String t = getTag("mp3.id3tag.track");
-		if ( t == "" )
-		{
-			return -1;
-		}
-		return Integer.parseInt(t);
+		return getTag("mp3.id3tag.track");
 	}
 	
 	public String genre()

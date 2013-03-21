@@ -101,10 +101,13 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The track number of the recording.
+	 * This will sometimes be in the form 3/10,
+	 * giving you both the track number and total
+	 * tracks on the album this track came from.
 	 */
-	public int track()
+	public String track()
 	{
-		return -1;
+		return "";
 	}
 	
 	/**
