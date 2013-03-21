@@ -238,6 +238,39 @@ public class BeatDetect
 	{
 		detect(ab.toArray());
 	}
+	
+	/**
+	 * In frequency energy mode this returns the number of frequency bands 
+	 * currently being used. In sound energy mode this always returns 0.
+	 * 
+	 * @return int: the length of the FFT's averages array
+	 */
+	public int dectectSize()
+	{
+	  if ( algorithm == FREQ_ENERGY )
+	  {
+	    return spect.avgSize();
+	  }
+
+	  return 0;
+	}
+	
+	/**
+	 * Returns the center frequency of the i<sup>th</sup> frequency band.
+	 * In sound energy mode this always returns 0.
+	 * 
+	 * @param i
+	 *     int: which detect band you want the center frequency of.
+	 */
+	public float getDetectCenterFrequency(int i)
+	{
+	  if ( algorithm == FREQ_ENERGY )
+	  {
+	    return spect.getAverageCenterFrequency(i);
+	  }
+
+	  return 0;
+	}
 
 	/**
 	 * Analyze the samples in <code>buffer</code>. This is a cumulative
@@ -529,7 +562,9 @@ public class BeatDetect
 		}
 		insertAt++;
 		if (insertAt == feBuffer[0].length)
+		{
 			insertAt = 0;
+		}
 	}
 
 	private void pushVal(float v)

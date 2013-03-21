@@ -129,10 +129,10 @@ public class Pan extends UGen
 			audio.tick( tickBuffer );
 		}
 
-		// formula swiped from the MIDI spcification:
-		// http://www.midi.org/about-midi/rp36.shtml
-		// Left Channel Gain [dB] = 20*log (cos (Pi/2* max(0,CC#10 – 1)/126)
-		// Right Channel Gain [dB] = 20*log (sin (Pi /2* max(0,CC#10 – 1)/126)
+		// formula swiped from the MIDI specification:
+		// http://www.midi.org/techspecs/rp36.php
+		// Left Channel Gain [dB] = 20*log (cos (Pi/2* max(0,CC#10 - 1)/126)
+		// Right Channel Gain [dB] = 20*log (sin (Pi /2* max(0,CC#10 - 1)/126)
 
 		// dBvalue = 20.0 * log10 ( linear );
 		// dB = 20 * log (linear)
