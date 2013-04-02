@@ -20,11 +20,17 @@ public class Multiplier extends UGen
 	/**
 	 * The audio input is where incoming audio should be patched, but you can simply patch to the 
 	 * Multiplier itself.
+	 * 
+	 * @related Multiplier
+	 * @related UGen.UGenInput
 	 */  
 	public UGenInput audio;
 	
 	/**
 	 * The amplitude input allows you to control the value being used for multiplying with another UGen.
+	 * 
+	 * @related Multiplier
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput amplitude;
 	
@@ -62,6 +68,8 @@ public class Multiplier extends UGen
 	 * 
 	 * @example Synthesis/multiplierExample
 	 * 
+	 * @related amplitude
+	 * @related Multiplier
 	 * @related UGen
 	 */
 	public void setValue( float value )

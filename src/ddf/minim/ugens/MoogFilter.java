@@ -9,18 +9,105 @@ import ddf.minim.UGen;
 //Modified by paul.kellett@maxim.abel.co.uk July 2000
 //Java implementation by Damien Di Fede September 2010
 
+/**
+ * MoogFilter is a digital model of a Moog 24 dB/octave resonant VCF.
+ * It can be set to low pass, high pass, or band pass using the 
+ * MoogFilter.Type enumeration. More generally, a filter is used to 
+ * remove certain ranges of the audio spectrum from a sound. 
+ * A low pass filter will allow frequencies below the cutoff frequency
+ * to be heard, a high pass filter allows frequencies above the cutoff 
+ * frequency to be heard, a band pass filter will allow frequencies 
+ * to either side of the center frequency to be heard. With MoogFilter, 
+ * the cutoff frequency and the center frequency are set using the 
+ * <code>frequency</code> input. Because this is a <i>resonant</i> 
+ * filter, it means that frequencies close to the cutoff of center frequency
+ * will become slighly emphasized, depending on the value of the 
+ * <code>resonance</code> input. The resonance of the filter has a 
+ * range from 0 to 1, where as the resonance approaches 1 the filter will 
+ * begin to "ring" at the cutoff frequency.
+ * 
+ * @example Synthesis/moogFilterExample
+ * 
+ * @related UGen
+ * 
+ * @author Damien Di Fede
+ *
+ */
 public class MoogFilter extends UGen
 {
+	/**
+	 * The MoogFilter.Type enumeration is used to set 
+	 * the filter mode of a MoogFilter. HP is high pass,
+	 * LP is low pass, and BP is band pass. 
+	 * 
+	 * @example Synthesis/moogFilterExample
+	 * 
+	 * @related type
+	 * @related MoogFilter
+	 * 
+	 * @nosuperclasses
+	 */
 	public enum Type
 	{
+		/**
+		 * The value representing high pass.
+		 * 
+		 * @related type
+		 */
 		HP,
+		
+		/**
+		 * The value representing low pass.
+		 * 
+		 * @related type
+		 */
 		LP,
+		
+		/**
+		 * The value representing band pass.
+		 * 
+		 * @related type
+		 */
 		BP
 	}
 	
+	/**
+	 * The main audio input where the the UGen 
+	 * you want to filter should be patched.
+	 * 
+	 * @related MoogFilter
+	 * @related UGen.UGenInput
+	 */
 	public UGenInput	audio;
+	
+	/**
+	 * The cutoff (or center) frequency of the filter, 
+	 * expressed in Hz.
+	 * 
+	 * @example Synthesis/moogFilterExample
+	 * 
+	 * @related MoogFilter
+	 * @related UGen.UGenInput
+	 */
 	public UGenInput	frequency;
+	
+	/**
+	 * The resonance of the filter, expressed as a normalized value [0,1].
+	 * 
+	 * @example Synthesis/moogFilterExample
+	 * 
+	 * @related MoogFilter
+	 * @related UGen.UGenInput
+	 */
 	public UGenInput	resonance;
+	
+	/**
+	 * The current type of this filter: low pass, high pass, or band pass.
+	 * 
+	 * @example Synthesis/moogFilterExample
+	 * 
+	 * @related MoogFilter.Type
+	 */
 	public Type 		type;
 
 	private float		coeff[][];	// filter buffers (beware denormals!)
@@ -28,8 +115,10 @@ public class MoogFilter extends UGen
 	/**
 	 * Creates a low pass filter.
 	 * 
-	 * @param frequencyInHz
-	 * @param normalizedResonance
+	 * @param frequencyInHz 
+	 * 		float: the cutoff frequency for the filter
+	 * @param normalizedResonance 
+	 * 		float: the resonance of the filter [0,1]
 	 */
 	public MoogFilter( float frequencyInHz, float normalizedResonance )
 	{
@@ -40,11 +129,12 @@ public class MoogFilter extends UGen
 	 * Creates a filter of the type specified.
 	 * 
 	 * @param frequencyInHz 
-	 * 		the cutoff frequency for the filter
+	 * 		float: the cutoff frequency for the filter
 	 * @param normalizedResonance 
-	 * 		the resonance of the filter [0,1]
+	 * 		float: the resonance of the filter [0,1]
 	 * @param filterType
-	 * 		the type of the filter: HP (high pass), LP (low pass), or BP (band pass)
+	 * 		the type of the filter: MoogFilter.Type.HP (high pass), 
+	 * 		MoogFitler.Type.LP (low pass), or MoogFilter.Type.BP (band pass)
 	 */
 	public MoogFilter(float frequencyInHz, float normalizedResonance, Type filterType )
 	{
@@ -61,7 +151,7 @@ public class MoogFilter extends UGen
 		coeff = new float[channelCount()][5];
 	}
 
-	public void channelCountChanged()
+	protected void channelCountChanged()
 	{
 		if ( coeff == null || coeff.length != channelCount() )
 		{
