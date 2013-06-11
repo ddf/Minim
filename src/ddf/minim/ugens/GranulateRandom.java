@@ -4,10 +4,16 @@ import ddf.minim.UGen;
 
 
 /**
- * GranulateRandom is granular synthesis of the incoming audio.
- * Currently, there are no inputs to this UGen other than the incoming
- * audio.  All parameters must be set at construction. The envelope of these 
- * sounds has a linear fade in and fade out.
+ * GranulateRandom is randomly varying version of GranulateSteady.
+ * Rather than have fixed values for grain length, space length, 
+ * and fade length, it has min and max values for each so that each 
+ * grain is different from the last.
+ * 
+ * @example Synthesis/granulateRandomExample
+ * 
+ * @related GranulateSteady
+ * @related UGen
+ * 
  * @author Anderson Mills
  *
  */
@@ -15,30 +21,50 @@ public class GranulateRandom extends UGen
 {   
 	/**
 	 * The default input is "audio."
+	 * 
+	 * @related GranulateRandom
 	 */
 	public UGenInput audio;
+	
 	/**
 	 * Controls the minimum length of each grain.
+	 * 
+	 * @related GranulateRandom
 	 */
 	public UGenInput grainLenMin;
+	
 	/**
 	 * Controls the minimum space between each grain.
+	 * 
+	 * @related GranulateRandom
 	 */
 	public UGenInput spaceLenMin;
+	
 	/**
 	 * Controls the minimum length of the fade in and fade out.
+	 * 
+	 * @related GranulateRandom
 	 */
 	public UGenInput fadeLenMin;
+	
 	/**
-	 * Controls the manimum length of each grain.
+	 * Controls the maximum length of each grain.
+	 * 
+	 * @related GranulateRandom
 	 */
 	public UGenInput grainLenMax;
+	
 	/**
-	 * Controls the manimum space between each grain.
+	 * Controls the maximum space between each grain.
+	 * 
+	 * @related GranulateRandom
 	 */
 	public UGenInput spaceLenMax;
+	
 	/**
 	 * Controls the maximum length of the fade in and fade out.
+	 * 
+	 * @related GranulateRandom
 	 */
 	public UGenInput fadeLenMax;
 
@@ -71,6 +97,7 @@ public class GranulateRandom extends UGen
 	 * spaceLengthMax, maximum space between each grain, defaults to 200 msec.
 	 * fadeLengthMax, maximum length of the linear fade in and fade out of the
 	 * grain envelope, defaults to 25 msec.
+	 * 
 	 * minAmp, minimum amplitude of the envelope, defaults to 0.
 	 * maxAmp, maximum amplitude of the envelope, defaults to 1.
 	 */
@@ -82,18 +109,19 @@ public class GranulateRandom extends UGen
 	 * Constructor for GranulateRandom.
  	 * minAmp, minimum amplitude of the envelope, defaults to 0.
 	 * maxAmp, maximum amplitude of the envelope, defaults to 1.
+	 * 
 	 * @param grainLengthMin
-	 * 			minimum grain length of each grain 
+	 * 			float: minimum grain length of each grain in seconds 
 	 * @param spaceLengthMin
-	 *			minimum space between each grain
+	 *			float: minimum space between each grain in seconds
 	 * @param fadeLengthMin
-	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * 			float: minimum length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param grainLengthMax
-	 * 			maximum grain length of each grain 
+	 * 			float: maximum grain length of each grain in seconds 
 	 * @param spaceLengthMax
-	 *			maximum space between each grain
+	 *			float: maximum space between each grain in seconds
 	 * @param fadeLengthMax
-	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 * 			float: maximum length of the linear fade in and fade out of the grain envelope in seconds
 	 */
 	public GranulateRandom(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
 			float grainLengthMax, float spaceLengthMax, float fadeLengthMax )
@@ -103,22 +131,23 @@ public class GranulateRandom extends UGen
 	}
 	/**
 	 * Constructor for GranulateRandom
+	 * 
 	 * @param grainLengthMin
-	 * 			minimum grain length of each grain 
+	 * 			float: minimum grain length of each grain in seconds 
 	 * @param spaceLengthMin
-	 *			minimum space between each grain
+	 *			float: minimum space between each grain in seconds
 	 * @param fadeLengthMin
-	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * 			float: minimum length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param grainLengthMax
-	 * 			maximum grain length of each grain 
+	 * 			float: maximum grain length of each grain in seconds 
 	 * @param spaceLengthMax
-	 *			maximum space between each grain
+	 *			float: maximum space between each grain in seconds
 	 * @param fadeLengthMax
-	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 * 			float: maximum length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param minAmp
-	 * 			minimum amplitude of the envelope
+	 * 			float: minimum amplitude of the envelope
 	 * @param maxAmp
-	 * 			maximum amplitude of the envelope
+	 * 			float: maximum amplitude of the envelope
 	 */
 	public GranulateRandom(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
 			float grainLengthMax, float spaceLengthMax, float fadeLengthMax,
@@ -154,19 +183,22 @@ public class GranulateRandom extends UGen
 	}
 
 	/**
-	 * Immediately sets all public class members concerning time to new values. 
+	 * Immediately sets all public class members concerning time to new values.
+	 *  
 	 * @param grainLengthMin
-	 * 			minimum grain length of each grain 
+	 * 			float: minimum grain length of each grain in seconds 
 	 * @param spaceLengthMin
-	 *			minimum space between each grain
+	 *			float: minimum space between each grain in seconds
 	 * @param fadeLengthMin
-	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * 			float: minimum length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param grainLengthMax
-	 * 			maximum grain length of each grain 
+	 * 			float: maximum grain length of each grain in seconds 
 	 * @param spaceLengthMax
-	 *			maximum space between each grain
+	 *			float: maximum space between each grain in seconds
 	 * @param fadeLengthMax
-	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 * 			float: maximum length of the linear fade in and fade out of the grain envelope in seconds
+	 * 
+	 * @related GranulateRandom
 	 */
 	public void setAllTimeParameters(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
 			float grainLengthMax, float spaceLengthMax, float fadeLengthMax)
@@ -176,22 +208,25 @@ public class GranulateRandom extends UGen
 
 	/**
 	 * Immediately sets all public class members to new values. 
+	 * 
 	 * @param grainLengthMin
-	 * 			minimum grain length of each grain 
+	 * 			float: minimum grain length of each grain in seconds 
 	 * @param spaceLengthMin
-	 *			minimum space between each grain
+	 *			float: minimum space between each grain in seconds
 	 * @param fadeLengthMin
-	 * 			minimum length of the linear fade in and fade out of the grain envelope
+	 * 			float: minimum length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param grainLengthMax
-	 * 			maximum grain length of each grain 
+	 * 			float: maximum grain length of each grain in seconds 
 	 * @param spaceLengthMax
-	 *			maximum space between each grain
+	 *			float: maximum space between each grain in seconds
 	 * @param fadeLengthMax
-	 * 			maximum length of the linear fade in and fade out of the grain envelope
+	 * 			float: maximum length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param minAmp
-	 * 			minimum amplitude of the envelope
+	 * 			float: minimum amplitude of the envelope
 	 * @param maxAmp
-	 * 			maximum amplitude of the envelope
+	 * 			float: maximum amplitude of the envelope
+	 * 
+	 * @related GranulateRandom
 	 */
 	public void setAllParameters(float grainLengthMin, float spaceLengthMin, float fadeLengthMin,
 			float grainLengthMax, float spaceLengthMax, float fadeLengthMax,
