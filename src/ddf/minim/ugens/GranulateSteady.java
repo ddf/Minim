@@ -7,6 +7,12 @@ import ddf.minim.UGen;
  * A UGen which chops the incoming audio into steady grains
  * of sound.  The envelope of these sounds has a linear fade
  * in and fade out.
+ * 
+ * @example Synthesis/granulateSteadyExample
+ * 
+ * @related UGen
+ * @related GranulateRandom
+ * 
  * @author Anderson Mills
  *
  */
@@ -14,18 +20,29 @@ public class GranulateSteady extends UGen
 {
 	/**
 	 * The default input is "audio."
+	 * 
+	 * @related GranulateSteady
 	 */
 	public UGenInput audio;
+	
 	/**
 	 * Controls the length of each grain.
+	 * 
+	 * @related GranulateSteady
 	 */
 	public UGenInput grainLen;
+	
 	/**
 	 * Controls the space between each grain.
+	 * 
+	 * @related GranulateSteady
 	 */
 	public UGenInput spaceLen;
+	
 	/**
 	 * Controls the length of the fade in and fade out.
+	 * 
+	 * @related GranulateSteady
 	 */
 	public UGenInput fadeLen;
 
@@ -60,12 +77,13 @@ public class GranulateSteady extends UGen
 	 * Constructor for GranulateSteady.
 	 * minAmp, minimum amplitude of the envelope, defaults to 0.
 	 * maxAmp, maximum amplitude of the envelope, defaults to 1.
+	 * 
 	 * @param grainLength
-	 * 			length of each grain
+	 * 			float: length of each grain in seconds
 	 * @param spaceLength
-	 * 			space between each grain
+	 * 			float: space between each grain in seconds
 	 * @param fadeLength
-	 * 			length of the linear fade in and fade out of the grain envelope
+	 * 			float: length of the linear fade in and fade out of the grain envelope in seconds
 	 */
 	public GranulateSteady( float grainLength, float spaceLength, float fadeLength )
 	{
@@ -74,15 +92,15 @@ public class GranulateSteady extends UGen
 	/**
 	 * Constructor for GranulateSteady.
 	 * @param grainLength
-	 * 			length of each grain
+	 * 			float: length of each grain in seconds
 	 * @param spaceLength
-	 * 			space between each grain
+	 * 			float: space between each grain in seconds
 	 * @param fadeLength
-	 * 			length of the linear fade in and fade out of the grain envelope
+	 * 			float: length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param minAmp
-	 * 			minimum amplitude of the envelope
+	 * 			float: minimum amplitude of the envelope
 	 * @param maxAmp
-	 * 			maximum amplitude of the envelope
+	 * 			float: maximum amplitude of the envelope
 	 */
 	public GranulateSteady( float grainLength, float spaceLength, float fadeLength, float minAmp, float maxAmp )
 	{
@@ -112,11 +130,13 @@ public class GranulateSteady extends UGen
 	/**
 	 * Immediately sets all public class members concerning time to new values. 
 	 * @param grainLength
-	 * 			grain length of each grain 
+	 * 			float: grain length of each grain in seconds 
 	 * @param spaceLength
-	 *			space between each grain
+	 *			float: space between each grain in seconds
 	 * @param fadeLength
-	 * 			length of the linear fade in and fade out of the grain envelope
+	 * 			float: length of the linear fade in and fade out of the grain envelope in seconds
+	 * 
+	 * @related GranulateSteady
 	 */
 	public void setAllTimeParameters( float grainLength, float spaceLength, float fadeLength )
 	{
@@ -125,16 +145,19 @@ public class GranulateSteady extends UGen
 
 	/**
 	 * Immediately sets all public class members to new values. 
+	 * 
 	 * @param grainLength
-	 * 			grain length of each grain 
+	 * 			float: grain length of each grain in seconds
 	 * @param spaceLength
-	 *			space between each grain
+	 *			float: space between each grain in seconds
 	 * @param fadeLength
-	 * 			length of the linear fade in and fade out of the grain envelope
+	 * 			float: length of the linear fade in and fade out of the grain envelope in seconds
 	 * @param minAmp
-	 * 			minimum amplitude of the envelope
+	 * 			float: minimum amplitude of the envelope
 	 * @param maxAmp
-	 * 			maximum amplitude of the envelope
+	 * 			float: maximum amplitude of the envelope
+	 * 
+	 * @related GranulateSteady
 	 */
 	public void setAllParameters( float grainLength, float spaceLength, float fadeLength,
 			float minAmp, float maxAmp)
@@ -152,6 +175,8 @@ public class GranulateSteady extends UGen
 	/**
 	 * Sets the state of this granulate to the very start of a grain. 
 	 * Useful for syncing the granulate timing with other audio.
+	 * 
+	 * @related GranulateSteady
 	 */
 	public void reset()
 	{
