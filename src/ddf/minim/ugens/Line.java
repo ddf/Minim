@@ -6,8 +6,10 @@ import ddf.minim.Minim;
 import ddf.minim.UGen;
 
 /**
- * A UGen that starts at a value
- * and changes linearly to another value over a specified time.
+ * A UGen that starts at a value and changes linearly to another value over a specified time.
+ * 
+ * @example Synthesis/lineExample
+ * 
  * @author nodog
  *
  */
@@ -30,7 +32,7 @@ public class Line extends UGen
 	private boolean isActivated;
 	
 	/**
-	 * Constructs a Line that starts a 1 and transitions to 0 over 1 second.
+	 * Constructs a Line that starts at 1 and transitions to 0 over 1 second.
 	 */
 	public Line()
 	{
@@ -38,9 +40,10 @@ public class Line extends UGen
 	}
 	
 	/**
-	 * Constructs a Line that starts at 1 and transtions to 0 over dT seconds.
+	 * Constructs a Line that starts at 1 and transitions to 0 over dT seconds.
 	 * 
-	 * @param dT how long it should take, in seconds, to transtion from 1 to 0.
+	 * @param dT 
+	 * 		float: how long it should take, in seconds, to transition from the beginning value to the end value.
 	 */
 	public Line(float dT)
 	{
@@ -48,10 +51,12 @@ public class Line extends UGen
 	}
 	
 	/**
-	 * Constructs a Line that starts at beginningAmplitude and transtions to 0 over dT seconds.
+	 * Constructs a Line that starts at beginningAmplitude and transitions to 0 over dT seconds.
 	 * 
-	 * @param dT how long it should take, in seconds, to transition to 0.
-	 * @param beginningAmplitude what value to begin at.
+	 * @param dT 
+	 * 		float: how long it should take, in seconds, to transition from the beginning value to the end value.
+	 * @param beginningAmplitude 
+	 * 		float: the value to begin at
 	 */
 	public Line(float dT, float beginningAmplitude)
 	{
@@ -59,17 +64,20 @@ public class Line extends UGen
 	}
 	
 	/**
-	 * Constructs a Line that starts at begAmplitude and transitions to endAmplitude over dT seconds.
+	 * Constructs a Line that starts at beginningAmplitude and transitions to endAmplitude over dT seconds.
 	 * 
-	 * @param dT how long it should take, in seconds, to transition
-	 * @param begAmplitude the value to start at
-	 * @param endAmplitude the value to end at
+	 * @param dT 
+	 * 			float: how long it should take, in seconds, to transition from the beginning value to the end value.
+	 * @param beginningAmplitude
+	 * 			float: the value to begin at
+	 * @param endAmplitude 
+	 * 			float: the value to end at
 	 */
-	public Line(float dT, float begAmplitude, float endAmplitude)
+	public Line(float dT, float beginningAmplitude, float endAmplitude)
 	{
 		super();
 		lineTime = dT;
-		begAmp = begAmplitude;
+		begAmp = beginningAmplitude;
 		amp = begAmp;
 		endAmp = endAmplitude;
 		lineNow = 0f;
@@ -88,6 +96,16 @@ public class Line extends UGen
 		isActivated = true;
 	}
 	
+	/**
+	 * Start the Line's transition after setting all parameters for the Line.
+	 * 
+	 * @param duration
+	 * 			float: how long it should take, in seconds, to transition from the beginning value to the end value.
+	 * @param beginAmp
+	 * 			float: the value to begin at
+	 * @param endingAmp
+	 * 			float: the value to end at
+	 */
 	public void activate( float duration, float beginAmp, float endingAmp )
 	{
 		begAmp = beginAmp;
@@ -97,7 +115,7 @@ public class Line extends UGen
 	}
 	
 	/**
-	 * Has the line completed its lerp.
+	 * Has the Line completed its transition.
 	 */
 	public boolean isAtEnd()
 	{
@@ -105,9 +123,14 @@ public class Line extends UGen
 	}
 	
 	/**
-	 * Set the ending value of the Line's transition
+	 * Set the ending value of the Line's transition.
+	 * This can be set while a Line is transitioning without causing 
+	 * serious discontinuities in the Line's output.
+	 * 
+	 * @shortdesc Set the ending value of the Line's transition.
 	 *
 	 * @param newEndAmp
+	 * 			float: the new value to end at
 	 */
 	public void setEndAmp( float newEndAmp )
 	{
@@ -115,8 +138,10 @@ public class Line extends UGen
 	}
 	
 	/**
-	 * Set the length of this Line's transition
-	 * @param newLineTime the new transition time (in seconds)
+	 * Set the length of this Line's transition.
+	 * 
+	 * @param newLineTime 
+	 * 			float: the new transition time (in seconds)
 	 */
 	public void setLineTime( float newLineTime )
 	{
@@ -132,9 +157,6 @@ public class Line extends UGen
 		timeStepSize = 1/sampleRate();
 	}
 	
-	/**
-	 * Generate one sampleframe for this UGen.
-	 */
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
