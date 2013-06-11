@@ -59,7 +59,7 @@ void draw()
   }  
 }
 
-// change the midi not when pressing keys on the keyboard
+// change the midi note when pressing keys on the keyboard
 // we set midiNoteIn directly with the setMidiNoteIn method
 // but you could also use a Line to lerp to the next note
 // by patching it to midiNoteIn.

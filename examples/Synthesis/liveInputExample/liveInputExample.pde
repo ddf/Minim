@@ -1,13 +1,16 @@
 /* liveInputExample<br/>
-   is an example of using the LiveInput UGen to patch the input from your computer (usually microphone) to the output.
+   is an example of using the LiveInput UGen to patch 
+   the audio input from your computer (usually the microphone) to the output.
    <p>
-   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   For more information about Minim and additional features, 
+   visit http://code.compartmental.net/minim/
    <p>
    author: Damien Di Fede
 */
 
 import ddf.minim.*;
 import ddf.minim.ugens.*;
+import ddf.minim.spi.*; // for AudioStream
 
 Minim minim;
 AudioOutput out;
@@ -22,9 +25,14 @@ void setup()
   minim = new Minim(this);
   out = minim.getLineOut();
   
-  // construct a LiveInput by giving it an InputStream from minim.
   // we ask for an input with the same audio properties as the output.
-  in = new LiveInput( minim.getInputStream(out.getFormat().getChannels(), out.bufferSize(), out.sampleRate(), out.getFormat().getSampleSizeInBits()) );
+  AudioStream inputStream = minim.getInputStream( out.getFormat().getChannels(), 
+                                                  out.bufferSize(), 
+                                                  out.sampleRate(), 
+                                                  out.getFormat().getSampleSizeInBits());
+                                                 
+  // construct a LiveInput by giving it an InputStream from minim.                                                  
+  in = new LiveInput( inputStream );
   
   // create granulate UGen so we can hear the input being modfied before it goes to the output
   GranulateSteady grain = new GranulateSteady();

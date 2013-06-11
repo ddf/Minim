@@ -6,9 +6,14 @@ import ddf.minim.spi.AudioStream;
 /**
  * LiveInput is a way to wrap an input stream with the UGen interface so that you can 
  * easily route incoming audio through a UGen graph. You can get an AudioStream that is 
- * reading an input from Minim by calling Minim.getInputStream.
+ * reading audio input from Minim by calling Minim.getInputStream.
+ * 
+ * @example Synthesis/liveInputExample
  * 
  * @author Damien Di Fede
+ * 
+ * @related UGen
+ * @related Minim
  *
  */
 
@@ -19,6 +24,7 @@ public class LiveInput extends UGen
 	/**
 	 * Constructs a LiveInput that will read from inputStream.
 	 * @param inputStream
+	 * 			AudioStream: the audio stream this LiveInput will read from
 	 */
 	public LiveInput( AudioStream inputStream )
 	{
