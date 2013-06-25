@@ -10,10 +10,15 @@ import java.util.regex.Pattern;
 import ddf.minim.Minim;
 
 /**
- * A <code>Frequency</code> is used to contain a frequency.
- * This is generally used by an <code>Oscil</code> UGen, but
+ * <code>Frequency</code> is a class that represents an audio frequency. 
+ * Audio frequencies are generally expressed in Hertz, but <code>Frequency</code>
+ * allows you to think in terms of other representations, such as note name.
+ * 
+ * This class is generally used by an <code>Oscil</code> UGen, but
  * can also be used to convert different notations of frequencies
  * such as Hz, MIDI note number, and a pitch name (English or solfege).
+ * 
+ * @example Synthesis/frequencyExample
  *  
  * @author Anderson Mills
  *
@@ -97,7 +102,14 @@ public class Frequency
 //	}
 	
 	/**
-	 * Returns the value of this Frequency in Hertz.
+	 * Get the value of this Frequency in Hertz.
+	 * 
+	 * @return float: this Frequency expressed in Hertz
+	 * 
+	 * @example Synthesis/frequencyExample
+	 * 
+	 * @related setAsHz ( )
+	 * @related Frequency
 	 * 
 	 */
 	public float asHz()
@@ -109,6 +121,10 @@ public class Frequency
 	 * Set this Frequency to be equal to the provided Hertz value.
 	 * 
 	 * @param hz
+	 * 		float: the new value for this Frequency in Hertz
+	 * 
+	 * @related asHz ( )
+	 * @related Frequency
 	 */
 	public void setAsHz( float hz )
 	{
@@ -116,7 +132,13 @@ public class Frequency
 	}
 	
 	/**
-	 * Returns the midi note value of this Frequency
+	 * Get the MIDI note value of this Frequency
+	 * 
+	 * @return float: the MIDI note representation of this Frequency
+	 * 
+	 * @example Synthesis/frequencyExample
+	 * 
+	 * @related Frequency
 	 * 
 	 */
 	public float asMidiNote()
@@ -128,7 +150,14 @@ public class Frequency
 	/**
 	 * Construct a Frequency that represents the provided Hertz.
 	 * 
-	 * @param hz the Hz for this Frequency (440 is A4, for instance)
+	 * @param hz 
+	 * 		float: the Hz for this Frequency (440 is A4, for instance)
+	 * 
+	 * @return a new Frequency object
+	 * 
+	 * @example Synthesis/frequencyExample
+	 * 
+	 * @related Frequency
 	 */
 	public static Frequency ofHertz(float hz)
 	{
@@ -138,7 +167,14 @@ public class Frequency
 	/**
 	 * Construct a Frequency from a MIDI note value.
 	 * 
-	 * @param midiNote a value in the range [0,127]
+	 * @param midiNote 
+	 * 			float: a value in the range [0,127]
+	 * 
+	 * @return a new Frequency object
+	 * 
+	 * @example Synthesis/frequencyExample
+	 * 
+	 * @related Frequency
 	 * 
 	 */
 	public static Frequency ofMidiNote( float midiNote )
@@ -150,7 +186,14 @@ public class Frequency
 	/**
 	 * Construct a Frequency from a pitch name, such as A4 or Bb2.
 	 * 
-	 * @param pitchName the name of the pitch to convert to a Frequency.
+	 * @param pitchName 
+	 * 		String: the name of the pitch to convert to a Frequency.
+	 * 
+	 * @return a new Frequency object
+	 * 
+	 * @example Synthesis/frequencyExample
+	 * 
+	 * @related Frequency
 	 */
 	public static Frequency ofPitch(String pitchName)
 	{
