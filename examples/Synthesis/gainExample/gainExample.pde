@@ -1,16 +1,21 @@
 /**
-  This is an example of how to use a Gain UGen to control the gain of an audio file. Gain is expressed in dB, which 
-  is short for decibels, and is way that people often think about the level of digital audio. dB is a change in amplitude 
-  relative to whatever the incoming amplitude is, so a gain value of 0 will not change the incoming amplitude at all. 
-  Positive gain values increase the amplitude of the incoming signal and negative values decrease it. It's not really 
-  possible to completely silence incoming audio with a Gain UGen, but you can set the gain value so low that you 
-  effectively silence the audio. dB is a logarithmic scale, so while 0 dB will not change the amplitude of incoming 
+  This is an example of how to use a Gain UGen to control the gain of an audio file. 
+  Gain is expressed in dB, which is short for decibels, and is way that people 
+  often think about the level of digital audio. dB is a change in amplitude 
+  relative to whatever the incoming amplitude is, so a gain value of 0 will not change 
+  the incoming amplitude at all. Positive gain values increase the amplitude of the 
+  incoming signal and negative values decrease it. It's not really possible to completely 
+  silence incoming audio with a Gain UGen, but you can set the gain value so low that you 
+  effectively silence the audio. 
+  <p>
+  dB is a logarithmic scale, so while 0 dB will not change the amplitude of incoming 
   audio at all, 6 dB will approximately double the amplitude and -6 dB will approximately halve it.
   <p>
-  Move the mouse left and right to change the gain of the looping audio file. All the way left is -6 dB, all the way 
-  right is +6 dB.
+  Move the mouse left and right to change the gain of the looping audio file. 
+  All the way left is -6 dB, all the way right is +6 dB.
   <p>
-  For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  For more information about Minim and additional features, 
+  visit http://code.compartmental.net/minim/
   <p>
   author: Damien Di Fede
 */
@@ -39,9 +44,8 @@ void setup()
 
   // get an AudioRecordingStream from Minim, which is what FilePlayer will control
   AudioRecordingStream myFile = minim.loadFileStream( fileName, // the file to load
-                                                      1024,     // the size of the buffer. 1024 is a typical buffer size
-                                                      true      // whether to load it totally into memory or not
-                                                                // we say true because the file is short 
+                                                      1024,     // the size of the buffer.
+                                                      true      // load into memory
                                                     );
                                
   // this opens the file and puts it in the "play" state.                           

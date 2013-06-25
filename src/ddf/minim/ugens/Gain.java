@@ -9,6 +9,8 @@ import ddf.minim.UGen;
  * the signal and negative gain decreases it. You can effectively silence 
  * the incoming signal by setting the gain to something like -60.
  * 
+ * @example Synthesis/gainExample
+ * 
  * @author Damien Di Fede
  *
  */
@@ -19,6 +21,8 @@ public class Gain extends UGen
 	 * The audio input is where incoming signals should be patched, however you do not need 
 	 * to patch directly to this input because patching to the Gain itself will accomplish
 	 * the same thing.
+	 * 
+	 * @related Gain
 	 */
 	public UGenInput audio;
 	
@@ -27,10 +31,13 @@ public class Gain extends UGen
 	 * 0 dB means that the incoming signal will not be changed, positive dB increases the 
 	 * amplitude of the signal, and negative dB decreases it. You can effectively silence 
 	 * the incoming signal by setting the gain to something like -60.
+	 * 
+	 * @related Gain
 	 */
 	public UGenInput gain;
 	
 	private float mValue;
+	
 	/**
 	 * Construct a Gain UGen with a value of 0 dB, which means 
 	 * it will not change the volume of something patched to it.
@@ -45,7 +52,8 @@ public class Gain extends UGen
 	 * to incoming audio, positive values make it louder and negative values 
 	 * make it softer.
 	 * 
-	 * @param dBvalue
+	 * @param dBvalue 
+	 * 			float: the amount of gain to apply to the incoming signal
 	 */
 	public Gain( float dBvalue ) 
 	{
@@ -60,6 +68,11 @@ public class Gain extends UGen
 	 * Set the value of this Gain to a given dB value.
 	 * 
 	 * @param dBvalue
+	 * 			float: the new value for this Gain, in decibels.
+	 * 
+	 * @example Synthesis/gainExample
+	 * 
+	 * @related Gain
 	 */
 	public void setValue( float dBvalue )
 	{
