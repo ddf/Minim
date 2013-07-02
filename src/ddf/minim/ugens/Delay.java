@@ -17,16 +17,27 @@ import ddf.minim.UGen;
 public class Delay extends UGen
 {
 	/** 
-	 * audio is the incoming audio
+	 * where the incoming audio is patched
+	 * 
+	 * @related Delay
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput audio;
 	/**
-	 * delTime is the time for delay between repetitions.
+	 * the time for delay between repetitions.
+	 * 
+	 * @related setDelTime ( )
+	 * @related Delay
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput delTime;
 	/**
-	 * delAmp is the strength of each repetition compared to the previous. 
+	 * the strength of each repetition compared to the previous. 
 	 * often labeled as feedback on delay units.
+	 * 
+	 * @related setDelAmp ( )
+	 * @related Delay
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput delAmp;
 
@@ -57,7 +68,7 @@ public class Delay extends UGen
 	 * Constructs a Delay. Amplitude will be 0.5 and feedback will be off. 
 	 * 
 	 * @param maxDelayTime
-	 * 		is the maximum delay time for any one echo and the default echo time.
+	 * 		float: is the maximum delay time for any one echo and the default echo time.
 	 */
 	public Delay( float maxDelayTime )
 	{
@@ -68,9 +79,9 @@ public class Delay extends UGen
 	 * Constructs a Delay. Feedback will be off. 
 	 * 
 	 * @param maxDelayTime
-	 * 		is the maximum delay time for any one echo and the default echo time. 
+	 * 		float: is the maximum delay time for any one echo and the default echo time. 
 	 * @param amplitudeFactor
-	 *      is the amplification factor for feedback and should generally be from 0 to 1.
+	 *      float: is the amplification factor for feedback and should generally be from 0 to 1.
 	 */
 	public Delay( float maxDelayTime, float amplitudeFactor )	
 	{	
@@ -81,11 +92,11 @@ public class Delay extends UGen
 	 * Constructs a Delay.  
 	 * 
 	 * @param maxDelayTime
-	 * 		is the maximum delay time for any one echo and the default echo time. 
+	 * 		float: is the maximum delay time for any one echo and the default echo time. 
 	 * @param amplitudeFactor
-	 *      is the amplification factor for feedback and should generally be from 0 to 1.
+	 *      float: is the amplification factor for feedback and should generally be from 0 to 1.
 	 * @param feedBackOn
-	 * 		is a boolean flag specifying if the repetition continue to feed back.
+	 * 		float: is a boolean flag specifying if the repetition continue to feed back.
 	 */
 	public Delay( float maxDelayTime, float amplitudeFactor, boolean feedBackOn )	
 	{	
@@ -96,13 +107,13 @@ public class Delay extends UGen
 	 * Constructs a Delay.
 	 * 
 	 * @param maxDelayTime
-	 * 		is the maximum delay time for any one echo and the default echo time. 
+	 * 		float: is the maximum delay time for any one echo and the default echo time. 
 	 * @param amplitudeFactor
-	 *      is the amplification factor for feedback and should generally be from 0 to 1.
+	 *      float: is the amplification factor for feedback and should generally be from 0 to 1.
 	 * @param feedBackOn
-	 * 		is a boolean flag specifying if the repetition continue to feed back.
+	 * 		float: is a boolean flag specifying if the repetition continue to feed back.
 	 * @param passAudioOn
-	 * 	 	is a boolean value specifying whether to pass the input audio to the output as well.
+	 * 	 	float: is a boolean value specifying whether to pass the input audio to the output as well.
 	 */
 	public Delay( float maxDelayTime, float amplitudeFactor, boolean feedBackOn, boolean passAudioOn )	
 	{		
@@ -152,8 +163,13 @@ public class Delay extends UGen
      * Changes the time in between the echos to the value specified.
      * 
      * @param delayTime
-     * 		It can be up to the maxDelayTime specified.
-     * 		The lowest it can be is 1/sampleRate.	
+     * 		float: It can be up to the maxDelayTime specified.
+     * 		The lowest it can be is 1/sampleRate.
+     * 
+     * @example Synthesis/delayExample
+     * 
+     * @related delTime
+     * @related Delay	
      */
 	public void setDelTime( float delayTime )
 	{
@@ -164,9 +180,14 @@ public class Delay extends UGen
 	 * Changes the feedback amplification of the echos.
 	 * 
 	 * @param delayAmplitude
-	 * 		This should normally be between 0 and 1 for decreasing feedback.
+	 * 		float: This should normally be between 0 and 1 for decreasing feedback.
 	 * 		Phase inverted feedback can be generated with negative numbers, but each echo 
 	 * 		will be the inverse of the one before it.
+	 * 
+	 * @example Synthesis/delayExample
+	 * 
+	 * @related delAmp
+	 * @related Delay
 	 */
 	public void setDelAmp( float delayAmplitude )
 	{

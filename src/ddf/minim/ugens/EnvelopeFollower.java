@@ -3,9 +3,32 @@ package ddf.minim.ugens;
 import ddf.minim.UGen;
 
 //An envelope follower implementation I found on the internets: http://www.musicdsp.org/showone.php?id=97
+
+/** 
+ * An EnvelopeFollower will analyze the audio coming into it and output a value that reflects 
+ * the volume level of that audio. It is similar to what AudioBuffer's level method provides, 
+ * but has the advantage of being able to be inserted into the signal chain anywhere.
+ * 
+ * You may find that you are only interested in the output value of the EnvelopeFollower for 
+ * visualization purposes, in which case you can use a Sink UGen to tick the EnvelopeFollower
+ * without generating any sound. The following example demonstrates this technique.
+ * 
+ * We still consider EnveloperFollower to be a bit experimental, so YMMV.
+ * 
+ * @example Synthesis/envelopeFollowerExample
+ * 
+ * @related UGen
+ * 
+ */
 public class EnvelopeFollower extends UGen
 { 
-  public UGenInput audio;
+	/**
+	 * Where incoming audio is patched.
+	 * 
+	 * @related EnvelopeFollower
+	 * @related UGen.UGenInput
+	 */
+	public UGenInput audio;
   
   // attack and release time in seconds
   private float m_attack;
@@ -24,6 +47,17 @@ public class EnvelopeFollower extends UGen
   // the previous value of the envelope
   private float m_prevEnvelope;
   
+  /**
+   * Construct an EnvelopeFollower.
+   * 
+   * @param attackInSeconds
+   * 			float: how many seconds the follower should take to ramp up to a higher value
+   * @param releaseInSeconds
+   * 			float: how many seconds the follower should take to ramp down to a lower value
+   * @param bufferSize
+   * 			int: how many samples should be analyzed at once. smaller buffers will make
+   * 				 the follower more responsive.
+   */
   public EnvelopeFollower( float attackInSeconds, float releaseInSeconds, int bufferSize )
   {
     m_attack = attackInSeconds;

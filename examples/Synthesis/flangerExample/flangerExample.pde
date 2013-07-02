@@ -19,7 +19,8 @@
    <p>
    A more thorough description can be found on wikipedia: http://en.wikipedia.org/wiki/Flanging
    <p>
-   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   For more information about Minim and additional features, 
+   visit http://code.compartmental.net/minim/
    <p>
    Author: Damien Di Fede
 */

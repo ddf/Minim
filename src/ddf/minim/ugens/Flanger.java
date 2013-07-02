@@ -8,7 +8,7 @@ import ddf.minim.UGen;
  * sweeping frequency kind of sound as the signal reinforces or cancels itself
  * in various ways. In particular the peaks and notches created in the frequency
  * spectrum are related to each other in a linear harmonic series. This causes
- * the spectrum to look like a comb and should be apparent in the visualization.
+ * the spectrum to look like a comb.
  * <p>
  * Inputs for the Flanger are:
  * <ul>
@@ -23,44 +23,84 @@ import ddf.minim.UGen;
  * A more thorough description can be found on wikipedia:
  * http://en.wikipedia.org/wiki/Flanging
  * <p>
- * Author: Damien Di Fede
+ * 
+ * @author Damien Di Fede
+ * 
+ * @example Synthesis/flangerExample
+ * 
+ * @related UGen
  */
 
 public class Flanger extends UGen
 {
 	/**
 	 * Where the input goes.
+	 * 
+	 * @example Synthesis/flangerExample
+	 * 
+	 * @related Flanger
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput	audio;
 
 	/**
 	 * How much does the flanger delay the incoming signal. Used as the low
 	 * value of the modulated delay amount.
+	 * 
+	 * @example Synthesis/flangerExample
+	 * 
+	 * @related Flanger
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput	delay;
 
 	/**
 	 * The frequency of the LFO applied to the delay.
+	 * 
+	 * @example Synthesis/flangerExample
+	 * 
+	 * @related Flanger
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput	rate;
 
 	/**
 	 * How many milliseconds the LFO increases the delay by at the maximum.
+	 * 
+	 * @example Synthesis/flangerExample
+	 * 
+	 * @related Flanger
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput	depth;
 
 	/**
 	 * How much of the flanged signal is fed back into the effect.
+	 * 
+	 * @example Synthesis/flangerExample
+	 * 
+	 * @related Flanger
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput	feedback;
 
 	/**
 	 * How much of the dry signal is added to the output.
+	 * 
+	 * @example Synthesis/flangerExample
+	 * 
+	 * @related Flanger
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput	dry;
 
 	/**
 	 * How much of the flanged signal is added to the output.
+	 * 
+	 * @example Synthesis/flangerExample
+	 * 
+	 * @related Flanger
+	 * @related UGen.UGenInput
 	 */
 	public UGenInput	wet;
 
@@ -86,17 +126,17 @@ public class Flanger extends UGen
 	 * Construct a Flanger by specifying all initial values.
 	 * 
 	 * @param delayLength
-	 *            the minimum delay applied to incoming samples (in milliseconds)
+	 *            float: the minimum delay applied to incoming samples (in milliseconds)
 	 * @param lfoRate
-	 *            the frequency of the the LFO
+	 *            float: the frequency of the the LFO
 	 * @param delayDepth
-	 *            the maximum amount added to the delay by the LFO (in milliseconds)
+	 *            float: the maximum amount added to the delay by the LFO (in milliseconds)
 	 * @param feedbackAmplitude 
-	 * 			  the amount of the flanged signal fed back into the effect
+	 * 			  float: the amount of the flanged signal fed back into the effect
 	 * @param dryAmplitude
-	 * 			  the amount of incoming signal added to the output
+	 * 			  float: the amount of incoming signal added to the output
 	 * @param wetAmplitude
-	 * 			  the amount of the flanged signal added to the output
+	 * 			  float: the amount of the flanged signal added to the output
 	 */
 	public Flanger(float delayLength, float lfoRate, float delayDepth,
 			float feedbackAmplitude, float dryAmplitude, float wetAmplitude)
