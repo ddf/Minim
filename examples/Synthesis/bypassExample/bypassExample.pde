@@ -1,5 +1,6 @@
-/* delayExample<br/>
- * is an example of using the Delay UGen in a continuous sound example.
+/* bypassExample<br/>
+ * is an example of using the Bypass UGen in a continuous sound example.
+ * Press the space bar to activate and deactivate the Bypass.
  * <p>
  * For more information about Minim and additional features, 
  * visit http://code.compartmental.net/minim/
@@ -14,9 +15,11 @@ import ddf.minim.ugens.*;
 
 // create all of the variables that will need to be accessed in
 // more than one methods (setup(), draw(), stop()).
-Minim minim;
-AudioOutput out;
-Delay myDelay;
+Minim         minim;
+AudioOutput   out;
+// the type in the angle brackets lets the program
+// know the type that should be returned by the ugen method of Bypass
+Bypass<Delay> bypassedDelay;
 
 // setup is run once at the beginning
 void setup()
@@ -28,8 +31,12 @@ void setup()
   minim = new Minim(this);
   out = minim.getLineOut( Minim.MONO, 2048 );
   
-  // initialize myDelay1 with continual feedback and audio passthrough
-  myDelay = new Delay( 0.6, 0.9, true, true );
+  // initialize myDelay with continual feedback and no audio passthrough
+  Delay myDelay = new Delay( 0.6, 0.9, true, true );
+  
+  // create a Bypass to wrap the Delay so we can turn it on and off
+  bypassedDelay = new Bypass<Delay>( myDelay );
+  
   // create the Blip that will be used
   Oscil myBlip = new Oscil( 245.0, 0.3, Waves.saw( 15 ) );
   
@@ -41,8 +48,8 @@ void setup()
 
   myLFO.patch( myBlip.amplitude );
   
- // and the Blip is patched through the delay into the sum.
- myBlip.patch( myDelay ).patch( out );
+  // and the Blip is patched through the Bypass into the Summer.
+  myBlip.patch( bypassedDelay ).patch( out );
 }
 
 // draw is run many times
@@ -62,6 +69,30 @@ void draw()
     line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
+  
+  if ( bypassedDelay.isActive() )
+  {
+    text( "The Delay effect is bypassed.", 10, 15 );
+  }
+  else
+  {
+    text( "The Delay effect is active.", 10, 15 );
+  } 
+}
+
+void keyPressed()
+{
+  if ( key == ' ' )
+  {
+    if ( bypassedDelay.isActive() ) 
+    {
+      bypassedDelay.deactivate();
+    }
+    else
+    {
+      bypassedDelay.activate();
+    }
+  }
 }
 
 // when the mouse is moved, change the delay parameters
@@ -69,8 +100,9 @@ void mouseMoved()
 {
   // set the delay time by the horizontal location
   float delayTime = map( mouseX, 0, width, 0.0001, 0.5 );
-  myDelay.setDelTime( delayTime );
+  bypassedDelay.ugen().setDelTime( delayTime );
+  
   // set the feedback factor by the vertical location
   float feedbackFactor = map( mouseY, 0, height, 0.0, 0.99 );
-  myDelay.setDelAmp( feedbackFactor );
+  bypassedDelay.ugen().setDelAmp( feedbackFactor );
 }

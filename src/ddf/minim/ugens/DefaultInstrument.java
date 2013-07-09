@@ -8,6 +8,11 @@ import ddf.minim.effects.LowPassSP;
  * your own instrument. It's a good way to start playing around with the playNote
  * method of AudioOutput. The default instrument makes a fuzzy triangle wave sound.
  * 
+ * @example Synthesis/defaultInstrumentExample
+ * 
+ * @related Instrument
+ * @related AudioOutput
+ * 
  * @author Anderson Mills
  *
  */
@@ -26,8 +31,10 @@ public class DefaultInstrument implements Instrument
 	/**
 	 * Construct a default instrument that will play a note at the given frequency on the given output.
 	 * 
-	 * @param frequency the frequency of the note
-	 * @param output the output to play the note on when noteOn is called
+	 * @param frequency 
+	 * 			float: the frequency of the note
+	 * @param output 
+	 * 			AudioOutput: the output to play the note on when noteOn is called
 	 */
 	public DefaultInstrument( float frequency, AudioOutput output )
 	{
@@ -49,9 +56,17 @@ public class DefaultInstrument implements Instrument
 	}
 
 	/**
-	 * Turn on the default instrument
+	 * Turn on the default instrument.
+	 * Typically, you will not call this directly.
+	 * It will be called at the appropriate time by 
+	 * the AudioOuput you schedule a note with.
+	 * 
+	 * @shortdesc Turn on the default instrument.
+	 * 
 	 * @param dur
-	 * 			The duration of the note.
+	 * 			float: The duration of the note, in seconds.
+	 * 
+	 * @related DefaultInstrument
 	 */
 	public void noteOn( float dur )
 	{
@@ -65,6 +80,14 @@ public class DefaultInstrument implements Instrument
 		  
 	/**
 	 * Turn off the default instrument.
+	 * 
+	 * Typically, you will not call this directly.
+	 * It will be called at the appropriate time by 
+	 * the AudioOuput you schedule a note with.
+	 * 
+	 * @shortdesc Turn off the default instrument.
+	 * 
+	 * @related DefaultInstrument
 	 */
 	public void noteOff()
 	{

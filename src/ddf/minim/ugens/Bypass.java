@@ -11,18 +11,18 @@ import ddf.minim.UGen;
  * <p>
  * Your usage of Bypass might look something like this:
  * <p>
- * <pre>
- * Bypass granulate = new Bypass<GranulateSteady>( new GranulateSteady() );
+ * <code>
+ * Bypass&lt;GranulateSteady&gt; granulate = new Bypass( new GranulateSteady() );<br/>
  * filePlayer.patch( granulate ).patch( mainOut );
- * </pre>
+ * </code>
  * <p>
  * If you needed to patch something else to one of the inputs of the GranulateSteady,
  * you'd use the <code>ugen</code> method of Bypass to retrieve the wrapped UGen
  * and operate on it:
  * <p>
- * <pre>
+ * <code>
  * grainLenLine.patch( granulate.ugen().grainLen );
- * </pre>
+ * </code>
  * <p>
  * Now, calling the <code>activate</code> method will <em>bypass</em> the granulate effect 
  * so that the Bypass object outputs the audio that is coming into it. Calling the 
@@ -33,6 +33,10 @@ import ddf.minim.UGen;
  * @author Damien Di Fede
  *
  * @param <T> The type of UGen being wrapped, like GranulateSteady.
+ * 
+ * @related UGen
+ * 
+ * @example Synthesis/bypassExample
  */
 
 public class Bypass<T extends UGen> extends UGen 
@@ -56,7 +60,13 @@ public class Bypass<T extends UGen> extends UGen
 	}
 	
 	/**
+	 * Retrieve the UGen that this Bypass is wrapping.
+	 * 
 	 * @return the wrapped UGen, cast to the class this Bypass was constructed with.
+	 * 
+	 * @example Synthesis/bypassExample
+	 * 
+	 * @related Bypass
 	 */
 	public T ugen() 
 	{
@@ -98,6 +108,10 @@ public class Bypass<T extends UGen> extends UGen
 	/**
 	 * Activate the bypass functionality. In other words, the wrapped UGen will NOT
 	 * have an effect on the UGen patched to this Bypass.
+	 * 
+	 * @example Synthesis/bypassExample
+	 * 
+	 * @related Bypass
 	 */
 	public void activate()
 	{
@@ -108,6 +122,10 @@ public class Bypass<T extends UGen> extends UGen
 	 * Deactivate the bypass functionality. In other words, the wrapped UGen WILL 
 	 * have an effect on the UGen patched to this Bypass, as if it was in the 
 	 * signal chain in place of this Bypass.
+	 * 
+	 * @example Synthesis/bypassExample
+	 * 
+	 * @related Bypass
 	 */
 	public void deactivate()
 	{
@@ -115,8 +133,13 @@ public class Bypass<T extends UGen> extends UGen
 	}
 	
 	/**
+	 * Find out if this Bypass is active or not.
 	 * 
 	 * @return true if the bypass functionality is on.
+	 * 
+	 * @example Synthesis/bypassExample
+	 * 
+	 * @related Bypass
 	 */
 	public boolean isActive()
 	{

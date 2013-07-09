@@ -1,7 +1,8 @@
 /* ADSRExample<br/>
    is an example of using the ADSR envelope within an instrument.
    <p>
-   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   For more information about Minim and additional features, 
+   visit http://code.compartmental.net/minim/
    <p>
    author: Anderson Mills<br/>
    Anderson Mills's work was supported by numediart (www.numediart.org)
@@ -15,6 +16,44 @@ import ddf.minim.ugens.*;
 // more than one methods (setup(), draw(), stop()).
 Minim minim;
 AudioOutput out;
+
+// Every instrument must implement the Instrument interface so 
+// playNote() can call the instrument's methods.
+class ToneInstrument implements Instrument
+{
+  // create all variables that must be used througout the class
+  Oscil sineOsc;
+  ADSR  adsr;
+  
+  // constructor for this instrument
+  ToneInstrument( float frequency, float amplitude )
+  {    
+    // create new instances of any UGen objects as necessary
+    sineOsc = new Oscil( frequency, amplitude, Waves.TRIANGLE );
+    adsr = new ADSR( 0.5, 0.01, 0.05, 0.5, 0.5 );
+    
+    // patch everything together up to the final output
+    sineOsc.patch( adsr );
+  }
+  
+  // every instrument must have a noteOn( float ) method
+  void noteOn( float dur )
+  {
+    // turn on the ADSR
+    adsr.noteOn();
+    // patch to the output
+    adsr.patch( out );
+   }
+  
+  // every instrument must have a noteOff() method
+  void noteOff()
+  {
+    // tell the ADSR to unpatch after the release is finished
+    adsr.unpatchAfterRelease( out );
+    // call the noteOff 
+    adsr.noteOff();
+  }
+}
 
 // setup is run once at the beginning
 void setup()
@@ -33,21 +72,21 @@ void setup()
   for( int i = 0; i < 4; i++ )
   {
     // add some low notes
-    out.playNote( 1.25 + i*2.0, 0.3, new ToneInstrument( 75, 0.49, out ) );
-    out.playNote( 2.50 + i*2.0, 0.3, new ToneInstrument( 75, 0.49, out ) );
+    out.playNote( 1.25 + i*2.0, 0.3, new ToneInstrument( 75, 0.49 ) );
+    out.playNote( 2.50 + i*2.0, 0.3, new ToneInstrument( 75, 0.49 ) );
     
     // add some middle notes
-    out.playNote( 1.75 + i*2.0, 0.3, new ToneInstrument( 175, 0.4, out ) );
-    out.playNote( 2.75 + i*2.0, 0.3, new ToneInstrument( 175, 0.4, out ) );
+    out.playNote( 1.75 + i*2.0, 0.3, new ToneInstrument( 175, 0.4 ) );
+    out.playNote( 2.75 + i*2.0, 0.3, new ToneInstrument( 175, 0.4 ) );
     
     // add some high notes
-    out.playNote( 1.25 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07, out ) );
-    out.playNote( 1.5 + i*2.0, 0.3, new ToneInstrument( 1750, 0.02, out ) );
-    out.playNote( 1.75 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07, out ) );
-    out.playNote( 2.0 + i*2.0, 0.3, new ToneInstrument( 1750, 0.02, out ) );
-    out.playNote( 2.25 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07, out ) );
-    out.playNote( 2.5 + i*2.0, 0.3, new ToneInstrument( 5550, 0.09, out ) );
-    out.playNote( 2.75 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07, out ) );
+    out.playNote( 1.25 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07 ) );
+    out.playNote( 1.5 + i*2.0, 0.3, new ToneInstrument( 1750, 0.02 ) );
+    out.playNote( 1.75 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07 ) );
+    out.playNote( 2.0 + i*2.0, 0.3, new ToneInstrument( 1750, 0.02 ) );
+    out.playNote( 2.25 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07 ) );
+    out.playNote( 2.5 + i*2.0, 0.3, new ToneInstrument( 5550, 0.09 ) );
+    out.playNote( 2.75 + i*2.0, 0.3, new ToneInstrument( 3750, 0.07 ) );
   }
   // resume time after a bunch of notes are added at once
   out.resumeNotes();

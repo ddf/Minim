@@ -5,17 +5,27 @@ import ddf.minim.Minim;
 import ddf.minim.UGen;
 
 /**
- * A UGen that starts at an amplitude value
- * and changes to zero over a specified time.
- * All times are measured in seconds.
+ * A UGen that generates a simple envelope that changes from a starting value to a
+ * middle value during an "attack" phase and then changes to an ending value 
+ * during a "damp" or "decay" phase. By default, if you only specify a damp time,
+ * it will change from 1 to 0 over that period of time. Specifying only attack and 
+ * damp time, it will ramp up from 0 to 1 over the attack time and then 1 to 0 over 
+ * the damp time. All times are specified in seconds.
+ * 
+ * @example Synthesis/dampExample
+ * 
  * @author Anderson Mills
  *
+ * @related UGen
  */
 public class Damp extends UGen
 {
 	/**
 	 *  The default input is "audio." You don't need to patch directly to this input,
 	 *  patching to the UGen itself will accomplish the same thing.
+	 *  
+	 *  @related Damp
+	 *  @related UGen.UGenInput
 	 */
 	public UGenInput audio;
 
@@ -57,6 +67,7 @@ public class Damp extends UGen
 	{
 		this( 0.0f, 1.0f, 1.0f, 0.0f, 0.0f );
 	}
+	
 	/**
 	 * Constructor for Damp envelope.
 	 * attackTime, rise time of the damp envelope, defaults to 0.
@@ -65,12 +76,13 @@ public class Damp extends UGen
 	 * and aftAmp, amplitude after the damp envelope,
 	 * default to 0.
 	 * @param dampTime
-	 * 			decay time of the damp envelope
+	 * 			float: decay time of the damp envelope, in seconds
 	 */
 	 public Damp( float dampTime )
 	{
 		this( 0.0f, dampTime, 1.0f, 0.0f, 0.0f );
 	}
+	 
 	/**
 	 * Constructor for Damp envelope.
 	 * maxAmp, maximum amlitude of the damp envelope, defaults to 1.
@@ -78,42 +90,44 @@ public class Damp extends UGen
 	 * and aftAmp, amplitude after the damp envelope,
 	 * default to 0.
 	 * @param attackTime 
-	 * 			rise time of the damp envelope
+	 * 			float: rise time of the damp envelope, in seconds
 	 * @param dampTime
-	 * 			decay time of the damp envelope
+	 * 			float: decay time of the damp envelope, in seconds
 	 */	
 	public Damp( float attackTime, float dampTime )
 	{
 		this( attackTime, dampTime, 1.0f, 0.0f, 0.0f );
 	}
+	
 	/**
 	 * Constructor for Damp envelope.
 	 * befAmp, amplitude before the damp envelope,
 	 * and aftAmp, amplitude after the damp envelope,
 	 * default to 0.
 	 * @param attackTime 
-	 * 			rise time of the damp envelope
+	 * 			float: rise time of the damp envelope, in seconds
 	 * @param dampTime
-	 * 			decay time of the damp envelope
+	 * 			float: decay time of the damp envelope, in seconds
 	 * @param maxAmp
-	 * 			maximum amlitude of the damp envelope
+	 * 			float: maximum amplitude of the damp envelope
 	 */
 	public Damp( float attackTime, float dampTime, float maxAmp )
 	{
 		this( attackTime, dampTime, maxAmp, 0.0f, 0.0f );
 	}
+	
 	/**
 	 * Constructor for Damp envelope.
 	 * @param attackTime 
-	 * 			rise time of the damp envelope
+	 * 			float: rise time of the damp envelope, in seconds
 	 * @param dampTime
-	 * 			decay time of the damp envelope
+	 * 			float: decay time of the damp envelope, in seconds
 	 * @param maxAmp
-	 * 			maximum amlitude of the damp envelope
+	 * 			float: maximum amplitude of the damp envelope
 	 * @param befAmp
-	 * 			amplitude before the damp envelope
+	 * 			float: amplitude before the damp envelope
 	 * @param aftAmp
-	 * 			amplitude after the damp envelope
+	 * 			float: amplitude after the damp envelope
 	 */
 	public Damp( float attackTime, float dampTime, float maxAmp, float befAmp, float aftAmp )
 	{
@@ -132,6 +146,10 @@ public class Damp extends UGen
 	
 	/**
 	 * Specifies that the damp envelope should begin.
+	 * 
+	 * @example Synthesis/dampExample
+	 * 
+	 * @related Damp
 	 */
 	public void activate()
 	{
@@ -148,8 +166,11 @@ public class Damp extends UGen
 	
 	/**
 	 * Permits the setting of the attackTime parameter.
+	 * 
 	 * @param attackTime
-	 * 			rise time of the damp envelope
+	 * 			float: rise time of the damp envelope, in seconds
+	 * 
+	 * @related Damp
 	 */
 	public void setAttackTime( float attackTime )
 	{
@@ -158,8 +179,11 @@ public class Damp extends UGen
 	
 	/**
 	 * Permits the setting of the attackTime parameter.
+	 * 
 	 * @param dampTime
-	 * 			decay time of the damp envelope
+	 * 			float: decay time of the damp envelope, in seconds
+	 * 
+	 * @related Damp
 	 */
 	public void setDampTime( float dampTime )
 	{
@@ -167,13 +191,19 @@ public class Damp extends UGen
 	}
 	
 	/**
-	 * Permits the setting of the attackTime parameter.  If attackTime is
-	 * positive, and less than the total duration, then the dampTime is 
-	 * the total duration after the attackTime, otherwise, the attackTime
-	 * and dampTime are both set to half the duration.
+	 * Set the attack time and damp time parameters based on a duration.  
+	 * If the current attack time is positive, and less than the total duration, 
+	 * then the damp time is the total duration after the attack time, otherwise, 
+	 * the attack time and damp time are both set to half the duration.
+	 * 
+	 * @shortdesc Set the attack time and damp time parameters based on a duration.
 	 * 
 	 * @param duration
-	 * 			duration of the entire damp envelope
+	 * 			float: duration of the entire damp envelope, in seconds
+	 * 
+	 * @related Damp
+	 * 
+	 * @example Synthesis/dampExample
 	 */
 	public void setDampTimeFromDuration( float duration )
 	{
@@ -195,9 +225,14 @@ public class Damp extends UGen
 	}	
 
 	/**
-	 * Tell the Damp that it should unpatch itself from the output after the release time.
+	 * Tell this Damp that it should unpatch itself from the output after the release time.
+	 * 
 	 * @param output
-	 * 			AudioOutput for this Damp
+	 * 			AudioOutput: the output this should unpatch from
+	 * 
+	 * @example Synthesis/dampExample
+	 * 
+	 * @related Damp
 	 */
 	public void unpatchAfterDamp( AudioOutput output )
 	{
@@ -206,9 +241,12 @@ public class Damp extends UGen
 	}
 	
 	/**
-	 * The the Damp that it should unpatch itself from this UGen after the release time.
+	 * The UGen this Damp should unpatch itself from after the release time.
+	 * 
 	 * @param output
-	 * 			UGen that this Damp is outputting to.
+	 * 			the UGen that this Damp should unpatch to after the Damp completes
+	 * 
+	 * @related Damp
 	 */
 	public void unpatchAfterDamp( UGen output )
 	{

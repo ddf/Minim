@@ -13,6 +13,8 @@ import ddf.minim.UGen;
  * a balance knob on a typical stereo operates.
  * 
  * @author Anderson Mills
+ * 
+ * @example Synthesis/balanceExample
  *
  */
 public class Balance extends UGen
@@ -22,12 +24,17 @@ public class Balance extends UGen
 	 * The audio input is where audio comes in to be balanced. You won't need to 
 	 * patch to this directly, patching to the balance UGen itself will achieve
 	 * the same thing.
+	 * 
+	 * @related Balance
 	 */
 	public UGenInput audio;
 	
 	/**
 	 * The balance control should be driven by UGens that generate values in the 
 	 * range [-1, 1].
+	 * 
+	 * @related setBalance ( )
+	 * @related Balance
 	 */
 	public UGenInput balance;
 	
@@ -43,7 +50,8 @@ public class Balance extends UGen
 	/**
 	 * Construct a balance with a particular value.
 	 * 
-	 * @param balanceVal a value in the range [-1, 1]
+	 * @param balanceVal 
+	 * 			float: a value in the range [-1, 1]
 	 */
 	public Balance( float balanceVal )
 	{
@@ -53,12 +61,17 @@ public class Balance extends UGen
 		//audio = new UGenInput(InputType.AUDIO);
 		audio = new UGenInput(InputType.AUDIO);
 		balance = new UGenInput(InputType.CONTROL);
-    balance.setLastValue(balanceVal);
+		balance.setLastValue(balanceVal);
 	}
   
   /**
    * Set the balance setting to balanceVal.
+   * 
    * @param balanceVal
+   * 			float: the new value for this Balance
+   * 
+   * @related balance
+   * @related Balance
    */
   public void setBalance( float balanceVal )
   {

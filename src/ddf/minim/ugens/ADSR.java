@@ -4,8 +4,11 @@ import ddf.minim.AudioOutput;
 import ddf.minim.UGen;
 
 /**
- * A UGen that plays input audio through a standard ADSR
- * envelope based on time from noteOn and noteOff
+ * A UGen that plays input audio through a standard ADSR (Attack, Decay, Sustain, Release)
+ * envelope based on time from noteOn and noteOff.
+ * 
+ * @example Synthesis/ADSRExample
+ * 
  * @author Anderson Mills
  *
  */
@@ -16,6 +19,8 @@ public class ADSR extends UGen
 	 *  You won't need to patch to this directly, since 
 	 *  simply patching to the ADSR itself will achieve 
 	 *  the same result.
+	 *  
+	 *  @related ADSR
 	 */
 	public UGenInput audio;
 
@@ -113,8 +118,7 @@ public class ADSR extends UGen
 	}
 	
 	/**
-	 * Constr
-	 * uctor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
+	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
 	 * release time, an amplitude before the envelope.  Amplitude after the envelope is set to 0.
 	 */
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp)
@@ -123,8 +127,22 @@ public class ADSR extends UGen
 	}
 	
 	/**
-	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
-	 * release time, an amplitude before the envelope, and an amplitude after the envelope.
+	 * Constructor for an ADSR envelope.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
+	 * @param attTime
+	 * 			float: the attack time, in seconds
+	 * @param decTime
+	 * 			float: the decay time, in seconds
+	 * @param susLvl
+	 * 			float: the percentage of the maximum amplitude to maintain after the decay completes
+	 * @param relTime
+	 * 			float: the release time, in seconds
+	 * @param befAmp
+	 * 			float: the amplitude to apply before the envelope is activated
+	 * @param aftAmp
+	 * 			float: the amplitude to apply once the envelope has completed
 	 */
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp, float aftAmp)
 	{
@@ -147,6 +165,23 @@ public class ADSR extends UGen
 	
 	/**
 	 * Permits the changing of the ADSR parameters.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
+	 * @param attTime
+	 * 			float: the attack time, in seconds
+	 * @param decTime
+	 * 			float: the decay time, in seconds
+	 * @param susLvl
+	 * 			float: the percentage of the maximum amplitude to maintain after the decay completes
+	 * @param relTime
+	 * 			float: the release time, in seconds
+	 * @param befAmp
+	 * 			float: the amplitude to apply before the envelope is activated
+	 * @param aftAmp
+	 * 			float: the amplitude to apply once the envelope has completed
+	 * 
+	 * @related ADSR
 	 */
 	public void setParameters( float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp, float aftAmp)
 	{
@@ -161,6 +196,10 @@ public class ADSR extends UGen
 	
 	/**
 	 * Specifies that the ADSR envelope should begin.
+	 * 
+	 * @example Synthesis/ADSRExample
+	 * 
+	 * @related ADSR
 	 */
 	public void noteOn()
 	{
@@ -173,6 +212,10 @@ public class ADSR extends UGen
 	}
 	/**
 	 * Specifies that the ADSR envelope should start the release time.
+	 * 
+	 * @example Synthesis/ADSRExample
+	 * 
+	 * @related ADSR
 	 */
 	public void noteOff()
 	{
@@ -191,7 +234,13 @@ public class ADSR extends UGen
 	
 	/**
 	 * Tell the ADSR that it should unpatch itself from the output after the release time.
-	 * @param output the output this should unpatch itself from
+	 * 
+	 * @param output 
+	 * 			AudioOutput: the output this should unpatch itself from
+	 * 
+	 * @example Synthesis/ADSRExample
+	 * 
+	 * @related ADSR
 	 */
 	public void unpatchAfterRelease( AudioOutput output )
 	{
@@ -202,6 +251,10 @@ public class ADSR extends UGen
 	/**
 	 * Tell the ADSR that it should unpatch itself from this UGen after the release time.
 	 * 
+	 * @param ugen
+	 * 			the UGen this should unpatch itself from
+	 * 
+	 * @related ADSR
 	 */
 	public void unpatchAfterRelease( UGen ugen )
 	{

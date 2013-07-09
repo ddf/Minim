@@ -6,7 +6,8 @@
    frequency "stair step" because we don't smoothly change the value, we simply set it
    every frame.
    <p>
-   For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+   For more information about Minim and additional features, 
+   visit http://code.compartmental.net/minim/
    <p>
    author: Damien Di Fede
 */

@@ -14,6 +14,8 @@ public class Abs extends UGen
 {
 	/**
 	 * The input that we will take the absolute value of.
+	 * 
+	 * @related Abs
 	 */
 	public UGenInput audio;
 	

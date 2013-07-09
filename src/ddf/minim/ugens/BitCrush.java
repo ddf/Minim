@@ -9,7 +9,7 @@ import ddf.minim.UGen;
  * <p>
  * Audio is represented digitally (ultimately) as an integral value. If you 
  * have 16-bit audio, then you can represent a sample value with any number 
- * in the range -32,768 to +32,767. If you bit-crush this audio do be 8-bit,
+ * in the range -32,768 to +32,767. If you bit-crush this audio to be 8-bit,
  * then you effectively reduce it representation to -128 to +127, even though 
  * you will still represent it with a 16-bit number. This reduction in the 
  * fidelity of the representation essentially squares off the waveform, 
@@ -17,7 +17,10 @@ import ddf.minim.UGen;
  * what you get!
  *  
  * @author Anderson Mills
+ * 
+ * @example Synthesis/bitCrushExample
  *
+ * @related UGen
  */
 public class BitCrush extends UGen
 {
@@ -27,6 +30,8 @@ public class BitCrush extends UGen
 	 * The audio input is where audio that gets bit-crushed should be patched. 
 	 * However, you don't need to patch directly to this input, patching to
 	 * the UGen itself will accomplish the same thing.
+	 * 
+	 * @related BitCrush
 	 */
 	public UGenInput audio;
 	
@@ -34,6 +39,11 @@ public class BitCrush extends UGen
 	 * Control the bit resolution with another UGen by patching to bitRes. Values that 
 	 * make sense for this start at 1 and go up to whatever the actual resolution of 
 	 * the incoming audio is (typically 16).
+	 * 
+	 * @example Synthesis/bitCrushExample
+	 * 
+	 * @related setBitRes ( )
+	 * @related BitCrush
 	 */
 	public UGenInput bitRes;
 	
@@ -41,6 +51,10 @@ public class BitCrush extends UGen
      * Control the bit rate with another UGen by patching to bitRate.
      * Values that make sense for this start at 1 and go up to whatever the
      * sample rate of your AudioOutput are (typically 44100)
+     * 
+     * @example Synthesis/bitCrushExample
+	 * 
+	 * @related BitCrush
      */
     public UGenInput bitRate;
 	
@@ -59,8 +73,10 @@ public class BitCrush extends UGen
 	/**
 	 * Construct a BitCrush with the specified bit resolution and bit rate.
 	 * 
-	 * @param localBitRes typically you'll want this in the range [1,16]
-	 * @param localBitRate this must be in the range [1,outputSampleRate] 
+	 * @param localBitRes 
+	 * 			float: typically you'll want this in the range [1,16]
+	 * @param localBitRate 
+	 * 			float: this must be in the range [1,outputSampleRate] 
 	 */
 	public BitCrush( float localBitRes, float localBitRate )
 	{
@@ -88,7 +104,11 @@ public class BitCrush extends UGen
 	/**
 	 * Set the bit resolution directly.
 	 * 
-	 * @param localBitRes typically you'll want this in the range [1,16]
+	 * @param localBitRes 
+	 * 			float: typically you'll want this in the range [1,16]
+	 * 
+	 * @related bitRes
+	 * @related BitCrush
 	 */
 	public void setBitRes(float localBitRes)
 	{

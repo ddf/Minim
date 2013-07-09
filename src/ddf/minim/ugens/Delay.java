@@ -23,17 +23,23 @@ public class Delay extends UGen
 	 * @related UGen.UGenInput
 	 */
 	public UGenInput audio;
+	
 	/**
 	 * the time for delay between repetitions.
+	 * 
+	 * @example Synthesis/delayExample
 	 * 
 	 * @related setDelTime ( )
 	 * @related Delay
 	 * @related UGen.UGenInput
 	 */
 	public UGenInput delTime;
+	
 	/**
 	 * the strength of each repetition compared to the previous. 
 	 * often labeled as feedback on delay units.
+	 * 
+	 * @example Synthesis/delayExample
 	 * 
 	 * @related setDelAmp ( )
 	 * @related Delay
