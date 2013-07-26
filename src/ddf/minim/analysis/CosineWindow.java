@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">The Cosine Window</a>
+ * 
+ * @invisible
  */
 public class CosineWindow extends WindowFunction
 {

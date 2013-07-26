@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">The Blackman Window</a>
+ * 
+ * @invisible
  */
 public class BlackmanWindow extends WindowFunction
 {

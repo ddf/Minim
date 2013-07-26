@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">The Hamming Window</a>
+ * 
+ * @invisible
  *
  */
 public class HammingWindow extends WindowFunction

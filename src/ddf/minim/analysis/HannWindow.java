@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">The Hann Window</a>
+ * 
+ * @invisible
  */
 public class HannWindow extends WindowFunction
 {

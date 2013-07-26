@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">The Bartlett-Hann Window</a>
+ * 
+ * @invisible
  */
 public class BartlettHannWindow extends WindowFunction
 {

@@ -25,6 +25,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">The Rectangular Window</a>
+ * 
+ * @invisible
  */
 public class RectangularWindow extends WindowFunction
 {

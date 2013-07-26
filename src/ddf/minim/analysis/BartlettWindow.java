@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">The Bartlett Window</a>
+ * 
+ * @invisible
  */
 public class BartlettWindow extends WindowFunction
 {

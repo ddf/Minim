@@ -136,6 +136,8 @@ import ddf.minim.Minim;
  * 
  * @author Damien Di Fede
  * @see <a href="http://www.dspguide.com/ch8.htm">The Discrete Fourier Transform</a>
+ * 
+ * @invisible
  */
 public abstract class FourierTransform
 {

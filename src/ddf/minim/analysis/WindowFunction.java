@@ -51,6 +51,7 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * 
+ * @invisible
  */
 public abstract class WindowFunction
 {

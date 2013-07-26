@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">The Lanczos Window</a>
+ * 
+ * @invisible
  */
 public class LanczosWindow extends WindowFunction
 {

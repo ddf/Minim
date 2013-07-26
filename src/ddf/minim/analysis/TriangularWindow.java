@@ -24,6 +24,8 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">The Triangular Window</a>
+ * 
+ * @invisible
  */
 public class TriangularWindow extends WindowFunction
 {

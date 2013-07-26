@@ -26,6 +26,8 @@ import ddf.minim.Minim;
  * @author Damien Di Fede
  * @author Corban Brook
  * @see   <a href="http://en.wikipedia.org/wiki/Window_function#Gauss_windows">The Gauss Window</a>
+ * 
+ * @invisible
  */
 public class GaussWindow extends WindowFunction
 {

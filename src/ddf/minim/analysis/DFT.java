@@ -35,6 +35,8 @@ import ddf.minim.Minim;
  * @see FFT
  * @see <a href="http://www.dspguide.com/ch8.htm">The Discrete Fourier Transform</a>
  * 
+ * @invisible
+ * 
  */
 public class DFT extends FourierTransform
 {

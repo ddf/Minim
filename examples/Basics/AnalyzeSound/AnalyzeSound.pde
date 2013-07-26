@@ -8,7 +8,8 @@
   * visualizations like this before in music players 
   * and car stereos.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.analysis.*;
