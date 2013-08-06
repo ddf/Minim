@@ -43,7 +43,7 @@ import ddf.minim.Minim;
  * In other words, given a signal of length <code>N</code>, there will be
  * <code>N/2</code> frequency bands in the spectrum.
  * <p>
- * As an example, if you construct a FourierTransform with a
+ * As an example, if you construct an FFT with a
  * <code>timeSize</code> of 1024 and and a <code>sampleRate</code> of 44100
  * Hz, then the spectrum will contain values for frequencies below 22010 Hz,
  * which is the Nyquist frequency (half the sample rate). If you ask for the

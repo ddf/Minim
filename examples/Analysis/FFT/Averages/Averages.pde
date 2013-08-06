@@ -7,7 +7,8 @@
   * - The spectrum grouped into 30 linearly spaced averages.<br/>
   * - The spectrum grouped logarithmically into 10 octaves, each split into 3 bands.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
  
 import ddf.minim.analysis.*;

@@ -281,6 +281,7 @@ public abstract class FourierTransform
   /**
    * Sets the object to not compute averages.
    * 
+   * @related FFT
    */
   public void noAverages()
   {
@@ -294,7 +295,11 @@ public abstract class FourierTransform
    * <code>specSize() / numAvg</code> bands wide.
    * 
    * @param numAvg
-   *          how many averages to compute
+   *          int: how many averages to compute
+   *          
+   * @example Analysis/SoundSpectrum
+   * 
+   * @related FFT
    */
   public void linAverages(int numAvg)
   {
@@ -323,9 +328,13 @@ public abstract class FourierTransform
    * not be exactly the value specified.
    * 
    * @param minBandwidth
-   *          the minimum bandwidth used for an octave
+   *          int: the minimum bandwidth used for an octave, in Hertz.
    * @param bandsPerOctave
-   *          how many bands to split each octave into
+   *          int: how many bands to split each octave into
+   *
+   * @example Analysis/SoundSpectrum
+   * 
+   * @related FFT
    */
   public void logAverages(int minBandwidth, int bandsPerOctave)
   {
@@ -346,7 +355,9 @@ public abstract class FourierTransform
    * If an invalid window is asked for, an error will be reported and the
    * current window will not be changed.
    * 
-   * @param windowFunction
+   * @param WindowFunction: windowFunction
+   * 
+   * @related FFT
    */
 
   public void window(WindowFunction windowFunction)
@@ -369,7 +380,9 @@ public abstract class FourierTransform
   /**
    * Returns the length of the time domain signal expected by this transform.
    * 
-   * @return the length of the time domain signal expected by this transform
+   * @return int: the length of the time domain signal expected by this transform
+   * 
+   * @related FFT
    */
   public int timeSize()
   {
@@ -381,7 +394,11 @@ public abstract class FourierTransform
    * the number of frequency bands produced by this transform. This is typically
    * equal to <code>timeSize()/2 + 1</code>, see above for an explanation.
    * 
-   * @return the size of the spectrum
+   * @return int: the size of the spectrum
+   * 
+   * @example Basics/AnalyzeSound
+   * 
+   * @related FFT
    */
   public int specSize()
   {
@@ -392,8 +409,13 @@ public abstract class FourierTransform
    * Returns the amplitude of the requested frequency band.
    * 
    * @param i
-   *          the index of a frequency band
-   * @return the amplitude of the requested frequency band
+   *          int: the index of a frequency band
+   *          
+   * @return float: the amplitude of the requested frequency band
+   * 
+   * @example Basics/AnalyzeSound
+   * 
+   * @related FFT
    */
   public float getBand(int i)
   {
@@ -407,7 +429,9 @@ public abstract class FourierTransform
    * be noted that the bandwidth of the first and last frequency bands is half
    * as large as the value returned by this function.
    * 
-   * @return the width of each frequency band in Hz.
+   * @return float: the width of each frequency band in Hz.
+   * 
+   * @related FFT
    */
   public float getBandWidth()
   {
@@ -419,8 +443,18 @@ public abstract class FourierTransform
    * and the return value of getAverageCenterFrequency you can determine the 
    * lower and upper frequency of any average band.
    * 
+   * @param averageIndex
+   * 			int: the index of the average you want the bandwidth of
+   * 
+   * @return float: the bandwidth of the request average band, in Hertz.
+   * 
+   * @example Analysis/SoundSpectrum
+   * 
    * @see #getAverageCenterFrequency(int)
+   * 
    * @related getAverageCenterFrequency ( )
+   * @related FFT
+   *
    */
   public float getAverageBandWidth( int averageIndex )
   {
@@ -462,9 +496,13 @@ public abstract class FourierTransform
    * <code>inverse()</code>.
    * 
    * @param i
-   *          the frequency band to modify
+   *          int: the frequency band to modify
    * @param a
-   *          the new amplitude
+   *          float: the new amplitude
+   *          
+   * @example Analysis/FFT/SetBand
+   * 
+   * @related FFT
    */
   public abstract void setBand(int i, float a);
 
@@ -474,9 +512,13 @@ public abstract class FourierTransform
    * <code>inverse()</code>.
    * 
    * @param i
-   *          the frequency band to modify
+   *          int: the frequency band to modify
    * @param s
-   *          the scaling factor
+   *          float: the scaling factor
+   *          
+   * @example Analysis/FFT/ScaleBand
+   * 
+   * @related FFT
    */
   public abstract void scaleBand(int i, float s);
 
@@ -485,8 +527,13 @@ public abstract class FourierTransform
    * frequency.
    * 
    * @param freq
-   *          the frequency you want the index for (in Hz)
-   * @return the index of the frequency band that contains freq
+   *          float: the frequency you want the index for (in Hz)
+   *          
+   * @return int: the index of the frequency band that contains freq
+   * 
+   * @related FFT
+   * 
+   * @example Analysis/SoundSpectrum
    */
   public int freqToIndex(float freq)
   {
@@ -502,8 +549,15 @@ public abstract class FourierTransform
   
   /**
    * Returns the middle frequency of the i<sup>th</sup> band.
+   * 
    * @param i
-   *        the index of the band you want to middle frequency of
+   *        int: the index of the band you want to middle frequency of
+   * 
+   * @return float: the middle frequency, in Hertz, of the requested band of the spectrum
+   * 
+   * @example Analysis/FFT/BandCenters
+   * 
+   * @related FFT
    */
   public float indexToFreq(int i)
   {
@@ -529,7 +583,15 @@ public abstract class FourierTransform
    * Returns the center frequency of the i<sup>th</sup> average band.
    * 
    * @param i
-   *     which average band you want the center frequency of.
+   *     int: which average band you want the center frequency of.
+   *     
+   * @return float: the center frequency of the i<sup>th</sup> average band.
+   * 
+   * @example Analysis/FFT/BandCenters
+   * 
+   * @related FFT
+   * 
+   * @example Analysis/SoundSpectrum
    */
   public float getAverageCenterFrequency(int i)
   {
@@ -576,8 +638,11 @@ public abstract class FourierTransform
    * Gets the amplitude of the requested frequency in the spectrum.
    * 
    * @param freq
-   *          the frequency in Hz
-   * @return the amplitude of the frequency in the spectrum
+   *          float: the frequency in Hz
+   *          
+   * @return float: the amplitude of the frequency in the spectrum
+   * 
+   * @related FFT
    */
   public float getFreq(float freq)
   {
@@ -589,9 +654,13 @@ public abstract class FourierTransform
    * <code>a</code>.
    * 
    * @param freq
-   *          the frequency in Hz
+   *          float: the frequency in Hz
    * @param a
-   *          the new amplitude
+   *          float: the new amplitude
+   *          
+   * @example Analysis/FFT/SetFreq
+   * 
+   * @related FFT
    */
   public void setFreq(float freq, float a)
   {
@@ -602,9 +671,13 @@ public abstract class FourierTransform
    * Scales the amplitude of the requested frequency by <code>a</code>.
    * 
    * @param freq
-   *          the frequency in Hz
+   *          float: the frequency in Hz
    * @param s
-   *          the scaling factor
+   *          float: the scaling factor
+   *          
+   * @example Analysis/FFT/ScaleFreq
+   * 
+   * @related FFT
    */
   public void scaleFreq(float freq, float s)
   {
@@ -614,7 +687,11 @@ public abstract class FourierTransform
   /**
    * Returns the number of averages currently being calculated.
    * 
-   * @return the length of the averages array
+   * @return int: the length of the averages array
+   * 
+   * @example Analysis/FFT/Averages
+   * 
+   * @related FFT
    */
   public int avgSize()
   {
@@ -625,8 +702,12 @@ public abstract class FourierTransform
    * Gets the value of the <code>i<sup>th</sup></code> average.
    * 
    * @param i
-   *          the average you want the value of
-   * @return the value of the requested average band
+   *          int: the average you want the value of
+   * @return float: the value of the requested average band
+   * 
+   * @example Analysis/FFT/Averages
+   * 
+   * @related FFT
    */
   public float getAvg(int i)
   {
@@ -643,10 +724,13 @@ public abstract class FourierTransform
    * <code>lowFreq</code> and <code>hiFreq</code>, inclusive.
    * 
    * @param lowFreq
-   *          the lower bound of the band
+   *          float: the lower bound of the band, in Hertz
    * @param hiFreq
-   *          the upper bound of the band
-   * @return the average of all spectrum values within the bounds
+   *          float: the upper bound of the band, in Hertz
+   *          
+   * @return float: the average of all spectrum values within the bounds
+   * 
+   * @related FFT
    */
   public float calcAvg(float lowFreq, float hiFreq)
   {
@@ -663,6 +747,10 @@ public abstract class FourierTransform
   
   /**
    * Get the Real part of the Complex representation of the spectrum.
+   * 
+   * @return float[]: an array containing the values for the Real part of the spectrum.
+   * 
+   * @related FFT
    */
   public float[] getSpectrumReal()
   {
@@ -671,6 +759,10 @@ public abstract class FourierTransform
   
   /**
    * Get the Imaginary part of the Complex representation of the spectrum.
+   * 
+   * @return float[]: an array containing the values for the Imaginary part of the spectrum.
+   * 
+   * @related FFT
    */
   public float[] getSpectrumImaginary()
   {
@@ -682,7 +774,11 @@ public abstract class FourierTransform
    * Performs a forward transform on <code>buffer</code>.
    * 
    * @param buffer
-   *          the buffer to analyze
+   *          float[]: the buffer to analyze, must be the same length as timeSize()
+   *    
+   * @example Basics/AnalyzeSound
+   * 
+   * @related FFT
    */
   public abstract void forward(float[] buffer);
   
@@ -690,9 +786,9 @@ public abstract class FourierTransform
    * Performs a forward transform on values in <code>buffer</code>.
    * 
    * @param buffer
-   *          the buffer of samples
+   *          float[]: the buffer to analyze, must be the same length as timeSize()
    * @param startAt
-   *          the index to start at in the buffer. there must be at least timeSize() samples
+   *          int: the index to start at in the buffer. there must be at least timeSize() samples
    *          between the starting index and the end of the buffer. If there aren't, an
    *          error will be issued and the operation will not be performed.
    *          
@@ -717,7 +813,8 @@ public abstract class FourierTransform
    * Performs a forward transform on <code>buffer</code>.
    * 
    * @param buffer
-   *          the buffer to analyze
+   *          AudioBuffer: the buffer to analyze
+   *         
    */
   public void forward(AudioBuffer buffer)
   {
@@ -728,10 +825,12 @@ public abstract class FourierTransform
    * Performs a forward transform on <code>buffer</code>.
    * 
    * @param buffer
-   *          the buffer of samples
+   *          AudioBuffer: the buffer to analyze
    * @param startAt
-   *          the index to start at in the buffer. there must be at least timeSize() samples
-   *          between the starting index and the end of the buffer.
+   *          int: the index to start at in the buffer. there must be at least timeSize() samples
+   *          between the starting index and the end of the buffer. If there aren't, an
+   *          error will be issued and the operation will not be performed.
+   *         
    */
   public void forward(AudioBuffer buffer, int startAt)
   {
@@ -743,7 +842,11 @@ public abstract class FourierTransform
    * result in <code>buffer</code>.
    * 
    * @param buffer
-   *          the buffer to place the result of the inverse transform in
+   *          float[]: the buffer to place the result of the inverse transform in
+   *          
+   * @example Analysis/FFT/Inverse_Transform
+   *          
+   * @related FFT
    */
   public abstract void inverse(float[] buffer);
 
@@ -752,7 +855,9 @@ public abstract class FourierTransform
    * result in <code>buffer</code>.
    * 
    * @param buffer
-   *          the buffer to place the result of the inverse transform in
+   *          AudioBuffer: the buffer to place the result of the inverse transform in
+   *          
+   * @example Analysis/FFT/Inverse_Transform
    */
   public void inverse(AudioBuffer buffer)
   {
@@ -764,11 +869,11 @@ public abstract class FourierTransform
    * freqReal and freqImag and places the result in buffer.
    * 
    * @param freqReal
-   *          the real part of the frequency spectrum
+   *          float[]: the real part of the frequency spectrum
    * @param freqImag
-   *          the imaginary part the frequency spectrum
+   *          float[]: the imaginary part the frequency spectrum
    * @param buffer
-   *          the buffer to place the inverse transform in
+   *          float[]: the buffer to place the inverse transform in
    */
   public void inverse(float[] freqReal, float[] freqImag, float[] buffer)
   {
