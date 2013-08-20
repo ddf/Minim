@@ -22,19 +22,17 @@ import ddf.minim.AudioBuffer;
 import ddf.minim.Minim;
 
 /**
- * The BeatDetect class allows you to analyze an audio stream for beats
- * (rhythmic onsets). <a
- * href="http://www.gamedev.net/reference/programming/features/beatdetection">Beat
- * Detection Algorithms</a> by Fr�d�ric Patin describes beats in the following
+ * The BeatDetect class allows you to analyze an audio stream for beats (rhythmic onsets). 
+ * <a href="http://www.gamedev.net/reference/programming/features/beatdetection">Beat
+ * Detection Algorithms</a> by Frederic Patin describes beats in the following
  * way: <blockquote> The human listening system determines the rhythm of music
- * by detecting a pseudo � periodical succession of beats. The signal which is
+ * by detecting a pseudo periodical succession of beats. The signal which is
  * intercepted by the ear contains a certain energy, this energy is converted
  * into an electrical signal which the brain interprets. Obviously, The more
  * energy the sound transports, the louder the sound will seem. But a sound will
  * be heard as a <em>beat</em> only if his energy is largely superior to the
  * sound's energy history, that is to say if the brain detects a
- * <em>brutal variation 
- *   in sound energy</em>. Therefore if the ear intercepts
+ * <em>brutal variation in sound energy</em>. Therefore if the ear intercepts
  * a monotonous sound with sometimes big energy peaks it will detect beats,
  * however, if you play a continuous loud sound you will not perceive any beats.
  * Thus, the beats are big variations of sound energy. </blockquote> In fact,
@@ -72,14 +70,21 @@ import ddf.minim.Minim;
  * 
  * @author Damien Di Fede
  * 
+ * @example Analysis/SoundEnergyBeatDetection
  */
 
 public class BeatDetect
 {
-	/** Constant used to request frequency energy tracking mode. */
+	/** Constant used to request frequency energy tracking mode.
+	 * 
+	 *  @example Analysis/FrequencyEnergyBeatDetection
+	 */
 	public static final int	FREQ_ENERGY		= 0;
 
-	/** Constant used to request sound energy tracking mode. */
+	/** Constant used to request sound energy tracking mode.
+	 * 
+	 *  @example Analysis/SoundEnergyBeatDetection
+	 */
 	public static final int	SOUND_ENERGY	= 1;
 
 	private int					algorithm;
@@ -126,9 +131,11 @@ public class BeatDetect
 	 * sample buffer with the requested attributes.
 	 * 
 	 * @param timeSize
-	 *           the size of the buffer
+	 *           int: the size of the buffer
 	 * @param sampleRate
-	 *           the sample rate of the samples in the buffer
+	 *           float: the sample rate of the samples in the buffer
+	 *           
+	 * @related BeatDetect
 	 */
 	public BeatDetect(int timeSize, float sampleRate)
 	{
@@ -146,7 +153,9 @@ public class BeatDetect
 	 * BeatDetect.SOUND_ENERGY
 	 * 
 	 * @param algo
-	 *           either BeatDetect.SOUND_ENERGY or BeatDetect.FREQ_ENERGY
+	 *           int: either BeatDetect.SOUND_ENERGY or BeatDetect.FREQ_ENERGY
+	 *           
+	 * @related BeatDetect
 	 */
 	public void detectMode(int algo)
 	{
@@ -228,15 +237,42 @@ public class BeatDetect
 	}
 
 	/**
-	 * Analyze the samples in <code>ab</code>. This is a cumulative process,
-	 * so you must call this function every frame.
+	 * Analyze the samples in <code>buffer</code>. 
+	 * This is a cumulative process, so you must call this function every frame.
 	 * 
-	 * @param ab
-	 *           the AudioBuffer to analyze.
+	 * @param buffer
+	 *           AudioBuffer: the buffer to analyze.
+	 *           
+	 * @example Analysis/SoundEnergyBeatDetection
+	 * 
+	 * @related BeatDetect
 	 */
-	public void detect(AudioBuffer ab)
+	public void detect(AudioBuffer buffer)
 	{
-		detect(ab.toArray());
+		detect( buffer.toArray() );
+	}
+	
+
+	/**
+	 * Analyze the samples in <code>buffer</code>. This is a cumulative
+	 * process, so you must call this function every frame.
+	 * 
+	 * @param buffer
+	 *           float[]: the buffer to analyze
+	 *           
+	 * @related BeatDetect
+	 */
+	public void detect(float[] buffer)
+	{
+		switch (algorithm)
+		{
+		case SOUND_ENERGY:
+			sEnergy(buffer);
+			break;
+		case FREQ_ENERGY:
+			fEnergy(buffer);
+			break;
+		}
 	}
 	
 	/**
@@ -244,6 +280,8 @@ public class BeatDetect
 	 * currently being used. In sound energy mode this always returns 0.
 	 * 
 	 * @return int: the length of the FFT's averages array
+	 * 
+	 * @related BeatDetect
 	 */
 	public int dectectSize()
 	{
@@ -261,6 +299,10 @@ public class BeatDetect
 	 * 
 	 * @param i
 	 *     int: which detect band you want the center frequency of.
+	 *     
+	 *  @return float: the center frequency of the i<sup>th</sup> frequency band
+	 *  
+	 *  @related BeatDetect
 	 */
 	public float getDetectCenterFrequency(int i)
 	{
@@ -273,30 +315,42 @@ public class BeatDetect
 	}
 
 	/**
-	 * Analyze the samples in <code>buffer</code>. This is a cumulative
-	 * process, so you must call this function every frame.
+	 * Sets the sensitivity of the algorithm. After a beat has been detected, the
+	 * algorithm will wait for <code>millis</code> milliseconds before allowing
+	 * another beat to be reported. You can use this to dampen the algorithm if
+	 * it is giving too many false-positives. The default value is 10, which is
+	 * essentially no damping. If you try to set the sensitivity to a negative
+	 * value, an error will be reported and it will be set to 10 instead.
 	 * 
-	 * @param buffer
-	 *           the buffer to analyze
+	 * @param millis
+	 *           int: the sensitivity in milliseconds
+	 *           
+	 * @example Analysis/FrequencyEnergyBeatDetection
+	 * 
+	 * @related BeatDetect
 	 */
-	public void detect(float[] buffer)
+	public void setSensitivity(int millis)
 	{
-		switch (algorithm)
+		if (millis < 0)
 		{
-		case SOUND_ENERGY:
-			sEnergy(buffer);
-			break;
-		case FREQ_ENERGY:
-			fEnergy(buffer);
-			break;
+			Minim.error("BeatDetect: sensitivity cannot be less than zero. Defaulting to 10.");
+			sensitivity = 10;
+		}
+		else
+		{
+			sensitivity = millis;
 		}
 	}
-
+	
 	/**
 	 * In sound energy mode this returns true when a beat has been detected. In
 	 * frequency energy mode this always returns false.
 	 * 
-	 * @return true if a beat has been detected.
+	 * @return boolean: true if a beat has been detected.
+	 * 
+	 * @example Analysis/SoundEnergyBeatDetection
+	 * 
+	 * @related BeatDetect
 	 */
 	public boolean isOnset()
 	{
@@ -309,8 +363,12 @@ public class BeatDetect
 	 * this always returns false.
 	 * 
 	 * @param i
-	 *           the frequency band to query
-	 * @return true if a beat has been detected in the requested band
+	 *           int: the frequency band to query
+	 * @return boolean: true if a beat has been detected in the requested band
+	 * 
+	 * @example Analysis/SoundEnergyBeatDetection
+	 * 
+	 * @related BeatDetect
 	 */
 	public boolean isOnset(int i)
 	{
@@ -327,7 +385,11 @@ public class BeatDetect
 	 * work well with dance / techno music and may not perform well with other
 	 * styles of music. In sound energy mode this always returns false.
 	 * 
-	 * @return true if a kick drum beat has been detected
+	 * @return boolean: true if a kick drum beat has been detected
+	 * 
+	 * @example Analysis/FrequencyEnergyBeatDetection
+	 * 
+	 * @related BeatDetect
 	 */
 	public boolean isKick()
 	{
@@ -345,7 +407,11 @@ public class BeatDetect
 	 * work well with dance / techno music and may not perform well with other
 	 * styles of music. In sound energy mode this always returns false.
 	 * 
-	 * @return true if a snare drum beat has been detected
+	 * @return boolean: true if a snare drum beat has been detected
+	 * 
+	 * @example Analysis/FrequencyEnergyBeatDetection
+	 * 
+	 * @related BeatDetect
 	 */
 	public boolean isSnare()
 	{
@@ -365,7 +431,11 @@ public class BeatDetect
 	 * well with dance / techno music and may not perform well with other styles
 	 * of music. In sound energy mode this always returns false.
 	 * 
-	 * @return true if a hi hat beat has been detected
+	 * @return boolean: true if a hi hat beat has been detected
+	 * 
+	 * @example Analysis/FrequencyEnergyBeatDetection
+	 * 
+	 * @related BeatDetect
 	 */
 	public boolean isHat()
 	{
@@ -385,16 +455,18 @@ public class BeatDetect
 	 * this always returns false.
 	 * 
 	 * @param low
-	 *           the index of the lower band
+	 *           int: the index of the lower band
 	 * @param high
-	 *           the index of the higher band
+	 *           int: the index of the higher band
 	 * @param threshold
-	 *           the smallest number of bands in the range
+	 *           int: the smallest number of bands in the range
 	 *           <code>[low, high]</code> that need to have registered a beat
 	 *           for this to return true
-	 * @return true if at least <code>threshold</code> bands of the bands
+	 * @return boolean: true if at least <code>threshold</code> bands of the bands
 	 *         included in the range <code>[low, high]</code> have registered a
 	 *         beat
+	 *         
+	 * @related BeatDetect
 	 */
 	public boolean isRange(int low, int high, int threshold)
 	{
@@ -411,30 +483,6 @@ public class BeatDetect
 			}
 		}
 		return num >= threshold;
-	}
-
-	/**
-	 * Sets the sensitivity of the algorithm. After a beat has been detected, the
-	 * algorithm will wait for <code>s</code> milliseconds before allowing
-	 * another beat to be reported. You can use this to dampen the algorithm if
-	 * it is giving too many false-positives. The default value is 10, which is
-	 * essentially no damping. If you try to set the sensitivity to a negative
-	 * value, an error will be reported and it will be set to 10 instead.
-	 * 
-	 * @param s
-	 *           the sensitivity in milliseconds
-	 */
-	public void setSensitivity(int s)
-	{
-		if (s < 0)
-		{
-			Minim.error("BeatDetect: sensitivity cannot be less than zero. Defaulting to 10.");
-			sensitivity = 10;
-		}
-		else
-		{
-			sensitivity = s;
-		}
 	}
 
 	/**

@@ -5,7 +5,8 @@
   * <p>
   * This sketch plays an entire song, so it may be a little slow to load.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
   
 import ddf.minim.*;
