@@ -39,5 +39,10 @@ public class LanczosWindow extends WindowFunction
       float x = 2 * index / (float) (length - 1) - 1;
       return (float) (Math.sin(Math.PI * x) / (Math.PI * x));
   }
+  
+  public String toString()
+  {
+	  return "Lanczos Window";
+  }
 }
 

@@ -38,6 +38,11 @@ public class TriangularWindow extends WindowFunction
   {
      return 2f / length * (length / 2f - Math.abs(index - (length - 1) / 2f));
   }
+  
+  public String toString()
+  {
+	  return "Triangular Window";
+  }
 }
 
 

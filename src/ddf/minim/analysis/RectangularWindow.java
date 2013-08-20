@@ -39,5 +39,10 @@ public class RectangularWindow extends WindowFunction
   {
     return 1f;
   }
+  
+  public String toString()
+  {
+	  return "Rectangular Window";
+  }
 }
 

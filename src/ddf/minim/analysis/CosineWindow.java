@@ -38,4 +38,9 @@ public class CosineWindow extends WindowFunction
   {
     return (float) (Math.cos(Math.PI * index / (length - 1) - Math.PI / 2));
   }
+  
+  public String toString()
+  {
+	  return "Cosine Window";
+  }
 }

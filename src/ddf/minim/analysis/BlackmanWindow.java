@@ -51,5 +51,10 @@ public class BlackmanWindow extends WindowFunction
 
       return a0 - a1 * (float) Math.cos(TWO_PI * index / (length - 1)) + a2 * (float) Math.cos(4 * Math.PI * index / (length - 1));
   }
+  
+  public String toString()
+  {
+	  return "Blackman Window";
+  }
 }
 

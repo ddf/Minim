@@ -38,4 +38,9 @@ public class HannWindow extends WindowFunction
   {
       return 0.5f * (1f - (float) Math.cos(TWO_PI * index / (length - 1f)));
   }
+  
+  public String toString()
+  {
+	  return "Hann Window";
+  }
 }

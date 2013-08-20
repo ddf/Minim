@@ -54,4 +54,9 @@ public class GaussWindow extends WindowFunction
   {
     return (float) Math.pow(Math.E, -0.5 * Math.pow((index - (length - 1) / (double) 2) / (this.alpha * (length - 1) / (double) 2), (double) 2));
   }
+  
+  public String toString()
+  {
+	  return "Gauss Window";
+  }
 }

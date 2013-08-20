@@ -38,5 +38,10 @@ public class BartlettWindow extends WindowFunction
   {
       return 2f / (length - 1) * ((length - 1) / 2f - Math.abs(index - (length - 1) / 2f));
   }
+  
+  public String toString()
+  {
+	  return "Bartlett Window";
+  }
 }
 

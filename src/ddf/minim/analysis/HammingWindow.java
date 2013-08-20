@@ -39,5 +39,10 @@ public class HammingWindow extends WindowFunction
   {
     return 0.54f - 0.46f * (float) Math.cos(TWO_PI * index / (length - 1));
   }
+  
+  public String toString()
+  {
+	  return "Hamming Window";
+  }
 }
 
