@@ -16,16 +16,13 @@ AudioRecorder recorder;
 void setup()
 {
   size(512, 200, P3D);
-  textMode(SCREEN); 
   
   minim = new Minim(this);
 
   in = minim.getLineIn();
-  // create a recorder that will record from the input to the filename specified, using buffered recording
-  // buffered recording means that all captured audio will be written into a sample buffer
-  // then when save() is called, the contents of the buffer will actually be written to a file
+  // create a recorder that will record from the input to the filename specified
   // the file will be located in the sketch's root folder.
-  recorder = minim.createRecorder(in, "myrecording.wav", true);
+  recorder = minim.createRecorder(in, "myrecording.wav");
   
   textFont(createFont("Arial", 12));
 }

@@ -19,7 +19,7 @@
 package ddf.minim;
 
 /**
- * AudioMetaData provides information commonly found in ID3 tags. 
+ * <code>AudioMetaData</code> provides information commonly found in ID3 tags. 
  * However, other audio formats, such as Ogg, can contain
  * similar information. So rather than refer to this information
  * as ID3Tags or similar, we simply call it metadata. This base 
@@ -31,11 +31,14 @@ package ddf.minim;
  * 
  * @example Basics/GetMetaData
  */
-
 public abstract class AudioMetaData
-{
+{	
 	/**
 	 * The length of the recording in milliseconds.
+	 * 
+	 * @return int: the length in milliseconds
+	 * 
+	 * @related AudioMetaData
 	 */
 	public int length()
 	{
@@ -45,6 +48,10 @@ public abstract class AudioMetaData
 	/**
 	 * 
 	 * How many sample frames are in this recording.
+	 * 
+	 * @return int: the number of sample frames
+	 * 
+	 * @related AudioMetaData
 	 */
 	public int sampleFrameCount()
 	{
@@ -53,6 +60,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The name of the file / URL of the recording.
+	 * 
+	 * @return String: the file name
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String fileName()
 	{
@@ -61,6 +72,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The title of the recording.
+	 * 
+	 * @return String: the title tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String title()
 	{
@@ -69,6 +84,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The author or the recording.
+	 * 
+	 * @return String: the author tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String author()
 	{
@@ -77,6 +96,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The album the recording came from.
+	 * 
+	 * @return String: the album tab
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String album()
 	{
@@ -85,6 +108,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The date the recording was made.
+	 * 
+	 * @return String: the date tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String date()
 	{
@@ -93,6 +120,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The comment field in the file.
+	 * 
+	 * @return String: the comment tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String comment()
 	{
@@ -104,6 +135,10 @@ public abstract class AudioMetaData
 	 * This will sometimes be in the form 3/10,
 	 * giving you both the track number and total
 	 * tracks on the album this track came from.
+	 * 
+	 * @return String: the track tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String track()
 	{
@@ -112,6 +147,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The genre of the recording.
+	 * 
+	 * @return String: the genre tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String genre()
 	{
@@ -120,6 +159,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The copyright of the recording.
+	 * 
+	 * @return String: the copyright tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String copyright()
 	{
@@ -128,6 +171,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The disc number of the recording.
+	 * 
+	 * @return String: the disc tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String disc()
 	{
@@ -136,6 +183,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The composer of the recording.
+	 * 
+	 * @return String: the composer tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String composer()
 	{
@@ -144,6 +195,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The orchestra that performed the recording.
+	 * 
+	 * @return String: the orchestra tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String orchestra()
 	{
@@ -152,6 +207,10 @@ public abstract class AudioMetaData
 	
 	/** 
 	 * The publisher of the recording.
+	 * 
+	 * @return String: the publisher tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String publisher()
 	{
@@ -160,6 +219,10 @@ public abstract class AudioMetaData
 	
 	/**
 	 * The software the recording was encoded with.
+	 * 
+	 * @return String: the encoded tag
+	 * 
+	 * @related AudioMetaData
 	 */
 	public String encoded()
 	{

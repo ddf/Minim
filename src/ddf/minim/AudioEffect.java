@@ -26,13 +26,17 @@ package ddf.minim;
  * remain in the range [-1, 1]. All of the effects included with Minim implement
  * this interface and all you need to do to write your own effects is to create
  * a class that implements this interface and then add an instance of it to an
- * anything that is {@link Effectable}, such as an {@link AudioOutput}.
+ * anything that is <code>Effectable</code>, such as an <code>AudioOutput</code>.
+ * <p>
+ * This interface is Deprecated and will likely be removed from a future version 
+ * of Minim. We now recommend implementing your effects by extending <code>UGen</code>.
  * 
  * @author Damien Di Fede
  * @invisible
  * 
  */
 
+@Deprecated
 public interface AudioEffect
 { 
   /**

@@ -663,6 +663,32 @@ public class Minim
 
 		return sampleRate;
 	}
+	
+	/**
+	 * Creates an AudioRecorder that will use the provided Recordable object as its
+	 * record source and that will save to the file name specified. Recordable 
+	 * classes in Minim include AudioOutput, AudioInput, AudioPlayer, and AudioSample.
+	 * The format of the file will be inferred from the extension in the file name. 
+	 * If the extension is not a recognized file type, this will return null.
+	 * 
+	 * @shortdesc Creates an AudioRecorder.
+	 * 
+	 * @example Basics/RecordAudioOutput
+	 * 
+	 * @param source
+	 *            the <code>Recordable</code> object you want to use as a record source
+	 * @param fileName
+	 *            the name of the file to record to
+	 * 
+	 * @return an <code>AudioRecorder</code> for the record source
+	 * 
+	 * @related AudioRecorder
+	 */
+	
+	public AudioRecorder createRecorder( Recordable source, String fileName )
+	{
+		return createRecorder( source, fileName, false );
+	}
 
 	/**
 	 * Creates an AudioRecorder that will use the provided Recordable object as its
@@ -688,6 +714,7 @@ public class Minim
 	 * @return an <code>AudioRecorder</code> for the record source
 	 * 
 	 * @related AudioRecorder
+	 * @invisible
 	 */
 	public AudioRecorder createRecorder(Recordable source, String fileName, boolean buffered)
 	{
@@ -698,7 +725,7 @@ public class Minim
 		}
 		else
 		{
-			error( "Couldn't create a SampleRecorder." );
+			error( "Couldn't create an AudioRecorder for " + fileName + "." );
 		}
 		return null;
 	}

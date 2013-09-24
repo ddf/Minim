@@ -20,7 +20,8 @@ package ddf.minim;
 
 /**
  * An <code>AudioListener</code> can be used to monitor <code>Recordable</code> 
- * objects. Each time a <code>Recordable</code> object receives a new sample buffer 
+ * objects such as <code>AudioPlayer</code>, <code>AudioOutput</code>, and <code>AudioInput</code>. 
+ * Each time a <code>Recordable</code> object receives a new sample buffer 
  * from the audio system, or generates a new sample buffer at the request of the 
  * audio system, it passes a copy of this buffer to its listeners. You can 
  * implement this interface if you want to receive samples in a callback fashion, 
@@ -32,6 +33,10 @@ package ddf.minim;
  * @example Advanced/AddAndRemoveAudioListener
  * 
  * @author Damien Di Fede
+ * 
+ * @related AudioPlayer
+ * @related AudioInput
+ * @related AudioOutput
  */
 public interface AudioListener
 {
@@ -43,6 +48,8 @@ public interface AudioListener
    * 
    * @param samp 
    * 	a float[] buffer of samples from a MONO sound stream
+   * 
+   * @related AudioListener
    */
   void samples(float[] samp);
   
@@ -54,6 +61,8 @@ public interface AudioListener
    * 	a float[] buffer containing the left channel of a STEREO sound stream
    * @param sampR 
    * 	a float[] buffer containing the right channel of a STEREO sound stream
+   * 
+   * @related AudioListener
    */
   void samples(float[] sampL, float[] sampR);
   

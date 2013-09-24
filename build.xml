@@ -25,7 +25,7 @@
   </target>
 
   <target name="doc">
-	<javadoc sourcepath="src" destdir="javadoc">
+	<javadoc sourcepath="src" packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis" destdir="javadoc">
 		<classpath refid="deps.path"/>
 		<!-- ignore all the prodoc tags -->
 	  	<tag name="example" enabled="false"/>

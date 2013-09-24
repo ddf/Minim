@@ -24,7 +24,8 @@ import ddf.minim.spi.SampleRecorder;
 
 /**
  * An <code>AudioRecorder</code> can be used to record audio that is being
- * played by a <code>Recordable</code> object. An <code>AudioRecorder</code>
+ * played by a <code>Recordable</code> object such as an <code>AudioOutput</code>, 
+ * <code>AudioInput</code>, or <code>AudioPlayer</code>. An <code>AudioRecorder</code>
  * need not necessarily record to disk, but the recorders you receive from
  * Minim's createRecorder method will do so.
  * 

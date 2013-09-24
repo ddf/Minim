@@ -19,11 +19,11 @@
 package ddf.minim;
 
 /**
- * An <code>AudioBuffer</code> is specifically a buffer of floating point samples 
+ * An <code>AudioBuffer</code> is a buffer of floating point samples 
  * corresponding to a single channel of streaming audio. It is readonly, but you 
  * can obtain a copy of the samples in the buffer by using {@link #toArray()}. In 
  * fact, when drawing a waveform, you should use <code>toArray</code> rather than 
- * iterating over the buffer itself. This is because it is possible that the samples 
+ * iterating over the buffer itself because it is possible that the samples 
  * in the buffer will be replaced with new ones between calls to {@link #get(int)}, 
  * which results in a waveform that appears to have discontinuities in it.
  * 

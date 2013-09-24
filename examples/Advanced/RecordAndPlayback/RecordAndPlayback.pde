@@ -32,11 +32,10 @@ void setup()
   // get a stereo line-in: sample buffer length of 2048
   // default sample rate is 44100, default bit depth is 16
   in = minim.getLineIn(Minim.STEREO, 2048);
-  // create an AudioRecorder that will record from in to the filename specified, using buffered recording
-  // buffered recording means that all captured audio will be written into a sample buffer
-  // then, when save() is called, the contents of the buffer will actually be written to a file
+  
+  // create an AudioRecorder that will record from in to the filename specified.
   // the file will be located in the sketch's main folder.
-  recorder = minim.createRecorder(in, "myrecording.wav", true);
+  recorder = minim.createRecorder(in, "myrecording.wav");
   
   // get an output we can playback the recording on
   out = minim.getLineOut( Minim.STEREO );
@@ -71,10 +70,10 @@ void keyReleased()
 {
   if ( key == 'r' ) 
   {
-    // to indicate that you want to start or stop capturing audio data, you must call
-    // startRecording() and stopRecording() on the AudioFileOut object. You can start and stop
-    // as many times as you like, the audio data will be appended to the end of the buffer 
-    // (in the case of buffered recording) or to the end of the file (in the case of streamed recording). 
+    // to indicate that you want to start or stop capturing audio data, 
+    // you must callstartRecording() and stopRecording() on the AudioRecorder object. 
+    // You can start and stop as many times as you like, the audio data will 
+    // be appended to the end of to the end of the file. 
     if ( recorder.isRecording() ) 
     {
       recorder.endRecord();
