@@ -110,6 +110,7 @@ public class AudioSource extends Controller implements Effectable, Recordable
 	/**
 	 * Closes this source, making it unavailable.
 	 * 
+	 * @invisible
 	 */
 	public void close()
 	{

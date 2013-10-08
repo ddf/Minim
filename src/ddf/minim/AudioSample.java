@@ -32,6 +32,9 @@ import ddf.minim.spi.AudioOut;
  * <p>
  * AudioSample also provides most of the same methods as AudioPlayer for
  * controlling volume, panning, and so forth.
+ * <p>
+ * We now recommend using <code>Sampler</code> class from the ugens package because it is more
+ * full-featured than <code>AudioSample</code>.
  * 
  * @example Basics/TriggerASample
  * 
@@ -45,7 +48,20 @@ import ddf.minim.spi.AudioOut;
 
 public abstract class AudioSample extends AudioSource
 {
+	/**
+	 * int used to request the left channel of audio from the getChannel method.
+	 * 
+	 * @related getChannel ( )
+	 * @related AudioSample
+	 */
 	static public final int	LEFT	= 1;
+	
+	/**
+	 * int used to request the right channel of audio from the getChannel method.
+	 * 
+	 * @related getChannel ( )
+	 * @related AudioSample
+	 */
 	static public final int	RIGHT	= 2;
 
 	protected AudioSample(AudioOut output)
@@ -60,22 +76,27 @@ public abstract class AudioSample extends AudioSource
 	 * 
 	 * @shortdesc Get the AudioMetaData for this sample.
 	 * 
+	 * @example Basics/GetMetaData
+	 * 
 	 * @return the AudioMetaData for the sample.
 	 * 
 	 * @related AudioMetaData
+	 * @related AudioSample
 	 */
 	public abstract AudioMetaData getMetaData();
 
 	/**
-	 * Gets the samples for the requested channel number as a float array. Use
-	 * either AudioSample.LEFT or AudioSample.RIGHT.
+	 * Gets the samples for the requested channel number as a float array. 
+	 * Use either AudioSample.LEFT or AudioSample.RIGHT.
 	 * 
 	 * @example Advanced/AudioSampleGetChannel
 	 * 
 	 * @param channelNumber
-	 *            the channel you want the samples for
+	 *            int: the channel you want the samples for
 	 *            
 	 * @return float[]: the samples in the specified channel
+	 * 
+	 * @related AudioSample
 	 */
 	public abstract float[] getChannel(int channelNumber);
 
@@ -83,6 +104,8 @@ public abstract class AudioSample extends AudioSource
 	 * Gets the length in milliseconds of this AudioSample.
 	 * 
 	 * @return int: the length in milliseconds
+	 * 
+	 * @related AudioSample
 	 */
 	public abstract int length();
 
@@ -90,11 +113,16 @@ public abstract class AudioSample extends AudioSource
 	 * Triggers the sound to play once. Can be called again before the sound
 	 * finishes playing.
 	 * 
+	 * @example Basics/TriggerASample
+	 * 
+	 * @related AudioSample
 	 */
 	public abstract void trigger();
 
 	/**
 	 * Stops all sound being produced by this AudioSample.
+	 * 
+	 * @related AudioSample
 	 */
 	public abstract void stop();
 }

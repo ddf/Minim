@@ -22,12 +22,12 @@ import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecordingStream;
 
 /**
- * An AudioPlayer provides a self-contained way of playing a 
+ * An <code>AudioPlayer</code> provides a self-contained way of playing a 
  * sound file by streaming it from disk (or the internet). It
  * provides methods for playing and looping the file, as well 
  * as methods for setting the position in the file and 
  * looping a section of the file. You can obtain an 
- * AudioPlayer by using the loadFile method of the Minim 
+ * <code>AudioPlayer</code> by using the loadFile method of the Minim 
  * class.
  * 
  * @example Basics/PlayAFile
@@ -70,6 +70,9 @@ public class AudioPlayer extends AudioSource implements Playable
     * 
     * @shortdesc Starts playback from the current position.
     * 
+    * @example Basics/PlayAFile
+    * 
+    * @related AudioPlayer
     */
 	public void play()
 	{
@@ -83,7 +86,9 @@ public class AudioPlayer extends AudioSource implements Playable
     * @shortdesc Starts playback some number of milliseconds into the file.
     * 
     * @param millis 
-    * 			int: how many milliseconds from the beginning of the file to begin playback from 
+    * 			int: how many milliseconds from the beginning of the file to begin playback from
+    * 
+    *  @related AudioPlayer
     */
 	public void play(int millis)
 	{
@@ -93,6 +98,10 @@ public class AudioPlayer extends AudioSource implements Playable
 
 	/**
 	 * Pauses playback.
+	 * 
+	 * @example AudioPlayer/pause
+	 * 
+	 * @related AudioPlayer
 	 */
 	public void pause()
 	{
@@ -100,7 +109,11 @@ public class AudioPlayer extends AudioSource implements Playable
 	}
 
    /**
-    * Rewinds to the beginning. This <i>does not</i> stop playback. 
+    * Rewinds to the beginning. This <i>does not</i> stop playback.
+    * 
+    * @example AudioPlayer/rewind
+    * 
+    * @related AudioPlayer
     */
 	public void rewind()
 	{
@@ -118,6 +131,10 @@ public class AudioPlayer extends AudioSource implements Playable
     * 
     * @param num
     *          int: the number of times to loop
+    *          
+    * @example AudioPlayer/loopNum
+    *          
+	* @related AudioPlayer
     */
 	public void loop(int num)
 	{
@@ -131,6 +148,10 @@ public class AudioPlayer extends AudioSource implements Playable
     * If it is not playing, it will start playing.
     * 
     * @shortdesc Sets the <code>AudioPlayer</code> to loop indefinitely.
+    * 
+    * @example AudioPlayer/loop
+    * 
+    * @related AudioPlayer
     */
 	public void loop()
 	{
@@ -141,6 +162,10 @@ public class AudioPlayer extends AudioSource implements Playable
     * Returns the number of loops left to do. 
     * 
     * @return int: the number of loops left
+    * 
+    * @example AudioPlayer/loopNum
+    * 
+    * @related AudioPlayer
     */
 	public int loopCount()
 	{
@@ -155,6 +180,10 @@ public class AudioPlayer extends AudioSource implements Playable
     * @shortdesc Returns the length of the sound in milliseconds.
     * 
     * @return int: the length of the sound in milliseconds
+    * 
+    * @example Advanced/CueAnAudioPlayer
+    * 
+    * @related AudioPlayer
     */
 	public int length()
 	{
@@ -168,6 +197,8 @@ public class AudioPlayer extends AudioSource implements Playable
     * @example Advanced/CueAnAudioPlayer
     * 
     * @return int: the current position of the "playhead" in milliseconds
+    * 
+    * @related AudioPlayer
     */
 	public int position()
 	{
@@ -191,6 +222,7 @@ public class AudioPlayer extends AudioSource implements Playable
     * 			int: the millisecond position to place the "playhead"
     * 
     * @related length ( )
+    * @related AudioPlayer
     */
 	public void cue(int millis)
 	{
@@ -216,6 +248,10 @@ public class AudioPlayer extends AudioSource implements Playable
 	   * 
 	   * @param millis 
 	   * 			int: how many milliseconds to skip, sign indicates direction
+	   * 
+	   * @example AudioPlayer/skip
+	   * 
+	   * @related AudioPlayer
 	   */
 	public void skip(int millis)
 	{
@@ -237,6 +273,10 @@ public class AudioPlayer extends AudioSource implements Playable
     * and has more than one loop left to play.
     * 
     * @return true if this is looping, false if not
+    * 
+    * @example AudioPlayer/loopNum
+    * 
+    * @related AudioPlayer
     */
 	public boolean isLooping()
 	{
@@ -247,6 +287,10 @@ public class AudioPlayer extends AudioSource implements Playable
     * Indicates if the <code>AudioPlayer</code> is currently playing.
     * 
     * @return true if this is currently playing, false if not
+    * 
+    * @example AudioPlayer/loopNum
+    * 
+    * @related AudioPlayer
     */
 	public boolean isPlaying()
 	{
@@ -256,7 +300,12 @@ public class AudioPlayer extends AudioSource implements Playable
 	/**
 	 * Returns the meta data for the recording being played by this player.
 	 * 
-	 * @return the meta data for this player's recording
+	 * @return AudioMetaData: the meta data for this player's recording
+	 * 
+	 * @example Basics/GetMetaData
+	 * 
+	 * @related AudioPlayer
+	 * @related AudioMetaData
 	 */
 	public AudioMetaData getMetaData()
 	{
@@ -270,6 +319,10 @@ public class AudioPlayer extends AudioSource implements Playable
     * 		int: the start of the loop in milliseconds
     * @param stop 
     * 		int: the end of the loop in milliseconds
+    * 
+    * @example AudioPlayer/setLoopPoints
+    * 
+    * @related AudioPlayer
     */
 	public void setLoopPoints(int start, int stop)
 	{
@@ -285,6 +338,10 @@ public class AudioPlayer extends AudioSource implements Playable
 	 * called automatically when your application exits.
 	 * 
 	 * @shortdesc Release the resources associated with playing this file.
+	 * 
+	 * @related AudioPlayer
+	 * 
+	 * @invisible 
 	 */
 	public void close()
 	{

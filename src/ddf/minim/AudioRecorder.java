@@ -66,6 +66,9 @@ public class AudioRecorder
    * 
    * @shortdesc Begins recording audio from the current record source.
    * 
+   * @example Advanced/RecordAndPlayback
+   * 
+   * @related AudioRecorder
    */
   public void beginRecord()
   {
@@ -75,6 +78,9 @@ public class AudioRecorder
   /**
    * Halts the recording of audio from the current record source.
    * 
+   * @example Advanced/RecordAndPlayback
+   * 
+   * @related AudioRecorder
    */
   public void endRecord()
   {
@@ -85,6 +91,10 @@ public class AudioRecorder
    * Returns the current record state.
    * 
    * @return true if this is currently recording
+   * 
+   * @example Advanced/RecordAndPlayback
+   * 
+   * @related AudioRecorder
    */
   public boolean isRecording()
   {
@@ -107,6 +117,10 @@ public class AudioRecorder
    * @shortdesc Requests that the recorder saves.
    * 
    * @return the audio that was recorded as an <code>AudioRecordingStream</code>
+   * 
+   * @example Advanced/RecordAndPlayback
+   * 
+   * @related AudioRecorder
    */
   // TODO: this should return whatever our "file handle" interface winds up being.
   public AudioRecordingStream save()
@@ -125,6 +139,8 @@ public class AudioRecorder
    * 
    * @param recordSource
    *          an AudioSample, AudioPlayer, AudioInput, or AudioOutput
+   *          
+   * @related AudioRecorder
    */
   public void setRecordSource(Recordable recordSource)
   {

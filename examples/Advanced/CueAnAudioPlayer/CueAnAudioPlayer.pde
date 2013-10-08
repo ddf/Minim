@@ -1,5 +1,5 @@
 /**
-  * This sketch demonstrates how to use the cue< method of AudioPlayer. 
+  * This sketch demonstrates how to use the cue method of AudioPlayer. 
   * When you cue, it is always measured from the beginning of the recording. 
   * So cue(100) will set the "playhead" at 100 milliseconds from the beginning 
   * no matter where it currently is. Cueing an AudioPlayer will not change the playstate, 
