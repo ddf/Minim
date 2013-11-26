@@ -61,6 +61,7 @@ import ddf.minim.spi.AudioStream;
  */
 public class AudioInput extends AudioSource
 {  
+  boolean m_isMonitoring; 
   
   /** @invisible
    * 
@@ -79,10 +80,32 @@ public class AudioInput extends AudioSource
   }
   
   /**
+   * Returns whether or not this AudioInput is monitoring.
+   * In other words, whether you will hear in your speakers
+   * the audio coming into the input.
+   * 
+   * @return boolean: true if monitoring is on
+   * 
+   * @example Basics/MonitorInput
+   * 
+   * @related enableMonitoring ( )
+   * @related disableMonitoring ( )
+   * @related AudioInput
+   */
+  public boolean isMonitoring()
+  {
+	  return m_isMonitoring;
+  }
+  
+  /**
    * When monitoring is enabled, you will be able to hear 
    * the audio that is coming through the input. 
    * 
    * @example Basics/MonitorInput
+   * 
+   * @related disableMonitoring ( )
+   * @related isMonitoring ( )
+   * @related AudioInput
    */
   public void enableMonitoring()
   {
@@ -94,7 +117,9 @@ public class AudioInput extends AudioSource
     else if ( hasControl(GAIN) )
     {
     	setGain( 0 );
-    }	  
+    }	 
+    
+    m_isMonitoring = true;
   }
   
   /**
@@ -110,6 +135,12 @@ public class AudioInput extends AudioSource
    * @shortdesc When monitoring is disabled, you will not hear 
    * the audio that is coming through the input.
    * 
+   * @example Basics/MonitorInput
+   * 
+   * @related enableMonitoring ( )
+   * @related isMonitoring ( )
+   * @related AudioInput
+   * 
    */
   public void disableMonitoring()
   {
@@ -122,5 +153,7 @@ public class AudioInput extends AudioSource
     {
     	setGain( -64 );
     }
+    
+    m_isMonitoring = false;
   }
 }

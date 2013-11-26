@@ -6,9 +6,12 @@
   * it's feasible that the user may have the actual audio output of the computer 
   * as the active audio input, or something else entirely.
   * <p>
+  * Press 'm' to toggle monitoring on and off.
+  * <p>
   * When you run your sketch as an applet you will need to sign it in order to get an input.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/ 
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/ 
   */
 
 import ddf.minim.*;
@@ -24,9 +27,6 @@ void setup()
   
   // use the getLineIn method of the Minim object to get an AudioInput
   in = minim.getLineIn();
-  
-  // uncomment this line to *hear* what is being monitored, in addition to seeing it
-  // in.enableMonitoring();
 }
 
 void draw()
@@ -39,5 +39,23 @@ void draw()
   {
     line( i, 50 + in.left.get(i)*50, i+1, 50 + in.left.get(i+1)*50 );
     line( i, 150 + in.right.get(i)*50, i+1, 150 + in.right.get(i+1)*50 );
+  }
+  
+  String monitoringState = in.isMonitoring() ? "enabled" : "disabled";
+  text( "Input monitoring is currently " + monitoringState + ".", 5, 15 );
+}
+
+void keyPressed()
+{
+  if ( key == 'm' || key == 'M' )
+  {
+    if ( in.isMonitoring() )
+    {
+      in.disableMonitoring();
+    }
+    else
+    {
+      in.enableMonitoring();
+    }
   }
 }

@@ -288,7 +288,7 @@ public class FFT extends FourierTransform
 		  return;  
 	  }
 	  
-	  windowFunction.apply( buffer, startAt, timeSize );
+	  currentWindow.apply( buffer, startAt, timeSize );
 	  bitReverseSamples(buffer, startAt);
 	  fft();
 	  fillSpectrum();

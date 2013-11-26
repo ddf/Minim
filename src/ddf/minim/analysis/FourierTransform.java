@@ -244,7 +244,7 @@ public abstract class FourierTransform
   protected int timeSize;
   protected int sampleRate;
   protected float bandWidth;
-  protected WindowFunction windowFunction;
+  protected WindowFunction currentWindow;
   protected float[] real;
   protected float[] imag;
   protected float[] spectrum;
@@ -270,7 +270,7 @@ public abstract class FourierTransform
     bandWidth = (2f / timeSize) * ((float)sampleRate / 2f);
     noAverages();
     allocateArrays();
-    windowFunction = new RectangularWindow(); // a Rectangular window is analogous to using no window. 
+    currentWindow = new RectangularWindow(); // a Rectangular window is analogous to using no window. 
   }
 
   // allocating real, imag, and spectrum are the responsibility of derived
@@ -429,26 +429,23 @@ public abstract class FourierTransform
    * If an invalid window is asked for, an error will be reported and the
    * current window will not be changed.
    * 
-   * @param WindowFunction: windowFunction
+   * @param windowFunction 
+   * 			the new WindowFunction to use, typically one of the statically defined 
+   * 			windows like HAMMING or BLACKMAN
    * 
    * @related FFT
+   * @related WindowFunction
+   * 
+   * @example Analysis/FFT/Windows
    */
-
   public void window(WindowFunction windowFunction)
   {
-    if ( windowFunction instanceof WindowFunction ) 
-    {
-      this.windowFunction = windowFunction;
-    } 
-    else 
-    {
-      Minim.error("Invalid window type.");
-    }
+	this.currentWindow = windowFunction;
   }
 
   protected void doWindow(float[] samples)
   {
-    windowFunction.apply(samples);
+    currentWindow.apply(samples);
   }
 
   /**

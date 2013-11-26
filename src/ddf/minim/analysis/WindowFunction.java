@@ -51,7 +51,9 @@ package ddf.minim.analysis;
  * @author Damien Di Fede
  * @author Corban Brook
  * 
- * @invisible
+ * @example Analysis/FFT/Windows
+ * 
+ * @related FFT
  */
 public abstract class WindowFunction
 {

@@ -405,6 +405,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	 * 
 	 * @shortdesc Set the tempo of the AudioOutput to change the meaning of start times and durations for notes.
 	 * 
+	 * @example Basics/SequenceSound
+	 * 
 	 * @param tempo
 	 * 		float: the new tempo for the AudioOutput, in BPM (beats per minute)
 	 * 
@@ -420,6 +422,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	 * Tempo is expressed in BPM (beats per minute).
 	 * 
 	 * @return float: the current tempo
+	 * 
+	 * @example Basics/SequenceSound
 	 * 
 	 * @related setTempo ( )
 	 */
@@ -443,6 +447,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	 * @param noteOffset
 	 * 			float: the amount of time added to all start times passed to playNote calls.
 	 * 
+	 * @example Basics/SequenceSound
+	 * 
 	 * @related getNoteOffset ( )
 	 */
 	public void setNoteOffset(float noteOffset)
@@ -454,6 +460,8 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	 * Return the current value of the note offset for this output.
 	 * 
 	 * @return float: the current note offset
+	 * 
+	 * @example Basics/SequenceSound
 	 * 
 	 * @related setNoteOffset ( )
 	 */
@@ -497,13 +505,15 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	/**
 	 * An AudioOutput processes its note queue in its own Thread, 
 	 * so if you are going to queue up a lot of notes at once 
-	 * you will want to use the pauseNotes method before queuing
+	 * you will want to use the <code>pauseNotes</code> method before queuing
 	 * them. If you don't, the timing will be slightly off because the "now" that
 	 * the start time of each note is an offset from will change from note to note.
-	 * Once all of your notes have been added, you call resumeNotes to allow 
+	 * Once all of your notes have been added, you call <code>resumeNotes</code> to allow 
 	 * the AudioOutput to process notes again.
 	 * 
 	 * @shortdesc pause note processing
+	 * 
+	 * @example Basics/SequenceSound
 	 * 
 	 * @related resumeNotes ( )
 	 */
@@ -513,7 +523,9 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	}
 
 	/**
-	 * resume note processing
+	 * Resume note processing.
+	 * 
+	 * @example Basics/SequenceSound
 	 * 
 	 * @see 	#pauseNotes()
 	 * @related pauseNotes ( )
