@@ -40,7 +40,10 @@ This repository is already setup as an Eclipse project. Once you have acquired a
 
 You should now have a browsable project in the package explorer called 'minim' that will auto-build class files. You may encounter errors if you don't have a default JRE set in Eclipse. Make sure that you have an installed JRE by going to Preferences and looking under Java -> Installed JREs.
 
-To build the project, right-click on build.xml and choose Run As -> Ant Build. Once you do this, you can use the build in Processing immediately. It is not necessary to restart Processing after building the library.
+To build the project right-click on build.xml and choose Run As -> Ant Build. 
+Once you do this, you can use the build in Processing immediately. 
+It is not necessary to restart Processing after building the library.
+If you want local documentation, choose Run As -> Ant Build... and make sure that the 'doc' option is checked and then build the project.
 
 CONTRIBUTE
 
