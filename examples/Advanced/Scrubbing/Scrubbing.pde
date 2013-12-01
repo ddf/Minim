@@ -6,7 +6,8 @@
   * <p>
   * The positioning code is inside of the Play, Rewind, and Forward classes, which are in button.pde.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

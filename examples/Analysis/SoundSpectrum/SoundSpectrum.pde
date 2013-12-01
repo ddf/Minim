@@ -6,8 +6,8 @@
   * these can be calculated: <b>Linearly</b>, by grouping equal numbers of adjacent frequency bands, or 
   * <b>Logarithmically</b>, by grouping frequency bands by <i>octave</i>, which is more akin to how humans hear sound.
   * <br/>
-  * This sketch illustrates the difference between viewing the full spectrum, linearly spaced averaged bands, 
-  * and logarithmically spaced averaged bands.
+  * This sketch illustrates the difference between viewing the full spectrum, 
+  * linearly spaced averaged bands, and logarithmically spaced averaged bands.
   * <p>
   * From top to bottom:
   * <ul>

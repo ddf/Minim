@@ -64,6 +64,9 @@ void draw()
     line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
+  
+  text( "Modulation frequency: " + fm.frequency.getLastValue(), 5, 15 );
+  text( "Modulation amplitude: " + fm.amplitude.getLastValue(), 5, 30 );
 }
 
 // we can change the parameters of the frequency modulation Oscil

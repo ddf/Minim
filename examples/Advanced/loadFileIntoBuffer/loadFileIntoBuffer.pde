@@ -5,7 +5,8 @@
   * using it to create a Sampler UGen. You can hear the result of this modification by hitting 
   * the space bar.
   * <p>
-  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+  * For more information about Minim and additional features, 
+  * visit http://code.compartmental.net/minim/
   */
 
 import ddf.minim.*;

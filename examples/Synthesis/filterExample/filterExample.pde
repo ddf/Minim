@@ -2,7 +2,8 @@
  * is an example of using the different filters
  * in continuous sound.
  * <p>
- * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+ * For more information about Minim and additional features, 
+ * visit http://code.compartmental.net/minim/
  * <p> 
  * author: Damien Di Fede, Anderson Mills<br/>
  * Anderson Mills's work was supported by numediart (www.numediart.org)
