@@ -41,7 +41,7 @@ void setup()
   // this opens the file and puts it in the "play" state.                           
   filePlayer = new FilePlayer( myFile );
   // and then we'll tell the recording to loop indefinitely
-  filePlayer.loop();
+  filePlayer.loop(1);
   
   // get a line out from Minim. It's important that the file is the same audio format 
   // as our output (i.e. same sample rate, number of channels, etc).
@@ -90,4 +90,6 @@ void draw()
     line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
+  
+  text( "loopCount: " + filePlayer.loopCount(), 15, 15 );
 }

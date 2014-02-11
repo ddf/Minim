@@ -19,6 +19,7 @@
 package ddf.minim.javasound;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -242,9 +243,22 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         int toLoopEnd = loopEnd - totalBytesRead;
         if ( toLoopEnd <= 0 )
         {
-            // whoops, our loop end point got switched up
-            setMillisecondPosition( loopBegin );
-            readBytesLoop();
+        	System.out.println("Returning to loopBegin because toLoopEnd <= 0");
+        	if ( loop && numLoops != Minim.LOOP_CONTINUOUSLY )
+        	{
+        		numLoops--;
+        	}
+        	
+        	if ( numLoops != 0 )
+        	{
+        		// whoops, our loop end point got switched up
+        		setMillisecondPosition( loopBegin );
+        		readBytesLoop();
+        	}
+        	else
+        	{
+        		Arrays.fill(rawBytes, (byte)0);
+        	}
             return;
         }
         if ( toLoopEnd < rawBytes.length )
@@ -257,12 +271,13 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
             }
             else if ( loop )
             {
+            	System.out.println("Returning to loopBegin because else if loop");
+            	if ( numLoops != Minim.LOOP_CONTINUOUSLY )
+            	{
+            		numLoops--;
+            	}
                 setMillisecondPosition( loopBegin );
                 readBytesWrap( rawBytes.length - toLoopEnd, toLoopEnd );
-                if ( numLoops != Minim.LOOP_CONTINUOUSLY )
-                {
-                    numLoops--;
-                }
             }
         }
         else
@@ -285,12 +300,16 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
                 int actualRead = 0;
                 synchronized ( ais )
                 {
-                    actualRead = ais.read( rawBytes, bytesRead + offset, toRead
-                            - bytesRead );
+                    actualRead = ais.read( rawBytes, bytesRead + offset, toRead - bytesRead );
                 }
                 if ( -1 == actualRead )
                 {
+                	System.out.println("!!!!!!! Looping with numLoops " + numLoops);
                     setMillisecondPosition( 0 );
+                    if ( numLoops != Minim.LOOP_CONTINUOUSLY )
+                    {
+                        numLoops--;
+                    }
                 }
                 else if ( actualRead == 0 )
                 {
