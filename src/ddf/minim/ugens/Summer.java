@@ -43,45 +43,55 @@ public class Summer extends UGen implements AudioSignal
 		// that we might try to tick input between the add finishing and
 		// setAudioChannelCount completing.
 		input.setChannelCount( channelCount() );
-		m_ugens.add( input );
+		synchronized( m_ugens )
+		{
+			m_ugens.add( input );
+		}
 	}
 
 	@Override
 	protected void removeInput(UGen input)
 	{
-		Minim.debug( "Bus::removeInput - Removing " + input
-				+ " to the m_ugens list of " + this );
-		for ( int i = 0; i < m_ugens.size(); ++i )
+		Minim.debug( "Bus::removeInput - Removing " + input + " to the m_ugens list of " + this );
+		synchronized( m_ugens )
 		{
-			if ( m_ugens.get( i ) == input )
+			for ( int i = 0; i < m_ugens.size(); ++i )
 			{
-				m_ugens.set( i, null );
+				if ( m_ugens.get( i ) == input )
+				{
+					m_ugens.set( i, null );
+				}
 			}
 		}
 	}
 
 	protected void sampleRateChanged()
 	{
-		// ddf: need to let all of the UGens in our list know about the sample
-		// rate change
-		for ( int i = 0; i < m_ugens.size(); i++ )
+		// ddf: need to let all of the UGens in our list know about the sample rate change
+		synchronized( m_ugens )
 		{
-			UGen u = m_ugens.get( i );
-			if ( u != null )
+			for ( int i = 0; i < m_ugens.size(); i++ )
 			{
-				u.setSampleRate( sampleRate() );
+				UGen u = m_ugens.get( i );
+				if ( u != null )
+				{
+					u.setSampleRate( sampleRate() );
+				}
 			}
 		}
 	}
 	
 	protected void channelCountChanged()
 	{
-		for( int i = 0; i < m_ugens.size(); ++i )
+		synchronized( m_ugens )
 		{
-			UGen u = m_ugens.get( i );
-			if ( u != null )
+			for( int i = 0; i < m_ugens.size(); ++i )
 			{
-				u.setChannelCount( channelCount() );
+				UGen u = m_ugens.get( i );
+				if ( u != null )
+				{
+					u.setChannelCount( channelCount() );
+				}
 			}
 		}
 		
@@ -96,19 +106,22 @@ public class Summer extends UGen implements AudioSignal
 		{
 			m_tickBuffer = new float[channels.length];
 			// and propagate that to our list
-			for ( int i = 0; i < m_ugens.size(); ++i )
+			synchronized( m_ugens )
 			{
-				UGen u = m_ugens.get( i );
-
-				if ( u != null )
+				for ( int i = 0; i < m_ugens.size(); ++i )
 				{
-					u.setChannelCount( channels.length );
-				}
-				else
-				// a null entry means it was unpatched, so go ahead and cull now
-				{
-					m_ugens.remove( i );
-					--i;
+					UGen u = m_ugens.get( i );
+	
+					if ( u != null )
+					{
+						u.setChannelCount( channels.length );
+					}
+					else
+					// a null entry means it was unpatched, so go ahead and cull now
+					{
+						m_ugens.remove( i );
+						--i;
+					}
 				}
 			}
 		}
@@ -116,29 +129,31 @@ public class Summer extends UGen implements AudioSignal
 		// start with silence
 		Arrays.fill( channels, 0 );
 
-		for ( int i = 0; i < m_ugens.size(); ++i )
+		synchronized( m_ugens )
 		{
-			// m_tickBuffer should be filled with the correct audio
-			// even if this ugen has generated audio already
-			UGen u = m_ugens.get( i );
-
-			if ( u != null )
+			for ( int i = 0; i < m_ugens.size(); ++i )
 			{
-				u.tick( m_tickBuffer );
-				processSampleFrame( m_tickBuffer, channels );
-			}
-			else
-			// a null entry means this ugen was unpatched, so we remove the
-			// entry
-			{
-				m_ugens.remove( i );
-				--i;
+				// m_tickBuffer should be filled with the correct audio
+				// even if this ugen has generated audio already
+				UGen u = m_ugens.get( i );
+	
+				if ( u != null )
+				{
+					u.tick( m_tickBuffer );
+					processSampleFrame( m_tickBuffer, channels );
+				}
+				else
+				// a null entry means this ugen was unpatched, so we remove the
+				// entry
+				{
+					m_ugens.remove( i );
+					--i;
+				}
 			}
 		}
 	}
 
-	// ddf: I broke this out into its own method so that Sink could extend
-	// Summer.
+	// ddf: I broke this out into its own method so that Sink could extend Summer.
 	// Doing this means not having to rewrite all of the UGen list handling
 	// that Summer already does. The only difference between Summer and Sink
 	// is that Sink produces silence.
