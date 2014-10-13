@@ -89,6 +89,11 @@ class MP3MetaData extends BasicMetaData
 		return getTag("mp3.id3tag.composer");
 	}
 	
+	public String lyrics()
+	{
+		return getTag("mp3.id3tag.lyrics");
+	}
+	
 	public String orchestra()
 	{
 		return getTag("mp3.id3tag.orchestra");

@@ -194,6 +194,18 @@ public abstract class AudioMetaData
 	}
 	
 	/**
+	 * The lyrics for the recording, if any.
+	 * 
+	 * @return String: the lyrics tag
+	 * 
+	 * @related AudioMetaData
+	 */
+	public String lyrics()
+	{
+		return "";
+	}
+    
+	/**
 	 * The orchestra that performed the recording.
 	 * 
 	 * @return String: the orchestra tag
