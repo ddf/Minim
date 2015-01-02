@@ -46,6 +46,7 @@ void draw()
   text("Album: " + meta.album(), 5, y+=yi);
   text("Date: " + meta.date(), 5, y+=yi);
   text("Comment: " + meta.comment(), 5, y+=yi);
+  text("Lyrics: " + meta.lyrics(), 5, y+=yi ); 
   text("Track: " + meta.track(), 5, y+=yi);
   text("Genre: " + meta.genre(), 5, y+=yi);
   text("Copyright: " + meta.copyright(), 5, y+=yi);

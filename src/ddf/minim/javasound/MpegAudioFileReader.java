@@ -735,7 +735,7 @@ class MpegAudioFileReader extends TAudioFileReader
 					}
 					if ( code.equals("COMM") || code.equals("USLT") )
 					{
-						value = parseText(bframes, i, size, 5);
+						value = parseComment(bframes, i, size);
 					}
 					else if ( code.startsWith("W") )
 					{
@@ -745,6 +745,7 @@ class MpegAudioFileReader extends TAudioFileReader
 					}
 					else
 					{
+						// ddf: skip 1 byte because it contains the encoding
 						value = parseText(bframes, i, size, 1);
 					}
 					if (value == null)
@@ -772,6 +773,7 @@ class MpegAudioFileReader extends TAudioFileReader
 					}
 					else
 					{
+						// ddf: skip 1 byte because it contains the encoding
 						value = parseText(bframes, i, size, 1);
 					}
 					if ( value == null )
@@ -812,6 +814,45 @@ class MpegAudioFileReader extends TAudioFileReader
 			{
 				enc = ENC_TYPES[bframes[offset]];
 			}
+			value = new String(bframes, offset + skip, size - skip, enc);
+			value = chopSubstring(value, 0, value.length());
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			system.error("ID3v2 Encoding error: " + e.getMessage());
+		}
+		return value;
+	}
+	
+	// comment frames have the following format
+	// Text encoding       $xx
+	// Language            $xx xx xx
+	// Content descriptor  <text string according to encoding> $00 (00)
+	// Lyrics/text         <full text string according to encoding>
+	protected String parseComment(byte[] bframes, int offset, int size)
+	{
+		String value = null;
+		try
+		{
+			String enc = ENC_TYPES[0];
+			if ( bframes[offset] >= 0 && bframes[offset] < 4 )
+			{
+				enc = ENC_TYPES[bframes[offset]];
+			}
+			// move past encoding and language
+			int skip = 4;
+			// move past content descriptor
+			while( bframes[offset+skip] != 0 && skip < size )
+			{
+				skip += 1;
+			}
+			// and skip any zero bytes hanging around
+			// there should only be one, but the mp3 tagger Mp3Tag puts in more than one
+			while( bframes[offset+skip] == 0 && skip < size )
+			{
+				skip += 1;
+			}
+			// finally read the actual text
 			value = new String(bframes, offset + skip, size - skip, enc);
 			value = chopSubstring(value, 0, value.length());
 		}
