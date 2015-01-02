@@ -5,5 +5,7 @@ documentation/
 examples/Playable/
 examples/Recordable/
 dist/
+release/
 *.swp
 .DS_Store
+
