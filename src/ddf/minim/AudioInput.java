@@ -61,7 +61,8 @@ import ddf.minim.spi.AudioStream;
  */
 public class AudioInput extends AudioSource
 {  
-  boolean m_isMonitoring; 
+  boolean 		m_isMonitoring; 
+  AudioStream	m_stream;
   
   /** @invisible
    * 
@@ -77,6 +78,14 @@ public class AudioInput extends AudioSource
     stream.open();
     
     disableMonitoring();
+    
+    m_stream = stream;
+  }
+  
+  public void close()
+  {
+	  super.close();
+	  m_stream.close();
   }
   
   /**
