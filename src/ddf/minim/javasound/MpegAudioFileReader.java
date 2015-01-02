@@ -187,6 +187,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		codeToPropName.put("TPUB", "mp3.id3tag.publisher");
 		codeToPropName.put("TPE2", "mp3.id3tag.orchestra");
 		codeToPropName.put("TLEN", "mp3.id3tag.length");
+		codeToPropName.put("USLT", "mp3.id3tag.lyrics");
 	}
 
 	/**
@@ -732,7 +733,7 @@ class MpegAudioFileReader extends TAudioFileReader
 						system.error("Don't know the ID3 code " + code);
 						continue;
 					}
-					if ( code.equals("COMM") )
+					if ( code.equals("COMM") || code.equals("USLT") )
 					{
 						value = parseText(bframes, i, size, 5);
 					}
