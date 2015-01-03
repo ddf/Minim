@@ -26,6 +26,8 @@ import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.Mixer;
 
+import org.tritonus.share.sampled.AudioUtils;
+
 import ddf.minim.javasound.JSMinim;
 import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioRecording;
@@ -626,7 +628,12 @@ public class Minim
 			// make sure the out buffer is the correct size and type.
 			outBuffer.setChannelCount( channelCount );
 			// how many samples to read total
-			final long totalSampleCount = stream.getSampleFrameLength();
+			long totalSampleCount = stream.getSampleFrameLength();
+			if ( totalSampleCount == -1 )
+			{
+				totalSampleCount = AudioUtils.millis2Frames( stream.getMillisecondLength(), stream.getFormat() );
+			}
+			debug( "Total sample count for " + filename + " is " + totalSampleCount );
 			outBuffer.setBufferSize( (int)totalSampleCount );
 			
 			// now read in chunks.

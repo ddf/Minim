@@ -53,6 +53,10 @@ void draw()
   fill(255);
   // keep us informed about the window being used
   text("The window being used is: " + windowName, 5, 20);
+  
+  Runtime rt = Runtime.getRuntime();
+  long usedMB = (rt.totalMemory() - rt.freeMemory());
+  text( "Memory in use: " + usedMB, 5, 40 );
 }
 
 void keyReleased()

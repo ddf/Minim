@@ -24,6 +24,7 @@ void setup()
   
   // create Minim and an AudioOutput
   minim  = new Minim(this);
+  minim.debugOn();
   output = minim.getLineOut();
   
   // construct a new MultiChannelBuffer with 2 channels and 1024 sample frames.
@@ -35,7 +36,16 @@ void setup()
   // we pass the buffer to the method and Minim will reconfigure it to match 
   // the file. if the file doesn't exist, or there is some other problen with 
   // loading it, the function will return 0 as the sample rate.
-  float sampleRate = minim.loadFileIntoBuffer( "SD.wav", sampleBuffer );
+  float sampleRate = 0;
+  try
+  {
+    sampleRate = minim.loadFileIntoBuffer( "SD.mp3", sampleBuffer );
+  }
+  catch( Exception ex )
+  {
+    println( ex.toString() );
+    ex.printStackTrace();
+  }
   
   // make sure the file load worked
   if ( sampleRate > 0 )
@@ -90,4 +100,3 @@ void keyPressed()
     sampler.trigger();
   }
 }
-
