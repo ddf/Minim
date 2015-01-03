@@ -236,6 +236,8 @@ public class Sampler extends UGen
 		int   release;
 		// whether we are done playing our bit of the sample or not
 		boolean  done;
+		// whether we should start triggering in the next call to generate
+		boolean  triggering;
 		
 		Trigger()
 		{
@@ -245,16 +247,7 @@ public class Sampler extends UGen
 		// start this Trigger playing with the current settings of the Sampler
 		void activate()
 		{
-			beginSample  = (int)Math.min( begin.getLastValue(), sampleData.getBufferSize()-2);
-			endSample    = (int)Math.min( end.getLastValue(), sampleData.getBufferSize()-1 );
-			playbackRate = rate.getLastValue();
-			attackLength = (int)Math.max( sampleRate() * attack.getLastValue(), 1.f );
-			attackAmp    = 0;
-			attackAmpStep = 1.0f / attackLength;
-			release		  = 0;
-			sample		  = beginSample;
-			outSampleCount = 0;
-			done		  = false;
+			triggering = true;
 		}
         
         // stop this trigger
@@ -266,6 +259,21 @@ public class Sampler extends UGen
 		// generate one sample frame of data
 		void generate( float[] sampleFrame )
 		{
+			if ( triggering )
+			{
+				beginSample  = (int)Math.min( begin.getLastValue(), sampleData.getBufferSize()-2);
+				endSample    = (int)Math.min( end.getLastValue(), sampleData.getBufferSize()-1 );
+				playbackRate = rate.getLastValue();
+				attackLength = (int)Math.max( sampleRate() * attack.getLastValue(), 1.f );
+				attackAmp    = 0;
+				attackAmpStep = 1.0f / attackLength;
+				release		  = 0;
+				sample		  = beginSample;
+				outSampleCount = 0;
+				done		  = false;
+				triggering    = false;
+			}
+			
 			if ( done ) return;
 			
 			final float outAmp = amplitude.getLastValue() * attackAmp;
