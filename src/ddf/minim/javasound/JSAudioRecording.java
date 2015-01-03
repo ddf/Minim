@@ -353,8 +353,8 @@ class JSAudioRecording implements AudioRecording, Runnable
         return null;
     }
 
-    public void read(MultiChannelBuffer buffer)
+    public int read(MultiChannelBuffer buffer)
     {
-
+    	return 0;
     }
 }

@@ -646,20 +646,33 @@ public class Minim
 					readBuffer.setBufferSize( (int)(totalSampleCount - totalSamplesRead) );
 				}
 				
-				stream.read( readBuffer );
+				int samplesRead = stream.read( readBuffer );
+				
+				if ( samplesRead == 0 )
+				{
+					debug( "loadSampleIntoBuffer: got 0 samples read" );
+					break;
+				}
 				
 				// copy data from one buffer to the other.
 				for(int i = 0; i < channelCount; ++i)
 				{
 					// a faster way to do this would be nice.
-					for(int s = 0; s < readBuffer.getBufferSize(); ++s)
+					for(int s = 0; s < samplesRead; ++s)
 					{
 						outBuffer.setSample( i, (int)totalSamplesRead+s, readBuffer.getSample( i, s ) );
 					}
 				}
 				
-				totalSamplesRead += readBuffer.getBufferSize();
+				totalSamplesRead += samplesRead;
 			}
+			
+			if ( totalSamplesRead != totalSampleCount )
+			{
+				outBuffer.setBufferSize( (int)totalSamplesRead );
+			}
+			
+			debug("loadSampleIntoBuffer: final output buffer size is " + outBuffer.getBufferSize() );
 			
 			stream.close();
 		}

@@ -156,7 +156,7 @@ final class JSAudioInput extends Thread
 		return samples;
 	}
 
-	public void read(MultiChannelBuffer buffer) 
+	public int read(MultiChannelBuffer buffer) 
 	{
 		// create our converter object
 		int numChannels = line.getFormat().getChannels();
@@ -176,5 +176,7 @@ final class JSAudioInput extends Thread
 		{
 			buffer.setChannel(i, convert.getChannel(i));
 		}
+		
+		return numSamples;
 	}
 }

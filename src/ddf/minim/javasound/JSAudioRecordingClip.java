@@ -154,8 +154,8 @@ class JSAudioRecordingClip implements AudioRecording
 		return null;
 	}
 
-	public void read(MultiChannelBuffer buffer)
+	public int read(MultiChannelBuffer buffer)
 	{
-
+		return 0;
 	}
 }

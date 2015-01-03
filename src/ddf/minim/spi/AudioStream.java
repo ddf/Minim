@@ -46,6 +46,8 @@ public interface AudioStream extends AudioResource
    * AudioStream does.
    * 
    * @param buffer The MultiChannelBuffer to fill with audio samples.
+   * 
+   * @return int: the number of sample frames that were actually read, could be smaller than the size of the buffer.
    */
-  void read(MultiChannelBuffer buffer);
+  int read(MultiChannelBuffer buffer);
 }

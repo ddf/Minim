@@ -202,7 +202,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         }
     }
 
-    private void readBytes()
+    private int readBytes()
     {
         int bytesRead = 0;
         int toRead = rawBytes.length;
@@ -236,6 +236,8 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
             system.error( "Error reading from the file - " + e.getMessage() );
         }
         totalBytesRead += bytesRead;
+        
+        return bytesRead;
     }
 
     private void readBytesLoop()
@@ -663,16 +665,17 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
     }
 
     // FIXME: temporary implementation of read
-    public void read(MultiChannelBuffer outBuffer)
+    public int read(MultiChannelBuffer outBuffer)
     {
         if ( buffer.getSampleCount() != outBuffer.getBufferSize() )
         {	
             buffer.changeSampleCount( outBuffer.getBufferSize(), true );
             rawBytes = new byte[buffer.getByteArrayBufferSize( format )];
         }
+        int framesRead = 0;
         if ( play )
         {
-            mRead();
+        	framesRead = mRead();
         }
         else
         {
@@ -682,24 +685,30 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         {
             outBuffer.setChannel( i, buffer.getChannel(i) );
         }
+        
+        return framesRead;
     }
 
-    private void mRead()
+    // returns number of samples read, not bytes
+    private int mRead()
     {
         // read in a full buffer of bytes from the file
+    	int bytesRead = rawBytes.length;
         if ( loop )
         {
             readBytesLoop();
         }
         else
         {
-            readBytes();
+            bytesRead = readBytes();
         }
         // convert them to floating point
+        int frameCount = bytesRead / format.getFrameSize();
         synchronized ( buffer )
         {
-            int frameCount = rawBytes.length / format.getFrameSize();
             buffer.setSamplesFromBytes( rawBytes, 0, format, 0, frameCount );
         }
+        
+        return frameCount;
     }
 }
