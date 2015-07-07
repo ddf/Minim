@@ -188,6 +188,15 @@ public class Minim
 		mimp.start();
 	}
 
+	/**
+	 * For use with Clojure and easier use in general
+	 * @return
+	 */
+	
+	public static Minim withDefaultFHS() {
+		return new Minim(new DefaultFileSystemHandler());
+	}
+	
 	/** @invisible
 	 * 
 	 * Used internally to report error messages. These error messages will
