@@ -9,7 +9,7 @@ You can accomplish this in two ways:
 * Click on the Downloads button (at https://github.com/ddf/Minim) and select one of the packages provided.
 * Extract the contents of that package into a directory named minim inside of the libraries folder in your sketchbook.
 * Remove the version of Minim that is included with Processing:
-  - On OSX: Find your Processing.app and right click, choose ÒShow Package ContentsÓ. Then dig down to Contents/Resources/Java/modes/java/libraries and delete the minim folder in there.
+  - On OSX: Find your Processing.app and right click, choose Ã’Show Package ContentsÃ“. Then dig down to Contents/Resources/Java/modes/java/libraries and delete the minim folder in there.
   - On Windows: From the directory that contains Processing.exe, dig down to modes/java/libraries and delete the minim folder there. 
 * Open (or restart) Processing and in the Sketch -> Import Library menu you should see 'minim' in the contributed libraries list. 
 
@@ -22,7 +22,7 @@ You can accomplish this in two ways:
 
 * You will now have a readonly copy of this repository that you can keep sync'd by periodically pulling the latest updates ( using 'git pull' ).
 * Remove the version of Minim that is included with Processing:
-  - On OSX: Find your Processing.app and right click, choose ÒShow Package ContentsÓ. Then dig down to Contents/Resources/Java/modes/java/libraries and delete the minim folder in there.
+  - On OSX: Find your Processing.app and right click, choose Ã’Show Package ContentsÃ“. Then dig down to Contents/Resources/Java/modes/java/libraries and delete the minim folder in there.
   - On Windows: From the directory that contains Processing.exe, dig down to modes/java/libraries and delete the minim folder there.
 * Open (or restart) Processing and in the Sketch -> Import Library menu you should see 'minim' in the contributed libraries list. 
 
@@ -66,5 +66,10 @@ If you intend to make changes to the source that you want submit to the main dev
 
 If you change your Active profile, be sure to change it back to 'Minim Standards' before editing Minim source.
 
+PUSHING (TO CLOJARS by default)
+
+1) Please change the `groupId` in `pom.xml` to something relevant to you
+2) Either ensure you have a properly setup SSL access to Clojars or set your preferred repo in `pom.xml`
+3) `mvn deploy`
 
 HAVE FUN!
