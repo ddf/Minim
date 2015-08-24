@@ -10,14 +10,17 @@
 	
   <target name="compile" depends="clean">
     <mkdir dir="bin"/>
-    <javac srcdir="src" destdir="bin" includeAntRuntime="false">
+    <javac 	srcdir="src" 
+    		destdir="bin" 
+    		includeAntRuntime="false" 
+    	>
       <classpath refid="deps.path"/>
     </javac>
   </target>
 
   <target name="library" depends="compile">
     <jar destfile="library/minim.jar" basedir="bin" includes="**/*.class"
-	 excludes="ddf/minim/javasound/*.class">
+	 excludes="ddf/minim/javasound/*.class, ddf/minim/tests/*.class">
     </jar>
     <jar destfile="library/jsminim.jar" basedir="bin"
 	 includes="ddf/minim/javasound/*.class">

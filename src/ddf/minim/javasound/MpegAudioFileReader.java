@@ -338,6 +338,11 @@ class MpegAudioFileReader extends TAudioFileReader
 			aff_properties.put("mp3.header.pos",
 										new Integer(m_bitstream.header_pos()));
 			Header m_header = m_bitstream.readFrame();
+			if ( m_header == null )
+			{
+				throw new UnsupportedAudioFileException("Unable to read mp3 header");
+			}
+			
 			// nVersion = 0 => MPEG2-LSF (Including MPEG2.5), nVersion = 1 => MPEG1
 			nVersion = m_header.version();
 			if (nVersion == 2)
@@ -360,17 +365,17 @@ class MpegAudioFileReader extends TAudioFileReader
 			FrameSize = m_header.calculate_framesize();
 			aff_properties.put("mp3.framesize.bytes", new Integer(FrameSize));
 			if (FrameSize < 0)
-      {
+			{
 				throw new UnsupportedAudioFileException("Invalid FrameSize : " + FrameSize);
-      }
+			}
 			nFrequency = m_header.frequency();
 			aff_properties.put("mp3.frequency.hz", new Integer(nFrequency));
 			FrameRate = (float)((1.0 / (m_header.ms_per_frame())) * 1000.0);
 			aff_properties.put("mp3.framerate.fps", new Float(FrameRate));
 			if (FrameRate < 0)
-      {
+			{
 				throw new UnsupportedAudioFileException("Invalid FrameRate : " + FrameRate);
-      }
+			}
 			if (mLength != AudioSystem.NOT_SPECIFIED)
 			{
 				aff_properties.put("mp3.length.bytes", new Integer(mLength));
@@ -403,24 +408,21 @@ class MpegAudioFileReader extends TAudioFileReader
 		}
 		catch (Exception e)
 		{
-			system.debug("not a MPEG stream:" + e.getMessage());
-			throw new UnsupportedAudioFileException("not a MPEG stream:"
-					+ e.getMessage());
+			system.debug("not a MPEG stream: " + e.toString());
+			throw new UnsupportedAudioFileException("not a MPEG stream: " + e.toString());
 		}
 		// Deeper checks ?
 		int cVersion = (nHeader >> 19) & 0x3;
 		if (cVersion == 1)
 		{
 			system.debug("not a MPEG stream: wrong version");
-			throw new UnsupportedAudioFileException(
-																	"not a MPEG stream: wrong version");
+			throw new UnsupportedAudioFileException("not a MPEG stream: wrong version");
 		}
 		int cSFIndex = (nHeader >> 10) & 0x3;
 		if (cSFIndex == 3)
 		{
 			system.debug("not a MPEG stream: wrong sampling rate");
-			throw new UnsupportedAudioFileException(
-																	"not a MPEG stream: wrong sampling rate");
+			throw new UnsupportedAudioFileException("not a MPEG stream: wrong sampling rate");
 		}
 		// Look up for ID3v1 tag
 		if ((size == mediaLength) && (mediaLength != AudioSystem.NOT_SPECIFIED))

@@ -529,7 +529,7 @@ public class Minim
 	 *            returned AudioPlayer.
 	 * 
 	 * @return an <code>AudioPlayer</code> with a sample buffer of the requested
-	 *         size
+	 *         size, or null if we were unable to load the file
 	 */
 	public AudioPlayer loadFile(String filename, int bufferSize)
 	{
