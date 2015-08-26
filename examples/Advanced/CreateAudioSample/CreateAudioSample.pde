@@ -11,27 +11,18 @@
   */
 
 import ddf.minim.*;
-import ddf.minim.signals.*;
+import ddf.minim.ugens.*;
 // we must import this package to create an AudioFormat object
 import javax.sound.sampled.*;
 
 Minim minim;
 AudioSample wave;
-// we'll use a sine wave signal to generate a buffer of floats
-// that will be used to create an AudioSample.
-SineWave sine;
 
 void setup()
 {
   size(512, 200, P3D);
-  // always start Minim before you do anything with it
-  minim = new Minim(this);
   
-  // make a sine wave!
-  sine = new SineWave( 220,  // frequency in Hz
-                       0.5,  // amplitude
-                       44100 // sample rate
-                     );
+  minim = new Minim(this);
   
   // we'll make a MONO sample, but there is also a version
   // of createSample that you can pass two float arrays to:
@@ -39,13 +30,21 @@ void setup()
   // of a stereo sample.
   float[] samples = new float[1024*8];
   
-  // generate some audio. there will be a click at the end
-  // because we aren't fading it out or anything.
-  sine.generate(samples);
+  float waveFrequency  = 220f;
+  float waveSampleRate = 44100f;
+  
+  // generate the sample by using Waves.SINE
+  float lookUp = 0; 
+  float lookUpStep = waveFrequency / waveSampleRate;
+  for( int i = 0; i < samples.length; ++i )
+  {
+     samples[i] = Waves.SINE.value(lookUp);  
+     lookUp = (lookUp + lookUpStep) % 1.0f;
+  }
   
   // when we create a sample we need to provide an AudioFormat so 
   // the sound will be played back correctly.
-  AudioFormat format = new AudioFormat( 44100, // sample rate
+  AudioFormat format = new AudioFormat( waveSampleRate, // sample rate
                                         16,    // sample size in bits
                                         1,     // channels
                                         true,  // signed
@@ -77,4 +76,3 @@ void keyPressed()
     wave.trigger();
   }
 }
-

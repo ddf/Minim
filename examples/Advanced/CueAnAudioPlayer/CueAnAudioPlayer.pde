@@ -40,6 +40,8 @@ void draw()
   stroke( 255, 0, 0 );
   float position = map( groove.position(), 0, groove.length(), 0, width );
   line( position, 0, position, height );
+  
+  text("Click anywhere to jump to a position in the song.", 10, 20);
 }
 
 void mousePressed()

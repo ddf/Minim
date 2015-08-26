@@ -45,12 +45,12 @@ class WaveformRenderer implements AudioListener
     right = null;
   }
   
-  synchronized void samples(float[] samp)
+  public synchronized void samples(float[] samp)
   {
     left = samp;
   }
   
-  synchronized void samples(float[] sampL, float[] sampR)
+  public synchronized void samples(float[] sampL, float[] sampR)
   {
     left = sampL;
     right = sampR;
@@ -107,6 +107,15 @@ void draw()
   if ( listening )
   {  
     waveform.draw();
+  }
+  
+  if ( listening ) 
+  {
+    text("Press space to remove the listener", 10, 20 );
+  }
+  else
+  {
+    text("Press space to add the listener", 10, 20 );
   }
 }
 

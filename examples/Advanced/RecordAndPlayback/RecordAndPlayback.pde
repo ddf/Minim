@@ -18,6 +18,7 @@ Minim minim;
 // for recording
 AudioInput in;
 AudioRecorder recorder;
+boolean recorded;
 
 // for playing back
 AudioOutput out;
@@ -58,17 +59,21 @@ void draw()
   
   if ( recorder.isRecording() )
   {
-    text("Now recording...", 5, 15);
+    text("Now recording, press the r key to stop recording.", 5, 15);
+  }
+  else if ( !recorded )
+  {
+    text("Press the r key to start recording.", 5, 15);
   }
   else
   {
-    text("Not recording.", 5, 15);
+    text("Press the s key to save the recording to disk and play it back in the sketch.", 5, 15);
   }
 }
 
 void keyReleased()
 {
-  if ( key == 'r' ) 
+  if ( !recorded && key == 'r' ) 
   {
     // to indicate that you want to start or stop capturing audio data, 
     // you must callstartRecording() and stopRecording() on the AudioRecorder object. 
@@ -77,13 +82,14 @@ void keyReleased()
     if ( recorder.isRecording() ) 
     {
       recorder.endRecord();
+      recorded = true;
     }
     else 
     {
       recorder.beginRecord();
     }
   }
-  if ( key == 's' )
+  if ( recorded && key == 's' )
   {
     // we've filled the file out buffer, 
     // now write it to a file of the type we specified in setup
