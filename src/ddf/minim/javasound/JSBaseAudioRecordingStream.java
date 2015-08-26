@@ -245,7 +245,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         int toLoopEnd = loopEnd - totalBytesRead;
         if ( toLoopEnd <= 0 )
         {
-        	System.out.println("Returning to loopBegin because toLoopEnd <= 0");
+        	//System.out.println("Returning to loopBegin because toLoopEnd <= 0");
         	if ( loop && numLoops != Minim.LOOP_CONTINUOUSLY )
         	{
         		numLoops--;
@@ -306,7 +306,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
                 }
                 if ( -1 == actualRead )
                 {
-                	System.out.println("!!!!!!! Looping with numLoops " + numLoops);
+                	//System.out.println("!!!!!!! Looping with numLoops " + numLoops);
                     setMillisecondPosition( 0 );
                     if ( numLoops != Minim.LOOP_CONTINUOUSLY )
                     {
