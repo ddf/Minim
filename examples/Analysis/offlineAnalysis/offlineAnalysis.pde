@@ -62,7 +62,7 @@ void analyzeUsingAudioSample()
     int chunkSize = min( leftChannel.length - chunkStartIndex, fftSize );
    
     // copy first chunk into our analysis array
-    arraycopy( leftChannel, // source of the copy
+    System.arraycopy( leftChannel, // source of the copy
                chunkStartIndex, // index to start in the source
                fftSamples, // destination of the copy
                0, // index to copy to
@@ -73,7 +73,7 @@ void analyzeUsingAudioSample()
     if ( chunkSize < fftSize )
     {
       // we use a system call for this
-      Arrays.fill( fftSamples, chunkSize, fftSamples.length - 1, 0.0 );
+      java.util.Arrays.fill( fftSamples, chunkSize, fftSamples.length - 1, 0.0 );
     }
     
     // now analyze this buffer
@@ -153,15 +153,20 @@ void draw()
   }
   
   background(0);
-  stroke(255);
+  
+  float camNear = cameraPos - 200;
+  float camFar  = cameraPos + 2000;
+  float camFadeStart = lerp(camNear, camFar, 0.4f);
   
   // render the spectra going back into the screen
   for(int s = 0; s < spectra.length; s++)
   {
     float z = s * spectraSpacing;
     // don't draw spectra that are behind the camera or too far away
-    if ( z > cameraPos - 150 && z < cameraPos + 2000 )
+    if ( z > camNear && z < camFar )
     {
+      float fade = z < camFadeStart ? 1 : map(z, camFadeStart, camFar, 1, 0);
+      stroke(255*fade);
       for(int i = 0; i < spectra[s].length-1; ++i )
       {
         line(-256 + i, spectra[s][i]*25, z, -256 + i + 1, spectra[s][i+1]*25, z);
@@ -171,4 +176,3 @@ void draw()
   
   camera( 200, 100, -200 + cameraPos, 75, 50, cameraPos, 0, -1, 0 );
 }
-
