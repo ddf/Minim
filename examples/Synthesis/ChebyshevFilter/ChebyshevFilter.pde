@@ -60,8 +60,11 @@ AudioOutput output;
 FilePlayer groove;
 ChebFilter cbf;
 
-public int cutoffFreq = 4410;
-public float ripplePercent = 2;
+float cutoffFreq = 4410;
+float ripplePercent = 2;
+
+ArrayList<PolesButton> buttons = new ArrayList<PolesButton>();
+ArrayList<Knob> knobs = new ArrayList<Knob>();
 
 void setup()
 {
@@ -79,27 +82,33 @@ void setup()
   
   groove.loop();
   
-  /**
-  gui = new ControlP5(this);
-  gui.addSlider("cutoffFreq", 200, 21000, cutoffFreq, width/6, 300, 10, 100);
-  gui.addSlider("ripplePercent", 0, 20, ripplePercent, 2*width/6, 300, 10, 100);
-  RadioButton r = gui.addRadio("poles", 4*width/6, 300);
-  r.setId(1);
-  r.add("two", 0);
-  r.add("four", 1);
-  r.add("six", 2);
-  r.add("eight", 3);
-  r.add("ten", 4);
-  r.add("twelve", 5);
-  r.add("fourteen", 6);
-  r.add("sixteen", 7);
-  r.add("eighteen", 8);
-  r.add("twenty", 9);
-  r = gui.addRadio("type", 5*width/6, 300);
-  r.setId(2);
-  r.add("low pass", 1);
-  r.add("high pass", 2);
-  **/
+  textAlign(LEFT, TOP);
+  
+  int buttonX = 4*width/6;
+  int buttonY = 200;
+  int buttonSpacing = 20;
+  buttons.add( new PolesButton("two", buttonX, buttonY, 2) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("four", buttonX, buttonY, 4) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("six", buttonX, buttonY, 6) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("eight", buttonX, buttonY, 8) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("ten", buttonX, buttonY, 10) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("twelve", buttonX, buttonY, 12) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("fourteen", buttonX, buttonY, 14) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("sixteen", buttonX, buttonY, 16) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("eighteen", buttonX, buttonY, 18) );
+  buttonY += buttonSpacing;
+  buttons.add( new PolesButton("twenty", buttonX, buttonY, 20) );
+  
+  knobs.add( new Knob("cutoff", 50, 250, cutoffFreq, 200, 21000) );
+  knobs.add( new Knob("ripple", 150, 250, ripplePercent, 1, 20) );
 }
 
 void draw()
@@ -108,6 +117,17 @@ void draw()
   if ( cbf.getRipple() != ripplePercent ) cbf.setRipple(ripplePercent);
   
   background(0);
+  
+  for(int i = 0; i < buttons.size(); ++i)
+  {
+    buttons.get(i).draw();
+  }
+  
+  for(int i = 0; i < knobs.size(); ++i)
+  {
+    knobs.get(i).draw();
+  }
+  
   stroke(255);
   // draw the waveforms
   // the values returned by left.get() and right.get() will be between -1 and 1,
@@ -121,23 +141,150 @@ void draw()
   }
 }
 
-void poles(int n)
+void knobTwiddled(String knobName, float newValue)
 {
-  int p = (n+1)*2;
-  println("New num poles: " + p);
-  if ( p != cbf.getPoles() ) cbf.setPoles(p);
+  //println(knobName + ": " + newValue);
+  if ( knobName == "cutoff" )
+  {
+    cutoffFreq = newValue;
+  }
+  else if ( knobName == "ripple" )
+  {
+    ripplePercent = newValue;
+  }
 }
 
-/**
-public void controlEvent(ControlEvent theEvent) 
+void mousePressed()
 {
-  if ( theEvent.controller().id() == 1 )
+  for(int i = 0; i < buttons.size(); ++i)
   {
-    poles((int)theEvent.controller().value());
+    buttons.get(i).mousePressed();
   }
-  if ( theEvent.controller().id() == 2 )
+  
+  for(int i = 0; i < knobs.size(); ++i)
   {
-    cbf.setType((int)theEvent.controller().value());
+    knobs.get(i).mousePressed();
   }
 }
-**/
+
+void mouseDragged()
+{
+  for(int i = 0; i < knobs.size(); ++i)
+  {
+    knobs.get(i).mouseMoved();
+  }
+}
+
+void mouseReleased()
+{
+  for(int i = 0; i < knobs.size(); ++i)
+  {
+    knobs.get(i).mouseReleased();
+  }
+}
+
+class PolesButton 
+{
+  String label;
+  int x, y, w, h;
+  int numPoles;
+  
+  public PolesButton(String _label, int _x, int _y, int _poles)
+  {
+    label = _label;
+    x = _x;
+    y = _y;
+    w = 65;
+    h = 15;
+    numPoles = _poles;
+  }
+  
+  public void draw()
+  {
+    if ( cbf.getPoles() == numPoles )
+    {
+      stroke(255);
+      fill( 0, 128, 0 );
+    }
+    else
+    {
+      noStroke();
+      fill( 128 );
+    }
+    
+    rect(x,y,w,h);
+    
+    fill( 255 );
+    textAlign(LEFT, TOP);
+    text( label, x+5, y );
+  }
+  
+  public void mousePressed()
+  {
+    if( mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h )
+    {
+      if ( cbf.getPoles() != numPoles )
+      {
+        cbf.setPoles(numPoles);
+      }
+    }
+  }
+}
+
+class Knob
+{
+  String label;
+  int x, y, r;
+  float min, max;
+  float pct;
+  
+  public Knob(String _label, int _x, int _y, float initialValue, float _min, float _max)
+  {
+    label = _label;
+    x = _x;
+    y = _y;
+    r = 25;
+    min = _min;
+    max = _max;
+    pct = map(initialValue, min, max, 0, 1);
+  }
+  
+  public void draw()
+  {
+    stroke(255);
+    fill(128);
+    ellipseMode(RADIUS);
+    ellipse(x,y,r,r);
+    
+    float angle = radians(lerp(360-35, 35, pct));
+    line(x, y, x+sin(angle)*r, y+cos(angle)*r);
+    
+    textAlign(CENTER, TOP);
+    text(label, x, y+r+5);
+  }
+  
+  boolean trackMouse;
+  
+  public void mousePressed()
+  {
+    if ( dist(x,y,mouseX,mouseY) < r )
+    {
+      trackMouse = true;
+    }
+  }
+  
+  public void mouseReleased()
+  {
+    trackMouse = false;
+  }
+  
+  public void mouseMoved()
+  {
+    if ( trackMouse )
+    {
+      float delta = pmouseY - mouseY;
+      pct = constrain(pct + delta * 0.01f, 0, 1);
+      knobTwiddled(label, lerp(min, max, pct));
+    }
+  }
+}
