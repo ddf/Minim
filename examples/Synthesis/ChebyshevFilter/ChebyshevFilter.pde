@@ -51,14 +51,14 @@
  * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
  */
 
-import controlP5.*;
 import ddf.minim.*;
 import ddf.minim.effects.*;
+import ddf.minim.ugens.*;
 
 Minim minim;
-AudioPlayer groove;
+AudioOutput output;
+FilePlayer groove;
 ChebFilter cbf;
-ControlP5 gui;
 
 public int cutoffFreq = 4410;
 public float ripplePercent = 2;
@@ -66,17 +66,20 @@ public float ripplePercent = 2;
 void setup()
 {
   size(512, 512, P3D);
-  textMode(SCREEN);
+  
   minim = new Minim(this);
-  groove = minim.loadFile("groove.mp3");
-  groove.loop();
+  output = minim.getLineOut();
+  groove = new FilePlayer( minim.loadFileStream("groove.mp3") );
   // make a two pole low pass filter with a cutoff frequency of 4410 Hz and a ripple percentages of 2%
   // the final argument is the sample rate of audio that will be filetered
   // it is required to correctly compute values used by the filter
-  cbf = new ChebFilter(cutoffFreq, ChebFilter.LP, ripplePercent, 2, groove.sampleRate());
+  cbf = new ChebFilter(cutoffFreq, ChebFilter.LP, ripplePercent, 2, output.sampleRate());
   cbf.printCoeff();
-  groove.addEffect(cbf);
+  groove.patch( cbf ).patch( output );
   
+  groove.loop();
+  
+  /**
   gui = new ControlP5(this);
   gui.addSlider("cutoffFreq", 200, 21000, cutoffFreq, width/6, 300, 10, 100);
   gui.addSlider("ripplePercent", 0, 20, ripplePercent, 2*width/6, 300, 10, 100);
@@ -96,6 +99,7 @@ void setup()
   r.setId(2);
   r.add("low pass", 1);
   r.add("high pass", 2);
+  **/
 }
 
 void draw()
@@ -104,17 +108,16 @@ void draw()
   if ( cbf.getRipple() != ripplePercent ) cbf.setRipple(ripplePercent);
   
   background(0);
-  gui.draw();
   stroke(255);
   // draw the waveforms
   // the values returned by left.get() and right.get() will be between -1 and 1,
   // so we need to scale them up to see the waveform
-  for(int i = 0; i < groove.bufferSize() - 1; i++)
+  for(int i = 0; i < output.bufferSize() - 1; i++)
   {
-    float x1 = map(i, 0, groove.bufferSize(), 0, width);
-    float x2 = map(i+1, 0, groove.bufferSize(), 0, width);
-    line(x1, 50 - groove.left.get(i)*50, x2, 50 - groove.left.get(i+1)*50);
-    line(x1, 150 - groove.right.get(i)*50, x2, 150 - groove.right.get(i+1)*50);
+    float x1 = map(i, 0, output.bufferSize(), 0, width);
+    float x2 = map(i+1, 0, output.bufferSize(), 0, width);
+    line(x1, 50 - output.left.get(i)*50, x2, 50 - output.left.get(i+1)*50);
+    line(x1, 150 - output.right.get(i)*50, x2, 150 - output.right.get(i+1)*50);
   }
 }
 
@@ -125,6 +128,7 @@ void poles(int n)
   if ( p != cbf.getPoles() ) cbf.setPoles(p);
 }
 
+/**
 public void controlEvent(ControlEvent theEvent) 
 {
   if ( theEvent.controller().id() == 1 )
@@ -136,3 +140,4 @@ public void controlEvent(ControlEvent theEvent)
     cbf.setType((int)theEvent.controller().value());
   }
 }
+**/

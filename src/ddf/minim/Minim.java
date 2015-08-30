@@ -596,6 +596,19 @@ public class Minim
 	}
 	
 	/**
+	 * Load the file into an AudioRecordingStream with a buffer size of 1024 
+	 * samples.
+	 * 
+	 * @param filename
+	 * 			the file to load
+	 * @return an AudioRecordingStream that you can use to read from the file
+	 */
+	public AudioRecordingStream loadFileStream(String filename)
+	{
+		return loadFileStream(filename,1024,false);
+	}
+	
+	/**
 	 * Loads the requested file into a MultiChannelBuffer. The buffer's channel count
 	 * and buffer size will be adjusted to match the file.
 	 * 

@@ -27,6 +27,7 @@ import ddf.minim.spi.AudioRecordingStream;
 public class FilePlayer extends UGen implements Playable
 {
 	private AudioRecordingStream mFileStream;
+	private boolean 			 isPaused;
 	
 	/**
 	 * Construct a FilePlayer that will read from iFileStream.
@@ -43,7 +44,7 @@ public class FilePlayer extends UGen implements Playable
 		// but for now we don't need this because it starts the iothread,
 		// which is not what we want.
 		// mFileStream.open();	
-		mFileStream.play();
+		// mFileStream.play();
 	}
 	
 	/**
@@ -72,6 +73,7 @@ public class FilePlayer extends UGen implements Playable
 	public void play()
 	{
 		mFileStream.play();
+		isPaused = false;
 	}
 
 	/**
@@ -99,6 +101,7 @@ public class FilePlayer extends UGen implements Playable
 	public void pause()
 	{
 		mFileStream.pause();
+		isPaused = true;
 	}
 
 	/**
@@ -127,7 +130,7 @@ public class FilePlayer extends UGen implements Playable
 	   */
 	public void loop()
 	{
-		mFileStream.loop(Minim.LOOP_CONTINUOUSLY);
+		loop(Minim.LOOP_CONTINUOUSLY);
 	}
 
 	/**
@@ -148,7 +151,18 @@ public class FilePlayer extends UGen implements Playable
 	   */
 	public void loop(int loopCount)
 	{
-		mFileStream.loop(loopCount);
+		if ( isPaused )
+		{
+			int pos = mFileStream.getMillisecondPosition();
+			mFileStream.loop( loopCount );
+			mFileStream.setMillisecondPosition( pos );
+		}
+		else
+		{
+			mFileStream.loop(loopCount);
+		}
+		
+		isPaused = false;
 	}
 
 	/**

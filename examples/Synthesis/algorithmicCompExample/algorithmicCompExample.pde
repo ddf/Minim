@@ -19,7 +19,6 @@ import ddf.minim.effects.*;
 // more than one methods (setup(), draw(), stop())
 Minim minim;
 AudioOutput out;
-AudioRecorder recorder;
 
 // setup is run once at the beginning
 void setup()
@@ -30,7 +29,6 @@ void setup()
   // initialize the minim, out, and recorder objects
   minim = new Minim(this);
   out = minim.getLineOut(Minim.STEREO, 1024);
-  recorder = minim.createRecorder( out, "algorithmicInstr.wav", true );
 
   // many different variables which give appropriate ronges for the 
   // rhythm of the sentences and the syllables
@@ -103,29 +101,4 @@ void draw()
     line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
-}
-
-// When a key is released, this is run
-void keyReleased()
-{
-  // Basically turn the recording of a WAV file on and off with the "r" key.
-  if ( key == 'r' ) 
-  {
-    if ( recorder.isRecording() ) 
-    {
-      recorder.endRecord();
-      println("ending recording");
-    }
-    else 
-    {
-      println("beginning recording");
-      recorder.beginRecord();
-    }
-  }
-  // and save it with the "s" key
-  if ( key == 's' )
-  {
-    recorder.save();
-    println("Done saving.");
-  }
 }

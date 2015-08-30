@@ -42,16 +42,9 @@ void setup()
   
   // create our Minim object for loading audio
   minim = new Minim(this);
-
-  // get an AudioRecordingStream from Minim, which is what FilePlayer will control
-  AudioRecordingStream myFile = minim.loadFileStream( fileName, // the file to load
-                                                      1024,     // the size of the buffer. 1024 is a typical buffer size
-                                                      true      // whether to load it totally into memory or not
-                                                                // we say true because the file is short 
-                                                    );
                                
   // this opens the file and puts it in the "play" state.                           
-  filePlayer = new FilePlayer( myFile );
+  filePlayer = new FilePlayer( minim.loadFileStream(fileName) );
   // and then we'll tell the recording to loop indefinitely
   filePlayer.loop();
   
@@ -110,4 +103,3 @@ void draw()
     line( x1, 150 - out.right.get(i)*50, x2, 150 - out.right.get(i+1)*50);
   }  
 }
-

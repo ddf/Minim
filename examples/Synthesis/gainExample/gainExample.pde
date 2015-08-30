@@ -21,7 +21,6 @@
 */
 
 import ddf.minim.*;
-import ddf.minim.spi.*; // for AudioRecordingStream
 import ddf.minim.ugens.*;
 
 // declare everything we need to play our file
@@ -32,7 +31,7 @@ AudioOutput out;
 
 // you can use your own file by putting it in the data directory of this sketch
 // and changing the value assigned to fileName here.
-String fileName = "http://code.compartmental.net/minim/examples/audio/groove.mp3";
+String fileName = "groove.mp3";
 
 void setup()
 {
@@ -41,15 +40,8 @@ void setup()
   
   // create our Minim object for loading audio
   minim = new Minim(this);
-
-  // get an AudioRecordingStream from Minim, which is what FilePlayer will control
-  AudioRecordingStream myFile = minim.loadFileStream( fileName, // the file to load
-                                                      1024,     // the size of the buffer.
-                                                      true      // load into memory
-                                                    );
-                               
   // this opens the file and puts it in the "play" state.                           
-  filePlayer = new FilePlayer( myFile );
+  filePlayer = new FilePlayer( minim.loadFileStream(fileName) );
   // and then we'll tell the recording to loop indefinitely
   filePlayer.loop();
   
@@ -87,5 +79,6 @@ void draw()
     line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
+  
+  text("Current Gain is " + dB + " dB.", 10, 20);
 }
-
