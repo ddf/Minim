@@ -807,14 +807,14 @@ public class JSMinim implements MinimServiceProvider
 		{
 			try
 			{
-        if ( outputMixer == null )
-        {
-          line = (SourceDataLine)AudioSystem.getLine(info);
-        }
-        else
-        {
-          line = (SourceDataLine)outputMixer.getLine(info);
-        }
+		        if ( outputMixer == null )
+		        {
+		          line = (SourceDataLine)AudioSystem.getLine(info);
+		        }
+		        else
+		        {
+		          line = (SourceDataLine)outputMixer.getLine(info);
+		        }
 				// remember that time you spent, like, an entire afternoon fussing
 				// with this buffer size to try to get the latency decent on Linux?
 				// Yah, don't fuss with this anymore, ok?
@@ -827,7 +827,7 @@ public class JSMinim implements MinimServiceProvider
 					return line;
 				}
 			}
-			catch (LineUnavailableException e)
+			catch (Exception e)
 			{
 				error("Couldn't open the line: " + e.getMessage());
 			}
