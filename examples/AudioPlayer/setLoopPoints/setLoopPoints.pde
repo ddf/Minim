@@ -22,7 +22,6 @@ void setup()
   size(512, 200, P3D);
   minim = new Minim(this);
   snip = minim.loadFile("groove.mp3");
-  snip.loop();
   
   textFont(loadFont("ArialMT-14.vlw"));
 }
@@ -62,4 +61,9 @@ void mousePressed()
     snip.setLoopPoints(ms, loopEnd);
     loopBegin = ms;
   }
+}
+
+void keyPressed()
+{
+  snip.loop(2);
 }

@@ -518,7 +518,9 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
 
     public int getMillisecondPosition()
     {
-        return (int)AudioUtils.bytes2Millis( totalBytesRead, format );
+        int pos = (int)AudioUtils.bytes2Millis( totalBytesRead, format );
+        // never report a position that is greater than the length of the stream
+        return Math.min( pos, getMillisecondLength() );
     }
 
     public void setMillisecondPosition(int millis)

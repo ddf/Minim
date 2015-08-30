@@ -32,9 +32,16 @@ void draw()
     line(i, 50  + groove.left.get(i)*50,  i+1, 50  + groove.left.get(i+1)*50);
     line(i, 150 + groove.right.get(i)*50, i+1, 150 + groove.right.get(i+1)*50);
   }
+  
+  float posx = map(groove.position(), 0, groove.length(), 0, width);
+  stroke(0,200,0);
+  line(posx, 0, posx, height);
+  
+  stroke(255);
+  text("Press any key to rewind.", 10, 20);
 }
 
 void keyPressed()
 {
-  if ( key == 'r' ) groove.rewind();
+  groove.rewind();
 }

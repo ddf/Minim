@@ -12,7 +12,6 @@ import ddf.minim.effects.*;
 
 Minim minim;
 AudioPlayer groove;
-WaveformRenderer waveform;
 
 void setup()
 {

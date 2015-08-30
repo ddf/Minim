@@ -35,5 +35,13 @@ void draw()
 
 void keyPressed()
 {
-  if ( key == 'p' ) groove.pause();
+  if ( groove.isPlaying() )
+  {
+    groove.pause();
+  }
+  else
+  {
+    // simply call loop again to resume playing from where it was paused
+    groove.loop();
+  }
 }
