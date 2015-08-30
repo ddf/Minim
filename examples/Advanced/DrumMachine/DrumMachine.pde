@@ -13,7 +13,6 @@ import processing.opengl.*;
   */
 
 
-import controlP5.*;
 import ddf.minim.*;
 import ddf.minim.ugens.*;
 
@@ -24,12 +23,13 @@ Sampler     kick;
 Sampler     snare;
 Sampler     hat;
 
-ControlP5 gui;
 boolean[] hatRow = new boolean[16];
 boolean[] snrRow = new boolean[16];
 boolean[] kikRow = new boolean[16];
 
-public int bpm;
+ArrayList<Rect> buttons = new ArrayList<Rect>();
+
+int bpm = 120;
 
 int beat; // which beat we're on
 
@@ -59,9 +59,49 @@ class Tick implements Instrument
   }
 }
 
+// simple class for drawing the gui
+class Rect 
+{
+  int x, y, w, h;
+  boolean[] steps;
+  int stepId;
+  
+  public Rect(int _x, int _y, boolean[] _steps, int _id)
+  {
+    x = _x;
+    y = _y;
+    w = 14;
+    h = 30;
+    steps = _steps;
+    stepId = _id;
+  }
+  
+  public void draw()
+  {
+    if ( steps[stepId] )
+    {
+      fill(0,255,0);
+    }
+    else
+    {
+      fill(255,0,0);
+    }
+    
+    rect(x,y,w,h);
+  }
+  
+  public void mousePressed()
+  {
+    if ( mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h )
+    {
+      steps[stepId] = !steps[stepId];
+    }
+  }
+}
+
 void setup()
 {
-  size(395, 200, OPENGL);
+  size(395, 200);
   minim = new Minim(this);
   out   = minim.getLineOut();
   
@@ -77,33 +117,18 @@ void setup()
   snare.patch( out );
   hat.patch( out );
   
-  gui = new ControlP5(this);
-  gui.setColorForeground(color(128, 200));
-  gui.setColorActive(color(255, 0, 0, 200));
-  Toggle h;
-  Toggle s;
-  Toggle k;
   for (int i = 0; i < 16; i++)
   {
-    h = gui.addToggle("hat" + i, false, 10+i*24, 50, 14, 30);
-    h.setId(i);
-    h.setLabel("hat");
-    s = gui.addToggle("snr" + i, false, 10+i*24, 100, 14, 30);
-    s.setId(i);
-    s.setLabel("snr");
-    k = gui.addToggle("kik" + i, false, 10+i*24, 150, 14, 30);
-    k.setId(i);
-    k.setLabel("kik");
+    buttons.add( new Rect(10+i*24, 50, hatRow, i ) );
+    buttons.add( new Rect(10+i*24, 100, snrRow, i ) );
+    buttons.add( new Rect(10+i*24, 150, kikRow, i ) );
   }
-  gui.addNumberbox("bpm", 120, 10, 5, 20, 15);
-  bpm = 120;
+  
   beat = 0;
   
   // start the sequencer
   out.setTempo( bpm );
   out.playNote( 0, 0.25f, new Tick() );
-  
-  textFont(createFont("Arial", 16));
 }
 
 void draw()
@@ -111,6 +136,11 @@ void draw()
   background(0);
   fill(255);
   //text(frameRate, width - 60, 20);
+  
+  for(int i = 0; i < buttons.size(); ++i)
+  {
+    buttons.get(i).draw();
+  }
   
   stroke(128);
   if ( beat % 4 == 0 )
@@ -124,23 +154,12 @@ void draw()
     
   // beat marker    
   rect(10+beat*24, 35, 14, 9);
-  
-  gui.draw();
 }
 
-public void controlEvent(ControlEvent e)
+void mousePressed()
 {
-  println(e.getController().getLabel() + ": " + e.controller().value());
-  if ( e.controller().getLabel() == "hat" )
+  for(int i = 0; i < buttons.size(); ++i)
   {
-    hatRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
-  }
-  else if ( e.controller().getLabel() == "snr" )
-  {
-    snrRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
-  }
-  else if ( e.controller().getLabel() == "kik" )
-  {
-    kikRow[ e.controller().id() ] = e.controller().value() == 0.0 ? false : true;
+    buttons.get(i).mousePressed();
   }
 }
