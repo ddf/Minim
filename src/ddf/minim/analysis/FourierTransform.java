@@ -626,8 +626,6 @@ public abstract class FourierTransform
    * 
    * @return float: the middle frequency, in Hertz, of the requested band of the spectrum
    * 
-   * @example Analysis/FFT/BandCenters
-   * 
    * @related FFT
    */
   public float indexToFreq(int i)
@@ -657,8 +655,6 @@ public abstract class FourierTransform
    *     int: which average band you want the center frequency of.
    *     
    * @return float: the center frequency of the i<sup>th</sup> average band.
-   * 
-   * @example Analysis/FFT/BandCenters
    * 
    * @related FFT
    * 
@@ -760,8 +756,6 @@ public abstract class FourierTransform
    * 
    * @return int: the length of the averages array
    * 
-   * @example Analysis/FFT/Averages
-   * 
    * @related FFT
    */
   public int avgSize()
@@ -775,8 +769,6 @@ public abstract class FourierTransform
    * @param i
    *          int: the average you want the value of
    * @return float: the value of the requested average band
-   * 
-   * @example Analysis/FFT/Averages
    * 
    * @related FFT
    */
@@ -915,7 +907,6 @@ public abstract class FourierTransform
    * @param buffer
    *          float[]: the buffer to place the result of the inverse transform in
    *          
-   * @example Analysis/FFT/Inverse_Transform
    *          
    * @related FFT
    */
@@ -928,7 +919,6 @@ public abstract class FourierTransform
    * @param buffer
    *          AudioBuffer: the buffer to place the result of the inverse transform in
    *          
-   * @example Analysis/FFT/Inverse_Transform
    */
   public void inverse(AudioBuffer buffer)
   {
