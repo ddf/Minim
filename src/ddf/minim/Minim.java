@@ -857,14 +857,15 @@ public class Minim
 		if ( stream != null )
 		{
 			AudioOut out = mimp.getAudioOutput( type, bufferSize, sampleRate, bitDepth );
-			if ( out != null )
+			// couldn't get an output, the system might not have one available
+			// so in that case we provide a basic audio out to the input
+			// that will pull samples from it and so forth
+			if ( out == null )
 			{
-				input = new AudioInput( stream, out );
+				out = new BasicAudioOut(stream.getFormat(), bufferSize);
 			}
-			else
-			{
-				stream.close();
-			}
+			
+			input = new AudioInput( stream, out );
 		}
 		
 		if ( input != null )

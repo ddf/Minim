@@ -122,13 +122,17 @@ public class AudioInput extends AudioSource
     if ( hasControl(VOLUME) )
     {
     	setVolume( 1 );
+        m_isMonitoring = true;
     }
     else if ( hasControl(GAIN) )
     {
     	setGain( 0 );
-    }	 
-    
-    m_isMonitoring = true;
+        m_isMonitoring = true;
+    }
+    else
+    {
+    	Minim.error( "Monitoring is not available on this AudioInput." );
+    }
   }
   
   /**
