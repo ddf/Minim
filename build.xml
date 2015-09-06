@@ -12,7 +12,9 @@
     <mkdir dir="bin"/>
     <javac 	srcdir="src" 
     		destdir="bin" 
-    		includeAntRuntime="false" 
+    		includeAntRuntime="false"
+    		debug="true" 
+    		debuglevel="lines,vars,source"
     	>
       <classpath refid="deps.path"/>
     </javac>
