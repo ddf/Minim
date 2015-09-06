@@ -83,7 +83,7 @@ public abstract class AudioMetaData
 	}
 	
 	/**
-	 * The author or the recording.
+	 * The author of the recording.
 	 * 
 	 * @return String: the author tag
 	 * 

@@ -25,12 +25,13 @@ import ddf.minim.ugens.Instrument;
 import ddf.minim.ugens.Summer;
 
 /**
+ * <p>
  * An AudioOutput is a connection to the output of a computer's sound card. 
  * Typically the computer speakers are connected to this. 
  * You can use an AudioOutput to do real-time sound synthesis by patching 
  * UGens to an output object. You can get an AudioOutput object from Minim 
  * using one of five methods:
- * <p>
+ * </p>
  * <pre>
  * AudioOutput getLineOut()
  * 
@@ -51,11 +52,13 @@ import ddf.minim.ugens.Summer;
  * In the event that an output doesn't exist with the requested parameters, 
  * Minim will spit out an error and return null. 
  * In general, you will want to use one of the first two methods listed above.
+ * </p>
  * <p>
  * In addition to directly patching UGens to the output, you can also schedule 
  * "notes" to be played by the output at some time in the future. This can 
  * be very powerful when writing algorithmic music and sound. See the playNote
  * method for more information.
+ * </p>
  * 
  * @author Damien Di Fede
  * @related Minim

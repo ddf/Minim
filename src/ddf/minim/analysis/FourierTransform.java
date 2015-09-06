@@ -177,7 +177,7 @@ public abstract class FourierTransform
    */
   public static final WindowFunction COSINE = new CosineWindow();
   
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> 
+  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Triangular_window">Triangular window</a> 
    *  should be used on sample buffers.
    *  
    *  @example Analysis/FFT/Windows

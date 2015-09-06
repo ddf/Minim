@@ -31,6 +31,7 @@ package ddf.minim;
  * @author Damien Di Fede
  * @invisible
  */
+@Deprecated
 public interface AudioSignal
 {
   /**

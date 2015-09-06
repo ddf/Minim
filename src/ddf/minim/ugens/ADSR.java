@@ -15,7 +15,9 @@ import ddf.minim.UGen;
 public class ADSR extends UGen
 {
 	/**
-	 *  The default input is "audio."<br/>
+	 * <p>
+	 *  The default input is "audio."
+	 * </p>
 	 *  You won't need to patch to this directly, since 
 	 *  simply patching to the ADSR itself will achieve 
 	 *  the same result.
@@ -72,6 +74,9 @@ public class ADSR extends UGen
 	 * Attack and decay times are set to 1 sec.
 	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
 	 * Amplitude before and after the envelope is set to 0.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
 	 */
 	public ADSR(float maxAmp)
 	{
@@ -83,6 +88,11 @@ public class ADSR extends UGen
 	 * Decay time is set to 1 sec.
 	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
 	 * Amplitude before and after the envelope is set to 0.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
+	 * @param attTime
+	 * 			float: the attack time, in seconds
 	 */
 	public ADSR( float maxAmp, float attTime )
 	{
@@ -93,6 +103,14 @@ public class ADSR extends UGen
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, and decay time.
 	 * Sustain level is set to 0.0. Release time is set to 1 sec.  
 	 * Amplitude before and after the envelope is set to 0.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
+	 * @param attTime
+	 * 			float: the attack time, in seconds
+	 * @param decTime
+	 * 			float: the decay time, in seconds
+	 * 
 	 */
 	public ADSR( float maxAmp, float attTime, float decTime )
 	{
@@ -102,6 +120,15 @@ public class ADSR extends UGen
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, and sustain level.
 	 * Release time is set to 1 sec.  Amplitude before and after the envelope is set to 0.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
+	 * @param attTime
+	 * 			float: the attack time, in seconds
+	 * @param decTime
+	 * 			float: the decay time, in seconds
+	 * @param susLvl
+	 * 			float: the percentage of the maximum amplitude to maintain after the decay completes
 	 */
 	public ADSR( float maxAmp, float attTime, float decTime, float susLvl )
 	{
@@ -111,6 +138,17 @@ public class ADSR extends UGen
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
 	 * and release time.  Amplitude before and after the envelope is set to 0.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
+	 * @param attTime
+	 * 			float: the attack time, in seconds
+	 * @param decTime
+	 * 			float: the decay time, in seconds
+	 * @param susLvl
+	 * 			float: the percentage of the maximum amplitude to maintain after the decay completes
+	 * @param relTime
+	 * 			float: the release time, in seconds
 	 */
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime)
 	{
@@ -120,6 +158,19 @@ public class ADSR extends UGen
 	/**
 	 * Constructor for an ADSR envelope with maximum amplitude, attack Time, decay time, sustain level,
 	 * release time, an amplitude before the envelope.  Amplitude after the envelope is set to 0.
+	 * 
+	 * @param maxAmp
+	 * 			float: the maximum amplitude for the envelope
+	 * @param attTime
+	 * 			float: the attack time, in seconds
+	 * @param decTime
+	 * 			float: the decay time, in seconds
+	 * @param susLvl
+	 * 			float: the percentage of the maximum amplitude to maintain after the decay completes
+	 * @param relTime
+	 * 			float: the release time, in seconds
+	 * @param befAmp
+	 * 			float: the amplitude to apply before the envelope is activated
 	 */
 	public ADSR(float maxAmp, float attTime, float decTime, float susLvl, float relTime, float befAmp)
 	{

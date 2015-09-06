@@ -33,7 +33,12 @@ public class GaussWindow extends WindowFunction
 {
   double alpha;
 
-  /** Constructs a Gauss window function. */
+  /** 
+   * Constructs a Gauss window function. 
+   * 
+   * @param alpha
+   * 		double: the alpha value to use for this window
+   * */
   public GaussWindow(double alpha)
   {
     if (alpha < 0.0 || alpha > 0.5) 

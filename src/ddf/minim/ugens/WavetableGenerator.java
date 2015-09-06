@@ -10,7 +10,7 @@ package ddf.minim.ugens;
  * @related Wavetable
  * @related Waves
  *  
- * @author Mark Godfrey <mark.godfrey@gatech.edu>
+ * @author Mark Godfrey &lt;mark.godfrey@gatech.edu&gt;
  */
 
 public class WavetableGenerator

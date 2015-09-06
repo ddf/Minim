@@ -39,7 +39,7 @@ import java.util.Vector;
  * @invisible
  * 
  */
-
+@Deprecated
 public class SignalChain implements AudioSignal
 {
   // the signals in the order they were added
@@ -109,6 +109,8 @@ public class SignalChain implements AudioSignal
    * 
    * @param i
    *          the index of the <code>AudioSignal</code> to get
+   *         
+   * @return the <code>i<sup>th</sup></code> signal in the chain.
    */
   public synchronized AudioSignal get(int i)
   {

@@ -14,10 +14,11 @@ package ddf.minim.ugens;
 public interface Waveform 
 {
 	/**
+	 * <p>
 	 * Sample the Waveform at the location specified. 
 	 * As an example, if the Waveform represents a sine wave,
 	 * then we would expect the following:
-	 * <p>
+	 * </p>
 	 * <pre>
 	 * waveform.value( 0.25f ) == sin( PI/2 )
 	 * waveform.value( 0.5f ) == sin( PI )

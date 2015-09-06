@@ -46,14 +46,16 @@ public class AudioPlayer extends AudioSource implements Playable
 	private boolean isPaused;
 
 	/**
-	 * Constructs an <code>AudioPlayer</code> that plays <code>recording</code>.
-	 * It is expected that <code>recording</code> will have a
-	 * <code>DataLine</code> to control. If it doesn't, any calls to
-	 * <code>Controller</code>'s methods will result in a
-	 * <code>NullPointerException</code>.
+	 * Constructs an <code>AudioPlayer</code> that plays <code>recording</code> using
+	 * the <code>AudioOut</code> provided. Generally you will not call this directly
+	 * and will instead use the <code>Minim.loadFile</code> method.
+	 * 
+	 * @see Minim#loadFile(String)
 	 * 
 	 * @param recording
-	 *           the <code>AudioRecording</code> to play
+	 *           the <code>AudioRecordingStream</code> to play
+	 *           
+	 * @param out the <code>AudioOut</code> to play the recording on
 	 *           
 	 * @invisible
 	 */
