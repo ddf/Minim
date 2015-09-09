@@ -824,15 +824,22 @@ public class JSMinim implements MinimServiceProvider
 					debug("SourceDataLine is " + line.getClass().toString() + "\n"
 					      + "Buffer size is " + line.getBufferSize() + " bytes.\n" 
 					      + "Format is "	+ line.getFormat().toString() + ".");
-					return line;
+				}
+				else
+				{
+					line = null;
 				}
 			}
 			catch (Exception e)
 			{
 				error("Couldn't open the line: " + e.getMessage());
+				line = null;
 			}
 		}
-		error("Unable to return a SourceDataLine: unsupported format - " + format.toString());
+		else
+		{
+			error("Unable to return a SourceDataLine: unsupported format - " + format.toString());
+		}
 		return line;
 	}
 
