@@ -34,7 +34,7 @@ void setup()
   // a FilePlayer reads from an AudioRecordingStream, which we 
   // can easily get from Minim using loadFileStream
   filePlayer = new FilePlayer( minim.loadFileStream(fileName) );
-  // and then we'll tell the recording to loop indefinitely
+  // and then we'll tell the file player to loop indefinitely
   filePlayer.loop();
   
   // get a line out from Minim. It's important that the file is the same audio format 
@@ -64,6 +64,13 @@ void keyPressed()
   }
 }
 
+void mousePressed()
+{
+  float pos = map(mouseX, 0, width, 0, filePlayer.length());
+  filePlayer.cue((int)pos);
+}
+
+
 // draw is run many times
 void draw()
 {
@@ -81,6 +88,11 @@ void draw()
     line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
+
+  float songPos = map( filePlayer.position(), 0, filePlayer.length(), 0, width );
+
+  stroke( 255, 0, 0 );
+  line( songPos, 0, songPos, height );
   
   text( "loopCount: " + filePlayer.loopCount(), 15, 15 );
 }

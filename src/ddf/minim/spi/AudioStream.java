@@ -38,6 +38,7 @@ public interface AudioStream extends AudioResource
    * @return an array of floats containing the value of each channel in the sample frame just read.
    * 		 The size of the returned array will be the same size as getFormat().getChannels(). 
    */
+  @Deprecated
   float[] read();
   
   /**

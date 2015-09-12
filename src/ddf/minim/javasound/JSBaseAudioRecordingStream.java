@@ -273,7 +273,7 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
             }
             else if ( loop )
             {
-            	System.out.println("Returning to loopBegin because else if loop");
+            	//System.out.println("Returning to loopBegin because else if loop");
             	if ( numLoops != Minim.LOOP_CONTINUOUSLY )
             	{
             		numLoops--;
