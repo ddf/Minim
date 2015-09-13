@@ -88,14 +88,15 @@ td {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 11px;
 	vertical-align: top;
+	text-align: right;
 	font-style: normal;
 	color: #000000;
+	
+	padding-right: 20px;
+}
 
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-
-	padding-left: 50px;
+.classLink {
+	font-size: 16px;
 }
 
 .libName {
@@ -105,7 +106,7 @@ td {
 	text-align: right;
 	padding-right: 20px;
 	padding-bottom: 20px;
-	width: 200px;
+	width: 225px;
 	font-weight: normal;
 }
 
@@ -132,11 +133,9 @@ td {
 .methodName {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 16px;
-	text-align: right;
-	padding-right: 20px;
-	padding-top: 8px;
 	font-style: normal;
-	color: #999999;
+	color: #111;
+	margin: 0px;
 }
 
 .colored {
@@ -147,8 +146,6 @@ td {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 32px;
 	color: #999999;
-	text-align: left;
-	width: 200px;
 	padding-top: 20px;
 }
 
