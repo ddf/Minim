@@ -12,7 +12,6 @@ pre {
 	COLOR: #222;
 	background-color: #DEDEDE;
 	padding: 5px;
-	margin-top: -2px;
 }
 A:link {
 	color: #999999;
@@ -30,26 +29,46 @@ A:hover {
 	color: #000000;
 	text-decoration: none;
 }
+
+.mainTable {
+	width: 100%;
+	height: 100%;
+	border: 0; 
+	border-spacing: 0px;
+}
+
+td {
+	padding: 0px;
+	vertical-align: top;
+}
+
+.mainTextName {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 22px;
+	padding-top: 0px;
+	margin: 0px;
+}
+
 .mainText {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 11px;
-	vertical-align: top;
-	text-align: right;
-	padding-right: 20px;
+	padding-left: 10px;
+	padding-right: 50px;
 }
+
+.linkListHeader {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 15px;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
 .linkList {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 11px;
-	vertical-align: top;
-	font-style: normal;
-	color: #999999;
-	
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-
-	padding-left: 5px;
+	margin-top: 0px;
 }
+
 .descList {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 11px;
@@ -61,55 +80,69 @@ A:hover {
 	border-right-style: none;
 	border-bottom-style: none;
 
-	padding-left: 20px;
+	padding-left: 50px;
 	padding-bottom: 30px;
 }
+
+.classNavigation {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 11px;
+	vertical-align: top;
+	font-style: normal;
+	color: #000000;
+
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+
+	padding-left: 50px;
+}
+
 .libName {
 	font-size: 36px;
 }
 .header {
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 16px;
-	color: #999999;
 	text-align: right;
-	padding: 20px;
-	width: 126px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	width: 200px;
 	font-weight: normal;
 }
+
+.memberSectionHeader
+{
+	font-weight: bold;
+}
+
+.memberSectionText
+{
+	
+}
+
+.parameterName
+{
+	color: #FFB300;
+}
+
+.parameterDescription
+{
+	
+}
+
 .methodName {
 	font-family: Helvetica, sans-serif, Arial;
-	font-size: 18px;
-	vertical-align: top;
+	font-size: 16px;
+	text-align: right;
+	padding-right: 20px;
+	padding-top: 8px;
 	font-style: normal;
 	color: #999999;
-	border-left-width: 1px;
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: solid;
-	border-left-color: #999999;
-	padding-left: 20px;
-	padding-bottom: 30px;
 }
-.mainTextName {
-	font-family: Helvetica, sans-serif, Arial;
-	font-size: 11px;
-	vertical-align: top;
-	padding-right: 20px;
-	text-align: right;
-	padding-top: 5px;
-}
+
 .colored {
 	color: #999999;
 }
-.indextext {
-	font-family: Helvetica, sans-serif, Arial;
-	font-size: 11px;
-	vertical-align: top;
-	text-align: left;
-	padding-right: 20px;
-	padding-left: 20px;
-}
+
 .indexheader {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 32px;

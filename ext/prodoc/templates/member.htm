@@ -8,49 +8,41 @@
 </head>
 <body> 
 <center>
-<table width="600" border="0" cellspacing="0" cellpadding="0">
+<table class="mainTable">
+
   <tr>
-    <td height="100" valign="top" class="header">
-    	<span class="libName">@libname</span><br>
-		<a href="index.html">core</a><br/>
-		<a href="index_ugens.html">ugens</a><br/>
-		<a href="index_analysis.html">analysis</a>
-	</td>
-    <td width="450" class="descList">&nbsp;</td>
+    <td class="header">
+    	<span class="indexheader">@libname</span><br/>
+    	<span class="indexnavigation">
+    		<a href="index.html">core</a> | 
+    		<a href="index_ugens.html">ugens</a> | 
+    		<a href="index_analysis.html">analysis</a>
+    	</span>
+    </td>
+    <td class="border-left">&nbsp;</td>
   </tr>
+  
   <tr>
-    <td valign="top" class="mainTextName">Name</td>
     <td class="methodName">@name</td>
-  </tr>
-  <tr>
-    <td valign=top class="mainText">Examples</td>
-    <td valign=top class="descList"><pre>@example</pre></td>
-  </tr>
-  <tr>
-    <td valign=top class="mainText">Description</td>
-    <td valign=top class="descList">@description</td>
-  </tr>
-  <tr>
-    <td valign=top class="mainText">Syntax</td>
-    <td valign=top class="descList"><pre>@syntax</pre></td>
-  </tr>
-  <!-- begin parameters -->
-  @parameters
-  <!-- end parameters -->
-  <!-- begin return  -->
-  @return
-  <!-- end return -->
-  <tr>
-    <td valign=top class="mainText">Usage</td>
-    <td class="descList">@usage</td>
-  </tr>
-  <tr>
-    <td valign=top class="mainText">Related</td>
-    <td class="descList">@related</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td class="descList">&nbsp;</td>
+    <td class="mainText border-left">
+    	<p class="memberSectionHeader">Description</p>
+    	@description
+    	
+    	<p class="memberSectionHeader">Signature</p>
+    	<pre>@syntax</pre>
+    	
+    	@parameters
+    	@return
+    	
+    	<p class="memberSectionHeader">Related</p>
+    	@related
+    	
+    	<p class="memberSectionHeader">Example</p>
+    	<pre>@example</pre>
+    	
+    	<p class="memberSectionHeader">Usage</p>
+    	@usage
+    </td>
   </tr>
 </table>
 </center>

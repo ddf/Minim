@@ -12,9 +12,7 @@ import java.util.Arrays;
  * patching things together. For instance, you might have a line of code that
  * looks like this:
  * 
- * <pre>
- * osc.patch( filter ).patch( adsr ).patch( output );
- * </pre>
+ * <pre>osc.patch( filter ).patch( adsr ).patch( output );</pre>
  * 
  * You can read this code left to right. It says that the output of an Oscil
  * should be sent through a filter (perhaps a LowPass) and the output of the
@@ -26,9 +24,7 @@ import java.util.Arrays;
  * <code>frequency</code>. UGenInputs can be patched to, just like UGens, which
  * means you might have a line of code like this:
  * 
- * <pre>
- * line.patch( osc.frequency );
- * </pre>
+ * <pre>line.patch( osc.frequency );</pre>
  * 
  * This says that a Line UGen should control the value of the Oscil's frequency.
  * You may have created a Line that changes it's value from 440 to 880 over 2
@@ -134,7 +130,7 @@ public abstract class UGen
 		 * is an AUDIO input.
 		 * 
 		 * @param numberOfChannels
-		 *  		float: how many channels this input should generate
+		 *  		how many channels this input should generate
 		 */
 		public void setChannelCount(int numberOfChannels)
 		{
@@ -570,7 +566,7 @@ public abstract class UGen
 	 * Set the sample rate for this UGen.
 	 * 
 	 * @param newSampleRate
-	 *            the sample rate this UGen should generate at.
+	 *            float, the sample rate this UGen should generate at.
 	 */
 	// ddf: changed this to public because Summer needs to be able to call it
 	// on all of its UGens when it has its sample rate set by being connected
@@ -609,8 +605,7 @@ public abstract class UGen
 	 * @shortdesc Let this UGen know how many channels of audio you will be asking it for.
 	 * 
 	 * @param numberOfChannels
-	 *            how many channels of audio you will be generating with this
-	 *            UGen
+	 *            how many channels of audio you will be generating with this UGen
 	 */
 	public void setChannelCount(int numberOfChannels)
 	{
