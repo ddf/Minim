@@ -4,30 +4,30 @@ Overall document style
 */
 
 body {
-    background-color:#ffffff;
-    color:#353833;
+    background-color: #e1d6df;
+	color: #432412;
     font-family:'DejaVu Sans', Arial, Helvetica, sans-serif;
     font-size:14px;
     margin:0;
 }
 a:link, a:visited {
     text-decoration:none;
-    color:#4A6782;
+    color: #8078a5;
 }
 a:hover, a:focus {
     text-decoration:none;
-    color:#bb7a2a;
+    color: #73d8ca;
 }
 a:active {
     text-decoration:none;
-    color:#4A6782;
+    color: #73d8ca;
 }
 a[name] {
-    color:#353833;
+    color: #8078a5;
 }
 a[name]:hover {
     text-decoration:none;
-    color:#353833;
+    color: #73d8ca;
 }
 pre {
     font-family:'DejaVu Sans Mono', monospace;
@@ -99,7 +99,7 @@ Document title and Copyright styles
     text-decoration:none;
 }
 .bar a:hover, .bar a:focus {
-    color:#bb7a2a;
+    color: #73d8ca;
 }
 .tab {
     background-color:#0066FF;
@@ -112,7 +112,7 @@ Document title and Copyright styles
 Navigation bar styles
 */
 .bar {
-    background-color:#4D7A97;
+    background-color:#6499b9;
     color:#FFFFFF;
     padding:.8em .5em .4em .8em;
     height:auto;/*height:1.8em;*/
@@ -120,7 +120,7 @@ Navigation bar styles
     margin:0;
 }
 .topNav {
-    background-color:#4D7A97;
+    background-color:#6499b9;
     color:#FFFFFF;
     float:left;
     padding:0;
@@ -133,7 +133,7 @@ Navigation bar styles
 }
 .bottomNav {
     margin-top:10px;
-    background-color:#4D7A97;
+    background-color:#6499b9;
     color:#FFFFFF;
     float:left;
     padding:0;
@@ -173,18 +173,18 @@ ul.subNavList li{
     float:left;
 }
 .topNav a:link, .topNav a:active, .topNav a:visited, .bottomNav a:link, .bottomNav a:active, .bottomNav a:visited {
-    color:#FFFFFF;
+    color:#c8d0fe;
     text-decoration:none;
     text-transform:uppercase;
 }
 .topNav a:hover, .bottomNav a:hover {
     text-decoration:none;
-    color:#bb7a2a;
+    color: #73d8ca;
     text-transform:uppercase;
 }
 .navBarCell1Rev {
-    background-color:#F8981D;
-    color:#253441;
+    background-color: #e1d6df;
+    color:#432412;
     margin: auto 5px;
 }
 .skipNav {
@@ -369,7 +369,7 @@ Table styles
     position:relative;
     text-align:left;
     background-repeat:no-repeat;
-    color:#253441;
+    color:#432412;
     font-weight:bold;
     clear:none;
     overflow:hidden;
@@ -398,7 +398,7 @@ Table styles
     padding-bottom:7px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color: #6499b9;
     border: none;
     height:16px;
 }
@@ -410,7 +410,7 @@ Table styles
     margin-right:3px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color: #6499b9;
     height:16px;
 }
 .memberSummary caption span.tableTab span {
@@ -421,7 +421,7 @@ Table styles
     margin-right:3px;
     display:inline-block;
     float:left;
-    background-color:#4D7A97;
+    background-color:#6499b9;
     height:16px;
 }
 .memberSummary caption span.tableTab, .memberSummary caption span.activeTableTab {
@@ -438,7 +438,7 @@ Table styles
     width:5px;
     position:relative;
     float:left;
-    background-color:#F8981D;
+    background-color:#6499b9;
 }
 .memberSummary .activeTableTab .tabEnd {
     display:none;
@@ -446,14 +446,14 @@ Table styles
     margin-right:3px;
     position:relative; 
     float:left;
-    background-color:#F8981D;
+    background-color:#e1d6df;
 }
 .memberSummary .tableTab .tabEnd {
     display:none;
     width:5px;
     margin-right:3px;
     position:relative;
-    background-color:#4D7A97;
+    background-color:#6499b9;
     float:left;
 
 }
@@ -551,7 +551,7 @@ h1.hidden {
 .block {
     display:block;
     margin:3px 10px 2px 0px;
-    color:#474747;
+    color:#432412;
 }
 .deprecatedLabel, .descfrmTypeLabel, .memberNameLabel, .memberNameLink,
 .overrideSpecifyLabel, .packageHierarchyLabel, .paramLabel, .returnLabel,
