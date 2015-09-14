@@ -3,30 +3,31 @@ body {
 	margin-top: 0px;
 	margin-right: 0px;
 	margin-bottom: 0px;
-	background-color: #EFEFEF;
+	background-color: #e1d6df;
+	color: #432412;
 }
 pre {  
 	FONT-FAMILY: "Consolas", "Courier New", Courier, mono; 
 	FONT-SIZE: 11px; 
 	LINE-HEIGHT: normal; 
-	COLOR: #222;
-	background-color: #DEDEDE;
+	COLOR: #383537;
+	background-color: #deb3cb;
 	padding: 5px;
 }
 A:link {
-	color: #999999;
+	color: #8078a5;
 	text-decoration: none
 }
 A:visited {
-	color: #999999;
+	color: #8078a5;
 	text-decoration: none
 }											
 A:active {
-	color: #000000; 
+	color: #73d8ca; 
 	text-decoration: none
 }
 A:hover {
-	color: #000000;
+	color: #73d8ca;
 	text-decoration: none;
 }
 
@@ -122,7 +123,7 @@ td {
 
 .parameterName
 {
-	color: #FFB300;
+	color: #6499b9;
 }
 
 .parameterDescription
@@ -134,7 +135,6 @@ td {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 16px;
 	font-style: normal;
-	color: #111;
 	margin: 0px;
 }
 
@@ -145,14 +145,12 @@ td {
 .indexheader {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 32px;
-	color: #999999;
 	padding-top: 20px;
 }
 
 .indexnavigation {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 16px;
-	color: #999999;
 	text-align: left;
 	font-weight: normal;
 	padding-bottom: 20px;
@@ -161,7 +159,7 @@ td {
 .border-left {
 	border-left-width: 1px;
 	border-left-style: solid;
-	border-left-color: #999999;
+	border-left-color: #432412;
 }
 
 .code_style {
