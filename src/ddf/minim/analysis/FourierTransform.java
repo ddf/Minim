@@ -196,7 +196,7 @@ public abstract class FourierTransform
    */
   public static final WindowFunction BARTLETT = new BartlettWindow();
   
-  /** A constant indicating a should be used on sample buffers.
+  /** A constant indicating a Bartlett-Hann window should be used on sample buffers.
    * 
    * @example Analysis/FFT/Windows
    * 
