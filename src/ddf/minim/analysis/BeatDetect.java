@@ -283,14 +283,20 @@ public class BeatDetect
 	 * 
 	 * @related BeatDetect
 	 */
+	public int detectSize()
+	{
+		if ( algorithm == FREQ_ENERGY )
+		{
+			return spect.avgSize();
+		}
+
+		return 0;
+	}
+	
+	@Deprecated
 	public int dectectSize()
 	{
-	  if ( algorithm == FREQ_ENERGY )
-	  {
-	    return spect.avgSize();
-	  }
-
-	  return 0;
+		return detectSize();
 	}
 	
 	/**

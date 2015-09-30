@@ -39,7 +39,7 @@ public interface Playable
    * Starts playback <code>millis</code> from the beginning. 
    * If this was previously set to loop, looping will be disabled.
    * 
-   * @param millis
+   * @param millis the position to start playing from
    */
   void play(int millis);
   
@@ -144,7 +144,11 @@ public interface Playable
   int length();
   
   /**
-   * Returns the meta data for this.
+   * Returns and <code>AudioMetaData</code> object that describes this audio. 
+   * 
+   * @see AudioMetaData
+   * 
+   * @return the <code>AudioMetaData</code> for this
    */
   AudioMetaData getMetaData();
 }

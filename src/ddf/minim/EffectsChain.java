@@ -37,7 +37,7 @@ import java.util.Vector;
  * @invisible
  * 
  */
-
+@Deprecated
 public class EffectsChain implements AudioEffect
 {
   // the effects in the order they were added
@@ -94,6 +94,8 @@ public class EffectsChain implements AudioEffect
    * Gets the <code>i<sup>th</sup></code> effect in the chain.
    * 
    * @param i the index of the <code>AudioEffect</code> to get
+   * 
+   * @return the <code>i<sup>th</sup></code> effect in the chain.
    */
   public synchronized AudioEffect get(int i)
   {

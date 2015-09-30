@@ -84,6 +84,13 @@ public abstract class WindowFunction
    * Apply the window to a portion of this sample buffer,
    * given an offset from the beginning of the buffer 
    * and the number of samples to be windowed.
+   * 
+   * @param samples
+   * 		float[]: the array of samples to apply the window to
+   * @param offset
+   * 		int: the index in the array to begin windowing
+   * @param length
+   * 		int: how many samples to apply the window to
    */
   public void apply(float[] samples, int offset, int length)
   {

@@ -2,6 +2,7 @@ package ddf.minim;
 
 
 /** @invisible */
+@Deprecated
 public class UGenSignal implements AudioSignal
 {
 	private UGen generator;
@@ -14,7 +15,7 @@ public class UGenSignal implements AudioSignal
 	/**
 	 * Sets the UGen that this UGenSignal wraps.
 	 * 
-	 * @param ugen
+	 * @param ugen the UGen that is used to generate audio
 	 */
 	public void setUGen(UGen ugen)
 	{
@@ -23,6 +24,8 @@ public class UGenSignal implements AudioSignal
 	
 	/**
 	 * Returns the UGen that is being wrapped by this UGenSignal.
+	 * 
+	 * @return the wrapped UGen
 	 */
 	public UGen getUGen()
 	{

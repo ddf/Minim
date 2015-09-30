@@ -42,16 +42,20 @@ public class AudioPlayer extends AudioSource implements Playable
 	// the rec that this plays
 	private AudioRecordingStream	recording;
 	private AudioOut		output;
+	// only set to true is pause is called
+	private boolean isPaused;
 
 	/**
-	 * Constructs an <code>AudioPlayer</code> that plays <code>recording</code>.
-	 * It is expected that <code>recording</code> will have a
-	 * <code>DataLine</code> to control. If it doesn't, any calls to
-	 * <code>Controller</code>'s methods will result in a
-	 * <code>NullPointerException</code>.
+	 * Constructs an <code>AudioPlayer</code> that plays <code>recording</code> using
+	 * the <code>AudioOut</code> provided. Generally you will not call this directly
+	 * and will instead use the <code>Minim.loadFile</code> method.
+	 * 
+	 * @see Minim#loadFile(String)
 	 * 
 	 * @param recording
-	 *           the <code>AudioRecording</code> to play
+	 *           the <code>AudioRecordingStream</code> to play
+	 *           
+	 * @param out the <code>AudioOut</code> to play the recording on
 	 *           
 	 * @invisible
 	 */
@@ -77,6 +81,7 @@ public class AudioPlayer extends AudioSource implements Playable
 	public void play()
 	{
 		recording.play();
+		isPaused = false;
 	}
 
    /**
@@ -106,6 +111,7 @@ public class AudioPlayer extends AudioSource implements Playable
 	public void pause()
 	{
 		recording.pause();
+		isPaused = true;
 	}
 
    /**
@@ -124,7 +130,11 @@ public class AudioPlayer extends AudioSource implements Playable
     * Set the <code>AudioPlayer</code> to loop some number of times.
     * If it is already playing, the position
     * <i>will not</i> be reset to the beginning. 
-    * If it is not playing, it will start playing. 
+    * If it is not playing, it will start playing.
+    * If you previously called this method and then paused the
+    * <code>AudioPlayer</code>, you can resume looping
+    * by using the result of <code>getLoopCount()</code> as
+    * the argument for this method. 
     * To loop indefinitely, use <code>loop()</code>.
     * 
     * @shortdesc Set the <code>AudioPlayer</code> to loop some number of times.
@@ -138,7 +148,20 @@ public class AudioPlayer extends AudioSource implements Playable
     */
 	public void loop(int num)
 	{
-		recording.loop(num);
+		// if we were paused, we need to grab the current state 
+		// because calling loop totally resets it
+		if ( isPaused )
+		{
+			int pos = recording.getMillisecondPosition();
+			recording.loop( num );
+			recording.setMillisecondPosition(pos);
+		}
+		else
+		{
+			recording.loop(num);
+		}
+		
+		isPaused = false;
 	}
 	
    /**
@@ -155,7 +178,7 @@ public class AudioPlayer extends AudioSource implements Playable
     */
 	public void loop()
 	{
-		recording.loop(Minim.LOOP_CONTINUOUSLY);
+		loop(Minim.LOOP_CONTINUOUSLY);
 	}
 
    /**

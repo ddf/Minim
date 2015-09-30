@@ -19,6 +19,7 @@
 package ddf.minim.javasound;
 
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -39,8 +40,6 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import javazoom.spi.mpeg.sampled.file.MpegAudioFormat;
-
 import org.tritonus.share.sampled.AudioUtils;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
@@ -54,6 +53,7 @@ import ddf.minim.spi.AudioRecordingStream;
 import ddf.minim.spi.AudioStream;
 import ddf.minim.spi.MinimServiceProvider;
 import ddf.minim.spi.SampleRecorder;
+import javazoom.spi.mpeg.sampled.file.MpegAudioFormat;
 
 /**
  * JSMinim is an implementation of the {@link MinimServiceProvider} interface that use
@@ -266,13 +266,14 @@ public class JSMinim implements MinimServiceProvider
 		// TODO: deal with the case of wanting to have the file fully in memory
 		AudioRecordingStream mstream = null;
 		AudioInputStream ais = getAudioInputStream(filename);
-		if ( inMemory && ais.markSupported() )
-		{
-			ais.mark( (int)ais.getFrameLength() * ais.getFormat().getFrameSize() );
-		}
-		debug("Reading from " + ais.getClass().toString());
 		if (ais != null)
 		{
+			if ( inMemory && ais.markSupported() )
+			{
+				ais.mark( (int)ais.getFrameLength() * ais.getFormat().getFrameSize() );
+			}
+			
+			debug("Reading from " + ais.getClass().toString());
 			debug("File format is: " + ais.getFormat().toString());
 			AudioFormat format = ais.getFormat();
 			// special handling for mp3 files because
@@ -331,21 +332,24 @@ public class JSMinim implements MinimServiceProvider
 		{
 			MpegAudioFileReader reader = new MpegAudioFileReader(this);
 			InputStream stream = (InputStream)createInput.invoke(fileLoader, filename);
-			AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
-																							stream,
-																							stream.available());
-			stream.close();
-			if (baseFileFormat instanceof TAudioFileFormat)
+			if ( stream != null )
 			{
-				TAudioFileFormat fileFormat = (TAudioFileFormat)baseFileFormat;
-				props = (Map<String, Object>)fileFormat.properties();
-				if (props.size() == 0)
+				AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
+																								stream,
+																								stream.available());
+				stream.close();
+				if (baseFileFormat instanceof TAudioFileFormat)
 				{
-					error("No file properties available for " + filename + ".");
-				}
-				else
-				{
-					debug("File properties: " + props.toString());
+					TAudioFileFormat fileFormat = (TAudioFileFormat)baseFileFormat;
+					props = (Map<String, Object>)fileFormat.properties();
+					if (props.size() == 0)
+					{
+						error("No file properties available for " + filename + ".");
+					}
+					else
+					{
+						debug("File properties: " + props.toString());
+					}
 				}
 			}
 		}
@@ -681,28 +685,31 @@ public class JSMinim implements MinimServiceProvider
 			try
 			{
 				InputStream is = (InputStream)createInput.invoke(fileLoader, filename);
-				debug("Base input stream is: " + is.toString());
-				bis = new BufferedInputStream(is);
-				ais = getAudioInputStream(bis);
-				// don't mark it like this because it means the entire
-				// file will be loaded into memory as it plays. this 
-				// will cause out-of-memory problems with very large files.
-				// ais.mark((int)ais.available());
-				debug("Acquired AudioInputStream.\n" + "It is "
-						+ ais.getFrameLength() + " frames long.\n"
-						+ "Marking support: " + ais.markSupported());
-			}
-			catch (IOException ioe)
-			{
-				error("IOException: " + ioe.getMessage());
-			}
-			catch (UnsupportedAudioFileException uafe)
-			{
-				error("Unsupported Audio File: " + uafe.getMessage());
+				if ( is != null )
+				{
+					debug("Base input stream is: " + is.toString());
+					bis = new BufferedInputStream(is);
+					ais = getAudioInputStream(bis);
+				
+					if ( ais != null )
+					{
+						// don't mark it like this because it means the entire
+						// file will be loaded into memory as it plays. this 
+						// will cause out-of-memory problems with very large files.
+						// ais.mark((int)ais.available());
+						debug("Acquired AudioInputStream.\n" + "It is "
+								+ ais.getFrameLength() + " frames long.\n"
+								+ "Marking support: " + ais.markSupported());
+					}
+				}
+				else 
+				{
+					throw new FileNotFoundException(filename);
+				}
 			}
 			catch( Exception e )
 			{
-				error( "Error invoking createInput on the file loader object: " + e.getMessage() );
+				error( e.toString() );
 			}
 		}
 		return ais;
@@ -800,14 +807,14 @@ public class JSMinim implements MinimServiceProvider
 		{
 			try
 			{
-        if ( outputMixer == null )
-        {
-          line = (SourceDataLine)AudioSystem.getLine(info);
-        }
-        else
-        {
-          line = (SourceDataLine)outputMixer.getLine(info);
-        }
+		        if ( outputMixer == null )
+		        {
+		          line = (SourceDataLine)AudioSystem.getLine(info);
+		        }
+		        else
+		        {
+		          line = (SourceDataLine)outputMixer.getLine(info);
+		        }
 				// remember that time you spent, like, an entire afternoon fussing
 				// with this buffer size to try to get the latency decent on Linux?
 				// Yah, don't fuss with this anymore, ok?
@@ -817,15 +824,22 @@ public class JSMinim implements MinimServiceProvider
 					debug("SourceDataLine is " + line.getClass().toString() + "\n"
 					      + "Buffer size is " + line.getBufferSize() + " bytes.\n" 
 					      + "Format is "	+ line.getFormat().toString() + ".");
-					return line;
+				}
+				else
+				{
+					line = null;
 				}
 			}
-			catch (LineUnavailableException e)
+			catch (Exception e)
 			{
 				error("Couldn't open the line: " + e.getMessage());
+				line = null;
 			}
 		}
-		error("Unable to return a SourceDataLine: unsupported format - " + format.toString());
+		else
+		{
+			error("Unable to return a SourceDataLine: unsupported format - " + format.toString());
+		}
 		return line;
 	}
 

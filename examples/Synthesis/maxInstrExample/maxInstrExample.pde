@@ -18,7 +18,6 @@ import ddf.minim.ugens.*;
 // more than one methods (setup(), draw(), stop()).
 Minim minim;
 AudioOutput out;
-AudioRecorder recorder;
 
 // setup is run once at the beginning
 void setup()
@@ -29,9 +28,6 @@ void setup()
   // initialize the minim and out objects
   minim = new Minim(this);
   out = minim.getLineOut(Minim.MONO, 2048);
-  // here we also begin recording
-  recorder = minim.createRecorder(out, "maxInstr.wav", false);
-  recorder.beginRecord();
 
   // choose the total number of single oscillator instruments to generate
   // i've never exceeded 100, but I'm getting closer as we refine Minim
@@ -71,12 +67,3 @@ void draw()
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
 }
-
-// if a key is pressed...
-void keyPressed()
-{
-  // end the recording and save
-  recorder.endRecord();
-  recorder.save();
-}
-

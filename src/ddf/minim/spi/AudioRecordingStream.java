@@ -39,16 +39,12 @@ public interface AudioRecordingStream extends AudioStream
 	boolean isPlaying();
 
 	/**
-	 * Starts looping playback from the current position. Playback will continue
+	 * Starts looping playback from the loop start point. Playback will continue
 	 * to the loop's end point, then loop back to the loop start point count
-	 * times, and finally continue playback to the end of the clip.
+	 * times.
 	 * 
-	 * If the current position when this method is invoked is greater than the
-	 * loop end point, playback simply continues to the end of the source without
-	 * looping.
-	 * 
-	 * A count value of 0 indicates that any current looping should cease and
-	 * playback should continue to the end of the clip. The behavior is undefined
+	 * A count value of 0 indicates that the section indicated by the loop start 
+	 * point and loop end point should play 1 time. The behavior is undefined
 	 * when this method is invoked with any other value during a loop operation.
 	 * 
 	 * If playback is stopped during looping, the current loop status is cleared;
@@ -84,7 +80,7 @@ public interface AudioRecordingStream extends AudioStream
 	/**
 	 * Gets the current millisecond position of the source.
 	 * 
-	 * @return the current possition, in milliseconds in the source
+	 * @return the current position, in milliseconds in the source
 	 */
 	int getMillisecondPosition();
 
@@ -92,7 +88,7 @@ public interface AudioRecordingStream extends AudioStream
 	 * Sets the current millisecond position of the source.
 	 * 
 	 * @param pos
-	 *           the posititon to cue the playback head to
+	 *           the position to cue the stream to
 	 */
 	void setMillisecondPosition(int pos);
 

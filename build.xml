@@ -10,14 +10,19 @@
 	
   <target name="compile" depends="clean">
     <mkdir dir="bin"/>
-    <javac srcdir="src" destdir="bin" includeAntRuntime="false">
+    <javac 	srcdir="src" 
+    		destdir="bin" 
+    		includeAntRuntime="false"
+    		debug="true" 
+    		debuglevel="lines,vars,source"
+    	>
       <classpath refid="deps.path"/>
     </javac>
   </target>
 
   <target name="library" depends="compile">
     <jar destfile="library/minim.jar" basedir="bin" includes="**/*.class"
-	 excludes="ddf/minim/javasound/*.class">
+	 excludes="ddf/minim/javasound/*.class, ddf/minim/tests/*.class">
     </jar>
     <jar destfile="library/jsminim.jar" basedir="bin"
 	 includes="ddf/minim/javasound/*.class">
@@ -25,7 +30,11 @@
   </target>
 
   <target name="doc">
-	<javadoc sourcepath="src" packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis" destdir="javadoc">
+	<javadoc sourcepath="src" 
+			 packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis"
+			 stylesheetfile="ext/javadoc-styles.css"
+			 destdir="javadoc"
+	>
 		<classpath refid="deps.path"/>
 		<!-- ignore all the prodoc tags -->
 	  	<tag name="example" enabled="false"/>

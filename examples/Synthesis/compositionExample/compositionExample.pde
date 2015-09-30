@@ -22,7 +22,6 @@ import ddf.minim.effects.*;
 // more than one methods (setup(), draw(), stop()).
 Minim minim;
 AudioOutput out;
-AudioRecorder recorder;
 
 // setup is run once at the beginning
 // In this example, all of the sound work is done in the setup.
@@ -34,8 +33,6 @@ void setup()
   // initialize the minim and out objects
   minim = new Minim( this );
   out = minim.getLineOut( Minim.MONO, 2048 );
-  // a recorder object is used to create a WAV file of the piece.
-  recorder = minim.createRecorder( out, "compositionExample.wav", true );
   
   // I'll need to a wave available, and it's nice to be able
   // to change it in every instrument if I want.
@@ -356,29 +353,3 @@ void draw()
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
 }
-
-// When a key is released, this is run
-void keyReleased()
-{
-  // Basically turn the recording of a WAV file on and off with the "r" key.
-  if ( key == 'r' ) 
-  {
-    if ( recorder.isRecording() ) 
-    {
-      recorder.endRecord();
-      println("ending recording");
-    }
-    else 
-    {
-      println("beginning recording");
-      recorder.beginRecord();
-    }
-  }
-  // and save it with the "s" key
-  if ( key == 's' )
-  {
-    recorder.save();
-    println("Done saving.");
-  }
-}
-

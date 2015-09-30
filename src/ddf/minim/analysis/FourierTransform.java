@@ -142,97 +142,93 @@ import ddf.minim.Minim;
 public abstract class FourierTransform
 {
   /** A constant indicating no window should be used on sample buffers. 
-   *  Also referred as a <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>.
+   *  Also referred as a Rectangular window.
    *  
    *  @example Analysis/FFT/Windows
    *  
-   *  @related FFT
+   *  @related <a href="http://en.wikipedia.org/wiki/Window_function#Rectangular_window">Rectangular window</a>
+   *  @related WindowFunction
    */
   public static final WindowFunction NONE = new RectangularWindow();
   
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a> 
-   *  should be used on sample buffers.
+  /** A constant indicating a Hamming window should be used on sample buffers.
    * 
    * @example Analysis/FFT/Windows
    * 
-   * @related FFT
+   * @related <a href="http://en.wikipedia.org/wiki/Window_function#Hamming_window">Hamming window</a>
+   * @related WindowFunction
    */
   public static final WindowFunction HAMMING = new HammingWindow();
   
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a> 
-   *  should be used on sample buffers.
+  /** A constant indicating a Hann window should be used on sample buffers.
    * 
    *  @example Analysis/FFT/Windows
    *  
-   *  @related FFT
+   *  @related <a href="http://en.wikipedia.org/wiki/Window_function#Hann_window">Hann window</a>
+   *  @related WindowFunction
    */
   public static final WindowFunction HANN = new HannWindow();
   
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a> 
-   *  should be used on sample buffers.
+  /** A constant indicating a Cosine window should be used on sample buffers.
    *  
    *  @example Analysis/FFT/Windows
    *  
-   *  @related FFT
+   *  @related <a href="http://en.wikipedia.org/wiki/Window_function#Cosine_window">Cosine window</a>
+   *  @related WindowFunction
    */
   public static final WindowFunction COSINE = new CosineWindow();
   
-  /** A constant indicating a <a href="http://en.wikipedia.org/wiki/Window_function#http://en.wikipedia.org/wiki/Window_function#Triangular_window_.28non-zero_end-points.29">Triangular window</a> 
-   *  should be used on sample buffers.
+  /** A constant indicating a Triangular window should be used on sample buffers.
    *  
    *  @example Analysis/FFT/Windows
    *  
-   *  @related FFT
+   *  @related <a href="http://en.wikipedia.org/wiki/Window_function#Triangular_window">Triangular window</a>
+   *  @related WindowFunction
    */
   public static final WindowFunction TRIANGULAR = new TriangularWindow();
   
-  /** A constant indicating a 
-   * <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">Bartlett window</a> 
-   * should be used on sample buffers.
+  /** A constant indicating a Bartlett window should be used on sample buffers.
    * 
    * @example Analysis/FFT/Windows
    * 
-   * @related FFT
+   * @related <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett_window_.28zero_valued_end-points.29">Bartlett window</a>
+   * @related WindowFunction
    */
   public static final WindowFunction BARTLETT = new BartlettWindow();
   
-  /** A constant indicating a 
-   * <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">Bartlett-Hann window</a> 
-   * should be used on sample buffers.
+  /** A constant indicating a Bartlett-Hann window should be used on sample buffers.
    * 
    * @example Analysis/FFT/Windows
    * 
-   * @related FFT
+   * @related <a href="http://en.wikipedia.org/wiki/Window_function#Bartlett.E2.80.93Hann_window">Bartlett-Hann window</a>
+   * @related WindowFunction
    */
   public static final WindowFunction BARTLETTHANN = new BartlettHannWindow();
   
-  /** A constant indicating a 
-   * <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">Lanczos window</a> 
-   * should be used on sample buffers.
+  /** A constant indicating a Lanczos window should be used on sample buffers.
    * 
    * @example Analysis/FFT/Windows
    * 
-   * @related FFT
+   * @related <a href="http://en.wikipedia.org/wiki/Window_function#Lanczos_window">Lanczos window</a>
+   * @related WindowFunction
    */
   public static final WindowFunction LANCZOS = new LanczosWindow();
   
-  /** A constant indicating a 
-   * <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a> 
-   * with a default value should be used on sample buffers.
+  /** A constant indicating a Blackman window with a default value should be used on sample buffers.
    * 
    * @example Analysis/FFT/Windows 
    * 
-   * @related FFT
+   * @related <a href="http://en.wikipedia.org/wiki/Window_function#Blackman_windows">Blackman window</a>
+   * @related WindowFunction
    */
   public static final WindowFunction BLACKMAN = new BlackmanWindow();
   
-  /** A constant indicating a 
-   * <a href="http://en.wikipedia.org/wiki/Window_function#Gauss_windows">Gauss window</a> 
-   * with a default value should be used on sample buffers.
+  /** A constant indicating a Gauss with a default value should be used on sample buffers.
    * 
    * @example Analysis/FFT/Windows
    * 
-   * @related FFT
+   * @related <a href="http://en.wikipedia.org/wiki/Window_function#Gauss_windows">Gauss window</a>
+   * @related WindowFunction
    */
   public static final WindowFunction GAUSS = new GaussWindow();
 
@@ -626,8 +622,6 @@ public abstract class FourierTransform
    * 
    * @return float: the middle frequency, in Hertz, of the requested band of the spectrum
    * 
-   * @example Analysis/FFT/BandCenters
-   * 
    * @related FFT
    */
   public float indexToFreq(int i)
@@ -657,8 +651,6 @@ public abstract class FourierTransform
    *     int: which average band you want the center frequency of.
    *     
    * @return float: the center frequency of the i<sup>th</sup> average band.
-   * 
-   * @example Analysis/FFT/BandCenters
    * 
    * @related FFT
    * 
@@ -760,8 +752,6 @@ public abstract class FourierTransform
    * 
    * @return int: the length of the averages array
    * 
-   * @example Analysis/FFT/Averages
-   * 
    * @related FFT
    */
   public int avgSize()
@@ -775,8 +765,6 @@ public abstract class FourierTransform
    * @param i
    *          int: the average you want the value of
    * @return float: the value of the requested average band
-   * 
-   * @example Analysis/FFT/Averages
    * 
    * @related FFT
    */
@@ -915,7 +903,6 @@ public abstract class FourierTransform
    * @param buffer
    *          float[]: the buffer to place the result of the inverse transform in
    *          
-   * @example Analysis/FFT/Inverse_Transform
    *          
    * @related FFT
    */
@@ -928,7 +915,6 @@ public abstract class FourierTransform
    * @param buffer
    *          AudioBuffer: the buffer to place the result of the inverse transform in
    *          
-   * @example Analysis/FFT/Inverse_Transform
    */
   public void inverse(AudioBuffer buffer)
   {

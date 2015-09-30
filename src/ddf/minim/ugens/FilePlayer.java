@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import ddf.minim.AudioMetaData;
 import ddf.minim.Minim;
+import ddf.minim.MultiChannelBuffer;
 import ddf.minim.Playable;
 import ddf.minim.UGen;
 import ddf.minim.spi.AudioRecordingStream;
@@ -27,6 +28,11 @@ import ddf.minim.spi.AudioRecordingStream;
 public class FilePlayer extends UGen implements Playable
 {
 	private AudioRecordingStream mFileStream;
+	private boolean 			 isPaused;
+	// buffer we use to read from the stream
+	private MultiChannelBuffer   buffer;
+	// where in the buffer we should read the next sample from
+	private int 				 bufferOutIndex;
 	
 	/**
 	 * Construct a FilePlayer that will read from iFileStream.
@@ -38,12 +44,15 @@ public class FilePlayer extends UGen implements Playable
 	 */
 	public FilePlayer( AudioRecordingStream iFileStream )
 	{
-		mFileStream = iFileStream;
+		mFileStream 	= iFileStream;
+		buffer 			= new MultiChannelBuffer(1024, mFileStream.getFormat().getChannels());
+		bufferOutIndex 	= 0;
+		
 		// we'll need to do this eventually, I think.
 		// but for now we don't need this because it starts the iothread,
 		// which is not what we want.
 		// mFileStream.open();	
-		mFileStream.play();
+		// mFileStream.play();
 	}
 	
 	/**
@@ -72,6 +81,7 @@ public class FilePlayer extends UGen implements Playable
 	public void play()
 	{
 		mFileStream.play();
+		isPaused = false;
 	}
 
 	/**
@@ -99,6 +109,7 @@ public class FilePlayer extends UGen implements Playable
 	public void pause()
 	{
 		mFileStream.pause();
+		isPaused = true;
 	}
 
 	/**
@@ -127,7 +138,7 @@ public class FilePlayer extends UGen implements Playable
 	   */
 	public void loop()
 	{
-		mFileStream.loop(Minim.LOOP_CONTINUOUSLY);
+		loop(Minim.LOOP_CONTINUOUSLY);
 	}
 
 	/**
@@ -148,7 +159,18 @@ public class FilePlayer extends UGen implements Playable
 	   */
 	public void loop(int loopCount)
 	{
-		mFileStream.loop(loopCount);
+		if ( isPaused )
+		{
+			int pos = mFileStream.getMillisecondPosition();
+			mFileStream.loop( loopCount );
+			cue( pos );
+		}
+		else
+		{
+			mFileStream.loop(loopCount);
+		}
+		
+		isPaused = false;
 	}
 
 	/**
@@ -219,6 +241,8 @@ public class FilePlayer extends UGen implements Playable
 			millis = length();
 		}
 		mFileStream.setMillisecondPosition(millis);
+		// change the position in the stream invalidates our buffer, so we read a new buffer
+		fillBuffer();
 	}
 
 	/**
@@ -246,8 +270,8 @@ public class FilePlayer extends UGen implements Playable
 		{
 			pos = length();
 		}
-		Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
-		mFileStream.setMillisecondPosition(pos);
+		//Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
+		cue( pos );
 	}
 
 	/**
@@ -321,26 +345,40 @@ public class FilePlayer extends UGen implements Playable
 		mFileStream.close();
 	}
 	
+	private void fillBuffer()
+	{
+		mFileStream.read(buffer);
+		bufferOutIndex = 0;
+	}
+	
 	@Override
 	protected void uGenerate(float[] channels) 
 	{
 		if ( mFileStream.isPlaying() )
 		{
-			float[] samples = mFileStream.read();
 			// special case: mono expands out to all channels.
-			if ( samples.length == 1 )
+			if ( buffer.getChannelCount() == 1 )
 			{
-				Arrays.fill(  channels, samples[0] );
+				Arrays.fill( channels, buffer.getSample( 0, bufferOutIndex ) );
 			}
 			// we have more than one channel, don't try to fill larger channel requests
-			if ( samples.length <= channels.length )
+			if ( buffer.getChannelCount() <= channels.length )
 			{
-				System.arraycopy(samples, 0, channels, 0, samples.length);
+				for(int i = 0 ; i < channels.length; ++i)
+				{
+					channels[i] = buffer.getSample( i, bufferOutIndex );
+				}
 			}
 			// special case: we are stereo, output is mono.
-			else if ( channels.length == 1 && samples.length == 2 )
+			else if ( channels.length == 1 && buffer.getChannelCount() == 2 )
 			{
-				channels[0] = (samples[0]+samples[1])/2.0f;
+				channels[0] = (buffer.getSample( 0, bufferOutIndex ) + buffer.getSample( 1, bufferOutIndex ))/2.0f;
+			}
+			
+			++bufferOutIndex;
+			if ( bufferOutIndex == buffer.getBufferSize() )
+			{
+				fillBuffer();
 			}
 		}
 		else

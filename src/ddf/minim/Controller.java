@@ -169,7 +169,7 @@ public class Controller
   /** @invisible
    * 
    * Prints the available controls and their ranges to the console. Not all
-   * lines have all of the controls available on them so this is a way to find
+   * Controllers have all of the controls available on them so this is a way to find
    * out what is available.
    * 
    */
@@ -202,14 +202,16 @@ public class Controller
     }
     else
     {
-      System.out.println("There are no controls available for this line.");
+      System.out.println("There are no controls available.");
     }
   }
 
   /** @invisible
    * 
-   * Returns whether or not the particular control type is supported by the Line
-   * being controlled.
+   * Returns whether or not the particular control type is supported by this Controller
+   * 
+   * @param type 
+   * 		the Control.Type to query for
    * 
    * @see #VOLUME
    * @see #GAIN

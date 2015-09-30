@@ -43,7 +43,7 @@ public interface AudioOut extends AudioResource
 	 * @param signal
 	 *            the AudioSignal used to generate sound
 	 */
-	// TODO (ddf) this needs to go away at some point
+	@Deprecated
 	void setAudioSignal(AudioSignal signal);
 
 	/**
@@ -59,7 +59,7 @@ public interface AudioOut extends AudioResource
 	 * @param effect
 	 *            the AudioEffect to apply to the signal
 	 */
-	// TODO (ddf) this needs to go away at some point
+	@Deprecated
 	void setAudioEffect(AudioEffect effect);
 
 	/**

@@ -11,8 +11,8 @@
   * If you try to skip to a position that is less than zero or try to skip past the end of the 
   * recording, the position will be clamped to zero or <code>length()</code>. 
   * <p>
-  * Press 'f' to skip by 100 milliseconds.<br />
-  * Press 'r' to skip by -500 milliseconds.
+  * Press 'f' to skip by 1000 milliseconds.<br />
+  * Press 'r' to skip by -1000 milliseconds.
   */
 
 import ddf.minim.*;
@@ -40,17 +40,25 @@ void draw()
     line(i, 50  + groove.left.get(i)*50,  i+1, 50  + groove.left.get(i+1)*50);
     line(i, 150 + groove.right.get(i)*50, i+1, 150 + groove.right.get(i+1)*50);
   }
+  
+  float posx = map(groove.position(), 0, groove.length(), 0, width);
+  stroke(0,200,0);
+  line(posx, 0, posx, height);
+  
+  stroke(255);
+  text("Press f to skip forward and r to skip backward.", 10, 20);
 }
 
 void keyPressed()
 {
   if ( key == 'f' )
   {
-    groove.skip(100);
+    // skip forward 1 second (1000 milliseconds)
+    groove.skip(1000);
   }
   if ( key == 'r' )
   {
-    groove.skip(-500);
+    // skip backward 1 second (1000 milliseconds)
+    groove.skip(-1000);
   }
 }
-

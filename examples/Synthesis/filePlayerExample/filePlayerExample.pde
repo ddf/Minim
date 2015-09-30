@@ -21,7 +21,7 @@ AudioOutput out;
 
 // you can use your own file by putting it in the data directory of this sketch
 // and changing the value assigned to fileName here.
-String fileName = "http://code.compartmental.net/minim/examples/audio/groove.mp3";
+String fileName = "groove.mp3";
 
 void setup()
 {
@@ -30,18 +30,12 @@ void setup()
   
   // create our Minim object for loading audio
   minim = new Minim(this);
-
-  // get an AudioRecordingStream from Minim, which is what FilePlayer will control
-  AudioRecordingStream myFile = minim.loadFileStream( fileName, // the file to load
-                                                      1024,     // the size of the buffer. 1024 is a typical buffer size
-                                                      true      // whether to load it totally into memory or not
-                                                                // we say true because the file is short 
-                                                    );
-                               
-  // this opens the file and puts it in the "play" state.                           
-  filePlayer = new FilePlayer( myFile );
-  // and then we'll tell the recording to loop indefinitely
-  filePlayer.loop(1);
+                                                  
+  // a FilePlayer reads from an AudioRecordingStream, which we 
+  // can easily get from Minim using loadFileStream
+  filePlayer = new FilePlayer( minim.loadFileStream(fileName) );
+  // and then we'll tell the file player to loop indefinitely
+  filePlayer.loop();
   
   // get a line out from Minim. It's important that the file is the same audio format 
   // as our output (i.e. same sample rate, number of channels, etc).
@@ -65,13 +59,17 @@ void keyPressed()
   }
   else
   {
-    // starts the file looping again. this will reset the position
-    // to whatever the current loop start point is. by default the 
-    // loop start point is the beginning of the file and end point 
-    // is the end of the file.
+    // starts the file looping again, picking up where we left off
     filePlayer.loop();
   }
 }
+
+void mousePressed()
+{
+  float pos = map(mouseX, 0, width, 0, filePlayer.length());
+  filePlayer.cue((int)pos);
+}
+
 
 // draw is run many times
 void draw()
@@ -90,6 +88,11 @@ void draw()
     line( x1, 50 + out.left.get(i)*50, x2, 50 + out.left.get(i+1)*50);
     line( x1, 150 + out.right.get(i)*50, x2, 150 + out.right.get(i+1)*50);
   }  
+
+  float songPos = map( filePlayer.position(), 0, filePlayer.length(), 0, width );
+
+  stroke( 255, 0, 0 );
+  line( songPos, 0, songPos, height );
   
   text( "loopCount: " + filePlayer.loopCount(), 15, 15 );
 }

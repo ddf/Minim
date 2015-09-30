@@ -5,27 +5,31 @@
   * <p>
   * For more information about Minim and additional features, visit http://code.compartmental.net/minim/
   */
-
+  
 import ddf.minim.*;
 import ddf.minim.effects.*;
+import ddf.minim.ugens.*;
 
 Minim minim;
-AudioPlayer groove;
-BandPass bpf;
+AudioOutput output;
+FilePlayer groove;
+BandPass   bpf;
 
 void setup()
 {
   size(512, 200, P3D);
   
   minim = new Minim(this);
+  output = minim.getLineOut();
   
-  groove = minim.loadFile("groove.mp3");
-  groove.loop();
+  groove = new FilePlayer( minim.loadFileStream("groove.mp3") );
   // make a band pass filter with a center frequency of 440 Hz and a bandwidth of 20 Hz
   // the third argument is the sample rate of the audio that will be filtered
   // it is required to correctly compute values used by the filter
-  bpf = new BandPass(440, 20, groove.sampleRate());
-  groove.addEffect(bpf);
+  bpf = new BandPass(440, 20, output.sampleRate());
+  groove.patch( bpf ).patch( output );
+  // start the file playing
+  groove.loop();
 }
 
 void draw()
@@ -35,12 +39,12 @@ void draw()
   // draw the waveforms
   // the values returned by left.get() and right.get() will be between -1 and 1,
   // so we need to scale them up to see the waveform
-  for(int i = 0; i < groove.right.size()-1; i++)
+  for(int i = 0; i < output.bufferSize()-1; i++)
   {
-    float x1 = map(i, 0, groove.bufferSize(), 0, width);
-    float x2 = map(i+1, 0, groove.bufferSize(), 0, width);
-    line(x1, height/4 - groove.left.get(i)*50, x2, height/4 - groove.left.get(i+1)*50);
-    line(x1, 3*height/4 - groove.right.get(i)*50, x2, 3*height/4 - groove.right.get(i+1)*50);
+    float x1 = map(i, 0, output.bufferSize(), 0, width);
+    float x2 = map(i+1, 0, output.bufferSize(), 0, width);
+    line(x1, height/4 - output.left.get(i)*50, x2, height/4 - output.left.get(i+1)*50);
+    line(x1, 3*height/4 - output.right.get(i)*50, x2, 3*height/4 - output.right.get(i+1)*50);
   }
   // draw a rectangle to represent the pass band
   noStroke();
@@ -56,5 +60,5 @@ void mouseMoved()
   float bandWidth = map(mouseY, 0, height, 50, 500);
   bpf.setBandWidth(bandWidth);
   // prints the new values of the coefficients in the console
-  bpf.printCoeff();
+  //bpf.printCoeff();
 }

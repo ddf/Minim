@@ -31,7 +31,12 @@ public class BlackmanWindow extends WindowFunction
 {
   protected float alpha;
 
-  /** Constructs a Blackman window. */
+  /** 
+   * Constructs a Blackman window. 
+   * 
+   * @param alpha
+   * 		float: the alpha value to use for this window
+   * */
   public BlackmanWindow(float alpha)
   {
     this.alpha = alpha;

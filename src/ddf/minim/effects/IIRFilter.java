@@ -156,7 +156,7 @@ public abstract class IIRFilter extends UGen implements AudioEffect
    * @param f
    *          the new cutoff/center frequency (in Hz).
    */
-  public final void setFreq(float f)
+  public final synchronized void setFreq(float f)
   {
   	// no need to recalc if the cutoff isn't actually changing
     if ( validFreq(f) && f != cutoff.getLastValue() )

@@ -116,6 +116,9 @@ public class Line extends UGen
 	
 	/**
 	 * Has the Line completed its transition.
+	 * 
+	 * @return
+	 * 		true if the Line has completed
 	 */
 	public boolean isAtEnd()
 	{

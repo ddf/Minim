@@ -53,7 +53,7 @@ public class BandPass extends IIRFilter
    * @param bandWidth
    *          the band width (in Hz)
    */
-  public void setBandWidth(float bandWidth)
+  public synchronized void setBandWidth(float bandWidth)
   {
     bw = bandWidth / sampleRate();
     calcCoeff();

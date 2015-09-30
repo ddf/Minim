@@ -16,7 +16,7 @@ import java.util.Random;
  * @related Waves
  * @related WavetableGenerator
  * 
- * @author Mark Godfrey <mark.godfrey@gatech.edu>
+ * @author Mark Godfrey &lt;mark.godfrey@gatech.edu&gt;
  */
 
 public class Wavetable implements Waveform
@@ -264,7 +264,7 @@ public class Wavetable implements Waveform
 	 * Flip the values in the table around a particular value. For example, if
 	 * you flip around 2, values greater than 2 will become less than two by the
 	 * same amount and values less than 2 will become greater than 2 by the same
-	 * amount. 3 -> 1, 0 -> 4, etc.
+	 * amount. 3 -&gt; 1, 0 -&gt; 4, etc.
 	 * 
 	 * @shortdesc Flip the values in the table around a particular value.
 	 * 
@@ -307,8 +307,7 @@ public class Wavetable implements Waveform
 	}
 
 	/**
-	 * Inverts all values in the table that are less than zero. -1 -> 1, -0.2 ->
-	 * 0.2, etc.
+	 * Inverts all values in the table that are less than zero. -1 -&gt; 1, -0.2 -&gt; 0.2, etc.
 	 * 
 	 * @example Synthesis/WavetableMethods
 	 * 

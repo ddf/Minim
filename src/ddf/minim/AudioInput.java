@@ -66,10 +66,12 @@ public class AudioInput extends AudioSource
   
   /** @invisible
    * 
-   * Constructs an <code>AudioInput</code> that subscribes to <code>stream</code> and 
-   * can control the <code>DataLine</code> that <code>stream</code> is reading from.
+   * Constructs an <code>AudioInput</code> that uses <code>out</code> to read 
+   * samples from <code>stream</code>. The samples from <code>stream</code> 
+   * can be accessed by through the interface provided by <code>AudioSource</code>.
    * 
-   * @param stream the <code>AudioStream</code> that this will subscribe to for samples
+   * @param stream the <code>AudioStream</code> that provides the samples
+   * @param out the <code>AudioOut</code> that will read from <code>stream</code>
    */
   public AudioInput(AudioStream stream, AudioOut out)
   {
@@ -122,13 +124,17 @@ public class AudioInput extends AudioSource
     if ( hasControl(VOLUME) )
     {
     	setVolume( 1 );
+        m_isMonitoring = true;
     }
     else if ( hasControl(GAIN) )
     {
     	setGain( 0 );
-    }	 
-    
-    m_isMonitoring = true;
+        m_isMonitoring = true;
+    }
+    else
+    {
+    	Minim.error( "Monitoring is not available on this AudioInput." );
+    }
   }
   
   /**

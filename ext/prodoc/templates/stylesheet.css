@@ -1,130 +1,158 @@
+/** http://colorpalettes.net/color-palette-1839/ **/
+
 body {
 	margin-left: 0px;
 	margin-top: 0px;
 	margin-right: 0px;
 	margin-bottom: 0px;
-	background-color: #EFEFEF;
+	background-color: #e1d6df;
+	color: #432412;
 }
 pre {  
 	FONT-FAMILY: "Consolas", "Courier New", Courier, mono; 
 	FONT-SIZE: 11px; 
 	LINE-HEIGHT: normal; 
-	COLOR: #222;
-	background-color: #DEDEDE;
+	COLOR: #383537;
+	background-color: #deb3cb;
 	padding: 5px;
-	margin-top: -2px;
 }
 A:link {
-	color: #999999;
+	color: #8078a5;
 	text-decoration: none
 }
 A:visited {
-	color: #999999;
+	color: #8078a5;
 	text-decoration: none
 }											
 A:active {
-	color: #000000; 
+	color: #73d8ca; 
 	text-decoration: none
 }
 A:hover {
-	color: #000000;
+	color: #73d8ca;
 	text-decoration: none;
 }
+
+.mainTable {
+	width: 100%;
+	height: 100%;
+	border: 0; 
+	border-spacing: 0px;
+}
+
+td {
+	padding: 0px;
+	vertical-align: top;
+}
+
+.mainTextName {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 22px;
+	padding-top: 0px;
+	margin: 0px;
+}
+
 .mainText {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 11px;
-	vertical-align: top;
-	text-align: right;
-	padding-right: 20px;
+	padding-left: 10px;
+	padding-right: 50px;
 }
+
+.linkListHeader {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 15px;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
 .linkList {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 11px;
-	vertical-align: top;
-	font-style: normal;
-	color: #999999;
-	border-left-width: 1px;
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: solid;
-	border-left-color: #999999;
-	padding-left: 5px;
+	margin-top: 0px;
 }
+
 .descList {
 	font-family: Helvetica, sans-serif, Arial;
 	font-size: 11px;
 	vertical-align: top;
 	font-style: normal;
 	color: #000000;
-	border-left-width: 1px;
+
 	border-top-style: none;
 	border-right-style: none;
 	border-bottom-style: none;
-	border-left-style: solid;
-	border-left-color: #999999;
-	padding-left: 20px;
+
+	padding-left: 50px;
 	padding-bottom: 30px;
 }
+
+.classNavigation {
+	font-family: Helvetica, sans-serif, Arial;
+	font-size: 11px;
+	vertical-align: top;
+	text-align: right;
+	font-style: normal;
+	color: #000000;
+	
+	padding-right: 20px;
+}
+
+.classLink {
+	font-size: 16px;
+}
+
 .libName {
 	font-size: 36px;
 }
 .header {
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 16px;
-	color: #999999;
 	text-align: right;
-	padding: 20px;
-	width: 126px;
+	padding-right: 20px;
+	padding-bottom: 20px;
+	width: 225px;
 	font-weight: normal;
 }
+
+.memberSectionHeader
+{
+	font-weight: bold;
+}
+
+.memberSectionText
+{
+	
+}
+
+.parameterName
+{
+	color: #6499b9;
+}
+
+.parameterDescription
+{
+	
+}
+
 .methodName {
 	font-family: Helvetica, sans-serif, Arial;
-	font-size: 18px;
-	vertical-align: top;
+	font-size: 16px;
 	font-style: normal;
-	color: #999999;
-	border-left-width: 1px;
-	border-top-style: none;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: solid;
-	border-left-color: #999999;
-	padding-left: 20px;
-	padding-bottom: 30px;
+	margin: 0px;
 }
-.mainTextName {
-	font-family: Helvetica, sans-serif, Arial;
-	font-size: 11px;
-	vertical-align: top;
-	padding-right: 20px;
-	text-align: right;
-	padding-top: 5px;
-}
+
 .colored {
 	color: #999999;
 }
-.indextext {
-	font-family: Helvetica, sans-serif, Arial;
-	font-size: 11px;
-	vertical-align: top;
-	text-align: left;
-	padding-right: 20px;
-	padding-left: 20px;
-}
+
 .indexheader {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 32px;
-	color: #999999;
-	text-align: left;
-	width: 400px;
 	padding-top: 20px;
 }
 
 .indexnavigation {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 16px;
-	color: #999999;
 	text-align: left;
 	font-weight: normal;
 	padding-bottom: 20px;
@@ -133,7 +161,7 @@ A:hover {
 .border-left {
 	border-left-width: 1px;
 	border-left-style: solid;
-	border-left-color: #999999;
+	border-left-color: #432412;
 }
 
 .code_style {

@@ -13,9 +13,8 @@
   */
 
 import ddf.minim.*;
-// need signals package for SineWave
-import ddf.minim.signals.*;
-import controlP5.*;
+import ddf.minim.ugens.*;
+
 // need to import this so we can use Mixer and Mixer.Info objects
 import javax.sound.sampled.*;
 
@@ -29,37 +28,90 @@ AudioOutput out;
 Mixer.Info[] mixerInfo;
 
 // a signal for our output
-SineWave sine;
+Oscil sine;
 
-ControlP5 gui;
+int activeMixer = -1;
+
+// simple class for drawing the gui
+class Rect 
+{
+  String label;
+  int x, y, w, h;
+  int mixerId;
+  
+  public Rect(String _label, int _x, int _y, int _id)
+  {
+    label = _label;
+    x = _x;
+    y = _y;
+    w = 200;
+    h = 15;
+    mixerId = _id;
+  }
+  
+  public void draw()
+  {
+    if ( activeMixer == mixerId )
+    {
+      stroke(255);
+      // indicate the mixer failed to return an input
+      // by filling in the box with red
+      if ( out == null )
+      {
+        fill( 255, 0, 0 );
+      }
+      else
+      {
+        fill( 0, 128, 0 );
+      }
+    }
+    else
+    {
+      noStroke();
+      fill( 128 );
+    }
+    
+    rect(x,y,w,h);
+    
+    fill( 255 );
+    text( label, x+5, y );
+  }
+  
+  public boolean mousePressed()
+  {
+    return ( mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h );
+  }
+} 
+
+ArrayList<Rect> mixerButtons = new ArrayList<Rect>();
+
 
 void setup()
 {
-  size(512, 275);
+  size(512, 512);
+  textAlign(LEFT, TOP);
 
   minim = new Minim(this);
-  gui = new ControlP5(this);
-  
-  DropdownList mixers = gui.addDropdownList("Mixers", 10, 10, 475, 280);
-  mixers.setLabel("Choose A Mixer");
   
   mixerInfo = AudioSystem.getMixerInfo();
   
   for(int i = 0; i < mixerInfo.length; i++)
   {
-    ListBoxItem b = mixers.addItem("item"+i, i);
-    b.setText(mixerInfo[i].getName());
+    Rect button = new Rect(mixerInfo[i].getName(), 10, 20+i*25, i);
+    mixerButtons.add( button );
   } 
   
-  sine = new SineWave(220, 0.3, 44100);
-  
+  sine = new Oscil(220f, 0.30f);
 }
 
 void draw()
 {
   background(0);
   
-  //gui.draw();
+  for(int i = 0; i < mixerButtons.size(); ++i)
+  {
+    mixerButtons.get(i).draw();
+  }
   
   if ( out != null )
   {
@@ -73,25 +125,36 @@ void draw()
   }
 }
 
-public void controlEvent(ControlEvent theEvent) 
-{
-  int mixerIndex = (int)theEvent.getGroup().value();
-  
-  println("Using mixer info " + mixerInfo[mixerIndex].getName());
-  
-  Mixer mixer = AudioSystem.getMixer(mixerInfo[mixerIndex]);
-  
-  minim.setOutputMixer(mixer);
-  
-  if ( out != null )
+void mousePressed()
+{ 
+  int selected = -1;
+  for(int i = 0; i < mixerButtons.size(); ++i)
   {
-    out.close();
+    if ( mixerButtons.get(i).mousePressed() )
+    {
+      selected = i;
+      break;
+    }
   }
   
-  out = minim.getLineOut(Minim.STEREO);  
-  
-  if ( out != null )
+  if ( selected >= 0 && selected != activeMixer )
   {
-    out.addSignal(sine);
+    activeMixer = selected;
+    Mixer mixer = AudioSystem.getMixer(mixerInfo[activeMixer]);
+    
+    minim.setOutputMixer(mixer);
+    
+    if ( out != null )
+    {
+      sine.unpatch( out );
+      out.close();
+    }
+    
+    out = minim.getLineOut(Minim.STEREO);
+    
+    if ( out != null )
+    {
+      sine.patch(out);
+    }
   }
 }

@@ -5,14 +5,17 @@ import java.util.Arrays;
 import ddf.minim.UGen;
 
 /**
+ * <p>
  * An Oscil is a UGen that generates audio by oscillating over a Waveform 
  * at a particular frequency. For instance, if you were to create this Oscil:
- * <p>
+ * </p>
  * <pre>Oscil testTone = new Oscil( 440, 1, Waves.SINE );</pre>
+ * <p>
  * When patched to an AudioOuput, it would generate a continuous sine wave tone 
  * at 440 Hz and would sound like a test tone. 
  * This frequency also happens to be the same as the pitch played 
  * by the lead oboist in a orchestra when they tune up at the beginning of a concert.
+ * </p>
  * <p>
  * However, rather than give Oscil a fixed, or limited, set of sounds it 
  * can generate, instead it simply oscillates over a generic Waveform object. 
@@ -22,13 +25,14 @@ import ddf.minim.UGen;
  * or generated Waveforms using the WavetableGenerator class. However, there's 
  * no particular reason you couldn't define your own classes that implement 
  * the Waveform interface.
+ * </p>
  * <p>
  * Another abstraction the Oscil UGen makes use of is the Frequency class. 
  * This class allows you to define a frequency in terms of pitch, midi note, 
  * or hertz. This is often quite useful when writing musical scores with code.
  * For instance, we could use the Frequency class when creating an Oscil that 
  * will sound the same as the example above:
- * <p>
+ * </p>
  * <pre>Oscil testTone = new Oscil( Frequency.ofPitch("A4"), 1, Waves.SINE );</pre>
  * 
  * @example Basics/SynthesizeSound
@@ -275,6 +279,7 @@ public class Oscil extends UGen
 	 * @shortdesc Set the amount that the phase will be offset by.
 	 * 
 	 * @param newPhase
+	 * 			float: the phase offset value
 	 * 
 	 * @related phase
 	 * @related Oscil

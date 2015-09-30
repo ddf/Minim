@@ -45,7 +45,6 @@ void setup()
 {
   size(760, 140, P3D);
   textFont(loadFont("CourierNewPSMT-12.vlw"));
-  textMode(SCREEN);
 
   minim = new Minim(this);
   // this should give us a stereo output with a 1024 sample buffer, 
