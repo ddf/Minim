@@ -1,12 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ddf.minim</groupId>
-	<artifactId>ddf.minim</artifactId>
-	<version>2.2.1-b8afdc1-SNAPSHOT</version>
-	<name>Minim Sound Library</name>
-	<description>A sophisticated sound creation library for Java</description>
 
+	<groupId>ddf</groupId>
+	<artifactId>minim</artifactId>
+	<version>2.2.2</version>
+
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>A sound creation library for Java</description>
+	<packaging>jar</packaging>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
+	</licenses>
 
 	<distributionManagement>
 		<repository>
@@ -35,6 +44,15 @@
 		</dependency>
 	</dependencies>
 
+	<developers>
+		<developer>
+			<name>Damien Di Fede</name>
+			<email>manfred@sonatype.com</email>
+			<organization>Sonatype</organization>
+			<organizationUrl>http://www.sonatype.com</organizationUrl>
+		</developer>
+	</developers>
+
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
@@ -46,4 +64,5 @@
 			</resource>
 		</resources>
 	</build>
+	<url>http://code.compartmental.net/tools/minim/</url>
 </project>
