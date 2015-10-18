@@ -15,9 +15,7 @@ import ddf.minim.UGen;
 public class ADSR extends UGen
 {
 	/**
-	 * <p>
 	 *  The default input is "audio."
-	 * </p>
 	 *  You won't need to patch to this directly, since 
 	 *  simply patching to the ADSR itself will achieve 
 	 *  the same result.

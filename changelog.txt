@@ -1,5 +1,13 @@
 Changelog!
 
+Version 2.2.2
+
+Fixes:
+
++ Issue #35: fixed getLineIn failing if there isn't an available output channel
++ Issue #39: fixed FilePlayer.loop(numLoops) always resulting in continuous looping 
++ Issue #45: return null when we can't load an AudioPlayer because Javasound cannot provide an output for it
+
 Version 2.2.1
 
 Features:
