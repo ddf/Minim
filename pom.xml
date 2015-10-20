@@ -2,13 +2,30 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>ddf</groupId>
+	<groupId>net.compartmental.code</groupId>
 	<artifactId>minim</artifactId>
 	<version>2.2.2</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
-	<description>A sound creation library for Java</description>
+	<description>A sound synthesis library for Java</description>
 	<packaging>jar</packaging>
+
+	<developers>
+		<developer>
+			<name>Damien Di Fede</name>
+			<email>manfred@sonatype.com</email>
+			<timezone>GMT+7</timezone>
+			<organization>Sonatype</organization>
+			<organizationUrl>http://www.sonatype.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<url>http://code.compartmental.net/tools/minim/</url>
+
+	<scm>
+		<connection>scm:git:https://github.com/ddf/Minim.git</connection>
+		<url>https://github.com/ddf/Minim</url>
+	</scm>
 
 	<licenses>
 		<license>
@@ -17,11 +34,18 @@
 		</license>
 	</licenses>
 
+	<!-- BEGIN REPO / BUILD STUFF -->
+
 	<distributionManagement>
+		<!-- <repository> -->
+		<!-- <id>clojars</id> -->
+		<!-- <name>Clojars repository</name> -->
+		<!-- <url>https://clojars.org/repo</url> -->
+		<!-- </repository> -->
 		<repository>
-			<id>clojars</id>
-			<name>Clojars repository</name>
-			<url>https://clojars.org/repo</url>
+			<id>nexus-release</id>
+			<name>Nexus Release Repository]</name>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
 
@@ -44,16 +68,80 @@
 		</dependency>
 	</dependencies>
 
-	<developers>
-		<developer>
-			<name>Damien Di Fede</name>
-			<email>manfred@sonatype.com</email>
-			<organization>Sonatype</organization>
-			<organizationUrl>http://www.sonatype.com</organizationUrl>
-		</developer>
-	</developers>
 
 	<build>
+		<plugins>
+			<!-- Enforce JVM compatibility of sources and binaries. -->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
+<!-- 				<configuration> -->
+<!-- 					<source>1.4</source> -->
+<!-- 					<target>1.4</target> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+			<!-- Enforce JVM version used for build -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-enforcer-plugin</artifactId> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>enforce-versions</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>enforce</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<rules> -->
+<!-- 								<requireJavaVersion> -->
+<!-- 									<version>[1.4,)</version> -->
+<!-- 								</requireJavaVersion> -->
+<!-- 							</rules> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+			<!-- Produce also dbunit-embeddedderby-parenttest-sources.jar when packaging. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Produce ZIP with dependencies and samples. -->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
+<!-- 				<version>2.2-beta-2</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>assemble-zip</id> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>single</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 				<configuration> -->
+<!-- 					<descriptors> -->
+<!-- 						<descriptor>maven-assembly-dist.xml</descriptor> -->
+<!-- 					</descriptors> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+			<!-- Release Plugin (Update version in POM before/after release, create 
+				tag, deploy) to try: mvn release:prepare -DdryRun=true && mvn release:clean 
+				to perform: mvn release:prepare release:perform Read http://nexus.sonatype.org/oss-repository-hosting.html#3 
+				for instructions on releasing to this project's Sonatype repository -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.0-beta-7</version>
+			</plugin>
+		</plugins>
+
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
@@ -64,5 +152,40 @@
 			</resource>
 		</resources>
 	</build>
-	<url>http://code.compartmental.net/tools/minim/</url>
+
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<gpg.keyname>34ADE3...</gpg.keyname>
+				<release.username>noncom</release.username>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.0-alpha-4</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
 </project>
