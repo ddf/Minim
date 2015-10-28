@@ -80,23 +80,29 @@
 		<plugins>
 			<!-- JAVADOC -->
 
-			<!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
-			<!-- <version>2.10.3</version> -->
-			<!-- <configuration> -->
-			<!-- <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet> -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-javadoc-plugin</artifactId> -->
+<!-- 				<version>2.10.3</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>attach-javadocs</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>jar</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 				<configuration> -->
+<!-- 					<doclet>prodoc.StartDoclet</doclet> -->
 
-			<!-- <docletPath>/path/to/UmlGraph.jar</docletPath> -->
-			<!-- <docletArtifact> -->
-			<!-- <groupId>org.umlgraph</groupId> -->
-			<!-- <artifactId>doclet</artifactId> -->
-			<!-- <version>5.1</version> -->
-			<!-- </docletArtifact> -->
-			<!-- <additionalparam>-views</additionalparam> -->
-			<!-- <useStandardDocletOptions>true</useStandardDocletOptions> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
+<!-- 					<docletArtifact> -->
+<!-- 						<groupId>net.compartmental.code</groupId> -->
+<!-- 						<artifactId>minim-prodoc</artifactId> -->
+<!-- 						<version>0.1.0</version> -->
+<!-- 					</docletArtifact> -->
+<!-- 					<useStandardDocletOptions>false</useStandardDocletOptions> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
 
 
 			<!-- Enforce JVM compatibility of sources and binaries. -->
