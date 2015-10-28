@@ -51,6 +51,13 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<version>2.10.3</version>
+		</dependency>
+
+
+		<dependency>
 			<groupId>com.googlecode.soundlibs</groupId>
 			<artifactId>tritonus-share</artifactId>
 			<version>0.3.7-2</version>
@@ -71,34 +78,55 @@
 
 	<build>
 		<plugins>
+			<!-- JAVADOC -->
+
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
+			<!-- <version>2.10.3</version> -->
+			<!-- <configuration> -->
+			<!-- <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet> -->
+
+			<!-- <docletPath>/path/to/UmlGraph.jar</docletPath> -->
+			<!-- <docletArtifact> -->
+			<!-- <groupId>org.umlgraph</groupId> -->
+			<!-- <artifactId>doclet</artifactId> -->
+			<!-- <version>5.1</version> -->
+			<!-- </docletArtifact> -->
+			<!-- <additionalparam>-views</additionalparam> -->
+			<!-- <useStandardDocletOptions>true</useStandardDocletOptions> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
+
+
 			<!-- Enforce JVM compatibility of sources and binaries. -->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
-<!-- 				<configuration> -->
-<!-- 					<source>1.4</source> -->
-<!-- 					<target>1.4</target> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-compiler-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <source>1.4</source> -->
+			<!-- <target>1.4</target> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 			<!-- Enforce JVM version used for build -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-enforcer-plugin</artifactId> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>enforce-versions</id> -->
-<!-- 						<goals> -->
-<!-- 							<goal>enforce</goal> -->
-<!-- 						</goals> -->
-<!-- 						<configuration> -->
-<!-- 							<rules> -->
-<!-- 								<requireJavaVersion> -->
-<!-- 									<version>[1.4,)</version> -->
-<!-- 								</requireJavaVersion> -->
-<!-- 							</rules> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-enforcer-plugin</artifactId> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>enforce-versions</id> -->
+			<!-- <goals> -->
+			<!-- <goal>enforce</goal> -->
+			<!-- </goals> -->
+			<!-- <configuration> -->
+			<!-- <rules> -->
+			<!-- <requireJavaVersion> -->
+			<!-- <version>[1.4,)</version> -->
+			<!-- </requireJavaVersion> -->
+			<!-- </rules> -->
+			<!-- </configuration> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 			<!-- Produce also dbunit-embeddedderby-parenttest-sources.jar when packaging. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -113,24 +141,24 @@
 				</executions>
 			</plugin>
 			<!-- Produce ZIP with dependencies and samples. -->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
-<!-- 				<version>2.2-beta-2</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>assemble-zip</id> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>single</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 				<configuration> -->
-<!-- 					<descriptors> -->
-<!-- 						<descriptor>maven-assembly-dist.xml</descriptor> -->
-<!-- 					</descriptors> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-assembly-plugin</artifactId> -->
+			<!-- <version>2.2-beta-2</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>assemble-zip</id> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>single</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- <configuration> -->
+			<!-- <descriptors> -->
+			<!-- <descriptor>maven-assembly-dist.xml</descriptor> -->
+			<!-- </descriptors> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 			<!-- Release Plugin (Update version in POM before/after release, create 
 				tag, deploy) to try: mvn release:prepare -DdryRun=true && mvn release:clean 
 				to perform: mvn release:prepare release:perform Read http://nexus.sonatype.org/oss-repository-hosting.html#3 
