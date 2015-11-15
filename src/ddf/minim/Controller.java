@@ -441,6 +441,7 @@ public class Controller
    *          
    * @related getVolume ( )
    * @related shiftVolume ( )
+   * @related isShiftingVolume ( )
    */
   public void setVolume(float value)
   {
@@ -459,6 +460,7 @@ public class Controller
    *          
    * @related getVolume ( )
    * @related setVolume ( )
+   * @related isShiftingVolume ( )
    */
   public void shiftVolume(float from, float to, int millis)
   {
@@ -468,6 +470,20 @@ public class Controller
       vshifter = new ValueShifter(from, to, millis);
       vshift = true;
     }
+  }
+  
+  /**
+   * Returns true if the volume is currently shifting.
+   * If no volume control is available this method returns false.
+   * 
+   * @return true if shifting, false otherwise
+   * 
+   * @related getVolume ( )
+   * @related setVolume ( )
+   * @related shiftVolume ( )
+   */
+  public boolean isShiftingVolume() {
+	  return vshift;
   }
 
   /**
@@ -488,6 +504,7 @@ public class Controller
    * 
    * @related setGain ( )
    * @related shiftGain ( ) 
+   * @related isShiftingGain ( )
    */
   public float getGain()
   {
@@ -505,6 +522,7 @@ public class Controller
    *          
    * @related getGain ( )
    * @related shiftGain ( )
+   * @related isShiftingGain ( )
    */
   public void setGain(float value)
   {
@@ -523,6 +541,7 @@ public class Controller
    *          
    * @related getGain ( )
    * @related setGain ( )
+   * @related isShiftingGain ( )
    */
   public void shiftGain(float from, float to, int millis)
   {
@@ -532,6 +551,20 @@ public class Controller
       gshifter = new ValueShifter(from, to, millis);
       gshift = true;
     }
+  }
+  
+  /**
+   * Returns true if the gain is currently shifting.
+   * If no gain control is available this method returns false.
+   * 
+   * @return true if shifting, false otherwise
+   * 
+   * @related getGain ( )
+   * @related setGain ( )
+   * @related shiftGain ( )
+   */
+  public boolean isShiftingGain() {
+	  return gshift;
   }
 
   /**
@@ -547,6 +580,7 @@ public class Controller
    * 
    * @related setBalance ( )
    * @related shiftBalance ( )
+   * @related isShiftingBalance ( )
    */
   public float getBalance()
   {
@@ -565,6 +599,7 @@ public class Controller
    *          
    * @related getBalance ( )
    * @related shiftBalance ( )
+   * @related isShiftingBalance ( )
    */
   public void setBalance(float value)
   {
@@ -583,6 +618,7 @@ public class Controller
    *          
    * @related getBalance ( )
    * @related setBalance ( )
+   * @related isShiftingBalance ( )
    */
   public void shiftBalance(float from, float to, int millis)
   {
@@ -592,6 +628,20 @@ public class Controller
       bshifter = new ValueShifter(from, to, millis);
       bshift = true;
     }
+  }
+  
+  /**
+   * Returns true if the balance is currently shifting.
+   * If no gain control is available this method returns false.
+   * 
+   * @return true if shifting, false otherwise
+   * 
+   * @related getBalance ( )
+   * @related setBalance ( )
+   * @related shiftBalance ( )
+   */
+  public boolean isShiftingBalance() {
+	  return bshift;
   }
 
   /**
@@ -607,6 +657,7 @@ public class Controller
    * 
    * @related setPan ( )
    * @related shiftPan ( )
+   * @related isShiftingPan ( )
    */
   public float getPan()
   {
@@ -625,6 +676,7 @@ public class Controller
    *          
    * @related getPan ( )  
    * @related shiftPan ( )    
+   * @related isShiftingPan ( )
    */
   public void setPan(float value)
   {
@@ -643,6 +695,7 @@ public class Controller
    *         
    * @related getPan ( )
    * @related setPan ( )
+   * @related isShiftingPan ( )
    */
   public void shiftPan(float from, float to, int millis)
   {
@@ -652,5 +705,19 @@ public class Controller
       pshifter = new ValueShifter(from, to, millis);
       pshift = true;
     }
+  }
+  
+  /**
+   * Returns true if the pan is currently shifting.
+   * If no gain control is available this method returns false.
+   * 
+   * @return true if shifting, false otherwise
+   * 
+   * @related getPan ( )
+   * @related setPan ( )
+   * @related shiftPan ( )
+   */
+  public boolean isShiftingPan() {
+	  return pshift;
   }
 }
