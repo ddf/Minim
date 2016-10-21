@@ -13,6 +13,10 @@ import ddf.minim.UGen;
  * visualization purposes, in which case you can use a Sink UGen to tick the EnvelopeFollower
  * without generating any sound. The following example demonstrates this technique.
  * 
+ * It's important to note that EnvelopeFollower will convert the incoming signal to mono 
+ * before processing it, which means that the output will be the same on all channels.
+ * At this time there is not an easy way work around this limitation.
+ * 
  * We still consider EnveloperFollower to be a bit experimental, so YMMV.
  * 
  * @example Synthesis/envelopeFollowerExample
