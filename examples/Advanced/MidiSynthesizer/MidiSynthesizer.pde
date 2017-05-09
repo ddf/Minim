@@ -10,8 +10,10 @@
     <a href="http://docs.oracle.com/javase/6/docs/api/javax/sound/midi/MidiChannel.html">javax.sound.midi.MidiChannel</a> and 
     <a href="http://docs.oracle.com/javase/6/docs/api/javax/sound/midi/Synthesizer.html">javax.sound.midi.Synthesizer</a>
     <p>
-    For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+    The soundfont included with this sketch was obtained from https://musescore.org/en/handbook/soundfont and is licensed under GNU GPL version 2.
     <p>
+    For more information about Minim and additional features, visit http://code.compartmental.net/minim/
+    <p>    
     Author: Damien Di Fede  
   */
   
@@ -104,6 +106,8 @@ void setup()
   {
     synth = MidiSystem.getSynthesizer();
     synth.open();
+    Soundbank sounds = MidiSystem.getSoundbank( createInput("TimGM6mb.sf2") );
+    synth.loadAllInstruments( sounds );
     // get all the channels for the synth
     channels = synth.getChannels();
     // we're only going to use two channels,
@@ -176,7 +180,11 @@ void setup()
   {
     // oops there wasn't one.
     println( "No default synthesizer, sorry bud." );
-  } 
+  }
+  catch( Exception ex )
+  {
+    println(ex.toString());
+  }
   
   // and we need to make our Blip list
   blips = new ArrayList<Blip>();
@@ -193,6 +201,15 @@ void draw()
   {
     blips.get(i).draw();  
   }
+}
+
+void exit()
+{
+  if ( synth != null && synth.isOpen() )
+  {
+    synth.close();
+  }
+  super.exit();
 }
 
 // this class stores data for drawing one Blip on the screen.
