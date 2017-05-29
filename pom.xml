@@ -15,10 +15,10 @@
 	<developers>
 		<developer>
 			<name>Damien Di Fede</name>
-			<email>manfred@sonatype.com</email>
-			<timezone>GMT+7</timezone>
-			<organization>Sonatype</organization>
-			<organizationUrl>http://www.sonatype.com</organizationUrl>
+			<email>ddf@compartmental.net</email>
+			<timezone>GMT-5</timezone>
+			<organization>Compartmental</organization>
+			<organizationUrl>http://www.compartmental.net</organizationUrl>
 		</developer>
 	</developers>
 
@@ -31,8 +31,8 @@
 
 	<licenses>
 		<license>
-			<name>MIT License</name>
-			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<name>GNU Lesser General Public License v3.0</name>
+			<url>https://www.gnu.org/licenses/lgpl-3.0.en.html</url>
 		</license>
 	</licenses>
 
@@ -45,11 +45,11 @@
 		<!-- <url>https://clojars.org/repo</url> -->
 		<!-- </repository> -->
 		<snapshotRepository>
-			<id>nexus-snapshots</id>
+			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<repository>
-			<id>nexus-releases</id>
+			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
@@ -193,7 +193,7 @@
 				</configuration>
 			</plugin>
 
-			<!--<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.6</version>
@@ -204,9 +204,14 @@
 						<goals>
 							<goal>sign</goal>
 						</goals>
+						<!-- see http://maven.apache.org/plugins/maven-gpg-plugin/usage.html for how to setup setting.xml for this configuration -->
+						<configuration>
+              				<keyname>${gpg.keyname}</keyname>
+              				<passphraseServerId>${gpg.keyname}</passphraseServerId>
+            			</configuration>
 					</execution>
 				</executions>
-			</plugin> -->
+			</plugin>
 
 		</plugins>
 
@@ -221,4 +226,8 @@
 		</resources>
 	</build>
 
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/ddf/Minim/issues</url>
+	</issueManagement>
 </project>
