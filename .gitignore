@@ -9,4 +9,4 @@ release/
 *.swp
 .DS_Store
 
-target
+/target/
