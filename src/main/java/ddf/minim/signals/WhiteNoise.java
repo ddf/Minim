@@ -66,7 +66,7 @@ public class WhiteNoise implements AudioSignal
   }
 
   /**
-   * Sets the pan to <cod>p</code>. This value will be constrained to [-1, 1].
+   * Sets the pan to <code>p</code>. This value will be constrained to [-1, 1].
    * 
    * @param p the new pan
    */

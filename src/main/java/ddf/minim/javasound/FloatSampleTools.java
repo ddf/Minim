@@ -607,7 +607,7 @@ public class FloatSampleTools {
 	 * format specified in <code>format</code>. Exactly
 	 * <code>format.getChannels()</code> channels are converted regardless of
 	 * the number of elements in <code>input</code>. If <code>input</code>
-	 * does not provide enough channels, an </code>IllegalArgumentException<code>
+	 * does not provide enough channels, an <code>IllegalArgumentException</code>
 	 * is thrown.
 	 * <p>
 	 * Only PCM formats are accepted. The method will convert all samples from

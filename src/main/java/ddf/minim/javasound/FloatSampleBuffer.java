@@ -981,7 +981,7 @@ public class FloatSampleBuffer {
 	 * big enough to accomodate the samples.
 	 * <p>
 	 * <code>srcBuffer</code> is read from index <code>srcOffset</code> to
-	 * <code>(srcOffset + (lengthInSamples * format.getFrameSize()))</code.
+	 * <code>(srcOffset + (lengthInSamples * format.getFrameSize()))</code>.
 	 *
 	 * @param input the input buffer in interleaved audio data
 	 * @param inByteOffset the offset in <code>input</code>

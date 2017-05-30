@@ -151,8 +151,9 @@ public class ChebFilter extends IIRFilter
    * the maximum number of poles possible according to cutoff frequency:
    * <p>
    * <table border="1" cellpadding="5">
+   * <caption>Poles per Cutoff Frequency</caption>
    * <tr>
-   * <td>Cutoff Frequency<br />
+   * <td>Cutoff Frequency<br>
    * (expressed as a fraction of the sampling rate)</td>
    * <td>0.02</td>
    * <td>0.05</td>
