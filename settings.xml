@@ -1,4 +1,3 @@
-
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
@@ -13,9 +12,14 @@
 		<server>
 			<id>ossrh</id>
 			<!-- fill: -->
-			<username>your-jira-id</username>
+			<username>your-jira-username</username>
 			<!-- fill: -->
-			<password>your-jira-pwd</password>
+			<password>your-jira-password</password>
+		</server>
+		<server>
+			<!-- fill: -->
+			<id>your gpg keyname, same as gpg.keyname below</id>
+			<passphrase>your passphrase for the key</passphrase>
 		</server>
 	</servers>
 
@@ -24,12 +28,12 @@
 
 	<profiles>
 		<profile>
-			<id>gpg</id>
+			<activation>
+        		<activeByDefault>true</activeByDefault>
+      		</activation>
 			<properties>
 				<!-- fill: -->
-				<gpg.passphrase>your passphrase</gpg.passphrase>
-				<!-- fill: -->
-				<gpg.keyname>your pgp key</gpg.keyname>
+				<gpg.keyname>your gpg keyname to be used for signing the artifacts</gpg.keyname>
 			</properties>
 		</profile>
 	</profiles>
