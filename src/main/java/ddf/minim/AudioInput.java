@@ -25,10 +25,7 @@ import ddf.minim.spi.AudioStream;
  * An AudioInput is a connection to the current record source of the computer. 
  * How the record source for a computer is set will depend on the soundcard and OS, 
  * but typically a user can open a control panel and set the source from there. 
- * Unfortunately, there is no way to set the record source from Java. 
- * This is particularly problematic on the Mac because the input will always wind 
- * up being connected to the Mic-In, even if the user has set the input differently 
- * using their audio control panel. 
+ * Unfortunately, there is no way to set the record source from Java.
  * <p>
  * You can obtain an AudioInput from Minim by using one of the getLineIn methods:
  * <pre>
