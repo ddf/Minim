@@ -167,7 +167,10 @@ public class Summer extends UGen implements AudioSignal
 
 	/**
 	 * Generates a buffer of samples by ticking this UGen mono.length times.
-	 * Like the tick method, this will result in all of the
+	 * Like the tick method, this will cause the entire UGen chain patched
+	 * to this Summer to generate audio.
+	 * 
+	 * @example Advanced/OfflineRendering
 	 */
 	public void generate(float[] mono)
 	{

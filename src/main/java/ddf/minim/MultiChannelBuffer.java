@@ -142,6 +142,29 @@ public class MultiChannelBuffer
 	}
 	
 	/**
+	 * Calculates the RMS amplitude of one of the buffer's channels.
+	 * 
+	 * @example Advanced/OfflineRendering
+	 * 
+	 * @param channelNumber
+	 * 			int: the channel to use
+	 * @return
+	 * 			float: the RMS amplitude of the channel
+	 */
+	public float getLevel( int channelNumber )
+	{
+		float[] samples = channels[channelNumber];
+		float level = 0;
+	    for (int i = 0; i < samples.length; i++)
+	    {
+	      level += (samples[i] * samples[i]);
+	    }
+	    level /= samples.length;
+	    level = (float) Math.sqrt(level);
+	    return level;
+	}
+	
+	/**
 	 * Returns the requested channel as a float array.
 	 * You should not necessarily assume that the 
 	 * modifying the returned array will modify 
@@ -225,5 +248,5 @@ public class MultiChannelBuffer
 				channels[i] = newChannel;
 			}
 		}
-	}
+	} 
 }

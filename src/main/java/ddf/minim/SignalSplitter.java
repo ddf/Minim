@@ -31,9 +31,12 @@ import javax.sound.sampled.AudioFormat;
  * the arrays you pass to <code>samples</code>. <code>SignalSplitter</code> is 
  * fully <code>synchronized</code> so that listeners cannot be added and 
  * removed while it is in the midst transmitting.
+ * <p>
+ * This class is also useful for performing offline rendering of audio.
+ * 
+ * @example Advanced/OfflineRendering
  *  
  * @author Damien Di Fede
- * @invisible
  *
  */
 
@@ -61,21 +64,46 @@ public class SignalSplitter implements Recordable, AudioListener
     listeners = new Vector<AudioListener>(5);
   }
   
+  /**
+   * The buffer size this was constructed with. Arrays passed to generate should be the same length.
+   * 
+   * @return 
+   * 		int: the expected buffer size for generate calls
+   */
   public int bufferSize()
   {
     return bs;
   }
 
+  /**
+   * Returns the format of this recordable audio.
+   * 
+   * @return the format of the audio
+   */
   public AudioFormat getFormat()
   {
     return f;
   }
   
+  /**
+   * Returns either Minim.MONO or Minim.STEREO
+   * 
+   * @return Minim.MONO if this is mono, Minim.STEREO if this is stereo
+   */
   public int type()
   {
     return f.getChannels();
   }
   
+  /**
+   * Adds a listener who will be notified each time this receives 
+   * or creates a new buffer of samples. If the listener has already 
+   * been added, it will not be added again.
+   * 
+   * @example Advanced/AddAndRemoveAudioListener
+   * 
+   * @param listener the listener to add
+   */
   public synchronized void addListener(AudioListener listener)
   {
     if ( !listeners.contains(listener) )
@@ -84,11 +112,30 @@ public class SignalSplitter implements Recordable, AudioListener
     }
   }
 
+  /**
+   * Removes the listener from the list of listeners.
+   * 
+   * @example Advanced/AddAndRemoveAudioListener
+   * 
+   * @param listener the listener to remove
+   */
   public synchronized void removeListener(AudioListener listener)
   {
     listeners.remove(listener);
   }
 
+  /**
+   * Called by the audio object this AudioListener is attached to 
+   * when that object has new samples, but can also be called directly
+   * when doing offline rendering.
+   * 
+   * @example Advanced/OfflineRendering
+   * 
+   * @param samp 
+   * 	a float[] buffer of samples from a MONO sound stream
+   * 
+   * @related AudioListener
+   */
   public synchronized void samples(float[] samp)
   {
     for (int i = 0; i < listeners.size(); i++)
@@ -100,6 +147,19 @@ public class SignalSplitter implements Recordable, AudioListener
     }
   }
 
+  /**
+   * Called by the audio object this is attached to when that object has new samples,
+   * but can also be called directly when doing offline rendering.
+   * 
+   * @example Advanced/OfflineRendering
+   * 
+   * @param sampL 
+   * 	a float[] buffer containing the left channel of a STEREO sound stream
+   * @param sampR 
+   * 	a float[] buffer containing the right channel of a STEREO sound stream
+   * 
+   * @related AudioListener
+   */
   public synchronized void samples(float[] sampL, float[] sampR)
   {
     for (int i = 0; i < listeners.size(); i++)
@@ -113,6 +173,11 @@ public class SignalSplitter implements Recordable, AudioListener
     }
   }
 
+  /**
+   * Returns the sample rate of the audio.
+   * 
+   * @return the sample rate of the audio
+   */
   public float sampleRate()
   {
     return f.getSampleRate();

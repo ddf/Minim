@@ -705,7 +705,7 @@ public class Minim
 	/**
 	 * Creates an AudioRecorder that will use the provided Recordable object as its
 	 * record source and that will save to the file name specified. Recordable 
-	 * classes in Minim include AudioOutput, AudioInput, AudioPlayer, and AudioSample.
+	 * classes in Minim include AudioOutput, AudioInput, AudioPlayer, AudioSample, and SignalSplitter
 	 * The format of the file will be inferred from the extension in the file name. 
 	 * If the extension is not a recognized file type, this will return null.
 	 * 
@@ -731,7 +731,7 @@ public class Minim
 	/**
 	 * Creates an AudioRecorder that will use the provided Recordable object as its
 	 * record source and that will save to the file name specified. Recordable 
-	 * classes in Minim include AudioOutput, AudioInput, AudioPlayer, and AudioSample.
+	 * classes in Minim include AudioOutput, AudioInput, AudioPlayer, AudioSample, and SignalSplitter
 	 * The format of the file will be inferred from the extension in the file name. 
 	 * If the extension is not a recognized file type, this will return null. Be aware
 	 * that if you choose buffered recording the call to AudioRecorder's save method

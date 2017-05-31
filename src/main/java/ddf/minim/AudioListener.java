@@ -37,6 +37,7 @@ package ddf.minim;
  * @related AudioPlayer
  * @related AudioInput
  * @related AudioOutput
+ * @related SignalSplitter
  */
 public interface AudioListener
 {
