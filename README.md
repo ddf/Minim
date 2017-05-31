@@ -1,3 +1,6 @@
+[![Maven Central](https://img.shields.io/maven-central/v/net.compartmental.code/minim.svg)](https://maven-badges.herokuapp.com/maven-central/net.compartmental.code/minim)
+[![Javadocs](http://www.javadoc.io/badge/net.compartmental.code/minim.svg)](http://www.javadoc.io/doc/net.compartmental.code/minim)
+
 INSTALL
 
 This repository is organized so that you can place it in a folder named minim inside of your Processing sketchbook's libraries folder.
