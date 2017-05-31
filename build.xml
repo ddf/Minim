@@ -29,26 +29,11 @@
     </jar>
   </target>
 
-  <target name="doc">
-	<javadoc sourcepath="src" 
-			 packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis"
-			 stylesheetfile="ext/javadoc-styles.css"
-			 destdir="javadoc"
-	>
-		<classpath refid="deps.path"/>
-		<!-- ignore all the prodoc tags -->
-	  	<tag name="example" enabled="false"/>
-		<tag name="related" enabled="false"/>
-		<tag name="invisible" enabled="false"/>
-		<tag name="shortdesc" enabled="false"/>
-		<tag name="nosuperclasses" enabled="false"/>
-		<tag name="libname" enabled="false"/>
-		<tag name="indexname" enabled="false"/>
-    </javadoc>
-  	
-    <javadoc access="public" packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis" sourcepath="src">
+  <target name="doc">  	
+    <javadoc access="public" packagenames="ddf.minim, ddf.minim.ugens, ddf.minim.analysis" sourcepath="src/main/java">
     	<classpath refid="deps.path"/>
         <doclet name="prodoc.StartDoclet" path="ext/prodoc/prodoc.jar">
+        	<param name="-destdir" value="documentation"/>
         </doclet>
     </javadoc>
   </target>
