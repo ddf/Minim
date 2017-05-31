@@ -10,7 +10,7 @@
 	
   <target name="compile" depends="clean">
     <mkdir dir="bin"/>
-    <javac 	srcdir="src" 
+    <javac 	srcdir="src/main/java" 
     		destdir="bin" 
     		includeAntRuntime="false"
     		debug="true" 
