@@ -614,6 +614,25 @@ public class Minim
 	}
 	
 	/**
+	 * Load the metadata for the file without keeping a stream open. 
+	 * Use this to get access to ID3 tags or similar.
+	 * 
+	 * @example Basics/GetMetaData
+	 * 
+	 * @param filename
+	 * 			String: the name of the file to load
+	 * @return
+	 * 			AudioMetaData: the metadata for the file
+	 */
+	public AudioMetaData loadMetaData(String filename)
+	{
+		AudioRecordingStream stream = mimp.getAudioRecordingStream( filename, 0, false );
+		AudioMetaData data = stream.getMetaData();
+		stream.close();
+		return data;
+	}
+	
+	/**
 	 * Loads the requested file into a MultiChannelBuffer. The buffer's channel count
 	 * and buffer size will be adjusted to match the file.
 	 * 
