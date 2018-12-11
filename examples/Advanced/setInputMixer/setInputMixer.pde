@@ -7,8 +7,6 @@
   * that <code>Minim</code> should use when creating an <code>AudioInput</code> 
   * for you
   * <p>
-  * This sketch uses controlP5 for the GUI, a user-contributed Processing library.
-  * <p>
   * For more information about Minim and additional features, 
   * visit http://code.compartmental.net/minim/
   */
