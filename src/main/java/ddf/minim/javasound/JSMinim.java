@@ -331,25 +331,35 @@ public class JSMinim implements MinimServiceProvider
 		try
 		{
 			MpegAudioFileReader reader = new MpegAudioFileReader(this);
-			InputStream stream = (InputStream)createInput.invoke(fileLoader, filename);
-			if ( stream != null )
+			AudioFileFormat baseFileFormat = null;
+			// If the file is on the internet, we have to retrieve the format using the URL.
+			// while we expect that createInput will return a suitable stream for a URL,
+			// we can't count on stream.available() to return the full size of the file.
+			if (filename.startsWith("http"))
 			{
-				AudioFileFormat baseFileFormat = reader.getAudioFileFormat(
-																								stream,
-																								stream.available());
-				stream.close();
-				if (baseFileFormat instanceof TAudioFileFormat)
+				baseFileFormat = reader.getAudioFileFormat( new URL(filename) );
+			}
+			else
+			{
+				InputStream stream = (InputStream)createInput.invoke(fileLoader, filename);
+				if ( stream != null )
 				{
-					TAudioFileFormat fileFormat = (TAudioFileFormat)baseFileFormat;
-					props = (Map<String, Object>)fileFormat.properties();
-					if (props.size() == 0)
-					{
-						error("No file properties available for " + filename + ".");
-					}
-					else
-					{
-						debug("File properties: " + props.toString());
-					}
+					baseFileFormat = reader.getAudioFileFormat(stream, stream.available());
+					stream.close();
+				}
+			}
+			
+			if (baseFileFormat instanceof TAudioFileFormat)
+			{
+				TAudioFileFormat fileFormat = (TAudioFileFormat)baseFileFormat;
+				props = (Map<String, Object>)fileFormat.properties();
+				if (props.size() == 0)
+				{
+					error("No file properties available for " + filename + ".");
+				}
+				else
+				{
+					debug("File properties: " + props.toString());
 				}
 			}
 		}
