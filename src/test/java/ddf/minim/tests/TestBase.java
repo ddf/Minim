@@ -23,7 +23,16 @@ public abstract class TestBase
 		
 		while(test.update())
 		{
-			
+			// run at 30fps more or less
+			try
+			{
+				Thread.sleep( 33 );
+			}
+			catch ( InterruptedException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		test.minim.stop();
