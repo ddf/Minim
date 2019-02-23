@@ -33,6 +33,7 @@ public class FilePlayer extends UGen implements Playable
 	private MultiChannelBuffer   buffer;
 	// where in the buffer we should read the next sample from
 	private int 				 bufferOutIndex;
+	private int 				 bufferChannelCount;
 	
 	/**
 	 * Construct a FilePlayer that will read from iFileStream.
@@ -45,7 +46,8 @@ public class FilePlayer extends UGen implements Playable
 	public FilePlayer( AudioRecordingStream iFileStream )
 	{
 		mFileStream 	= iFileStream;
-		buffer 			= new MultiChannelBuffer(1024, mFileStream.getFormat().getChannels());
+		bufferChannelCount = mFileStream.getFormat().getChannels();
+		buffer 			= new MultiChannelBuffer(1024, bufferChannelCount);
 		bufferOutIndex 	= 0;
 		
 		// we'll need to do this eventually, I think.
@@ -357,20 +359,20 @@ public class FilePlayer extends UGen implements Playable
 		if ( mFileStream.isPlaying() )
 		{
 			// special case: mono expands out to all channels.
-			if ( buffer.getChannelCount() == 1 )
+			if ( bufferChannelCount == 1 )
 			{
 				Arrays.fill( channels, buffer.getSample( 0, bufferOutIndex ) );
 			}
 			// we have more than one channel, don't try to fill larger channel requests
-			if ( buffer.getChannelCount() <= channels.length )
+			else if ( bufferChannelCount <= channels.length )
 			{
-				for(int i = 0 ; i < channels.length; ++i)
+				for(int i = 0 ; i < bufferChannelCount; ++i)
 				{
 					channels[i] = buffer.getSample( i, bufferOutIndex );
 				}
 			}
 			// special case: we are stereo, output is mono.
-			else if ( channels.length == 1 && buffer.getChannelCount() == 2 )
+			else if ( channels.length == 1 && bufferChannelCount == 2 )
 			{
 				channels[0] = (buffer.getSample( 0, bufferOutIndex ) + buffer.getSample( 1, bufferOutIndex ))/2.0f;
 			}
