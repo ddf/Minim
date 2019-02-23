@@ -258,6 +258,7 @@ public class ADSR extends UGen
 		// ddf: reset these so that the envelope can be retriggered
 		timeFromOff = -1.f;
 		isTurnedOff = false;
+		amplitude = beforeAmplitude;
 	}
 	/**
 	 * Specifies that the ADSR envelope should start the release time.
