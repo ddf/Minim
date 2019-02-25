@@ -59,7 +59,7 @@ import ddf.minim.Minim;
  * In sound energy mode you use <code>isOnset()</code> to query the algorithm
  * and in frequency energy mode you use <code>isOnset(int i)</code>,
  * <code>isKick()</code>, <code>isSnare()</code>, and
- * <code>isRange()</code> to query particular frequnecy bands or ranges of
+ * <code>isRange()</code> to query particular frequency bands or ranges of
  * frequency bands. It should be noted that <code>isKick()</code>,
  * <code>isSnare()</code>, and <code>isHat()</code> merely call
  * <code>isRange()</code> with values determined by testing the algorithm
@@ -87,19 +87,24 @@ public class BeatDetect
 	 */
 	public static final int	SOUND_ENERGY	= 1;
 
-	private int					algorithm;
-	private int					sampleRate;
-	private int					timeSize;
-	private int					valCnt;
+	private int				algorithm;
+	private int				sampleRate;
+	private int				timeSize;
+	private int				valCnt;
 	private float[]			valGraph;
-	private int					sensitivity;
+	private int				sensitivity;
+	// time incremented after every call to detect, to know how many milliseconds of audio we have processed so far.
+	// this value is used as part of the the sensitivity implementation
+	private long 			detectTimeMillis;
 	// for circular buffer support
 	private int					insertAt;
 	// vars for sEnergy
 	private boolean			isOnset;
 	private float[]			eBuffer;
 	private float[]			dBuffer;
-	private long				timer;
+	// a millisecond timer used to prevent reporting onsets until the sensitivity threshold has been reached
+	// see the sEnergy method
+	private long			sensitivityTimer;
 	// vars for fEnergy
 	private boolean[]			fIsOnset;
 	private FFT					spect;
@@ -124,6 +129,27 @@ public class BeatDetect
 		initGraphs();
 		algorithm = SOUND_ENERGY;
 		sensitivity = 10;
+		detectTimeMillis = 0;
+	}
+	
+	/**
+	 * Create a BeatDetect object that is in SOUND_ENERGY mode for audio with the given <code>sampleRate</code>.
+	 * <code>timeSize</code> will be set to 1024 so that switching to FREQ_ENERGY mode will work properly. 
+	 *  
+	 * @param sampleRate
+	 * 			float: the sample rate of audio that will be passed to the detect method
+	 * 
+	 * @related BeatDetect
+	 */
+	public BeatDetect(float sampleRate)
+	{
+		this.sampleRate = (int)sampleRate;
+		timeSize = 1024;
+		initSEResources();
+		initGraphs();
+		algorithm = SOUND_ENERGY;
+		sensitivity = 10;
+		detectTimeMillis = 0;
 	}
 
 	/**
@@ -145,6 +171,7 @@ public class BeatDetect
 		initGraphs();
 		algorithm = FREQ_ENERGY;
 		sensitivity = 10;
+		detectTimeMillis = 0;
 	}
 
 	/**
@@ -198,8 +225,9 @@ public class BeatDetect
 		isOnset = false;
 		eBuffer = new float[sampleRate / timeSize];
 		dBuffer = new float[sampleRate / timeSize];
-		timer = System.currentTimeMillis();
+		sensitivityTimer = 0;
 		insertAt = 0;
+		detectTimeMillis = 0;
 	}
 
 	private void initFEResources()
@@ -211,12 +239,12 @@ public class BeatDetect
 		feBuffer = new float[numAvg][sampleRate / timeSize];
 		fdBuffer = new float[numAvg][sampleRate / timeSize];
 		fTimer = new long[numAvg];
-		long start = System.currentTimeMillis();
 		for (int i = 0; i < fTimer.length; i++)
 		{
-			fTimer[i] = start;
+			fTimer[i] = 0;
 		}
 		insertAt = 0;
+		detectTimeMillis = 0;
 	}
 
 	private void releaseSEResources()
@@ -224,7 +252,8 @@ public class BeatDetect
 		isOnset = false;
 		eBuffer = null;
 		dBuffer = null;
-		timer = 0;
+		sensitivityTimer = 0;
+		detectTimeMillis = 0;
 	}
 
 	private void releaseFEResources()
@@ -234,6 +263,7 @@ public class BeatDetect
 		feBuffer = null;
 		fdBuffer = null;
 		fTimer = null;
+		detectTimeMillis = 0;
 	}
 
 	/**
@@ -552,7 +582,7 @@ public class BeatDetect
 		float V = variance(eBuffer, E);
 		// compute C using a linear digression of C with V
 		float C = (-0.0025714f * V) + 1.5142857f;
-		// filter negaive values
+		// filter negative values
 		float diff = (float)Math.max(instant - C * E, 0);
 		pushVal(diff);
 		// find the average of only the positive values in dBuffer
@@ -562,7 +592,7 @@ public class BeatDetect
 		pushVar(diff2);
 		// report false if it's been less than 'sensitivity'
 		// milliseconds since the last true value
-		if (System.currentTimeMillis() - timer < sensitivity)
+		if (detectTimeMillis - sensitivityTimer < sensitivity)
 		{
 			isOnset = false;
 		}
@@ -571,7 +601,7 @@ public class BeatDetect
 		else if (diff2 > 0 && instant > 2)
 		{
 			isOnset = true;
-			timer = System.currentTimeMillis();
+			sensitivityTimer = detectTimeMillis;
 		}
 		// OMG it wasn't true!
 		else
@@ -582,7 +612,11 @@ public class BeatDetect
 		dBuffer[insertAt] = diff;
 		insertAt++;
 		if (insertAt == eBuffer.length)
+		{
 			insertAt = 0;
+		}
+		// advance the current time by the number of milliseconds this buffer represents
+		detectTimeMillis += (long)(((float)samples.length / sampleRate)*1000);
 	}
 
 	private void fEnergy(float[] in)
@@ -598,14 +632,14 @@ public class BeatDetect
 			diff = (float)Math.max(instant - C * E, 0);
 			dAvg = specAverage(fdBuffer[i]);
 			diff2 = (float)Math.max(diff - dAvg, 0);
-			if (System.currentTimeMillis() - fTimer[i] < sensitivity)
+			if (detectTimeMillis - fTimer[i] < sensitivity)
 			{
 				fIsOnset[i] = false;
 			}
 			else if (diff2 > 0)
 			{
 				fIsOnset[i] = true;
-				fTimer[i] = System.currentTimeMillis();
+				fTimer[i] = detectTimeMillis;
 			}
 			else
 			{
@@ -619,6 +653,8 @@ public class BeatDetect
 		{
 			insertAt = 0;
 		}
+		// advance the current time by the number of milliseconds this buffer represents
+		detectTimeMillis += (long)(((float)in.length / sampleRate)*1000);
 	}
 
 	private void pushVal(float v)

@@ -24,8 +24,8 @@ void setup()
   minim = new Minim(this);
   song = minim.loadFile("marcus_kellis_theme.mp3", 2048);
   song.play();
-  // a beat detection object song SOUND_ENERGY mode with a sensitivity of 10 milliseconds
-  beat = new BeatDetect();
+  // a beat detection object using SOUND_ENERGY mode with a sensitivity of 10 milliseconds
+  beat = new BeatDetect(song.sampleRate());
   
   ellipseMode(RADIUS);
   eRadius = 20;
