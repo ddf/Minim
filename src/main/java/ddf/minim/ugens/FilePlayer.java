@@ -161,7 +161,13 @@ public class FilePlayer extends UGen implements Playable
 	   */
 	public void loop(int loopCount)
 	{
-		if ( isPaused )
+		// AudioRecordingStream's loop method is supposed to always start looping from the loop point,
+		// since this is different from the stated Playable behavior, we have to stash the current position
+		// before calling loop so that it will start playing from the correct position.
+		//
+		// If this has never been paused before and the stream isn't playing,
+		// then people probably will expect the file to start playing from the loopStart, not from the beginning.
+		if ( isPaused || mFileStream.isPlaying() )
 		{
 			int pos = mFileStream.getMillisecondPosition();
 			mFileStream.loop( loopCount );
@@ -169,7 +175,7 @@ public class FilePlayer extends UGen implements Playable
 		}
 		else
 		{
-			mFileStream.loop(loopCount);
+			mFileStream.loop( loopCount );
 		}
 		
 		isPaused = false;

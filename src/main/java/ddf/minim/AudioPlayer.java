@@ -148,9 +148,13 @@ public class AudioPlayer extends AudioSource implements Playable
     */
 	public void loop(int num)
 	{
-		// if we were paused, we need to grab the current state 
-		// because calling loop totally resets it
-		if ( isPaused )
+		// if we were paused, we need to grab the current state because calling loop totally resets it.
+		// Issue #72: if the recording is currently playing, we also need to do this,
+		// otherwise we start the loop over, which contradicts the above documentation.
+		//
+		// If this has never been paused before and the stream isn't playing,
+		// then people probably will expect the file to start playing from the loopStart, not from the beginning.
+		if ( isPaused || recording.isPlaying() )
 		{
 			int pos = recording.getMillisecondPosition();
 			recording.loop( num );
