@@ -1,6 +1,7 @@
 package ddf.minim.tests;
 
 import ddf.minim.Minim;
+import ddf.minim.MultiChannelBuffer;
 import ddf.minim.Playable;
 import ddf.minim.ugens.FilePlayer;
 
@@ -27,7 +28,17 @@ public class UnknownFileLength extends TestBase
 
 		testCueSkip( minim.loadFile(fileName) );
 		
-		testCueSkip( new FilePlayer(minim.loadFileStream( fileName )) );	
+		testCueSkip( new FilePlayer(minim.loadFileStream( fileName )) );
+		
+		float fileSampleRate = minim.loadFileIntoBuffer( fileName, new MultiChannelBuffer(2, 1) );
+		if (fileSampleRate > 0)
+		{
+			Minim.debug( fileName + " loaded into buffer has sample rate " + fileSampleRate );
+		}
+		else
+		{
+			Minim.debug( fileName + " could not load into buffer." );
+		}
 	}
 	
 	void testCueSkip(Playable player)
