@@ -402,6 +402,7 @@ class MpegAudioFileReader extends TAudioFileReader
 			{
 				aff_properties.put("mp3.id3tag.v2", id3v2);
 				parseID3v2Frames(id3v2, aff_properties);
+				id3v2.close();
 			}
 			if (TDebug.TraceAudioFileReader)
 				TDebug.out(m_header.toString());
@@ -891,5 +892,6 @@ class MpegAudioFileReader extends TAudioFileReader
 				props.put("mp3.shoutcast.metadata." + key, value);
 			}
 		}
+		icy.close();
 	}
 }
