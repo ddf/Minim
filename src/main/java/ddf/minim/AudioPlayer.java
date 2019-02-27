@@ -237,8 +237,8 @@ public class AudioPlayer extends AudioSource implements Playable
     * the beginning. This will not change the play state. If an error
     * occurs while trying to cue, the position will not change. 
     * If you try to cue to a negative position or to a position 
-    * that is greater than <code>length()</code>, the amount will be clamped 
-    * to zero or <code>length()</code>.
+    * that is greater than a non-negative <code>length()</code>, 
+    * the amount will be clamped to zero or <code>length()</code>.
     * 
     * @shortdesc Sets the position to <code>millis</code> milliseconds from
     * the beginning.
@@ -254,45 +254,47 @@ public class AudioPlayer extends AudioSource implements Playable
 	public void cue(int millis)
 	{
 		if (millis < 0)
-    {
+	    {
 			millis = 0;
-    }
-    else if (millis > length())
-    {
-			millis = length();
-    }
+	    }
+	    else	    	
+	    {
+	    	// only clamp millis to the length of the file if the length is known.
+	    	// otherwise we will try to skip what is asked and count on the underlying stream to handle it.
+	    	int len = recording.getMillisecondLength();
+	    	if (len >= 0 && millis > len)
+	    	{
+	    		millis = len;
+	    	}
+	    }
 		recording.setMillisecondPosition(millis);
 	}
 
-	  /**
-	   * Skips <code>millis</code> milliseconds from the current position. 
-	   * <code>millis</code> can be negative, which will make this skip backwards. 
-	   * If the skip amount would result in a negative position or a position that is greater than 
-	   * <code>length()</code>, the new position will be clamped to zero or 
-	   * <code>length()</code>.
-	   * 
-	   * @shortdesc Skips <code>millis</code> milliseconds from the current position.
-	   * 
-	   * @param millis 
-	   * 			int: how many milliseconds to skip, sign indicates direction
-	   * 
-	   * @example AudioPlayer/skip
-	   * 
-	   * @related AudioPlayer
-	   */
+	/**
+	 * Skips <code>millis</code> milliseconds from the current position. 
+	 * <code>millis</code> can be negative, which will make this skip backwards. 
+	 * If the skip amount would result in a negative position or a position that is greater than 
+	 * a non-negative <code>length()</code>, the new position will be clamped to zero or <code>length()</code>.
+	 * 
+	 * @shortdesc Skips <code>millis</code> milliseconds from the current position.
+	 * 
+	 * @param millis 
+	 * 			int: how many milliseconds to skip, sign indicates direction
+	 * 
+	 * @example AudioPlayer/skip
+	 * 
+	 * @related AudioPlayer
+	 */
 	public void skip(int millis)
 	{
 		int pos = position() + millis;
-		if (pos < 0)
+		if ( pos < 0 )
 		{
 			pos = 0;
 		}
-		else if (pos > length())
-		{
-			pos = length();
-		}
-		Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
-		recording.setMillisecondPosition(pos);
+		
+		Minim.debug("AudioPlayer.skip: attempting to skip " + millis + " milliseconds, to position " + pos);
+		cue(pos);
 	}
 
    /**

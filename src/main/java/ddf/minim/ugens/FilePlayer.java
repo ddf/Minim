@@ -228,8 +228,8 @@ public class FilePlayer extends UGen implements Playable
 	   * the beginning. This will not change the play state. If an error
 	   * occurs while trying to cue, the position will not change. 
 	   * If you try to cue to a negative position or try to a position 
-	   * that is greater than <code>length()</code>, the amount will be clamped 
-	   * to zero or <code>length()</code>.
+	   * that is greater than a non-negative <code>length()</code>, 
+	   * the amount will be clamped to zero or <code>length()</code>.
 	   * 
 	   * @shortdesc Sets the position to <code>millis</code> milliseconds from
 	   * the beginning.
@@ -241,13 +241,19 @@ public class FilePlayer extends UGen implements Playable
 	public void cue(int millis)
 	{
 		if (millis < 0)
-		{
+	    {
 			millis = 0;
-		}
-		else if (millis > length())
-		{
-			millis = length();
-		}
+	    }
+	    else	    	
+	    {
+	    	// only clamp millis to the length of the file if the length is known.
+	    	// otherwise we will try to skip what is asked and count on the underlying stream to handle it.
+	    	int len = mFileStream.getMillisecondLength();
+	    	if (len >= 0 && millis > len)
+	    	{
+	    		millis = len;
+	    	}
+	    }
 		mFileStream.setMillisecondPosition(millis);
 		// change the position in the stream invalidates our buffer, so we read a new buffer
 		fillBuffer();
@@ -255,10 +261,10 @@ public class FilePlayer extends UGen implements Playable
 
 	/**
 	   * Skips <code>millis</code> from the current position. <code>millis</code> 
-	   * can be negative, which will make this skip backwards. If the skip amount 
-	   * would result in a negative position or a position that is greater than 
-	   * <code>length()</code>, the new position will be clamped to zero or 
-	   * <code>length()</code>.
+	   * can be negative, which will make this skip backwards. 
+	   * If the skip amount would result in a negative position 
+	   * or a position that is greater than a non-negative <code>length()</code>, 
+	   * the new position will be clamped to zero or <code>length()</code>.
 	   * 
 	   * @shortdesc Skips <code>millis</code> from the current position.
 	   * 
@@ -274,11 +280,8 @@ public class FilePlayer extends UGen implements Playable
 		{
 			pos = 0;
 		}
-		else if (pos > length())
-		{
-			pos = length();
-		}
-		//Minim.debug("AudioPlayer.skip: skipping " + millis + " milliseconds, new position is " + pos);
+		
+		Minim.debug("FilePlayer.skip: attempting to skip " + millis + " milliseconds, to position " + pos);
 		cue( pos );
 	}
 

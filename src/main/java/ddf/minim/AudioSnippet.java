@@ -98,20 +98,32 @@ public class AudioSnippet extends Controller implements Playable
 	public void cue(int millis)
 	{
 		if (millis < 0)
+	    {
 			millis = 0;
-		if (millis > length())
-			millis = length();
+	    }
+	    else	    	
+	    {
+	    	// only clamp millis to the length of the file if the length is known.
+	    	// otherwise we will try to skip what is asked and count on the underlying stream to handle it.
+	    	int len = recording.getMillisecondLength();
+	    	if (len >= 0 && millis > len)
+	    	{
+	    		millis = len;
+	    	}
+	    }
 		recording.setMillisecondPosition(millis);
 	}
 
 	public void skip(int millis)
 	{
 		int pos = position() + millis;
-		if (pos < 0)
+		if ( pos < 0 )
+		{
 			pos = 0;
-		else if (pos > length())
-			pos = length();
-		recording.setMillisecondPosition(pos);
+		}
+		
+		Minim.debug("AudioSnippet.skip: attempting to skip " + millis + " milliseconds, to position " + pos);
+		cue(pos);
 	}
 
 	public boolean isLooping()
