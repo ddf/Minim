@@ -297,6 +297,7 @@ public class Minim
 		{
 			s.close();
 		}
+		streams.clear();
 		
 		// stop the implementation
 		mimp.stop();
@@ -311,6 +312,19 @@ public class Minim
 	void removeSource( AudioSource s )
 	{
 		sources.remove( s );
+	}
+	
+	void addStream( AudioStream s )
+	{
+		if ( !streams.contains( s ))
+		{
+			streams.add( s );
+		}
+	}
+	
+	void removeStream( AudioStream s)
+	{
+		streams.remove( s );
 	}
 
 	/**
@@ -596,8 +610,7 @@ public class Minim
 	public AudioRecordingStream loadFileStream(String filename, int bufferSize, boolean inMemory)
 	{
 		AudioRecordingStream stream = mimp.getAudioRecordingStream( filename, bufferSize, inMemory );
-		streams.add( stream );
-		return stream;
+		return stream == null ? null : new TrackedAudioRecordingStream( this, stream );
 	}
 	
 	/**
@@ -922,8 +935,7 @@ public class Minim
 	public AudioStream getInputStream(int type, int bufferSize, float sampleRate, int bitDepth)
 	{
 		AudioStream stream = mimp.getAudioInput( type, bufferSize, sampleRate, bitDepth );
-		streams.add( stream );
-		return stream;
+		return stream == null ? null : new TrackedAudioStream<AudioStream>( this, stream );
 	}
 
 	/**
