@@ -487,7 +487,10 @@ public class Minim
 	public AudioSample loadSample(String filename, int bufferSize)
 	{
 		AudioSample sample = mimp.getAudioSample( filename, bufferSize );
-		addSource( sample );
+		if ( sample != null )
+		{
+			addSource( sample );
+		}
 		return sample;
 	}
 

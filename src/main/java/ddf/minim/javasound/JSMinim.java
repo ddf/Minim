@@ -396,6 +396,7 @@ public class JSMinim implements MinimServiceProvider
 		return null;
 	}
 
+	@SuppressWarnings("resource")
 	public AudioSample getAudioSample(String filename, int bufferSize)
 	{
 		AudioInputStream ais = getAudioInputStream(filename);
@@ -421,10 +422,14 @@ public class JSMinim implements MinimServiceProvider
 				// be much shorter than the decoded version. so we use the
 				// duration of the file to figure out how many bytes the
 				// decoded file will be.
-				long dur = ((Long)props.get("duration")).longValue();
-				int toRead = (int)AudioUtils.millis2Bytes(dur / 1000, format);
-				samples = loadFloatAudio(ais, toRead);
-				meta = new MP3MetaData(filename, dur / 1000, props);
+				// FIXME null ref if the prop isn't there! should fail to load instead.
+				if (props.containsKey( "duration" ))
+				{
+					long dur = ((Long)props.get("duration")).longValue();
+					int toRead = (int)AudioUtils.millis2Bytes(dur / 1000, format);
+					samples = loadFloatAudio(ais, toRead);
+					meta = new MP3MetaData(filename, dur / 1000, props);
+				}
 			}
 			else
 			{
@@ -432,19 +437,37 @@ public class JSMinim implements MinimServiceProvider
 				long length = AudioUtils.frames2Millis(samples.getSampleCount(), format);
 				meta = new BasicMetaData(filename, length, samples.getSampleCount());
 			}
-			AudioOut out = getAudioOutput(format.getChannels(), 
-			                                             bufferSize, 
-			                                             format.getSampleRate(), 
-			                                             format.getSampleSizeInBits());
-			if (out != null)
+			
+			// close the ais because we are done with it
+			try
 			{
-				SampleSignal ssig = new SampleSignal(samples);
-				out.setAudioSignal(ssig);
-				return new JSAudioSample(meta, ssig, out);
+				ais.close();
+			}
+			catch ( IOException e )
+			{
+				e.printStackTrace();
+			}
+			
+			if ( samples != null )
+			{
+				AudioOut out = getAudioOutput(format.getChannels(), 
+				                                             bufferSize, 
+				                                             format.getSampleRate(), 
+				                                             format.getSampleSizeInBits());
+				if (out != null)
+				{
+					SampleSignal ssig = new SampleSignal(samples);
+					out.setAudioSignal(ssig);
+					return new JSAudioSample(meta, ssig, out);
+				}
+				else
+				{
+					error("Couldn't acquire an output.");
+				}
 			}
 			else
 			{
-				error("Couldn't acquire an output.");
+				error("Couldn't load " + filename + " because the length is unknown.");
 			}
 		}
 		return null;
@@ -566,7 +589,7 @@ public class JSMinim implements MinimServiceProvider
 	{
 		AudioMetaData meta = null;
 		AudioInputStream ais = getAudioInputStream(filename);
-		byte[] samples;
+		byte[] samples = null;
 		if (ais != null)
 		{
 			AudioFormat format = ais.getFormat();
@@ -587,10 +610,17 @@ public class JSMinim implements MinimServiceProvider
 				// be much shorter than the decoded version. so we use the
 				// duration of the file to figure out how many bytes the
 				// decoded file will be.
-				long dur = ((Long)props.get("duration")).longValue();
-				int toRead = (int)AudioUtils.millis2Bytes(dur / 1000, format);
-				samples = loadByteAudio(ais, toRead);
-				meta = new MP3MetaData(filename, dur / 1000, props);
+				if (props.containsKey( "duration" ))
+				{
+					long dur = ((Long)props.get("duration")).longValue();
+					int toRead = (int)AudioUtils.millis2Bytes(dur / 1000, format);
+					samples = loadByteAudio(ais, toRead);
+					meta = new MP3MetaData(filename, dur / 1000, props);
+				}
+				else
+				{
+					Minim.error( "Can't load " + filename + " because the length of the file is unknown." );
+				}
 			}
 			else
 			{
@@ -598,10 +628,24 @@ public class JSMinim implements MinimServiceProvider
 				long length = AudioUtils.bytes2Millis(samples.length, format);
 				meta = new BasicMetaData(filename, length, samples.length);
 			}
-			SourceDataLine line = getSourceDataLine(format, 2048);
-			if ( line != null )
+			
+			if (samples != null)
 			{
-				return new JSAudioRecording(this, samples, line, meta);
+				SourceDataLine line = getSourceDataLine(format, 2048);
+				if ( line != null )
+				{
+					return new JSAudioRecording(this, samples, line, meta);
+				}
+			}
+			else
+			{
+				try
+				{
+					ais.close();
+				}
+				catch ( IOException e )
+				{
+				}
 			}
 		}
 		return null;
