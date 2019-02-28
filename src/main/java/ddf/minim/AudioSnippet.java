@@ -155,4 +155,14 @@ public class AudioSnippet extends Controller implements Playable
 	{
 		recording.setLoopPoints(start, stop);
 	}
+
+	public int getLoopBegin()
+	{
+		return recording.getLoopBegin();
+	}
+
+	public int getLoopEnd()
+	{
+		return recording.getLoopEnd();
+	}
 }

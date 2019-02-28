@@ -519,27 +519,61 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
     // without having to make a new AudioInputStream
     public void setLoopPoints(int start, int stop)
     {
-        if ( start <= 0 || start > stop )
+    	// first see if the end-point is in range and if not, clamp to the end of the file
+        int len = getMillisecondLength();
+        if ( stop <= 0 )
         {
+            // if stop is negative, we set the loop point to the end of the file
+        	if ( len == AudioSystem.NOT_SPECIFIED )
+        	{
+        		loopEnd = AudioSystem.NOT_SPECIFIED;
+        	}
+        	else
+        	{
+        		loopEnd = (int)AudioUtils.millis2BytesFrameAligned(len, format); 
+        	}
+        	
+        	stop = len;
+        }
+        else
+        {
+        	// if stop is positive, we clamp it to the length of the file, if the length is known
+        	if ( len != AudioSystem.NOT_SPECIFIED && stop > len )
+        	{
+        		stop = len;
+        	}
+        	loopEnd = (int)AudioUtils.millis2BytesFrameAligned( stop, format );
+        }
+        
+        if ( start < 0 )
+        {
+            // if start is negative we clamp to the beginning of the file 
             loopBegin = 0;
         }
         else
         {
+        	// if start is positive we clamp it to stop
+        	if ( stop > 0 && start >= stop )
+        	{
+        		start = stop - 1;
+        	}
             loopBegin = start;
-        }
-        if ( stop <= getMillisecondLength() && stop > start )
-        {
-            loopEnd = (int)AudioUtils.millis2BytesFrameAligned( stop, format );
-        }
-        else if (getMillisecondLength() != AudioSystem.NOT_SPECIFIED)
-        {
-            loopEnd = (int)AudioUtils.millis2BytesFrameAligned(
-                    getMillisecondLength(), format );
-        }
-        else
-        {
-        	loopEnd = AudioSystem.NOT_SPECIFIED;
-        }
+        }       
+    }
+    
+    public int getLoopBegin()
+    {
+    	return loopBegin;
+    }
+    
+    public int getLoopEnd()
+    {
+    	if ( loopEnd != AudioSystem.NOT_SPECIFIED )
+    	{
+    		return (int)AudioUtils.bytes2Millis( loopEnd, format );
+    	}
+    	
+    	return AudioSystem.NOT_SPECIFIED;
     }
 
     public int getMillisecondPosition()

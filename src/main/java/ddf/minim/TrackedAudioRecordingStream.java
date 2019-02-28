@@ -69,4 +69,14 @@ final class TrackedAudioRecordingStream extends TrackedAudioStream<AudioRecordin
 	{
 		return stream.getMetaData();
 	}
+
+	public int getLoopBegin()
+	{
+		return stream.getLoopBegin();
+	}
+
+	public int getLoopEnd()
+	{
+		return stream.getLoopEnd();
+	}
 }

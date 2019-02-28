@@ -31,14 +31,14 @@ import ddf.minim.AudioMetaData;
 public interface AudioRecording extends AudioResource, AudioStream
 {
 	/**
-	 * Allows playback/reads of the source. 
+	 * Allows playback/reads of the source.
 	 * 
 	 */
 	void play();
 
 	/**
-	 * Disallows playback/reads of the source. If this is pause, all calls to read 
-	 * will generate arrays full of zeros (silence).
+	 * Disallows playback/reads of the source. If this is pause, all calls to
+	 * read will generate arrays full of zeros (silence).
 	 * 
 	 */
 	void pause();
@@ -51,34 +51,51 @@ public interface AudioRecording extends AudioResource, AudioStream
 	 * times, and finally continue playback to the end of the clip.
 	 * 
 	 * If the current position when this method is invoked is greater than the
-	 * loop end point, playback simply continues to the end of the source without
-	 * looping.
+	 * loop end point, playback simply continues to the end of the source
+	 * without looping.
 	 * 
 	 * A count value of 0 indicates that any current looping should cease and
-	 * playback should continue to the end of the clip. The behavior is undefined
-	 * when this method is invoked with any other value during a loop operation.
+	 * playback should continue to the end of the clip. The behavior is
+	 * undefined when this method is invoked with any other value during a loop
+	 * operation.
 	 * 
-	 * If playback is stopped during looping, the current loop status is cleared;
-	 * the behavior of subsequent loop and start requests is not affected by an
-	 * interrupted loop operation.
+	 * If playback is stopped during looping, the current loop status is
+	 * cleared; the behavior of subsequent loop and start requests is not
+	 * affected by an interrupted loop operation.
 	 * 
 	 * @param count
-	 *           the number of times playback should loop back from the loop's
-	 *           end position to the loop's start position, or
-	 *           Minim.LOOP_CONTINUOUSLY to indicate that looping should continue
-	 *           until interrupted
+	 *            the number of times playback should loop back from the loop's
+	 *            end position to the loop's start position, or
+	 *            Minim.LOOP_CONTINUOUSLY to indicate that looping should
+	 *            continue until interrupted
 	 */
 	void loop(int count);
 
 	/**
-	 * Sets the loops points in the source, in milliseconds
+	 * Sets the beginning and end of the section to loop when looping.
 	 * 
-	 * @param start
-	 *           the position of the beginning of the loop
-	 * @param stop
-	 *           the position of the end of the loop
+	 * @param begin
+	 *            the beginning of the loop in milliseconds
+	 * @param end
+	 *            the end of the loop in milliseconds
 	 */
-	void setLoopPoints(int start, int stop);
+	void setLoopPoints(int begin, int end);
+
+	/**
+	 * Gets the current millisecond position of the beginning looped section.
+	 * 
+	 * @return the beginning of the looped section in milliseconds
+	 */
+	int getLoopBegin();
+
+	/**
+	 * Gets the current millisecond position of the end of the looped section.
+	 * This can be -1 if the length is unknown and <code>setLoopPoints</code>
+	 * has never been called.
+	 * 
+	 * @return the end of the looped section in milliseconds
+	 */
+	int getLoopEnd();
 
 	/**
 	 * How many loops are left to go. 0 means this isn't looping and -1 means
@@ -99,7 +116,7 @@ public interface AudioRecording extends AudioResource, AudioStream
 	 * Sets the current millisecond position of the source.
 	 * 
 	 * @param pos
-	 *           the posititon to cue the playback head to
+	 *            the posititon to cue the playback head to
 	 */
 	void setMillisecondPosition(int pos);
 

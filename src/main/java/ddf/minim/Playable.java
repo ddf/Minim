@@ -84,12 +84,27 @@ public interface Playable
   int loopCount();
   
   /**
-   * Sets the loop points used when looping.
+   * Sets the beginning and end of the section to loop when looping.
    * 
-   * @param start the start of the loop in milliseconds
-   * @param stop the end of the loop in milliseconds
+   * @param begin the beginning of the loop in milliseconds
+   * @param end the end of the loop in milliseconds
    */
-  void setLoopPoints(int start, int stop);
+  void setLoopPoints(int begin, int end);
+  
+  /**
+   * Gets the current millisecond position of the beginning looped section.
+   * 
+   * @return the beginning of the looped section in milliseconds
+   */
+  int getLoopBegin();  
+  
+  /**
+   * Gets the current millisecond position of the end of the looped section.
+   * This can be -1 if the length is unknown and <code>setLoopPoints</code> has never been called.
+   * 
+   * @return the end of the looped section in milliseconds
+   */
+  int getLoopEnd();
     
   /**
    * Pauses playback.

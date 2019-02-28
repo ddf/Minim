@@ -19,6 +19,7 @@
 package ddf.minim.javasound;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Control;
 import javax.sound.sampled.SourceDataLine;
 
@@ -297,7 +298,8 @@ class JSAudioRecording implements AudioRecording, Runnable
         {
             loopBegin = start;
         }
-        if ( stop <= getMillisecondLength() && stop > start )
+        
+        if ( stop <= getMillisecondLength() && stop > loopBegin )
         {
             loopEnd = (int)AudioUtils.millis2BytesFrameAligned( stop, format );
         }
@@ -357,4 +359,19 @@ class JSAudioRecording implements AudioRecording, Runnable
     {
     	return 0;
     }
+
+	public int getLoopBegin()
+	{
+		return loopBegin;
+	}
+
+	public int getLoopEnd()
+	{
+		if ( loopEnd != AudioSystem.NOT_SPECIFIED )
+		{
+			return (int)AudioUtils.bytes2Millis( loopEnd, format );
+		}
+		
+		return AudioSystem.NOT_SPECIFIED;
+	}
 }

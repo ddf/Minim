@@ -329,20 +329,63 @@ public class FilePlayer extends UGen implements Playable
 		return mFileStream.getMetaData();
 	}
 
-	/**
-	   * Sets the loop points used when looping.
-	   * 
-	   * @param start 
-	   * 			int: the start of the loop in milliseconds
-	   * @param stop 
-	   * 			int: the end of the loop in milliseconds
-	   * 
-	   * @related loop ( )
-	   * @related FilePlayer
-	   */
+    /**
+     * Sets the beginning and end of the section to loop when looping.
+     * These should be between 0 and the length of the file.
+     * If <code>end</code> is larger than the length of the file,
+     * the end of the loop will be set to the end of the file.
+     * If the length of the file is unknown and <end> is positive,
+     * it will be used directly.
+     * If <code>end</code> is negative, the end of the loop 
+     * will be set to the end of the file.
+     * If <code>begin</code> is greater than <code>end</code> 
+     * (unless <code>end</code> is negative), it will be clamped
+     * to one millisecond before <code>end</code>.
+     * 
+     * @param begin 
+     * 		int: the beginning of the loop in milliseconds
+     * @param end 
+     * 		int: the end of the loop in milliseconds, or -1 to set it to the end of the file
+	 *  
+	 *  @related loop ( )
+	 *  @related getLoopBegin ( )
+	 *  @related getLoopEnd ( )
+	 *  @related FilePlayer
+	 */
 	public void setLoopPoints(int start, int stop)
 	{
 		mFileStream.setLoopPoints(start, stop);
+	}
+	
+	/**
+	 * Gets the current millisecond position of the beginning of the looped section.
+	 * 
+	 * @return 
+	 * 		int: the beginning of the looped section in milliseconds
+	 * 
+	 * @related setLoopPoints ( )
+	 * @related loop ( )
+	 * @related FilePlayer
+	 */
+	public int getLoopBegin()
+	{
+		return mFileStream.getLoopBegin();
+	}
+
+	/**
+	 * Gets the current millisecond position of the end of the looped section.
+	 * This can be -1 if the length is unknown and <code>setLoopPoints</code> has never been called.
+	 * 
+	 * @return 
+	 * 		int: the end of the looped section in milliseconds
+	 * 
+	 * @related setLoopPoints ( )
+	 * @related loop ( )
+	 * @related FilePlayer
+	 */
+	public int getLoopEnd()
+	{
+		return mFileStream.getLoopEnd();
 	}
 	
 	/**
@@ -397,5 +440,4 @@ public class FilePlayer extends UGen implements Playable
 			Arrays.fill( channels, 0 );
 		}
 	}
-
 }

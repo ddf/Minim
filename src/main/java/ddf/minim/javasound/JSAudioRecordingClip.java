@@ -35,6 +35,8 @@ class JSAudioRecordingClip implements AudioRecording
 	private int				loopCount;
 	private AudioMetaData	meta;
 	private boolean			playing;
+	private int 			loopBegin;
+	private int 			loopEnd;
 
 	JSAudioRecordingClip(Clip clip, AudioMetaData mdata)
 	{
@@ -101,7 +103,10 @@ class JSAudioRecordingClip implements AudioRecording
 
 	public void setLoopPoints(int start, int end)
 	{
+		// note: this is wrong, but this class is not used, so it doesn't matter.
 		c.setLoopPoints( start, end );
+		loopBegin = start;
+		loopEnd = end;
 	}
 
 	public void setMillisecondPosition(int pos)
@@ -157,5 +162,15 @@ class JSAudioRecordingClip implements AudioRecording
 	public int read(MultiChannelBuffer buffer)
 	{
 		return 0;
+	}
+
+	public int getLoopBegin()
+	{
+		return loopBegin;
+	}
+
+	public int getLoopEnd()
+	{
+		return loopEnd;
 	}
 }

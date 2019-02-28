@@ -60,14 +60,30 @@ public interface AudioRecordingStream extends AudioStream
 	void loop(int count);
 
 	/**
-	 * Sets the loops points in the source, in milliseconds
+	 * Sets the beginning and end of the section to loop used when looping.
 	 * 
-	 * @param start
-	 *           the position of the beginning of the loop
-	 * @param stop
-	 *           the position of the end of the loop
+	 * @param begin
+	 *            the beginning of the loop in milliseconds
+	 * @param end
+	 *            the end of the loop in milliseconds
 	 */
-	void setLoopPoints(int start, int stop);
+	void setLoopPoints(int begin, int end);
+
+	/**
+	 * Gets the current millisecond position of the beginning of the looped section.
+	 * 
+	 * @return the beginning of the looped section in milliseconds
+	 */
+	int getLoopBegin();
+
+	/**
+	 * Gets the current millisecond position of the end of the looped section.
+	 * This can be -1 if the length is unknown and <code>setLoopPoints</code>
+	 * has never been called.
+	 * 
+	 * @return the end of the looped section in milliseconds
+	 */
+	int getLoopEnd();
 
 	/**
 	 * How many loops are left to go. 0 means this isn't looping and -1 means

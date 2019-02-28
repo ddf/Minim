@@ -22,7 +22,8 @@ void setup()
   size(512, 200, P3D);
   minim = new Minim(this);
   snip = minim.loadFile("groove.mp3");
-  
+  loopBegin = snip.getLoopBegin();
+  loopEnd = snip.getLoopEnd();
   textFont(loadFont("ArialMT-14.vlw"));
 }
 
@@ -53,14 +54,20 @@ void mousePressed()
   int ms = (int)map(mouseX, 0, width, 0, snip.length());
   if ( mouseButton == RIGHT )
   {
-    snip.setLoopPoints(loopBegin, ms);
-    loopEnd = ms;
+    snip.setLoopPoints(loopBegin, ms);   
+  }
+  else if ( mouseButton == CENTER )
+  {
+    // setting end to -1 will set the loop end point to the end of the file
+    snip.setLoopPoints(0, -1);
   }
   else
   {
     snip.setLoopPoints(ms, loopEnd);
-    loopBegin = ms;
   }
+  
+  loopBegin = snip.getLoopBegin();
+  loopEnd = snip.getLoopEnd();
 }
 
 void keyPressed()
