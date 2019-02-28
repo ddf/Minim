@@ -404,7 +404,10 @@ public class Minim
 	public AudioSample createSample( float[] sampleData, AudioFormat format, int bufferSize )
 	{
 		AudioSample sample = mimp.getAudioSample( sampleData, format, bufferSize );
-		addSource( sample );
+		if ( sample != null )
+		{
+			addSource( sample );
+		}
 		return sample;
 	}
 
@@ -446,7 +449,10 @@ public class Minim
 	public AudioSample createSample(float[] leftSampleData, float[] rightSampleData, AudioFormat format, int bufferSize)
 	{
 		AudioSample sample = mimp.getAudioSample( leftSampleData, rightSampleData, format, bufferSize );
-		addSource( sample );
+		if ( sample != null )
+		{
+			addSource( sample );
+		}
 		return sample;
 	}
 
