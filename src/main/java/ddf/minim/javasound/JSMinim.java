@@ -422,7 +422,6 @@ public class JSMinim implements MinimServiceProvider
 				// be much shorter than the decoded version. so we use the
 				// duration of the file to figure out how many bytes the
 				// decoded file will be.
-				// FIXME null ref if the prop isn't there! should fail to load instead.
 				if (props.containsKey( "duration" ))
 				{
 					long dur = ((Long)props.get("duration")).longValue();
