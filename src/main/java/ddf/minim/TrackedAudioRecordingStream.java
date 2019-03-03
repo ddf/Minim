@@ -1,8 +1,5 @@
 package ddf.minim;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.Control;
-
 import ddf.minim.spi.AudioRecordingStream;
 
 // internal class used to wrap AudioRecordingStream objects returned by the active MinimServiceProvider
