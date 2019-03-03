@@ -80,6 +80,7 @@ final class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 		{
 			// Yes
 			system.debug("URL is a shoutcast server.");
+			@SuppressWarnings("resource")
 			IcyInputStream icyStream = new IcyInputStream(bInputStream);
 			icyStream.addTagParseListener(IcyListener.getInstance());
 			inputStream = icyStream;
@@ -92,6 +93,7 @@ final class MpegAudioFileReaderWorkaround extends MpegAudioFileReader
 			{
 				// Yes, it might be icecast 2 mp3 stream.
 				system.debug("URL is probably an icecast 2 mp3 stream");
+				@SuppressWarnings("resource")
 				IcyInputStream icyStream = new IcyInputStream(bInputStream, metaint);
 				icyStream.addTagParseListener(IcyListener.getInstance());
 				inputStream = icyStream;

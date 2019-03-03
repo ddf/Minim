@@ -518,6 +518,7 @@ class MpegAudioFileReader extends TAudioFileReader
 		if (isShout == true)
 		{
 			// Yes
+			@SuppressWarnings("resource")
 			IcyInputStream icyStream = new IcyInputStream(bInputStream);
 			icyStream.addTagParseListener(IcyListener.getInstance());
 			inputStream = icyStream;
@@ -529,6 +530,7 @@ class MpegAudioFileReader extends TAudioFileReader
 			if (metaint != null)
 			{
 				// Yes, it might be icecast 2 mp3 stream.
+				@SuppressWarnings("resource")
 				IcyInputStream icyStream = new IcyInputStream(bInputStream, metaint);
 				icyStream.addTagParseListener(IcyListener.getInstance());
 				inputStream = icyStream;
