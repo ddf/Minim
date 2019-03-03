@@ -17,6 +17,7 @@ import ddf.minim.UGen;
  * @author Damien Di Fede
  * 
  */
+@SuppressWarnings("deprecation")
 public class Summer extends UGen implements AudioSignal
 {
 	private ArrayList<UGen>	m_ugens;

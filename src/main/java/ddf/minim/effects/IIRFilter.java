@@ -34,6 +34,7 @@ import ddf.minim.UGen;
  * @author Damien Di Fede
  * 
  */
+@SuppressWarnings("deprecation")
 public abstract class IIRFilter extends UGen implements AudioEffect
 {
 	public final UGenInput audio;

@@ -22,6 +22,7 @@ import ddf.minim.AudioSample;
 import ddf.minim.AudioSignal;
 import ddf.minim.Minim;
 
+@SuppressWarnings("deprecation")
 class SampleSignal implements AudioSignal
 {
 	private FloatSampleBuffer	buffer;
