@@ -232,8 +232,6 @@ public class Sampler extends UGen
 		float attackAmp;
 		// how much to increase the attack amp each sample frame
 		float attackAmpStep;
-		// release time, in samples
-		int   release;
 		// whether we are done playing our bit of the sample or not
 		boolean  done;
 		// whether we should start triggering in the next call to generate
@@ -267,7 +265,6 @@ public class Sampler extends UGen
 				attackLength = (int)Math.max( sampleRate() * attack.getLastValue(), 1.f );
 				attackAmp    = 0;
 				attackAmpStep = 1.0f / attackLength;
-				release		  = 0;
 				sample		  = beginSample;
 				outSampleCount = 0;
 				done		  = false;
