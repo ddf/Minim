@@ -36,6 +36,7 @@ import ddf.minim.Minim;
 import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioRecordingStream;
 
+@SuppressWarnings("deprecation")
 abstract class JSBaseAudioRecordingStream implements Runnable,
         AudioRecordingStream
 {
@@ -413,7 +414,6 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         }
     }
 
-    @SuppressWarnings("deprecation")
 	private synchronized void process()
     {
         synchronized ( buffer )
