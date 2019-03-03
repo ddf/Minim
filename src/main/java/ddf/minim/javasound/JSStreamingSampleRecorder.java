@@ -124,6 +124,7 @@ final class JSStreamingSampleRecorder implements SampleRecorder
   /**
    * Finishes the recording process by closing the file.
    */
+  @SuppressWarnings("resource") // for the return value
   public AudioRecordingStream save()
   {
     try

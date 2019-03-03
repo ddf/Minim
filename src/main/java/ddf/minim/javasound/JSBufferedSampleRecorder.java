@@ -99,6 +99,7 @@ final class JSBufferedSampleRecorder implements SampleRecorder
    * Saves the audio in the internal buffer to a file using the current settings for 
    * file type and file name.
    */
+  @SuppressWarnings("resource") // for our return value
   public AudioRecordingStream save()
   {
     if ( isRecording() )
