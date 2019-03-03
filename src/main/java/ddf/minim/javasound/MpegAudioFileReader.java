@@ -466,6 +466,7 @@ class MpegAudioFileReader extends TAudioFileReader
 	/**
 	 * Returns AudioInputStream from file.
 	 */
+	@SuppressWarnings("resource")
 	public AudioInputStream getAudioInputStream(File file)
 			throws UnsupportedAudioFileException, IOException
 	{
