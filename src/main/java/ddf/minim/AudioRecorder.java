@@ -161,7 +161,7 @@ public class AudioRecorder
   public void setSampleRecorder(SampleRecorder recorder)
   {
     this.recorder.endRecord();
-    this.recorder.save();
+    this.recorder.save().close();
     source.removeListener(this.recorder);
     source.addListener(recorder);
     this.recorder = recorder;

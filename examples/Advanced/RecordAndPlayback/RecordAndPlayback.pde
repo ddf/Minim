@@ -65,7 +65,7 @@ void draw()
   {
     text("Press the r key to start recording.", 5, 15);
   }
-  else
+  else if ( player == null )
   {
     text("Press the s key to save the recording to disk and play it back in the sketch.", 5, 15);
   }
@@ -89,7 +89,7 @@ void keyReleased()
       recorder.beginRecord();
     }
   }
-  if ( recorded && key == 's' )
+  if ( player == null && recorded && key == 's' )
   {
     // we've filled the file out buffer, 
     // now write it to a file of the type we specified in setup
@@ -98,13 +98,9 @@ void keyReleased()
     // in the case of streamed recording, 
     // it will not freeze as the data is already in the file and all that is being done
     // is closing the file.
+    // note that once save() is called, you cannot record more with this AudioRecorder.
     // save returns the recorded audio in an AudioRecordingStream, 
     // which we can then play with a FilePlayer
-    if ( player != null )
-    {
-        player.unpatch( out );
-        player.close();
-    }
     player = new FilePlayer( recorder.save() );
     player.patch( out );
     player.play();

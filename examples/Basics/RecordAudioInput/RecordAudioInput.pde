@@ -79,9 +79,11 @@ void keyReleased()
     // in the case of streamed recording, 
     // it will not freeze as the data is already in the file and all that is being done
     // is closing the file.
-    // the method returns the recorded audio as an AudioRecording, 
-    // see the example  AudioRecorder >> RecordAndPlayback for more about that
-    recorder.save();
+    // the method returns the recorded audio as an AudioRecordingStream, 
+    // we need to close it because we don't use it.
+    // see the example  Advanced >> RecordAndPlayback for more about that
+    // note that once save() is called, you cannot record more with this AudioRecorder.
+    recorder.save().close();
     println("Done saving.");
   }
 }
