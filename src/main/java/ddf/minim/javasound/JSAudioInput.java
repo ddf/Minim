@@ -29,11 +29,11 @@ import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioStream;
 
 // This is our AudioInput!
+@SuppressWarnings("deprecation")
 final class JSAudioInput extends Thread
                         implements AudioStream
 {
   private AudioListener listener;
-  @SuppressWarnings("deprecation")
   private AudioEffect effect;
   
   // line reading variables 
@@ -58,7 +58,6 @@ final class JSAudioInput extends Thread
     rawBytes = new byte[byteBufferSize];
   }
   
-  @SuppressWarnings("deprecation")
   public void run()
   {
     line.start();
@@ -124,7 +123,6 @@ final class JSAudioInput extends Thread
     return line.getFormat();
   } 
   
-  @SuppressWarnings("deprecation")
   public void setAudioEffect(AudioEffect effect)
   {
     this.effect = effect;    

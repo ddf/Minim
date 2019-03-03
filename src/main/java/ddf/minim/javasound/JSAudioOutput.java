@@ -30,6 +30,7 @@ import ddf.minim.MultiChannelBuffer;
 import ddf.minim.spi.AudioOut;
 import ddf.minim.spi.AudioStream;
 
+@SuppressWarnings("deprecation")
 final class JSAudioOutput extends Thread implements AudioOut
 {
 	private AudioListener		listener;
@@ -57,8 +58,7 @@ final class JSAudioOutput extends Thread implements AudioOut
 		finished = false;
 		line = sdl;
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	public void run()
 	{
 		line.start();
@@ -105,7 +105,6 @@ final class JSAudioOutput extends Thread implements AudioOut
 	}
 
 	// TODO: ditch readSignal eventually
-	@SuppressWarnings("deprecation")
 	private void readSignal() 
 	{
 		if (line.getFormat().getChannels() == Minim.MONO)
