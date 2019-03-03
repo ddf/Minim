@@ -248,7 +248,7 @@ public class Frequency
 			if ( matcher.find() )
 			{	
 				String noteNameString = pitchName.substring(matcher.start(), matcher.end() );
-				float noteOffset = (float) noteNameOffsets.get( noteNameString );
+				float noteOffset = noteNameOffsets.get( noteNameString ).floatValue();
 				midiNote += noteOffset;
 			}
 			Minim.debug("midiNote based on noteName = " + midiNote );
