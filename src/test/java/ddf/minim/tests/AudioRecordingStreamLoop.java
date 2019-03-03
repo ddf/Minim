@@ -20,6 +20,7 @@ public class AudioRecordingStreamLoop
 		test.Start(args);
 	}
 	
+	@SuppressWarnings("deprecation")
 	void Start(String[] args)
 	{
 		fileFolder = args[0];

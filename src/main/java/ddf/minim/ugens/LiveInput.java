@@ -41,6 +41,7 @@ public class LiveInput extends UGen
 		mInputStream.close();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void uGenerate(float[] channels) 
 	{

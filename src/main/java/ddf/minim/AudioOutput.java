@@ -73,12 +73,14 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	// the synth attach our signals to
 	private AudioOut	synth;
 	// the signals added by the user
+	@SuppressWarnings("deprecation")
 	private SignalChain	signals;
 	// the note manager for this output
 	private NoteManager	noteManager;
 	// the Bus for UGens used by this output
 	Summer bus;
 
+	@SuppressWarnings("deprecation")
 	private class SampleGenerator implements AudioSignal
 	{
 		public void generate(float[] signal)
@@ -124,6 +126,7 @@ public class AudioOutput extends AudioSource implements Polyphonic
 	 *            
 	 * @invisible
 	 */
+	@SuppressWarnings("deprecation")
 	public AudioOutput(AudioOut out)
 	{
 		super( out );

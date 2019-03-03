@@ -413,7 +413,8 @@ abstract class JSBaseAudioRecordingStream implements Runnable,
         }
     }
 
-    private synchronized void process()
+    @SuppressWarnings("deprecation")
+	private synchronized void process()
     {
         synchronized ( buffer )
         {

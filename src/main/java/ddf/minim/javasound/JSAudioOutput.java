@@ -58,6 +58,7 @@ final class JSAudioOutput extends Thread implements AudioOut
 		line = sdl;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void run()
 	{
 		line.start();
@@ -104,6 +105,7 @@ final class JSAudioOutput extends Thread implements AudioOut
 	}
 
 	// TODO: ditch readSignal eventually
+	@SuppressWarnings("deprecation")
 	private void readSignal() 
 	{
 		if (line.getFormat().getChannels() == Minim.MONO)

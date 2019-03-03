@@ -30,6 +30,7 @@ import ddf.minim.AudioSignal;
  * @author Damien Di Fede
  * 
  */
+@SuppressWarnings("deprecation")
 public interface AudioOut extends AudioResource
 {
 	/**

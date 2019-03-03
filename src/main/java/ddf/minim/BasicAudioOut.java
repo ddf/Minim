@@ -94,6 +94,7 @@ implements AudioOut
 	}
 
 	
+	@SuppressWarnings("deprecation")
 	public void setAudioSignal(AudioSignal signal)
 	{
 		//Minim.error( "BasicAudioOut does not support setting an AudioSignal." );
@@ -104,6 +105,7 @@ implements AudioOut
 		this.stream = stream;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setAudioEffect(AudioEffect effect)
 	{
 		//Minim.error( "BasicAudiOut does not support setting an AudioEffect." );

@@ -81,6 +81,7 @@ import ddf.minim.spi.SampleRecorder;
  * @author Damien Di Fede
  */
 
+@SuppressWarnings("deprecation")
 public class Minim
 {
 	/** Specifies that you want a MONO AudioInput or AudioOutput */

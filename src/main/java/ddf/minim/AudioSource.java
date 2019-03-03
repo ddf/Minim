@@ -20,6 +20,7 @@ import ddf.minim.spi.AudioOut;
  * @invisible
  * 
  */
+@SuppressWarnings("deprecation")
 public class AudioSource extends Controller implements Effectable, Recordable
 {
 	// the instance of Minim that created us, if one did.
