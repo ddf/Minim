@@ -1,6 +1,5 @@
 package ddf.minim.tests;
 
-import ddf.minim.Minim;
 import ddf.minim.ugens.FilePlayer;
 
 public class FilePlayerMonoToStereo extends TestBase
