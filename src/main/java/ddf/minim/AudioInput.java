@@ -115,6 +115,7 @@ public class AudioInput extends AudioSource
    * @related isMonitoring ( )
    * @related AudioInput
    */
+  @SuppressWarnings("deprecation")
   public void enableMonitoring()
   {
     // make sure we don't make sound
@@ -154,6 +155,7 @@ public class AudioInput extends AudioSource
    * @related AudioInput
    * 
    */
+  @SuppressWarnings("deprecation")
   public void disableMonitoring()
   {
     // make sure we don't make sound
