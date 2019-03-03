@@ -26,6 +26,7 @@ package ddf.minim.signals;
  * @author Damien Di Fede
  * @see <a href="http://en.wikipedia.org/wiki/Pulse_wave">Pulse Wave</a>
  */
+@Deprecated
 public class PulseWave extends Oscillator
 {
   private float width;

@@ -24,6 +24,7 @@ package ddf.minim.signals;
  * @author ddf
  * @see <a href="http://en.wikipedia.org/wiki/Square_wave">Square Wave</a>
  */
+@Deprecated
 public class SquareWave extends Oscillator
 {
 

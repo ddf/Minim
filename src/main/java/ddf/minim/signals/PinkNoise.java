@@ -27,6 +27,7 @@ import ddf.minim.AudioSignal;
  * @see <a href="http://en.wikipedia.org/wiki/Pink_noise">Pink Noise</a>
  * 
  */
+@SuppressWarnings("deprecation")
 public class PinkNoise implements AudioSignal
 {
   protected float amp;

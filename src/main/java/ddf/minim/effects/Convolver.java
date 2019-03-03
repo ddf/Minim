@@ -39,7 +39,7 @@ import ddf.minim.Minim;
  * @see <a href="http://www.dspguide.com/ch6.htm">Convolution</a>
  * 
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public class Convolver implements AudioEffect
 {
   protected float[] kernal;

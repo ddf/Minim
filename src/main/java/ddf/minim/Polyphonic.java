@@ -27,7 +27,7 @@ package ddf.minim;
  * @invisible
  * 
  */
-
+@Deprecated
 public interface Polyphonic
 {
   /**

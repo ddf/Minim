@@ -24,7 +24,7 @@ package ddf.minim.signals;
  * @author Damien Di Fede
  * @see <a href="http://en.wikipedia.org/wiki/Triangle_wave">Triangle Wave</a>
  */
-
+@Deprecated
 public class TriangleWave extends Oscillator 
 {
   /**

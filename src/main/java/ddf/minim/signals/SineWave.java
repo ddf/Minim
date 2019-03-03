@@ -25,6 +25,7 @@ package ddf.minim.signals;
  * @see <a href="http://en.wikipedia.org/wiki/Sine_wave">Sine Wave</a>
  *
  */
+@Deprecated
 public class SineWave extends Oscillator 
 {
 

@@ -28,6 +28,7 @@ package ddf.minim;
  * @invisible
  * 
  */
+@Deprecated
 public interface Effectable
 {
   /**

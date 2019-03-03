@@ -35,6 +35,7 @@ import ddf.minim.Minim;
  * @author Damien Di Fede
  * 
  */
+@Deprecated
 public abstract class Oscillator implements AudioSignal
 {
   /** The float value of 2*PI. Provided as a convenience for subclasses. */

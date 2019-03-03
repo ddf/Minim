@@ -26,6 +26,7 @@ import ddf.minim.AudioSignal;
  * @author Damien Di Fede
  * @see <a href="http://en.wikipedia.org/wiki/White_noise">White Noise</a>
  */
+@Deprecated
 public class WhiteNoise implements AudioSignal
 {
   protected float amp;

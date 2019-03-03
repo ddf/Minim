@@ -24,6 +24,7 @@ package ddf.minim.signals;
  * @see <a href="http://en.wikipedia.org/wiki/Saw_wave">Saw Wave</a>
  *
  */
+@Deprecated
 public class SawWave extends Oscillator 
 {  
   
