@@ -18,14 +18,18 @@ public class PlayablePosition extends TestBase
 	protected void setup(String[] args)
 	{
 		player = minim.loadFile( args[1] );
+		Minim.debug( args[1] + " is " + player.length() / 1000.0f + " seconds long." );
 		player.play();
 	}
 	
 	protected boolean update()
 	{
-		Minim.debug( player.position() + " / " + player.length() );
+		if ( player.isPlaying() )
+		{
+			Minim.debug( player.position() + " / " + player.length() );
+		}
 		
-		return player.position() != player.length();
+		return player.isPlaying();
 	}
 
 	public static void main(String[] args)

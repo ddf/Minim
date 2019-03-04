@@ -342,6 +342,21 @@ class MpegAudioFileReader extends TAudioFileReader
 			{
 				throw new UnsupportedAudioFileException("Unable to read mp3 header");
 			}
+
+// TODO something like this needs to be done in order for the "duration" of the file to be reported properly.
+// However, this appears to not work in all cases, and in any event it would be better to remove this file
+// from the Minim source and instead figure out how to reliably get the tags via AudioSystem.getAudioFileFormat,
+// since the Applet workaround in JSMinim is not really an issue anymore what with browsers generally dropping support for Java applets.
+// If it turns out that mp3spi/jlayer *also* have problems with reporting the correct "duration" for some mp3 files,
+// then it is probably best to either accept that reality, or to try to fix the problem in a fork that we maintain and publish to Maven as a new artifact.
+// I am more inclined towards the former at the moment.
+//			if ( mLength != AudioSystem.NOT_SPECIFIED)
+//			{
+//				if ( m_bitstream.header_pos() > 0 )
+//				{
+//					mLength -= m_bitstream.header_pos();					
+//				}
+//			}
 			
 			// nVersion = 0 => MPEG2-LSF (Including MPEG2.5), nVersion = 1 => MPEG1
 			nVersion = m_header.version();
