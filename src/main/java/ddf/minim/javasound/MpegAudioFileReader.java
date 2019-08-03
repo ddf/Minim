@@ -335,28 +335,13 @@ class MpegAudioFileReader extends TAudioFileReader
 		try
 		{
 			Bitstream m_bitstream = new Bitstream(pis);
-			aff_properties.put("mp3.header.pos",
-										new Integer(m_bitstream.header_pos()));
+            int streamPos = m_bitstream.header_pos();
+            aff_properties.put("mp3.header.pos", new Integer(streamPos));
 			Header m_header = m_bitstream.readFrame();
 			if ( m_header == null )
 			{
 				throw new UnsupportedAudioFileException("Unable to read mp3 header");
 			}
-
-// TODO something like this needs to be done in order for the "duration" of the file to be reported properly.
-// However, this appears to not work in all cases, and in any event it would be better to remove this file
-// from the Minim source and instead figure out how to reliably get the tags via AudioSystem.getAudioFileFormat,
-// since the Applet workaround in JSMinim is not really an issue anymore what with browsers generally dropping support for Java applets.
-// If it turns out that mp3spi/jlayer *also* have problems with reporting the correct "duration" for some mp3 files,
-// then it is probably best to either accept that reality, or to try to fix the problem in a fork that we maintain and publish to Maven as a new artifact.
-// I am more inclined towards the former at the moment.
-//			if ( mLength != AudioSystem.NOT_SPECIFIED)
-//			{
-//				if ( m_bitstream.header_pos() > 0 )
-//				{
-//					mLength -= m_bitstream.header_pos();					
-//				}
-//			}
 			
 			// nVersion = 0 => MPEG2-LSF (Including MPEG2.5), nVersion = 1 => MPEG1
 			nVersion = m_header.version();
@@ -391,10 +376,13 @@ class MpegAudioFileReader extends TAudioFileReader
 			{
 				throw new UnsupportedAudioFileException("Invalid FrameRate : " + FrameRate);
 			}
+			// remove header size from the length used to estimate total frames and duration
+            int tmpLength = mLength;
+            if ((streamPos > 0) && (mLength != AudioSystem.NOT_SPECIFIED) && (streamPos < mLength)) tmpLength = tmpLength - streamPos;
 			if (mLength != AudioSystem.NOT_SPECIFIED)
 			{
 				aff_properties.put("mp3.length.bytes", new Integer(mLength));
-				nTotalFrames = m_header.max_number_of_frames(mLength);
+                nTotalFrames = m_header.max_number_of_frames(tmpLength);
 				aff_properties.put("mp3.length.frames", new Integer(nTotalFrames));
 			}
 			BitRate = m_header.bitrate();
@@ -405,7 +393,7 @@ class MpegAudioFileReader extends TAudioFileReader
 			aff_properties.put("mp3.version.encoding", encoding.toString());
 			if (mLength != AudioSystem.NOT_SPECIFIED)
 			{
-				nTotalMS = Math.round(m_header.total_ms(mLength));
+                nTotalMS = Math.round(m_header.total_ms(tmpLength));
 				aff_properties.put("duration", new Long((long)nTotalMS * 1000L));
 			}
 			aff_properties.put("mp3.copyright", new Boolean(m_header.copyright()));
