@@ -60,11 +60,11 @@
 			<artifactId>maven-javadoc-plugin</artifactId>
 			<version>2.10.4</version>
 		</dependency> -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.googlecode.soundlibs</groupId>
 			<artifactId>tritonus-share</artifactId>
 			<version>0.3.7-2</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.googlecode.soundlibs</groupId>
 			<artifactId>mp3spi</artifactId>
