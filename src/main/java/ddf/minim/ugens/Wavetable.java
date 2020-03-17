@@ -128,22 +128,26 @@ public class Wavetable implements Waveform
 	 */
 	public float value(float at)
 	{
-		float whichSample = lengthForValue * at;
+		// create local waveform for thread safe
+		float[] wave = this.waveform;
+		if(wave.length==0) return 0;
+
+		float whichSample = wave.length * (((at%1)+1)%1);
 
 		// linearly interpolate between the two samples we want.
-		int lowSamp = (int)whichSample;
-		int hiSamp = lowSamp + 1;
+		int lowSamp = ((int)whichSample)%wave.length;
+		int hiSamp = (lowSamp + 1)%wave.length;
 		// lowSamp might be the last sample in the waveform
 		// we need to make sure we wrap.
-		if ( hiSamp >= waveform.length )
+		if ( hiSamp >= wave.length )
 		{
-			hiSamp -= waveform.length;
+			hiSamp -= wave.length;
 		}
 
 		float rem = whichSample - lowSamp;
 
-		return waveform[lowSamp] + rem
-				* ( waveform[hiSamp] - waveform[lowSamp] );
+		return wave[lowSamp] + rem
+				* ( wave[hiSamp] - wave[lowSamp] );
 
 		// This was here for testing.
 		// Causes non-interpolation, but adds max # of oscillators
